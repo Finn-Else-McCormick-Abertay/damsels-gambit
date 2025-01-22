@@ -3,5 +3,6 @@
     "git.detectSubmodules": false,
     "git.ignoreSubmodules": true,
     "git.autoRepositoryDetection": "openEditors",
-    "git.autofetch": true
+    "git.autofetch": true,
+    "files.eol": "\n"
 }
