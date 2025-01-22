@@ -5,6 +5,7 @@ env:
   EXPORT_NAME: roxo-hyrax
 
 on:
+  workflow_call:
   workflow_dispatch:
   push:
     paths:
@@ -13,7 +14,6 @@ on:
       - "**.tscn" # scene files
       - "**.import" # this means an asset changed
       - "**.tres" # godot resources
-      - ".github/workflows/export.yml" # this workflow
       - "export_presets.cfg" # the export template
       - "project.godot"
       - "**.csproj"
