@@ -1,3 +1,7 @@
 {
-    "godotTools.editorPath.godot4": "godot-install/Godot.exe"
+    "godotTools.editorPath.godot4": "godot-install/Godot.exe",
+    "git.detectSubmodules": false,
+    "git.ignoreSubmodules": true,
+    "git.autoRepositoryDetection": "openEditors",
+    "git.autofetch": true
 }
