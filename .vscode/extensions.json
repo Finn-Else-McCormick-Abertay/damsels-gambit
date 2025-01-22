@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "ms-dotnettools.csdevkit",
+        "altamkp.godot-docs-vscode-csharp",
+        "altamkp.godot-snippets-vscode-csharp",
+        "geequlim.godot-tools"
+    ]
+}
