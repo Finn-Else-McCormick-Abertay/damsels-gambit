@@ -8,6 +8,7 @@ on:
   workflow_call:
   workflow_dispatch:
   push:
+    tags-ignore: ['v*.*.*']
     paths:
       - "**.gd" # all gdscript files
       - "**.cs" # all C# files
