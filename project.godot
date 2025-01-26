@@ -32,7 +32,14 @@ project/assembly_name="Damsels Gambit"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/AnchorsOnlyPreset/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/limbo_console/plugin.cfg")
+enabled=PackedStringArray("res://addons/AnchorsOnlyPreset/plugin.cfg", "res://addons/limbo_console/plugin.cfg")
+
+[file_customization]
+
+folder_colors={
+"res://assets/": "yellow",
+"res://scenes/": "pink"
+}
 
 [input]
 
@@ -45,3 +52,4 @@ limbo_console_toggle={
 [rendering]
 
 textures/vram_compression/import_etc2_astc=true
+anti_aliasing/quality/msaa_2d=2
