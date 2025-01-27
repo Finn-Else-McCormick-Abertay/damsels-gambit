@@ -6,4 +6,15 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <RootNamespace>DamselsGambit</RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="GDBridge" Version="0.13.0" />
+    <PackageReference Include="GDBridge.Generator" Version="0.13.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="**/*.gd"/>
+    <AdditionalFiles Include="**/GDBridgeConfiguration.json"/>
+  </ItemGroup>
+  <PropertyGroup>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+  </PropertyGroup>
 </Project>

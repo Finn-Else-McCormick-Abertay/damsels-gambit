@@ -38,7 +38,9 @@ enabled=PackedStringArray("res://addons/AnchorsOnlyPreset/plugin.cfg", "res://ad
 
 folder_colors={
 "res://assets/": "yellow",
-"res://scenes/": "pink"
+"res://resources/": "green",
+"res://scenes/": "pink",
+"res://util/": "blue"
 }
 
 [input]
