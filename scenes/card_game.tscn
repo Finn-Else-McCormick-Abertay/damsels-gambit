@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://d17prkkn5d5wh"]
+
+[ext_resource type="PackedScene" uid="uid://duvx4rnm48ajd" path="res://scenes/ui/affection_meter.tscn" id="1_0273w"]
+
+[node name="CardGame" type="Node"]
+
+[node name="AffectionMeter" parent="." instance=ExtResource("1_0273w")]
+offset_left = 98.0
+offset_top = 74.0
+offset_right = -986.0
+offset_bottom = -83.0

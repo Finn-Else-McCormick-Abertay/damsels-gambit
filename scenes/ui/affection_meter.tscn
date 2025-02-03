@@ -1,0 +1,95 @@
+[gd_scene load_steps=8 format=3 uid="uid://duvx4rnm48ajd"]
+
+[ext_resource type="Script" path="res://scenes/ui/AffectionMeter.cs" id="1_b7l60"]
+[ext_resource type="Texture2D" uid="uid://cnus1iub5ywaf" path="res://assets/ui/slider_background_temp.png" id="1_vjb12"]
+[ext_resource type="Texture2D" uid="uid://yp5dxvjwi6m" path="res://assets/ui/slider_marker_temp.png" id="2_rxlcy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_615xn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_iq6om"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kpswk"]
+
+[sub_resource type="Theme" id="Theme_b14tp"]
+VSlider/icons/grabber_disabled = ExtResource("2_rxlcy")
+VSlider/styles/grabber_area = SubResource("StyleBoxEmpty_615xn")
+VSlider/styles/grabber_area_highlight = SubResource("StyleBoxEmpty_iq6om")
+VSlider/styles/slider = SubResource("StyleBoxEmpty_kpswk")
+
+[node name="AffectionMeter" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_b14tp")
+script = ExtResource("1_b7l60")
+BarBaseTexture = ExtResource("1_vjb12")
+BarLoveTexture = ExtResource("1_vjb12")
+BarHateTexture = ExtResource("1_vjb12")
+MarkerTexture = ExtResource("2_rxlcy")
+
+[node name="BarBase" type="NinePatchRect" parent="."]
+modulate = Color(0.830335, 0.830335, 0.830335, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_vjb12")
+patch_margin_left = 50
+patch_margin_top = 50
+patch_margin_right = 50
+patch_margin_bottom = 50
+
+[node name="HateBar" type="TextureProgressBar" parent="."]
+modulate = Color(0.404511, 0.404511, 0.404511, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+max_value = 1.0
+step = 0.001
+value = 0.3
+fill_mode = 3
+nine_patch_stretch = true
+stretch_margin_left = 50
+stretch_margin_top = 50
+stretch_margin_right = 50
+stretch_margin_bottom = 50
+texture_progress = ExtResource("1_vjb12")
+
+[node name="LoveBar" type="TextureProgressBar" parent="."]
+modulate = Color(1, 0.384147, 0.351083, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+max_value = 1.0
+step = 0.001
+value = 0.3
+fill_mode = 2
+nine_patch_stretch = true
+stretch_margin_left = 50
+stretch_margin_top = 50
+stretch_margin_right = 50
+stretch_margin_bottom = 50
+texture_progress = ExtResource("1_vjb12")
+
+[node name="VSlider" type="VSlider" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+max_value = 1.0
+step = 0.001
+value = 0.5
+editable = false

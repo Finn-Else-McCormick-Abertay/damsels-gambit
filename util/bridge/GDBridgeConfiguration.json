@@ -1,4 +1,4 @@
 {
-    "UsePascalCase": true,
-    "GenerateOnlyForMatchingBridgeClass": false
+	"UsePascalCase": true,
+	"GenerateOnlyForMatchingBridgeClass": false
 }
