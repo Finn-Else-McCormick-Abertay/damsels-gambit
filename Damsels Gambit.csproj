@@ -6,6 +6,7 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <RootNamespace>DamselsGambit</RootNamespace>
   </PropertyGroup>
+  <Import Project="addons\YarnSpinner-Godot\YarnSpinner-Godot.props" />
   <ItemGroup>
     <PackageReference Include="GDBridge" Version="0.13.0" />
     <PackageReference Include="GDBridge.Generator" Version="0.13.0" />
