@@ -1,37 +1,137 @@
+using System;
+using System.Linq;
 using Godot;
+using Godot.Collections;
+using DamselsGambit.Util;
+
+namespace DamselsGambit;
 
 [Tool]
 public partial class AffectionMeter : Control
 {
-	private double _valuePercent = 0.5, _lovePercent = 0.3, _hatePercent = 0.3;
-	[Export] public double ValuePercent { get => _valuePercent; set { _valuePercent = value; marker?.Set(Range.PropertyName.Value, ValuePercent); } }
-	[Export] public double LovePercent { get => _lovePercent; set { _lovePercent = value; barLove?.Set(Range.PropertyName.Value, LovePercent); } }
-	[Export] public double HatePercent { get => _hatePercent; set { _hatePercent = value; barHate?.Set(Range.PropertyName.Value, HatePercent); } }
+	public AffectionMeter() : base() {
+		if (Theme is null) {
+			Theme = new Theme();
+			Theme.AddType(nameof(VSlider));
+			var styleBoxEmpty = new StyleBoxEmpty();
+			Theme.SetStylebox("grabber_area", nameof(VSlider), styleBoxEmpty);
+			Theme.SetStylebox("grabber_area_highlight", nameof(VSlider), styleBoxEmpty);
+			Theme.SetStylebox("slider", nameof(VSlider), styleBoxEmpty);
+		}
+	}
+
+	[Export(PropertyHint.Range, "0,1")] public double ValuePercent { get; set { field = value; _marker?.Set(Godot.Range.PropertyName.Value, ValuePercent); } } = 0.5;
+	[Export(PropertyHint.Range, "0,1")] public double LovePercent { get; set { field = value; _loveBar?.Set(Godot.Range.PropertyName.Value, LovePercent); } } = 0.3;
+	[Export(PropertyHint.Range, "0,1")] public double HatePercent { get; set { field = value; _hateBar?.Set(Godot.Range.PropertyName.Value, HatePercent); } } = 0.3;
 
 	[ExportGroup("Textures")]
-	private Texture2D _barBaseTexture, _barLoveTexture, _barHateTexture, _markerTexture;
-	[Export] Texture2D BarBaseTexture { get => _barBaseTexture; set { _barBaseTexture = value; barBase?.Set(NinePatchRect.PropertyName.Texture, _barBaseTexture); } }
-	[Export] Texture2D BarLoveTexture { get => _barLoveTexture; set { _barLoveTexture = value; barLove?.Set(TextureProgressBar.PropertyName.TextureProgress, _barLoveTexture); } }
-	[Export] Texture2D BarHateTexture { get => _barHateTexture; set { _barHateTexture = value; barHate?.Set(TextureProgressBar.PropertyName.TextureProgress, _barHateTexture); } }
-	[Export] Texture2D MarkerTexture { get => _markerTexture; set { _markerTexture = value; Theme.SetIcon("grabber_disabled", "VSlider", _markerTexture); } }
+	[Export] public Texture2D TextureMarker { get; set { field = value; UpdateTextures(); } }
+	[Export] public Texture2D TextureBase { get; set { field = value; UpdateTextures(); } }
+	[Export] public Texture2D TextureOverlay { get; set { field = value; UpdateTextures(); } }
+	[Export] public Texture2D TextureLove { get; set { field = value; UpdateTextures(); } }
+	[Export] public Texture2D TextureHate { get; set { field = value; UpdateTextures(); } }
 
-	private NinePatchRect barBase;
-	private TextureProgressBar barLove, barHate;
-	private VSlider marker;
+	[Export] public bool IsNinePatch { get; set { field = value; RebuildChildren(); NotifyPropertyListChanged(); } }
+	
+	[ExportGroup("Patch Margin")]
+	[Export(PropertyHint.None, "suffix:px")] public int PatchMarginLeft { get; set { field = value; UpdateTransforms(); } }
+	[Export(PropertyHint.None, "suffix:px")] public int PatchMarginTop { get; set { field = value; UpdateTransforms(); } }
+	[Export(PropertyHint.None, "suffix:px")] public int PatchMarginRight { get; set { field = value; UpdateTransforms(); } }
+	[Export(PropertyHint.None, "suffix:px")] public int PatchMarginBottom { get; set { field = value; UpdateTransforms(); } }
 
-	public override void _Ready() {
-		barBase = GetNode<NinePatchRect>("BarBase");
-		barLove = GetNode<TextureProgressBar>("LoveBar");
-		barHate = GetNode<TextureProgressBar>("HateBar");
-		marker = GetNode<VSlider>("VSlider");
+	public override void _ValidateProperty(Dictionary propertyDict) {
+		var property = propertyDict["name"].AsStringName();
 
-		// Update to exported values
-		ValuePercent = _valuePercent;
-		LovePercent = _lovePercent;
-		HatePercent = _hatePercent;
+		if (new[]{ PropertyName.PatchMarginLeft, PropertyName.PatchMarginTop, PropertyName.PatchMarginRight, PropertyName.PatchMarginBottom }.Contains(property)) {
+			var usage = propertyDict["usage"].As<int>();
+			if (!IsNinePatch) { usage &= (int)~PropertyUsageFlags.Editor; }
+			propertyDict["usage"] = usage;
+		}
+    }
 
-		BarBaseTexture = _barBaseTexture;
-		BarLoveTexture = _barLoveTexture;
-		BarHateTexture = _barHateTexture;
+	private Control _base, _overlay;
+	private Godot.Range _loveBar, _hateBar;
+	private VSlider _marker;
+
+	private void UpdateTextures() {
+		Theme.SetIcon("grabber_disabled", "VSlider", TextureMarker);
+		_base?.Set(TextureRect.PropertyName.Texture, TextureBase);
+		_overlay?.Set(TextureRect.PropertyName.Texture, TextureOverlay);
+		_loveBar?.Set(TextureProgressBar.PropertyName.TextureProgress, TextureLove);
+		_hateBar?.Set(TextureProgressBar.PropertyName.TextureProgress, TextureHate);
 	}
+
+	private void UpdateTransforms() {
+		(_base as NinePatchRect)?.Set(NinePatchRect.PropertyName.PatchMarginLeft, PatchMarginLeft);
+		(_base as NinePatchRect)?.Set(NinePatchRect.PropertyName.PatchMarginTop, PatchMarginTop);
+		(_base as NinePatchRect)?.Set(NinePatchRect.PropertyName.PatchMarginRight, PatchMarginRight);
+		(_base as NinePatchRect)?.Set(NinePatchRect.PropertyName.PatchMarginBottom, PatchMarginBottom);
+		
+		(_overlay as NinePatchRect)?.Set(NinePatchRect.PropertyName.PatchMarginLeft, PatchMarginLeft);
+		(_overlay as NinePatchRect)?.Set(NinePatchRect.PropertyName.PatchMarginTop, PatchMarginTop);
+		(_overlay as NinePatchRect)?.Set(NinePatchRect.PropertyName.PatchMarginRight, PatchMarginRight);
+		(_overlay as NinePatchRect)?.Set(NinePatchRect.PropertyName.PatchMarginBottom, PatchMarginBottom);
+		
+		(_loveBar as TextureProgressBar)?.Set(TextureProgressBar.PropertyName.StretchMarginLeft, PatchMarginLeft);
+		(_loveBar as TextureProgressBar)?.Set(TextureProgressBar.PropertyName.StretchMarginTop, PatchMarginTop);
+		(_loveBar as TextureProgressBar)?.Set(TextureProgressBar.PropertyName.StretchMarginRight, PatchMarginRight);
+		(_loveBar as TextureProgressBar)?.Set(TextureProgressBar.PropertyName.StretchMarginBottom, PatchMarginBottom);
+
+		(_hateBar as TextureProgressBar)?.Set(TextureProgressBar.PropertyName.StretchMarginLeft, PatchMarginLeft);
+		(_hateBar as TextureProgressBar)?.Set(TextureProgressBar.PropertyName.StretchMarginTop, PatchMarginTop);
+		(_hateBar as TextureProgressBar)?.Set(TextureProgressBar.PropertyName.StretchMarginRight, PatchMarginRight);
+		(_hateBar as TextureProgressBar)?.Set(TextureProgressBar.PropertyName.StretchMarginBottom, PatchMarginBottom);
+	}
+
+	private void RebuildChildren() {
+		ClearChildren();
+
+		var layout = IsNinePatch ? LayoutPreset.FullRect : LayoutPreset.TopLeft;
+
+		if (IsNinePatch) { _base = new NinePatchRect(); _overlay = new NinePatchRect(); } else { _base = new TextureRect(); _overlay = new TextureRect(); }
+		_base.SetAnchorsAndOffsetsPreset(layout);
+		_overlay.SetAnchorsAndOffsetsPreset(layout);
+
+        _loveBar = new TextureProgressBar {
+			FillMode = (int)TextureProgressBar.FillModeEnum.TopToBottom,
+			NinePatchStretch = IsNinePatch,
+            Value = LovePercent,
+			MaxValue = 1, Step = 0.001,
+        };
+		_loveBar.SetAnchorsAndOffsetsPreset(layout);
+		_loveBar.Value = LovePercent;
+
+        _hateBar = new TextureProgressBar {
+			FillMode = (int)TextureProgressBar.FillModeEnum.BottomToTop,
+			NinePatchStretch = IsNinePatch,
+            Value = HatePercent,
+			MaxValue = 1, Step = 0.001,
+        };
+		_hateBar.SetAnchorsAndOffsetsPreset(layout);
+		_hateBar.Value = LovePercent;
+
+        _marker = new VSlider {
+			Editable = false,
+            Value = ValuePercent,
+			MaxValue = 1, Step = 0.001,
+        };
+		_marker.SetAnchorsAndOffsetsPreset(layout);
+		_marker.Value = ValuePercent;
+
+        AddChild(_base);
+		AddChild(_hateBar);
+		AddChild(_loveBar);
+		AddChild(_overlay);
+		AddChild(_marker);
+
+		UpdateTextures();
+		UpdateTransforms();
+	}
+
+	private void ClearChildren() {
+		foreach (var child in GetChildren()) { RemoveChild(child); child.QueueFree(); }
+	}
+
+	public override void _EnterTree() => RebuildChildren();
+	public override void _ExitTree() => ClearChildren();
 }
