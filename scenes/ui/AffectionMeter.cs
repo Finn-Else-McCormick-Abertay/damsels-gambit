@@ -2,12 +2,11 @@ using System;
 using System.Linq;
 using Godot;
 using Godot.Collections;
-using DamselsGambit.Util;
 
 namespace DamselsGambit;
 
 [Tool]
-public partial class AffectionMeter : Control
+public partial class AffectionMeter : Control, ISerializationListener
 {
 	public AffectionMeter() : base() {
 		if (Theme is null) {
@@ -25,23 +24,22 @@ public partial class AffectionMeter : Control
 	[Export(PropertyHint.Range, "0,1")] public double HatePercent { get; set { field = value; _hateBar?.Set(Godot.Range.PropertyName.Value, HatePercent); } } = 0.3;
 
 	[ExportGroup("Textures")]
-	[Export] public Texture2D TextureMarker { get; set { field = value; UpdateTextures(); } }
-	[Export] public Texture2D TextureBase { get; set { field = value; UpdateTextures(); } }
+	[Export] public Texture2D TextureMarker  { get; set { field = value; UpdateTextures(); } }
+	[Export] public Texture2D TextureBase 	 { get; set { field = value; UpdateTextures(); } }
 	[Export] public Texture2D TextureOverlay { get; set { field = value; UpdateTextures(); } }
-	[Export] public Texture2D TextureLove { get; set { field = value; UpdateTextures(); } }
-	[Export] public Texture2D TextureHate { get; set { field = value; UpdateTextures(); } }
+	[Export] public Texture2D TextureLove 	 { get; set { field = value; UpdateTextures(); } }
+	[Export] public Texture2D TextureHate 	 { get; set { field = value; UpdateTextures(); } }
 
 	[Export] public bool IsNinePatch { get; set { field = value; RebuildChildren(); NotifyPropertyListChanged(); } }
 	
 	[ExportGroup("Patch Margin")]
-	[Export(PropertyHint.None, "suffix:px")] public int PatchMarginLeft { get; set { field = value; UpdateTransforms(); } }
-	[Export(PropertyHint.None, "suffix:px")] public int PatchMarginTop { get; set { field = value; UpdateTransforms(); } }
-	[Export(PropertyHint.None, "suffix:px")] public int PatchMarginRight { get; set { field = value; UpdateTransforms(); } }
-	[Export(PropertyHint.None, "suffix:px")] public int PatchMarginBottom { get; set { field = value; UpdateTransforms(); } }
+	[Export(PropertyHint.None, "suffix:px")] public int PatchMarginLeft 	{ get; set { field = value; UpdateTransforms(); } }
+	[Export(PropertyHint.None, "suffix:px")] public int PatchMarginTop 		{ get; set { field = value; UpdateTransforms(); } }
+	[Export(PropertyHint.None, "suffix:px")] public int PatchMarginRight 	{ get; set { field = value; UpdateTransforms(); } }
+	[Export(PropertyHint.None, "suffix:px")] public int PatchMarginBottom 	{ get; set { field = value; UpdateTransforms(); } }
 
 	public override void _ValidateProperty(Dictionary propertyDict) {
 		var property = propertyDict["name"].AsStringName();
-
 		if (new[]{ PropertyName.PatchMarginLeft, PropertyName.PatchMarginTop, PropertyName.PatchMarginRight, PropertyName.PatchMarginBottom }.Contains(property)) {
 			var usage = propertyDict["usage"].As<int>();
 			if (!IsNinePatch) { usage &= (int)~PropertyUsageFlags.Editor; }
@@ -62,25 +60,18 @@ public partial class AffectionMeter : Control
 	}
 
 	private void UpdateTransforms() {
-		(_base as NinePatchRect)?.Set(NinePatchRect.PropertyName.PatchMarginLeft, PatchMarginLeft);
-		(_base as NinePatchRect)?.Set(NinePatchRect.PropertyName.PatchMarginTop, PatchMarginTop);
-		(_base as NinePatchRect)?.Set(NinePatchRect.PropertyName.PatchMarginRight, PatchMarginRight);
-		(_base as NinePatchRect)?.Set(NinePatchRect.PropertyName.PatchMarginBottom, PatchMarginBottom);
-		
-		(_overlay as NinePatchRect)?.Set(NinePatchRect.PropertyName.PatchMarginLeft, PatchMarginLeft);
-		(_overlay as NinePatchRect)?.Set(NinePatchRect.PropertyName.PatchMarginTop, PatchMarginTop);
-		(_overlay as NinePatchRect)?.Set(NinePatchRect.PropertyName.PatchMarginRight, PatchMarginRight);
-		(_overlay as NinePatchRect)?.Set(NinePatchRect.PropertyName.PatchMarginBottom, PatchMarginBottom);
-		
-		(_loveBar as TextureProgressBar)?.Set(TextureProgressBar.PropertyName.StretchMarginLeft, PatchMarginLeft);
-		(_loveBar as TextureProgressBar)?.Set(TextureProgressBar.PropertyName.StretchMarginTop, PatchMarginTop);
-		(_loveBar as TextureProgressBar)?.Set(TextureProgressBar.PropertyName.StretchMarginRight, PatchMarginRight);
-		(_loveBar as TextureProgressBar)?.Set(TextureProgressBar.PropertyName.StretchMarginBottom, PatchMarginBottom);
-
-		(_hateBar as TextureProgressBar)?.Set(TextureProgressBar.PropertyName.StretchMarginLeft, PatchMarginLeft);
-		(_hateBar as TextureProgressBar)?.Set(TextureProgressBar.PropertyName.StretchMarginTop, PatchMarginTop);
-		(_hateBar as TextureProgressBar)?.Set(TextureProgressBar.PropertyName.StretchMarginRight, PatchMarginRight);
-		(_hateBar as TextureProgressBar)?.Set(TextureProgressBar.PropertyName.StretchMarginBottom, PatchMarginBottom);
+		foreach (var node in new[]{ _base, _overlay }) {
+            if (node is NinePatchRect ninePatch) {
+				ninePatch.PatchMarginLeft = PatchMarginLeft; ninePatch.PatchMarginRight = PatchMarginRight;
+				ninePatch.PatchMarginTop = PatchMarginTop; ninePatch.PatchMarginBottom = PatchMarginBottom;
+			}
+        }
+		foreach (var node in new[]{ _loveBar, _hateBar }) {
+            if (node is TextureProgressBar progressBar) {
+				progressBar.StretchMarginLeft = PatchMarginLeft; progressBar.StretchMarginRight = PatchMarginRight;
+				progressBar.StretchMarginTop = PatchMarginTop; progressBar.StretchMarginBottom = PatchMarginBottom;
+			}
+        }
 	}
 
 	private void RebuildChildren() {
@@ -88,7 +79,8 @@ public partial class AffectionMeter : Control
 
 		var layout = IsNinePatch ? LayoutPreset.FullRect : LayoutPreset.TopLeft;
 
-		if (IsNinePatch) { _base = new NinePatchRect(); _overlay = new NinePatchRect(); } else { _base = new TextureRect(); _overlay = new TextureRect(); }
+		if (IsNinePatch) { _base = new NinePatchRect(); _overlay = new NinePatchRect(); }
+		else { _base = new TextureRect(); _overlay = new TextureRect(); }
 		_base.SetAnchorsAndOffsetsPreset(layout);
 		_overlay.SetAnchorsAndOffsetsPreset(layout);
 
@@ -134,4 +126,8 @@ public partial class AffectionMeter : Control
 
 	public override void _EnterTree() => RebuildChildren();
 	public override void _ExitTree() => ClearChildren();
+
+    public void OnBeforeSerialize() {}
+	// Rebuild when script reloaded
+    public void OnAfterDeserialize() => RebuildChildren();
 }
