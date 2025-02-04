@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Godot;
 using Godot.Collections;
+using DamselsGambit.Util;
 
 namespace DamselsGambit;
 
@@ -43,6 +44,12 @@ public partial class AffectionMeter : Control, ISerializationListener
 		if (new[]{ PropertyName.PatchMarginLeft, PropertyName.PatchMarginTop, PropertyName.PatchMarginRight, PropertyName.PatchMarginBottom }.Contains(property)) {
 			var usage = propertyDict["usage"].As<int>();
 			if (!IsNinePatch) { usage &= (int)~PropertyUsageFlags.Editor; }
+			propertyDict["usage"] = usage;
+		}
+		if (new[]{ PropertyName._base, PropertyName._overlay, PropertyName._loveBar, PropertyName._hateBar, PropertyName._marker }.Contains(property)) {
+			var usage = propertyDict["usage"].As<int>();
+			usage &= (int)~PropertyUsageFlags.Storage;
+			usage |= (int)PropertyUsageFlags.NoInstanceState;
 			propertyDict["usage"] = usage;
 		}
     }
@@ -110,24 +117,28 @@ public partial class AffectionMeter : Control, ISerializationListener
 		_marker.SetAnchorsAndOffsetsPreset(layout);
 		_marker.Value = ValuePercent;
 
-        AddChild(_base);
-		AddChild(_hateBar);
-		AddChild(_loveBar);
-		AddChild(_overlay);
-		AddChild(_marker);
+        AddChild(_base, false, InternalMode.Front);
+		AddChild(_hateBar, false, InternalMode.Front);
+		AddChild(_loveBar, false, InternalMode.Front);
+		AddChild(_overlay, false, InternalMode.Front);
+		AddChild(_marker, false, InternalMode.Front);
 
 		UpdateTextures();
 		UpdateTransforms();
 	}
 
 	private void ClearChildren() {
-		foreach (var child in GetChildren()) { RemoveChild(child); child.QueueFree(); }
+		if (IsInstanceValid(_base)) { _base.QueueFree(); } _base = null;
+		if (IsInstanceValid(_overlay)) { _overlay.QueueFree(); } _overlay = null;
+		if (IsInstanceValid(_loveBar)) { _loveBar.QueueFree(); } _loveBar = null;
+		if (IsInstanceValid(_hateBar)) { _hateBar.QueueFree(); } _hateBar = null;
+		if (IsInstanceValid(_marker)) { _marker.QueueFree(); } _marker = null;
+		//foreach (var child in this.GetInternalChildren()) { RemoveChild(child); child.QueueFree(); }
 	}
 
 	public override void _EnterTree() => RebuildChildren();
 	public override void _ExitTree() => ClearChildren();
 
-    public void OnBeforeSerialize() {}
-	// Rebuild when script reloaded
+    public void OnBeforeSerialize() => ClearChildren();
     public void OnAfterDeserialize() => RebuildChildren();
 }

@@ -1,8 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://duvx4rnm48ajd"]
+[gd_scene load_steps=6 format=3 uid="uid://duvx4rnm48ajd"]
 
 [ext_resource type="Script" path="res://scenes/ui/AffectionMeter.cs" id="1_b7l60"]
-[ext_resource type="Texture2D" uid="uid://cnus1iub5ywaf" path="res://assets/ui/slider_background_temp.png" id="1_vjb12"]
-[ext_resource type="Texture2D" uid="uid://yp5dxvjwi6m" path="res://assets/ui/slider_marker_temp.png" id="2_rxlcy"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_615xn"]
 
@@ -11,7 +9,7 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kpswk"]
 
 [sub_resource type="Theme" id="Theme_b14tp"]
-VSlider/icons/grabber_disabled = ExtResource("2_rxlcy")
+VSlider/icons/grabber_disabled = null
 VSlider/styles/grabber_area = SubResource("StyleBoxEmpty_615xn")
 VSlider/styles/grabber_area_highlight = SubResource("StyleBoxEmpty_iq6om")
 VSlider/styles/slider = SubResource("StyleBoxEmpty_kpswk")
@@ -25,11 +23,3 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_b14tp")
 script = ExtResource("1_b7l60")
-TextureMarker = ExtResource("2_rxlcy")
-TextureLove = ExtResource("1_vjb12")
-TextureHate = ExtResource("1_vjb12")
-IsNinePatch = true
-PatchMarginLeft = 50
-PatchMarginTop = 50
-PatchMarginRight = 50
-PatchMarginBottom = 50
