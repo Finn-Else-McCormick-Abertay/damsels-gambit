@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://d17prkkn5d5wh"]
+[gd_scene load_steps=2 format=3 uid="uid://bfuad46bv45kr"]
 
 [ext_resource type="PackedScene" uid="uid://duvx4rnm48ajd" path="res://scenes/ui/affection_meter.tscn" id="1_0273w"]
 

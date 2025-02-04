@@ -47,7 +47,7 @@ public partial class AffectionMeter : Control
 			if (!IsNinePatch) { usage &= (int)~PropertyUsageFlags.Editor; }
 			propertyDict["usage"] = usage;
 		}
-    }
+	}
 
 	private Control _base, _overlay;
 	private Godot.Range _loveBar, _hateBar;
@@ -92,33 +92,33 @@ public partial class AffectionMeter : Control
 		_base.SetAnchorsAndOffsetsPreset(layout);
 		_overlay.SetAnchorsAndOffsetsPreset(layout);
 
-        _loveBar = new TextureProgressBar {
+		_loveBar = new TextureProgressBar {
 			FillMode = (int)TextureProgressBar.FillModeEnum.TopToBottom,
 			NinePatchStretch = IsNinePatch,
-            Value = LovePercent,
+			Value = LovePercent,
 			MaxValue = 1, Step = 0.001,
-        };
+		};
 		_loveBar.SetAnchorsAndOffsetsPreset(layout);
 		_loveBar.Value = LovePercent;
 
-        _hateBar = new TextureProgressBar {
+		_hateBar = new TextureProgressBar {
 			FillMode = (int)TextureProgressBar.FillModeEnum.BottomToTop,
 			NinePatchStretch = IsNinePatch,
-            Value = HatePercent,
+			Value = HatePercent,
 			MaxValue = 1, Step = 0.001,
-        };
+		};
 		_hateBar.SetAnchorsAndOffsetsPreset(layout);
 		_hateBar.Value = LovePercent;
 
-        _marker = new VSlider {
+		_marker = new VSlider {
 			Editable = false,
-            Value = ValuePercent,
+			Value = ValuePercent,
 			MaxValue = 1, Step = 0.001,
-        };
+		};
 		_marker.SetAnchorsAndOffsetsPreset(layout);
 		_marker.Value = ValuePercent;
 
-        AddChild(_base);
+		AddChild(_base);
 		AddChild(_hateBar);
 		AddChild(_loveBar);
 		AddChild(_overlay);
