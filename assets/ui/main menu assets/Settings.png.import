@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cwrb10ipoorl6"
-path="res://.godot/imported/Exit.png-2b751dd9be7da63840de4c706683e1f1.ctex"
+uid="uid://qfrd00anmh3g"
+path="res://.godot/imported/Settings.png-44be511d8a01db4a8eec6787227fb1fa.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://scenes/ui/main menu assets/Exit.png"
-dest_files=["res://.godot/imported/Exit.png-2b751dd9be7da63840de4c706683e1f1.ctex"]
+source_file="res://assets/ui/main menu assets/Settings.png"
+dest_files=["res://.godot/imported/Settings.png-44be511d8a01db4a8eec6787227fb1fa.ctex"]
 
 [params]
 
