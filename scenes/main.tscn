@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://dmi01ml60nrj6"]
+[gd_scene load_steps=7 format=3 uid="uid://dmi01ml60nrj6"]
 
 [ext_resource type="Script" path="res://scenes/LeftDeck.cs" id="1_finbn"]
+[ext_resource type="Script" path="res://scenes/Hand.cs" id="2_4x8em"]
 [ext_resource type="Texture2D" uid="uid://ccvtmncmnh6kx" path="res://temp card.png" id="2_we7gv"]
 [ext_resource type="Script" path="res://scenes/LCard1.cs" id="3_fiiru"]
 [ext_resource type="Script" path="res://scenes/LCard2.cs" id="4_lwf6o"]
@@ -12,6 +13,12 @@
 script = ExtResource("1_finbn")
 
 [node name="hand" type="Node2D" parent="left deck"]
+script = ExtResource("2_4x8em")
+
+[node name="LCard1" type="Sprite2D" parent="left deck/hand"]
+position = Vector2(190, 600)
+texture = ExtResource("2_we7gv")
+script = ExtResource("3_fiiru")
 
 [node name="LCard2" type="Sprite2D" parent="left deck/hand"]
 position = Vector2(310, 600)
@@ -27,11 +34,6 @@ script = ExtResource("5_62q3f")
 
 [node name="discard" type="Node2D" parent="left deck"]
 
-[node name="LCard1" type="Sprite2D" parent="left deck"]
-position = Vector2(190, 600)
-texture = ExtResource("2_we7gv")
-script = ExtResource("3_fiiru")
-
 [node name="right deck" type="Node2D" parent="."]
 
 [node name="hand" type="Node2D" parent="right deck"]
@@ -39,3 +41,6 @@ script = ExtResource("3_fiiru")
 [node name="deck" type="Node2D" parent="right deck"]
 
 [node name="discard" type="Node2D" parent="right deck"]
+
+[connection signal="C1Select" from="left deck/hand" to="left deck/hand/LCard2" method="_on_hand_c_1_select"]
+[connection signal="C1Select" from="left deck/hand" to="left deck/hand/LCard3" method="_on_hand_c_1_select"]

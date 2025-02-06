@@ -10,11 +10,11 @@ public partial class LCard2 : Sprite2D
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	bool selected = false;
-	public override void _Process(double delta)
+	public override async void _Process(double delta)
 	{
 
 		Vector2 mousepos = GetViewport().GetMousePosition();
-		if(!selected){
+		if(!selected){ 
 		if (mousepos.X > 260 && mousepos.X < 360 && mousepos.Y > 480){
 			Position = new Vector2(
    		 	x: (310),
@@ -39,6 +39,7 @@ public partial class LCard2 : Sprite2D
 			y: (600)); 
 			deselect();
 		}
+		
 	}
 			public void deselect(){
 			selected = false;
