@@ -1,0 +1,48 @@
+	using Godot;
+	using System;
+
+	public partial class LCard3 : Sprite2D
+	{
+		// Called when the node enters the scene tree for the first time.
+		public override void _Ready()
+		{
+
+		}
+
+		// Called every frame. 'delta' is the elapsed time since the previous frame.
+		bool selected = false;
+		public override void _Process(double delta)
+		{
+
+			Vector2 mousepos = GetViewport().GetMousePosition();
+			if(!selected){
+			if (mousepos.X > 380 && mousepos.X < 480 && mousepos.Y > 480){
+				Position = new Vector2(
+				x: (430),
+				y: (550)); 
+			}else{
+				Position = new Vector2(
+				x: (430),
+				y: (600)); 
+			}}
+			if (mousepos.X > 380 && mousepos.X < 480 && mousepos.Y > 480 && Input.IsActionPressed("Left_Click")|| selected){
+
+				selected = true;
+			}
+			if(selected){
+				Position = new Vector2(
+				x: (450),
+				y: (400)); 
+			}
+			if (mousepos.X > 400 && mousepos.X < 500 && mousepos.Y > 330 && mousepos.Y < 470 && Input.IsActionPressed("Left_Click") && selected){
+				Position = new Vector2(
+				x: (430),
+				y: (600)); 
+				deselect();
+			}
+		}
+			public void deselect(){
+				selected = false;
+			}
+
+	}
