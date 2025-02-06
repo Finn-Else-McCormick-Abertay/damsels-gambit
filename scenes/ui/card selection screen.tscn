@@ -1,0 +1,145 @@
+[gd_scene load_steps=3 format=3 uid="uid://n6reja5qwt0q"]
+
+[ext_resource type="Texture2D" uid="uid://s06h1082sb1h" path="res://assets/ui/card building page assets/Book Background.png" id="1_xc1rq"]
+[ext_resource type="Texture2D" uid="uid://l5nuxgaasedx" path="res://assets/cards/subject/animals.png" id="2_xjne5"]
+
+[node name="CardSelectionScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BookBackground" type="Sprite2D" parent="TextureRect"]
+position = Vector2(575, 326.094)
+scale = Vector2(0.596875, 0.575565)
+texture = ExtResource("1_xc1rq")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.057
+anchor_top = 0.211
+anchor_right = 0.481
+anchor_bottom = 0.932
+offset_left = -3.664
+offset_top = -5.72801
+offset_right = 3.88794
+offset_bottom = 3.06396
+focus_mode = 1
+scroll_horizontal_custom_step = 77.038
+scroll_vertical_custom_step = 213.605
+vertical_scroll_mode = 2
+scroll_deadzone = 11
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TextureButton2" type="TextureButton" parent="ScrollContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture_normal = ExtResource("2_xjne5")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="TextureButton" type="TextureButton" parent="ScrollContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture_normal = ExtResource("2_xjne5")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="TextureButton3" type="TextureButton" parent="ScrollContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture_normal = ExtResource("2_xjne5")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TextureButton2" type="TextureButton" parent="ScrollContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture_normal = ExtResource("2_xjne5")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="TextureButton" type="TextureButton" parent="ScrollContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture_normal = ExtResource("2_xjne5")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="TextureButton3" type="TextureButton" parent="ScrollContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture_normal = ExtResource("2_xjne5")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TextureButton2" type="TextureButton" parent="ScrollContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture_normal = ExtResource("2_xjne5")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="TextureButton" type="TextureButton" parent="ScrollContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture_normal = ExtResource("2_xjne5")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="TextureButton3" type="TextureButton" parent="ScrollContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture_normal = ExtResource("2_xjne5")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="ScrollContainer2" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.522
+anchor_top = 0.201
+anchor_right = 0.95
+anchor_bottom = 0.926
+offset_left = -0.343994
+offset_top = 1.752
+offset_right = 12.6
+offset_bottom = 1.95197
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
