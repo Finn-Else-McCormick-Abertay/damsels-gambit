@@ -43,6 +43,10 @@ folder_colors={
 "res://util/": "blue"
 }
 
+[gui]
+
+theme/custom_font="res://assets/fonts/vinque/Vinque Rg.otf"
+
 [input]
 
 limbo_console_toggle={

@@ -1,0 +1,27 @@
+[gd_resource type="Theme" format=3 uid="uid://bf1esp424fk84"]
+
+[resource]
+Button/colors/font_color = Color(0.201849, 0.0939963, 0.0132285, 1)
+Button/colors/font_disabled_color = Color(0.276455, 0.147213, 0.0252365, 0.5)
+Button/colors/font_focus_color = Color(0.2, 0.0941176, 0.0117647, 1)
+Button/colors/font_hover_color = Color(0.389373, 0.205455, 0.0459009, 1)
+Button/colors/font_hover_pressed_color = Color(0.2, 0.0941176, 0.0117647, 1)
+Button/colors/font_outline_color = Color(0.114413, 0.0440707, 0.00441126, 1)
+Button/colors/font_pressed_color = Color(0.573417, 0.312995, 0.0872587, 1)
+Button/colors/icon_disabled_color = Color(1, 1, 1, 0.4)
+Button/colors/icon_focus_color = Color(1, 1, 1, 1)
+Button/colors/icon_hover_color = Color(1, 1, 1, 1)
+Button/colors/icon_hover_pressed_color = Color(1, 1, 1, 1)
+Button/colors/icon_normal_color = Color(0.452064, 0.723618, 0.628986, 1)
+Button/colors/icon_pressed_color = Color(1, 1, 1, 1)
+Button/styles/disabled = null
+Button/styles/disabled_mirrored = null
+Button/styles/focus = null
+Button/styles/hover = null
+Button/styles/hover_mirrored = null
+Button/styles/hover_pressed = null
+Button/styles/hover_pressed_mirrored = null
+Button/styles/normal = null
+Button/styles/normal_mirrored = null
+Button/styles/pressed = null
+Button/styles/pressed_mirrored = null
