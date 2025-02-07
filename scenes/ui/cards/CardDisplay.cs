@@ -7,7 +7,7 @@ using System.IO;
 namespace DamselsGambit;
 
 [Tool, GlobalClass, Icon("res://assets/editor/icons/card.svg")]
-public partial class CardDisplay : Container, ISerializationListener
+public partial class CardDisplay : Container, IReloadableToolScript
 {
 	[Export] public string CardId {
 		get;
@@ -62,19 +62,13 @@ public partial class CardDisplay : Container, ISerializationListener
 	
 	public override void _EnterTree() => RebuildTextureRect();
 	public override void _ExitTree() => DestroyTextureRect();
-	
-	public void OnBeforeSerialize() {}
-	public void OnAfterDeserialize() {
-		DestroyTextureRect();
-		// Clean up any stragglers from previous versions of script
-		foreach (var child in this.GetInternalChildren()) { RemoveChild(child); child.QueueFree(); }
-		RebuildTextureRect();
-	}
+	// Clean up any stragglers from previous versions of script
+	protected void OnScriptReload() { foreach (var child in this.GetInternalChildren()) { RemoveChild(child); child.QueueFree(); } }
 	
 	public override void _Notification(int what) {
 		switch ((long)what) {
+			case NotificationSortChildren:
 			case NotificationResized: { UpdateCardTransform(); } break;
-			case NotificationSortChildren: { UpdateCardTransform(); } break;
 		}
 	}
 }

@@ -1,21 +1,46 @@
-[gd_scene load_steps=5 format=3 uid="uid://d17prkkn5d5wh"]
+[gd_scene load_steps=6 format=3 uid="uid://d17prkkn5d5wh"]
 
 [ext_resource type="PackedScene" uid="uid://duvx4rnm48ajd" path="res://scenes/ui/affection_meter.tscn" id="1_0273w"]
+[ext_resource type="Script" path="res://scenes/ui/cards/HandContainer.cs" id="1_dpxuk"]
 [ext_resource type="Script" path="res://scenes/ui/cards/CardDisplay.cs" id="2_kdxpq"]
 [ext_resource type="Texture2D" uid="uid://yp5dxvjwi6m" path="res://assets/ui/slider_marker_temp.png" id="3_7q8dp"]
 [ext_resource type="Texture2D" uid="uid://cnus1iub5ywaf" path="res://assets/ui/slider_background_temp.png" id="4_c6xqd"]
 
 [node name="CardGame" type="Node"]
 
+[node name="HandContainer" type="Container" parent="."]
+offset_left = 350.0
+offset_top = 328.0
+offset_right = 819.0
+offset_bottom = 507.0
+script = ExtResource("1_dpxuk")
+
+[node name="CardDisplay3" type="Container" parent="HandContainer"]
+layout_mode = 2
+script = ExtResource("2_kdxpq")
+CardId = "subject/animals"
+
+[node name="CardDisplay2" type="Container" parent="HandContainer"]
+layout_mode = 2
+script = ExtResource("2_kdxpq")
+CardId = "subject/animals"
+
+[node name="CardDisplay4" type="Container" parent="HandContainer"]
+layout_mode = 2
+script = ExtResource("2_kdxpq")
+CardId = "subject/animals"
+
 [node name="CardDisplay" type="Container" parent="."]
+visible = false
 offset_left = 525.0
 offset_top = 124.0
-offset_right = 579.0
+offset_right = 589.0
 offset_bottom = 357.0
 script = ExtResource("2_kdxpq")
 CardId = "subject/animals"
 
 [node name="AffectionMeter" parent="." instance=ExtResource("1_0273w")]
+visible = false
 offset_left = 47.0
 offset_top = 36.0
 offset_right = -931.0
@@ -28,3 +53,7 @@ PatchMarginLeft = 30
 PatchMarginTop = 30
 PatchMarginRight = 30
 PatchMarginBottom = 30
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
