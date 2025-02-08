@@ -1,26 +1,48 @@
-[gd_scene load_steps=6 format=3 uid="uid://dipd7bv4d85ws"]
+[gd_scene load_steps=10 format=3 uid="uid://dipd7bv4d85ws"]
 
-[ext_resource type="PackedScene" uid="uid://duvx4rnm48ajd" path="res://scenes/ui/affection_meter.tscn" id="1_0273w"]
 [ext_resource type="Script" path="res://scenes/ui/cards/CardDisplay.cs" id="2_kdxpq"]
 [ext_resource type="Texture2D" uid="uid://yp5dxvjwi6m" path="res://assets/ui/slider_marker_temp.png" id="3_7q8dp"]
 [ext_resource type="Texture2D" uid="uid://cnus1iub5ywaf" path="res://assets/ui/slider_background_temp.png" id="4_c6xqd"]
+[ext_resource type="Script" path="res://scenes/ui/AffectionMeter.cs" id="4_dw2x6"]
 [ext_resource type="Script" path="res://scenes/ui/cards/HandContainer.cs" id="4_xg83y"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_esevd"]
+bg_color = Color(0.135749, 0.0218651, 0.022557, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tuwso"]
+bg_color = Color(0.859259, 0, 0.153247, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dv55c"]
+texture = ExtResource("4_c6xqd")
+texture_margin_left = 33.0
+texture_margin_top = 20.0
+texture_margin_right = 25.0
+texture_margin_bottom = 25.0
+expand_margin_left = 15.0
+expand_margin_top = 15.0
+expand_margin_right = 15.0
+expand_margin_bottom = 15.0
+
+[sub_resource type="Theme" id="Theme_k5s5f"]
+AffectionMeter/icons/marker = ExtResource("3_7q8dp")
+AffectionMeter/styles/hate = SubResource("StyleBoxFlat_esevd")
+AffectionMeter/styles/love = SubResource("StyleBoxFlat_tuwso")
+AffectionMeter/styles/over = null
+AffectionMeter/styles/under = SubResource("StyleBoxTexture_dv55c")
 
 [node name="CardGame" type="Node"]
 
-[node name="AffectionMeter" parent="." instance=ExtResource("1_0273w")]
-offset_left = 47.0
-offset_top = 36.0
-offset_right = -931.0
-offset_bottom = -98.0
-TextureMarker = ExtResource("3_7q8dp")
-TextureLove = ExtResource("4_c6xqd")
-TextureHate = ExtResource("4_c6xqd")
-IsNinePatch = true
-PatchMarginLeft = 30
-PatchMarginTop = 30
-PatchMarginRight = 30
-PatchMarginBottom = 30
+[node name="AffectionMeter" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 49.0
+offset_top = 37.0
+offset_right = 192.0
+offset_bottom = -113.0
+grow_vertical = 2
+theme = SubResource("Theme_k5s5f")
+script = ExtResource("4_dw2x6")
 
 [node name="HandContainer" type="Container" parent="."]
 offset_left = 415.0
@@ -70,5 +92,5 @@ offset_bottom = 367.0
 script = ExtResource("2_kdxpq")
 CardId = "subject/animals"
 ShadowFalloff = 0.08
-ShadowOffset = Vector2(-24.345, 34.36)
+ShadowOffset = Vector2(-23.615, 34.36)
 ShadowOpacity = 0.13
