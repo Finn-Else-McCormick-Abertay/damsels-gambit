@@ -14,28 +14,34 @@ public partial class HandContainer : Container, IReloadableToolScript
     
     private void OnSortChildren() {
         var childCount = GetChildCount();
-        var availableSpacePerCard = Size.X / childCount;
 
-        Vector2 cardSize = new(0f, Size.Y);
-        if (childCount >= 0 && GetChild(0) is CardDisplay) {
-            var card = GetChild(0) as CardDisplay;
-            var cardTextureAspect = card.CardTexture.GetWidth() / (float)card.CardTexture.GetHeight();
-            cardSize = cardSize with { X = cardTextureAspect * Size.Y };
-        }
+        var maxCardWidth = 0f;
+        var theoreticalCardsTotalWidth = GetChildren().Index().Aggregate(0f,
+            (float cardsWidth, (int index, Node child) arg) => {
+                if (arg.child is not CardDisplay card || !card.Visible) { return cardsWidth; }
+                var cardTextureAspect = card.Texture is null ? 0f : card.Texture.GetWidth() / (float)card.Texture.GetHeight();
+                card.Size = new Vector2(cardTextureAspect * Size.Y, Size.Y);
+                maxCardWidth = MathF.Max(maxCardWidth, card.Size.X);
+                return cardsWidth + card.Size.X;
+            });
 
-        var totalWidth = Fill ? Size.X : MathF.Min(Size.X, cardSize.X * childCount + Separation * (childCount - 1));
-        var functionalSeparation = totalWidth < Size.X ? Separation : Size.X > cardSize.X ? (childCount > 0 ? (Size.X - cardSize.X * childCount) / (childCount - 1) : 0f ): -cardSize.X;
+        var totalWidth = Fill ? Size.X : MathF.Min(Size.X, theoreticalCardsTotalWidth + Separation * (childCount - 1));
+        var functionalSeparation = totalWidth < Size.X ? Separation : Size.X > maxCardWidth ? (childCount > 0 ? (Size.X - theoreticalCardsTotalWidth) / (childCount - 1) : 0f ) : -maxCardWidth;
 
         var startPoint = Alignment switch {
-            BoxContainer.AlignmentMode.Center => (Size.X / 2f) - (Size.X > cardSize.X ? totalWidth : cardSize.X) / 2f,
+            BoxContainer.AlignmentMode.Center => (Size.X / 2f) - (Size.X > maxCardWidth ? totalWidth : maxCardWidth) / 2f,
             BoxContainer.AlignmentMode.Begin => 0,
-            BoxContainer.AlignmentMode.End => Size.X - (Size.X > cardSize.X ? totalWidth : cardSize.X),
+            BoxContainer.AlignmentMode.End => Size.X - (Size.X > maxCardWidth ? totalWidth : maxCardWidth),
             _ => throw new NotImplementedException()
         };
-        foreach (var (i, child) in GetChildren().Cast<Control>().Index()) {
-            child.Size = cardSize;
-            child.Position = new(startPoint + (i * cardSize.X) + (i > 0 ? i * functionalSeparation : 0f), 0f);
-        }
+
+        var _ = GetChildren().Index().Aggregate(startPoint,
+            (runningTotal, pair) => {
+                if (pair.Item is not Control card || !card.Visible) { return runningTotal; }
+                if (pair.Index > 0) { runningTotal += functionalSeparation; }
+                card.Position = new(runningTotal, 0f);
+                return runningTotal + card.Size.X;
+            });
     }
     
     protected void OnScriptReload() => QueueSort();
