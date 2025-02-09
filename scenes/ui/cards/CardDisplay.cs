@@ -5,7 +5,6 @@ using DamselsGambit.Util;
 using System.IO;
 using System.Collections.Generic;
 using Godot.Collections;
-
 namespace DamselsGambit;
 
 [Tool, GlobalClass, Icon("res://assets/editor/icons/card.svg")]
@@ -36,7 +35,10 @@ public partial class CardDisplay : Control, IReloadableToolScript
         s_shadowGradientTexture = new GradientTexture1D { Gradient = gradient };
 	}
 
-	public override void _EnterTree() { RebuildMeshes(); Connect(SignalName.ItemRectChanged, Callable.From(UpdatePivot)); }
+	public override void _EnterTree() {
+		RebuildMeshes();
+		this.TryConnect(CanvasItem.SignalName.ItemRectChanged, UpdatePivot);
+	}
 
 	public void UpdatePivot() { PivotOffset = Size / 2f; }
 

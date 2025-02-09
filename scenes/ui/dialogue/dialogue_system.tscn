@@ -1,0 +1,151 @@
+[gd_scene load_steps=7 format=3 uid="uid://gqmapmoqb22o"]
+
+[ext_resource type="Script" path="res://addons/YarnSpinner-Godot/Runtime/DialogueRunner.cs" id="1_bfb14"]
+[ext_resource type="Theme" uid="uid://cj01ghso8eli6" path="res://assets/dialogue/dialogue_theme.tres" id="1_gxacw"]
+[ext_resource type="Resource" uid="uid://cr0la80f5yxnp" path="res://assets/dialogue/DamselsGambit.yarnproject" id="2_6kdll"]
+[ext_resource type="Script" path="res://addons/YarnSpinner-Godot/Runtime/InMemoryVariableStorage.cs" id="3_mp8vo"]
+[ext_resource type="Script" path="res://scenes/ui/dialogue/DialogueView.cs" id="5_o0l0u"]
+[ext_resource type="Script" path="res://addons/YarnSpinner-Godot/Runtime/LineProviders/TextLineProvider.cs" id="6_asp0m"]
+
+[node name="DialogueSystem" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_gxacw")
+
+[node name="DialogueRunner" type="Node" parent="." node_paths=PackedStringArray("variableStorage", "dialogueViews", "lineProvider")]
+script = ExtResource("1_bfb14")
+yarnProject = ExtResource("2_6kdll")
+variableStorage = NodePath("../InMemoryVariableStorage")
+dialogueViews = [NodePath("../DialogueView")]
+startNode = "Test"
+lineProvider = NodePath("../TextLineProvider")
+
+[node name="InMemoryVariableStorage" type="Node" parent="."]
+script = ExtResource("3_mp8vo")
+
+[node name="TextLineProvider" type="Node" parent="."]
+script = ExtResource("6_asp0m")
+
+[node name="DialogueView" type="Node" parent="." node_paths=PackedStringArray("TitleRoot", "LineRoot", "OptionRoot", "OptionArchetype", "ContinueButton")]
+script = ExtResource("5_o0l0u")
+TitleRoot = NodePath("../VBoxContainer/TitleRow/TitlePanel")
+LineRoot = NodePath("../VBoxContainer/LinePanel")
+OptionRoot = NodePath("../VBoxContainer/OptionContainer")
+OptionArchetype = NodePath("../VBoxContainer/OptionContainer/OptionArchetype")
+ContinueButton = NodePath("../Continue")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.843
+offset_bottom = -0.264038
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"DialogueVBoxContainer"
+
+[node name="TitleRow" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="TitlePanel" type="PanelContainer" parent="VBoxContainer/TitleRow"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"TitlePanel"
+
+[node name="Label" type="Label" parent="VBoxContainer/TitleRow/TitlePanel"]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+text = "CharacterName"
+vertical_alignment = 1
+
+[node name="Control" type="Control" parent="VBoxContainer/TitleRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LinePanel" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"LinePanel"
+
+[node name="LineLabel" type="RichTextLabel" parent="VBoxContainer/LinePanel"]
+layout_mode = 2
+text = "Dialogue text"
+
+[node name="OptionContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"OptionContainer"
+
+[node name="OptionArchetype" type="HBoxContainer" parent="VBoxContainer/OptionContainer"]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="VBoxContainer/OptionContainer/OptionArchetype"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="VBoxContainer/OptionContainer/OptionArchetype"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 5.0
+theme_type_variation = &"DialogueOptionButton"
+text = "Option Text"
+
+[node name="Control2" type="Control" parent="VBoxContainer/OptionContainer/OptionArchetype"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Option2" type="HBoxContainer" parent="VBoxContainer/OptionContainer"]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="VBoxContainer/OptionContainer/Option2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="VBoxContainer/OptionContainer/Option2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 5.0
+theme_type_variation = &"DialogueOptionButton"
+text = "Option Text"
+
+[node name="Control2" type="Control" parent="VBoxContainer/OptionContainer/Option2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Option3" type="HBoxContainer" parent="VBoxContainer/OptionContainer"]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="VBoxContainer/OptionContainer/Option3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="VBoxContainer/OptionContainer/Option3"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 5.0
+theme_type_variation = &"DialogueOptionButton"
+text = "Option Text"
+
+[node name="Control2" type="Control" parent="VBoxContainer/OptionContainer/Option3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Continue" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.384
+anchor_top = 0.855
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 7.63199
+offset_top = 3.95996
+offset_right = -7.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"ContinueButton"
+text = "Continue"
