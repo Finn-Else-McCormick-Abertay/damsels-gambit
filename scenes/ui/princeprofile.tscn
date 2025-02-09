@@ -1,0 +1,73 @@
+[gd_scene load_steps=5 format=3 uid="uid://bw48k06y7bd6q"]
+
+[ext_resource type="Texture2D" uid="uid://b3uynpkv1oxnh" path="res://assets/ui/card building page assets/papertexturehole.png" id="1_wfhrk"]
+[ext_resource type="FontFile" uid="uid://c27txckdp7a4a" path="res://assets/fonts/vinque/Vinque Rg.otf" id="2_knaur"]
+[ext_resource type="Texture2D" uid="uid://byy18p88b7f7o" path="res://assets/cards/action/secret.png" id="3_o48n7"]
+[ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/damselsgambittheme.tres" id="4_7j741"]
+
+[node name="Princeprofile" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.032
+anchor_top = 0.032
+anchor_right = 0.478
+anchor_bottom = 0.965
+offset_left = 0.135998
+offset_top = 0.264
+offset_right = 0.343994
+offset_bottom = -0.320007
+texture = ExtResource("1_wfhrk")
+expand_mode = 4
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.218
+anchor_top = 0.091
+anchor_right = 0.455
+anchor_bottom = 0.185
+offset_left = -3.13602
+offset_top = -0.968002
+offset_right = 2.83997
+offset_bottom = 3.12
+theme_override_colors/default_color = Color(0.194108, 0.0772505, 0.0219393, 1)
+theme_override_fonts/normal_font = ExtResource("2_knaur")
+theme_override_font_sizes/normal_font_size = 28
+text = "Prince Name Surname"
+
+[node name="TextureRect2" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.048
+anchor_top = 0.063
+anchor_right = 0.205
+anchor_bottom = 0.434
+offset_left = 1.704
+offset_top = 2.176
+offset_right = 1.83998
+offset_bottom = 1.76801
+texture = ExtResource("3_o48n7")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.32
+anchor_top = 0.826
+anchor_right = 0.471
+anchor_bottom = 0.954
+offset_left = 0.359985
+offset_top = -0.248047
+offset_right = 0.407959
+offset_bottom = -0.192017
+theme = ExtResource("4_7j741")
+theme_override_font_sizes/font_size = 20
+text = "Close"

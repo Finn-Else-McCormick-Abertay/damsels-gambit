@@ -1,0 +1,37 @@
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://bf1esp424fk84"]
+
+[ext_resource type="StyleBox" uid="uid://b7o60x3ms5j0x" path="res://assets/ui/main menu assets/Hoveredbutton.tres" id="1_bm2su"]
+[ext_resource type="StyleBox" uid="uid://d27wsstxn7gbw" path="res://assets/ui/main menu assets/Disabledbutton.tres" id="1_hvqc3"]
+[ext_resource type="StyleBox" uid="uid://cplvdku2ycka0" path="res://assets/ui/main menu assets/normalbutton.tres" id="2_uf70x"]
+[ext_resource type="StyleBox" uid="uid://bxy83sdh1bo32" path="res://assets/ui/main menu assets/Focusedbutton.tres" id="3_nykxg"]
+
+[resource]
+Button/colors/font_color = Color(0.201849, 0.0939963, 0.0132285, 1)
+Button/colors/font_disabled_color = Color(0.276455, 0.147213, 0.0252365, 0.5)
+Button/colors/font_focus_color = Color(0.2, 0.0941176, 0.0117647, 1)
+Button/colors/font_hover_color = Color(0.2, 0.0941176, 0.0117647, 1)
+Button/colors/font_hover_pressed_color = Color(0.2, 0.0941176, 0.0117647, 1)
+Button/colors/font_outline_color = Color(0.2, 0.0941176, 0.0117647, 1)
+Button/colors/font_pressed_color = Color(0.2, 0.0941176, 0.0117647, 1)
+Button/colors/icon_disabled_color = Color(1, 1, 1, 0.4)
+Button/colors/icon_focus_color = Color(1, 1, 1, 1)
+Button/colors/icon_hover_color = Color(1, 1, 1, 1)
+Button/colors/icon_hover_pressed_color = Color(1, 1, 1, 1)
+Button/colors/icon_normal_color = Color(0.452064, 0.723618, 0.628986, 1)
+Button/colors/icon_pressed_color = Color(1, 1, 1, 1)
+Button/constants/align_to_largest_stylebox = 0
+Button/constants/h_separation = 14
+Button/constants/icon_max_width = 35
+Button/constants/outline_size = 0
+Button/font_sizes/font_size = 20
+Button/styles/disabled = ExtResource("1_hvqc3")
+Button/styles/disabled_mirrored = ExtResource("1_hvqc3")
+Button/styles/focus = null
+Button/styles/hover = ExtResource("1_bm2su")
+Button/styles/hover_mirrored = ExtResource("1_bm2su")
+Button/styles/hover_pressed = ExtResource("3_nykxg")
+Button/styles/hover_pressed_mirrored = ExtResource("1_bm2su")
+Button/styles/normal = ExtResource("2_uf70x")
+Button/styles/normal_mirrored = ExtResource("2_uf70x")
+Button/styles/pressed = ExtResource("3_nykxg")
+Button/styles/pressed_mirrored = ExtResource("3_nykxg")

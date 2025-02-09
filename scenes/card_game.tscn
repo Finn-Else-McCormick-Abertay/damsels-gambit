@@ -1,11 +1,127 @@
-[gd_scene load_steps=2 format=3 uid="uid://d17prkkn5d5wh"]
+[gd_scene load_steps=13 format=3 uid="uid://dipd7bv4d85ws"]
 
-[ext_resource type="PackedScene" uid="uid://duvx4rnm48ajd" path="res://scenes/ui/affection_meter.tscn" id="1_0273w"]
+[ext_resource type="Script" path="res://scenes/ui/cards/CardDisplay.cs" id="2_kdxpq"]
+[ext_resource type="Texture2D" uid="uid://yp5dxvjwi6m" path="res://assets/ui/slider_marker_temp.png" id="3_7q8dp"]
+[ext_resource type="Texture2D" uid="uid://cnus1iub5ywaf" path="res://assets/ui/slider_background_temp.png" id="4_c6xqd"]
+[ext_resource type="Script" path="res://scenes/ui/AffectionMeter.cs" id="4_dw2x6"]
+[ext_resource type="Script" path="res://scenes/ui/cards/HandContainer.cs" id="4_xg83y"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_esevd"]
+bg_color = Color(0.135749, 0.0218651, 0.022557, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tuwso"]
+bg_color = Color(0.859259, 0, 0.153247, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dv55c"]
+texture = ExtResource("4_c6xqd")
+texture_margin_left = 33.0
+texture_margin_top = 20.0
+texture_margin_right = 25.0
+texture_margin_bottom = 25.0
+expand_margin_left = 15.0
+expand_margin_top = 15.0
+expand_margin_right = 15.0
+expand_margin_bottom = 15.0
+
+[sub_resource type="Theme" id="Theme_k5s5f"]
+AffectionMeter/icons/marker = ExtResource("3_7q8dp")
+AffectionMeter/styles/hate = SubResource("StyleBoxFlat_esevd")
+AffectionMeter/styles/love = SubResource("StyleBoxFlat_tuwso")
+AffectionMeter/styles/over = null
+AffectionMeter/styles/under = SubResource("StyleBoxTexture_dv55c")
+
+[sub_resource type="Curve" id="Curve_oldke"]
+min_value = -50.0
+max_value = 50.0
+_data = [Vector2(0, -11.6629), 0.0, 0.0, 0, 0]
+point_count = 1
+
+[sub_resource type="Curve" id="Curve_c0hag"]
+min_value = -50.0
+max_value = 50.0
+_data = [Vector2(0, -19.7425), 0.0, 0.0, 0, 0, Vector2(0.497143, 33.3147), 0.0, 0.0, 0, 0, Vector2(1, -21.8348), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_fyy4x"]
+min_value = -90.0
+max_value = 90.0
+_data = [Vector2(0, -9), 0.0, 0.0, 0, 0, Vector2(0.5, 0), 0.0, 0.0, 0, 0, Vector2(1, 9), 0.0, 0.0, 0, 0]
+point_count = 3
 
 [node name="CardGame" type="Node"]
 
-[node name="AffectionMeter" parent="." instance=ExtResource("1_0273w")]
-offset_left = 98.0
-offset_top = 74.0
-offset_right = -986.0
-offset_bottom = -83.0
+[node name="AffectionMeter" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 49.0
+offset_top = 37.0
+offset_right = 192.0
+offset_bottom = -113.0
+grow_vertical = 2
+theme = SubResource("Theme_k5s5f")
+script = ExtResource("4_dw2x6")
+
+[node name="HandContainer" type="Container" parent="."]
+offset_left = 313.0
+offset_top = 185.0
+offset_right = 1018.0
+offset_bottom = 384.0
+script = ExtResource("4_xg83y")
+SeparationCurve = SubResource("Curve_oldke")
+OffsetCurve = SubResource("Curve_c0hag")
+RotationCurve = SubResource("Curve_fyy4x")
+metadata/_edit_group_ = true
+
+[node name="CardDisplay" type="Control" parent="HandContainer"]
+layout_mode = 2
+script = ExtResource("2_kdxpq")
+CardId = "subject/animals"
+CornerRadius = 0.08
+ShadowOffset = Vector2(-10.175, 1)
+ShadowOpacity = 0.4
+
+[node name="CardDisplay2" type="Control" parent="HandContainer"]
+layout_mode = 2
+script = ExtResource("2_kdxpq")
+CardId = "action/secret"
+CornerRadius = 0.08
+ShadowOffset = Vector2(-10.175, 1)
+ShadowOpacity = 0.4
+
+[node name="CardDisplay3" type="Control" parent="HandContainer"]
+layout_mode = 2
+script = ExtResource("2_kdxpq")
+CardId = "question/thoughts"
+CornerRadius = 0.08
+ShadowOffset = Vector2(-10.175, 1)
+ShadowOpacity = 0.4
+
+[node name="CardDisplay5" type="Control" parent="HandContainer"]
+layout_mode = 2
+script = ExtResource("2_kdxpq")
+CardId = "question/thoughts"
+CornerRadius = 0.08
+ShadowOffset = Vector2(-10.175, 1)
+ShadowOpacity = 0.4
+
+[node name="CardDisplay4" type="Control" parent="HandContainer"]
+layout_mode = 2
+script = ExtResource("2_kdxpq")
+CardId = "subject/animals"
+CornerRadius = 0.08
+ShadowOffset = Vector2(-10.175, 1)
+ShadowOpacity = 0.4
+
+[node name="CardDisplay" type="Container" parent="."]
+offset_left = 1330.0
+offset_top = 45.0
+offset_right = 1668.0
+offset_bottom = 353.0
+rotation = 0.000357453
+pivot_offset = Vector2(169, 154)
+script = ExtResource("2_kdxpq")
+CardId = "subject/animals"
+ShadowFalloff = 0.08
+ShadowOffset = Vector2(-23.615, 34.36)
+ShadowOpacity = 0.13
