@@ -27,7 +27,7 @@ public partial class CardDisplay : Control, IReloadableToolScript
 	[Export] public Vector2 ShadowOffset { get; set { field = value; QueueRedraw(); } } = new();
 	[Export] public float ShadowOpacity { get; set { field = value; QueueRedraw(); } } = 0.5f;
 
-	public Texture2D Texture { get; private set { field = value; RebuildMeshes(); (GetParent() as Container)?.QueueSort(); } }
+	public Texture2D Texture { get; private set { field = value; RebuildMeshes(); UpdatePivot(); (GetParent() as Container)?.QueueSort(); } }
 	private static readonly GradientTexture1D s_shadowGradientTexture;
 
 	static CardDisplay() {
@@ -36,7 +36,9 @@ public partial class CardDisplay : Control, IReloadableToolScript
         s_shadowGradientTexture = new GradientTexture1D { Gradient = gradient };
 	}
 
-	public override void _EnterTree() => RebuildMeshes();
+	public override void _EnterTree() { RebuildMeshes(); Connect(SignalName.ItemRectChanged, Callable.From(UpdatePivot)); }
+
+	public void UpdatePivot() { PivotOffset = Size / 2f; }
 
 	private float _textureAspectRatio = 0f;
 	private Mesh _cardMesh, _shadowMesh;
@@ -152,15 +154,9 @@ public partial class CardDisplay : Control, IReloadableToolScript
 
 	public override void _Draw() {
 		if (Texture is null) { return; }
-		var origin = new Vector2((Size.X - _textureAspectRatio * Size.Y) / 2f, 0f);
-		var scale = new Vector2(Size.Y, Size.Y);
+		var trans = Transform2D.Identity.Scaled(new Vector2(Size.Y, Size.Y)).Translated(new Vector2((Size.X - _textureAspectRatio * Size.Y) / 2f, 0f));
 		
-		if (ShadowOpacity > 0) {
-			DrawSetTransform(origin + ShadowOffset, 0, scale);
-			DrawMesh(_shadowMesh, s_shadowGradientTexture, null, new Color(Colors.White, ShadowOpacity));
-		}
-
-		DrawSetTransform(origin, 0, scale);
-		DrawMesh(_cardMesh, Texture);
+		if (ShadowOpacity > 0) { DrawMesh(_shadowMesh, s_shadowGradientTexture, trans.Translated(ShadowOffset.Rotated(-Rotation)), new Color(Colors.White, ShadowOpacity)); }
+		DrawMesh(_cardMesh, Texture, trans);
 	}
 }
