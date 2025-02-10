@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using DamselsGambit.Dialogue;
 
 namespace DamselsGambit;
 
@@ -11,4 +12,7 @@ public partial class CharacterDisplay : Sprite2D
 
 	private string TextureRoot { get; set { field = value; TexturePath = TextureRoot + SpriteName + ".png"; } }
 	private string TexturePath { get; set { field = value; Texture = ResourceLoader.Exists(TexturePath) ? ResourceLoader.Load<Texture2D>(TexturePath) : null; } }
+
+	public override void _EnterTree() { DialogueManager.RegisterDisplay(this); }
+	public override void _ExitTree() { DialogueManager.DeregisterDisplay(this); }
 }

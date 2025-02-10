@@ -2,6 +2,7 @@
 tags:
 ---
 Narrator: Oh, hello!
+<<emote lady_in_waiting Happy>>
     -> Hi, where am I?
         Narrator: You're in Godot!
             -> Oh.
