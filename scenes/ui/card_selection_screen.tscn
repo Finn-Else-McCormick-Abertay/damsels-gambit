@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://n6reja5qwt0q"]
+[gd_scene load_steps=4 format=3 uid="uid://wsn32iqbq8sp"]
 
 [ext_resource type="Texture2D" uid="uid://s06h1082sb1h" path="res://assets/ui/card building page assets/Book Background.png" id="1_xc1rq"]
 [ext_resource type="Script" path="res://scenes/ui/cards/CardDisplay.cs" id="2_hc2nn"]
@@ -153,6 +153,7 @@ offset_right = 0.471924
 offset_bottom = 3.06403
 focus_mode = 1
 horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
 
 [node name="GridContainer" type="GridContainer" parent="Modifiers ScrollContainer"]
 layout_mode = 2
