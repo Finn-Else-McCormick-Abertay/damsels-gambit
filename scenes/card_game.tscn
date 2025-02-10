@@ -1,8 +1,6 @@
-[gd_scene load_steps=13 format=3 uid="uid://dipd7bv4d85ws"]
+[gd_scene load_steps=10 format=3 uid="uid://dipd7bv4d85ws"]
 
 [ext_resource type="Script" path="res://scenes/ui/cards/CardDisplay.cs" id="2_kdxpq"]
-[ext_resource type="Texture2D" uid="uid://yp5dxvjwi6m" path="res://assets/ui/slider_marker_temp.png" id="3_7q8dp"]
-[ext_resource type="Texture2D" uid="uid://cnus1iub5ywaf" path="res://assets/ui/slider_background_temp.png" id="4_c6xqd"]
 [ext_resource type="Script" path="res://scenes/ui/AffectionMeter.cs" id="4_dw2x6"]
 [ext_resource type="Script" path="res://scenes/ui/cards/HandContainer.cs" id="4_xg83y"]
 
@@ -12,23 +10,10 @@ bg_color = Color(0.135749, 0.0218651, 0.022557, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tuwso"]
 bg_color = Color(0.859259, 0, 0.153247, 1)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dv55c"]
-texture = ExtResource("4_c6xqd")
-texture_margin_left = 33.0
-texture_margin_top = 20.0
-texture_margin_right = 25.0
-texture_margin_bottom = 25.0
-expand_margin_left = 15.0
-expand_margin_top = 15.0
-expand_margin_right = 15.0
-expand_margin_bottom = 15.0
-
 [sub_resource type="Theme" id="Theme_k5s5f"]
-AffectionMeter/icons/marker = ExtResource("3_7q8dp")
 AffectionMeter/styles/hate = SubResource("StyleBoxFlat_esevd")
 AffectionMeter/styles/love = SubResource("StyleBoxFlat_tuwso")
 AffectionMeter/styles/over = null
-AffectionMeter/styles/under = SubResource("StyleBoxTexture_dv55c")
 
 [sub_resource type="Curve" id="Curve_oldke"]
 min_value = -50.0
