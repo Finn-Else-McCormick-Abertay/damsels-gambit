@@ -1,19 +1,45 @@
-[gd_scene load_steps=10 format=3 uid="uid://dipd7bv4d85ws"]
+[gd_scene load_steps=14 format=3 uid="uid://dipd7bv4d85ws"]
 
+[ext_resource type="Texture2D" uid="uid://cqyuo4io822v2" path="res://assets/ui/affection bar v1.png" id="1_a886k"]
+[ext_resource type="Script" path="res://scenes/ui/StyleBoxScaledTexture.cs" id="2_k8r2y"]
 [ext_resource type="Script" path="res://scenes/ui/cards/CardDisplay.cs" id="2_kdxpq"]
 [ext_resource type="Script" path="res://scenes/ui/AffectionMeter.cs" id="4_dw2x6"]
 [ext_resource type="Script" path="res://scenes/ui/cards/HandContainer.cs" id="4_xg83y"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_esevd"]
-bg_color = Color(0.135749, 0.0218651, 0.022557, 1)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a1rw6"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tuwso"]
-bg_color = Color(0.859259, 0, 0.153247, 1)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v2fsc"]
+
+[sub_resource type="StyleBox" id="StyleBox_qyobw"]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = -1.0
+content_margin_top = -1.0
+content_margin_right = -1.0
+content_margin_bottom = -1.0
+script = ExtResource("2_k8r2y")
+Texture = ExtResource("1_a886k")
+Scale = 1.0
+DrawCenter = true
+TextureMarginLeft = 0
+TextureMarginTop = 0
+TextureMarginRight = 0
+TextureMarginBottom = 0
+ExpandMarginLeft = 0.0
+ExpandMarginTop = 0.0
+ExpandMarginRight = 0.0
+ExpandMarginBottom = 0.0
+AxisStretchHorizontal = 0
+AxisStretchVertical = 0
+ModulateColor = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_12y3c"]
 
 [sub_resource type="Theme" id="Theme_k5s5f"]
-AffectionMeter/styles/hate = SubResource("StyleBoxFlat_esevd")
-AffectionMeter/styles/love = SubResource("StyleBoxFlat_tuwso")
-AffectionMeter/styles/over = null
+AffectionMeter/styles/hate = SubResource("StyleBoxEmpty_a1rw6")
+AffectionMeter/styles/love = SubResource("StyleBoxEmpty_v2fsc")
+AffectionMeter/styles/over = SubResource("StyleBox_qyobw")
+AffectionMeter/styles/under = SubResource("StyleBoxEmpty_12y3c")
 
 [sub_resource type="Curve" id="Curve_oldke"]
 min_value = -50.0
@@ -33,27 +59,31 @@ max_value = 90.0
 _data = [Vector2(0, -9), 0.0, 0.0, 0, 0, Vector2(0.5, 0), 0.0, 0.0, 0, 0, Vector2(1, 9), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[node name="CardGame" type="Node"]
+[node name="CardGame" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="AffectionMeter" type="Control" parent="."]
-visible = false
-layout_mode = 3
+layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
-offset_left = 49.0
-offset_top = 37.0
-offset_right = 192.0
-offset_bottom = -113.0
+offset_left = 51.0
+offset_top = 67.0
+offset_right = 194.0
+offset_bottom = -147.0
 grow_vertical = 2
 theme = SubResource("Theme_k5s5f")
 script = ExtResource("4_dw2x6")
 
 [node name="HandContainer" type="Container" parent="."]
-visible = false
-offset_left = 313.0
-offset_top = 185.0
-offset_right = 1018.0
-offset_bottom = 384.0
+offset_left = 230.0
+offset_top = 362.0
+offset_right = 935.0
+offset_bottom = 561.0
 script = ExtResource("4_xg83y")
 SeparationCurve = SubResource("Curve_oldke")
 OffsetCurve = SubResource("Curve_c0hag")

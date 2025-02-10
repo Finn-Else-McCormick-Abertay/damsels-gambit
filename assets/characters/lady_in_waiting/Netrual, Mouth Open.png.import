@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c2hs5ltf41lmj"
-path="res://.godot/imported/Sad 2.png-a0927697836439065c217b6914edf3f4.ctex"
+uid="uid://d36s0sryh7wym"
+path="res://.godot/imported/Netrual, Mouth Open.png-86a93b9b0f5254f29bf34a26c014c308.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/Lady In Waiting Simple Emotions/Sad 2.png"
-dest_files=["res://.godot/imported/Sad 2.png-a0927697836439065c217b6914edf3f4.ctex"]
+source_file="res://assets/characters/lady_in_waiting/Netrual, Mouth Open.png"
+dest_files=["res://.godot/imported/Netrual, Mouth Open.png-86a93b9b0f5254f29bf34a26c014c308.ctex"]
 
 [params]
 

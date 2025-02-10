@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://lioraxfo5wox"
-path="res://.godot/imported/Netrual.png-aef51b7a15192b2ca8914f8ad039f498.ctex"
+uid="uid://c30m7ueprp3fm"
+path="res://.godot/imported/Explaining 1.png-0cc2abf8c9bcc50539e2df6ef48ba626.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/Lady In Waiting Simple Emotions/Netrual.png"
-dest_files=["res://.godot/imported/Netrual.png-aef51b7a15192b2ca8914f8ad039f498.ctex"]
+source_file="res://assets/characters/lady_in_waiting/Explaining 1.png"
+dest_files=["res://.godot/imported/Explaining 1.png-0cc2abf8c9bcc50539e2df6ef48ba626.ctex"]
 
 [params]
 

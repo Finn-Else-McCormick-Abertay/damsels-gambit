@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cg4pxjjejc5yn"
-path="res://.godot/imported/Sad 1.png-14c0412084b18e55550e1e38a7f57cbe.ctex"
+uid="uid://c2hs5ltf41lmj"
+path="res://.godot/imported/Sad 2.png-49a5cafd51108217256ebb2f08ca95b4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/Lady In Waiting Simple Emotions/Sad 1.png"
-dest_files=["res://.godot/imported/Sad 1.png-14c0412084b18e55550e1e38a7f57cbe.ctex"]
+source_file="res://assets/characters/lady_in_waiting/Sad 2.png"
+dest_files=["res://.godot/imported/Sad 2.png-49a5cafd51108217256ebb2f08ca95b4.ctex"]
 
 [params]
 
