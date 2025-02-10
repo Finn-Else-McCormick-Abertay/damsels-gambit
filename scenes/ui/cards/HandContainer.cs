@@ -11,9 +11,9 @@ public partial class HandContainer : Container, IReloadableToolScript
     [Export] public BoxContainer.AlignmentMode Alignment { get; set { field = value; QueueSort(); } } = BoxContainer.AlignmentMode.Center;
     [Export] public bool Fill { get; set { field = value; QueueSort(); } } = false;
 
-    [Export] public Curve SeparationCurve { get; set { if (SeparationCurve is not null) { SeparationCurve.Changed -= QueueSort; } field = value; QueueSort(); if (SeparationCurve is not null) { SeparationCurve.Changed += QueueSort; } } }
-    [Export] public Curve OffsetCurve { get; set { if (OffsetCurve is not null) { OffsetCurve.Changed -= QueueSort; } field = value; QueueSort(); if (OffsetCurve is not null) { OffsetCurve.Changed += QueueSort; } } }
-    [Export] public Curve RotationCurve { get; set { if (RotationCurve is not null) { RotationCurve.Changed -= QueueSort; } field = value; QueueSort(); if (RotationCurve is not null) { RotationCurve.Changed += QueueSort; } } }
+    [Export] public Curve SeparationCurve { get; set { SeparationCurve?.TryDisconnect(Curve.SignalName.Changed, Callable.From(QueueSort)); field = value; QueueSort(); SeparationCurve?.TryConnect(Curve.SignalName.Changed, Callable.From(QueueSort)); } }
+    [Export] public Curve OffsetCurve { get; set { OffsetCurve?.TryDisconnect(Curve.SignalName.Changed, Callable.From(QueueSort)); field = value; QueueSort(); OffsetCurve?.TryConnect(Curve.SignalName.Changed, Callable.From(QueueSort)); } }
+    [Export] public Curve RotationCurve { get; set { RotationCurve?.TryDisconnect(Curve.SignalName.Changed, Callable.From(QueueSort)); field = value; QueueSort(); RotationCurve?.TryConnect(Curve.SignalName.Changed, Callable.From(QueueSort)); } }
 
     private static readonly Curve s_defaultSeparationCurve, s_defaultOffsetCurve, s_defaultRotationCurve;
 

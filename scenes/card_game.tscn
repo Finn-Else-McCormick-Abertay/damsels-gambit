@@ -51,7 +51,6 @@ point_count = 3
 [node name="CardGame" type="Node"]
 
 [node name="AffectionMeter" type="Control" parent="."]
-visible = false
 layout_mode = 3
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -117,10 +116,10 @@ ShadowOpacity = 0.4
 [node name="CardDisplay" type="Container" parent="."]
 offset_left = 1330.0
 offset_top = 45.0
-offset_right = 1668.0
+offset_right = 1765.0
 offset_bottom = 353.0
 rotation = 0.000357453
-pivot_offset = Vector2(169, 154)
+pivot_offset = Vector2(217.5, 154)
 script = ExtResource("2_kdxpq")
 CardId = "subject/animals"
 ShadowFalloff = 0.08

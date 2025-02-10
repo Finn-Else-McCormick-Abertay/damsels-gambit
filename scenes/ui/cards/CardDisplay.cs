@@ -36,8 +36,13 @@ public partial class CardDisplay : Control, IReloadableToolScript
 	}
 
 	public override void _EnterTree() {
-		RebuildMeshes();
-		this.TryConnect(CanvasItem.SignalName.ItemRectChanged, UpdatePivot);
+		RebuildMeshes(); UpdatePivot();
+		this.TryConnect(SignalName.ItemRectChanged, Callable.From(UpdatePivot));
+		//if (!IsConnected(SignalName.ItemRectChanged, Callable.From(UpdatePivot))) { Connect(SignalName.ItemRectChanged, Callable.From(UpdatePivot)); }
+	}
+	public override void _ExitTree() {
+		this.TryDisconnect(SignalName.ItemRectChanged, Callable.From(UpdatePivot));
+		//if (IsConnected(SignalName.ItemRectChanged, Callable.From(UpdatePivot))) { Disconnect(SignalName.ItemRectChanged, Callable.From(UpdatePivot)); }
 	}
 
 	public void UpdatePivot() { PivotOffset = Size / 2f; }
