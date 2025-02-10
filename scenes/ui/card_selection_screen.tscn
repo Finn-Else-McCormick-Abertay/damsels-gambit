@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://wsn32iqbq8sp"]
 
-[ext_resource type="Texture2D" uid="uid://s06h1082sb1h" path="res://assets/ui/card building page assets/Book Background.png" id="1_xc1rq"]
+[ext_resource type="Texture2D" uid="uid://s06h1082sb1h" path="res://assets/ui/panels/Book Background.png" id="1_xc1rq"]
 [ext_resource type="Script" path="res://scenes/ui/cards/CardDisplay.cs" id="2_hc2nn"]
 [ext_resource type="FontFile" uid="uid://c27txckdp7a4a" path="res://assets/fonts/vinque/Vinque Rg.otf" id="5_qtjjj"]
 

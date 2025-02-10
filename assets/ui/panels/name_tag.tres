@@ -1,0 +1,27 @@
+[gd_resource type="StyleBox" script_class="StyleBoxScaledTexture" load_steps=3 format=3 uid="uid://ltnwechipltc"]
+
+[ext_resource type="Texture2D" uid="uid://deobtkte2lfye" path="res://assets/ui/panels/name_tag.png" id="1_nb28w"]
+[ext_resource type="Script" path="res://scenes/ui/StyleBoxScaledTexture.cs" id="2_kdasn"]
+
+[resource]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = 15.0
+content_margin_top = 3.0
+content_margin_right = 15.0
+content_margin_bottom = 3.0
+script = ExtResource("2_kdasn")
+Texture = ExtResource("1_nb28w")
+Scale = 0.521
+DrawCenter = true
+TextureMarginLeft = 105
+TextureMarginTop = 26
+TextureMarginRight = 105
+TextureMarginBottom = 26
+ExpandMarginLeft = 24.0
+ExpandMarginTop = 2.0
+ExpandMarginRight = 24.0
+ExpandMarginBottom = 2.0
+AxisStretchHorizontal = 0
+AxisStretchVertical = 0
+ModulateColor = Color(1, 1, 1, 1)

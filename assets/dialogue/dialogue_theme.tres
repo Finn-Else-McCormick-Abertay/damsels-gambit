@@ -1,6 +1,8 @@
 [gd_resource type="Theme" load_steps=13 format=3 uid="uid://cj01ghso8eli6"]
 
+[ext_resource type="StyleBox" uid="uid://da8adt55nihca" path="res://assets/ui/panels/dailogue_box.tres" id="1_fkwea"]
 [ext_resource type="FontFile" uid="uid://c27txckdp7a4a" path="res://assets/fonts/vinque/Vinque Rg.otf" id="1_wlqdk"]
+[ext_resource type="StyleBox" uid="uid://ltnwechipltc" path="res://assets/ui/panels/name_tag.tres" id="3_tnjsj"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_plmkh"]
 
@@ -114,43 +116,9 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dgr6h"]
-content_margin_left = 14.0
-content_margin_top = 10.0
-content_margin_right = 8.0
-content_margin_bottom = 5.0
-bg_color = Color(0.882353, 0.905882, 0.866667, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.0941176, 0.152941, 0.0901961, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
 [sub_resource type="FontVariation" id="FontVariation_5asd3"]
 base_font = ExtResource("1_wlqdk")
 spacing_bottom = 1
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d0i38"]
-content_margin_left = 15.0
-content_margin_top = 5.0
-content_margin_right = 15.0
-content_margin_bottom = 5.0
-bg_color = Color(0.882353, 0.905882, 0.866667, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.0941176, 0.152941, 0.0901961, 1)
-corner_radius_top_left = 15
-corner_radius_top_right = 15
-corner_radius_bottom_right = 15
-corner_radius_bottom_left = 15
-shadow_color = Color(0, 0, 0, 0.286275)
-shadow_size = 45
 
 [resource]
 ContinueButton/base_type = &"Button"
@@ -167,11 +135,11 @@ DialogueOptionButton/styles/disabled = SubResource("StyleBoxFlat_vby4f")
 DialogueOptionButton/styles/hover = SubResource("StyleBoxFlat_4h8xr")
 DialogueOptionButton/styles/normal = SubResource("StyleBoxFlat_v7lci")
 DialogueOptionButton/styles/pressed = SubResource("StyleBoxFlat_qa82f")
-PanelContainer/styles/panel = SubResource("StyleBoxFlat_dgr6h")
+PanelContainer/styles/panel = ExtResource("1_fkwea")
 RichTextLabel/colors/default_color = Color(0.0941176, 0.152941, 0.0901961, 1)
 TitleLabel/base_type = &"Label"
 TitleLabel/colors/font_color = Color(0.0941176, 0.152941, 0.0901961, 1)
 TitleLabel/font_sizes/font_size = 20
 TitleLabel/fonts/font = SubResource("FontVariation_5asd3")
 TitlePanel/base_type = &"PanelContainer"
-TitlePanel/styles/panel = SubResource("StyleBoxFlat_d0i38")
+TitlePanel/styles/panel = ExtResource("3_tnjsj")

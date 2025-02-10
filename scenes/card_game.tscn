@@ -51,6 +51,7 @@ point_count = 3
 [node name="CardGame" type="Node"]
 
 [node name="AffectionMeter" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -63,6 +64,7 @@ theme = SubResource("Theme_k5s5f")
 script = ExtResource("4_dw2x6")
 
 [node name="HandContainer" type="Container" parent="."]
+visible = false
 offset_left = 313.0
 offset_top = 185.0
 offset_right = 1018.0
@@ -114,6 +116,7 @@ ShadowOffset = Vector2(-10.175, 1)
 ShadowOpacity = 0.4
 
 [node name="CardDisplay" type="Container" parent="."]
+visible = false
 offset_left = 1330.0
 offset_top = 45.0
 offset_right = 1765.0
