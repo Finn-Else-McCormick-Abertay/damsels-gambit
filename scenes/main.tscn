@@ -15,11 +15,6 @@ script = ExtResource("1_finbn")
 [node name="hand" type="Node2D" parent="left deck"]
 script = ExtResource("2_4x8em")
 
-[node name="LCard1" type="Sprite2D" parent="left deck/hand"]
-position = Vector2(190, 600)
-texture = ExtResource("2_we7gv")
-script = ExtResource("3_fiiru")
-
 [node name="LCard2" type="Sprite2D" parent="left deck/hand"]
 position = Vector2(310, 600)
 texture = ExtResource("2_we7gv")
@@ -29,6 +24,11 @@ script = ExtResource("4_lwf6o")
 position = Vector2(430, 600)
 texture = ExtResource("2_we7gv")
 script = ExtResource("5_62q3f")
+
+[node name="LCard1" type="Sprite2D" parent="left deck/hand"]
+position = Vector2(190, 600)
+texture = ExtResource("2_we7gv")
+script = ExtResource("3_fiiru")
 
 [node name="deck" type="Node2D" parent="left deck"]
 
@@ -42,9 +42,9 @@ script = ExtResource("5_62q3f")
 
 [node name="discard" type="Node2D" parent="right deck"]
 
-[connection signal="C1SELECT" from="left deck/hand/LCard1" to="left deck/hand/LCard2" method="OnC1SELECTSignal"]
-[connection signal="C1SELECT" from="left deck/hand/LCard1" to="left deck/hand/LCard3" method="OnC1SELECTSignal"]
 [connection signal="C2SELECT" from="left deck/hand/LCard2" to="left deck/hand/LCard1" method="OnC2SELECTSignal"]
 [connection signal="C2SELECT" from="left deck/hand/LCard2" to="left deck/hand/LCard3" method="OnC2SELECTSignal"]
 [connection signal="C3SELECT" from="left deck/hand/LCard3" to="left deck/hand/LCard1" method="OnC3SELECTSignal"]
 [connection signal="C3SELECT" from="left deck/hand/LCard3" to="left deck/hand/LCard2" method="OnC3SELECTSignal"]
+[connection signal="C1SELECT" from="left deck/hand/LCard1" to="left deck/hand/LCard2" method="OnC1SELECTSignal"]
+[connection signal="C1SELECT" from="left deck/hand/LCard1" to="left deck/hand/LCard3" method="OnC1SELECTSignal"]

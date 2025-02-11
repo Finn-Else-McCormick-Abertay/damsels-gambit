@@ -16,7 +16,7 @@ public partial class LCard1 : Sprite2D
 	private bool selected = false;
 	public override void _Process(double delta)
 	{
-		
+
 		Vector2 mousepos = GetViewport().GetMousePosition();
 		if(!selected){
 		if(mouseover()){

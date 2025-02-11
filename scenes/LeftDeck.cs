@@ -9,6 +9,7 @@ public partial class LeftDeck : Node2D
 	private int[] Deck = {0,0,0,0,0,0};
 	public override void _Ready()
 	{
+		Ongetdeck(01,02,03,04,05,06);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -25,8 +26,15 @@ public partial class LeftDeck : Node2D
 		Deck[5] = c6;
 		shuffle(5);
 	}
-	private void OndrawSignal(){
+	private void OndrawSignal(int lastplay){
+		if(lastplay !=3){
+		int temp = Deck[lastplay];
+		Deck[lastplay] = Deck[3]; 
+		Deck[3] = temp;}
 
+		shuffle(3);
+
+		//signal draw deck[3];
 	}
 
 	private void shuffle(int size){
