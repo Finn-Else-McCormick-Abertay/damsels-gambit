@@ -13,11 +13,28 @@ public partial class CardDisplay : Control, IReloadableToolScript
 	[Export] public StringName CardId {
 		get; set {
 			field = value;
-			string texturePath = $"res://assets/cards/{CardId}.png";
-			if (ResourceLoader.Exists(texturePath)) { Texture = ResourceLoader.Load<Texture2D>(texturePath); }
-			else { Texture = null; if (!Engine.IsEditorHint()) { GD.PushWarning($"No texture exists for card '{CardId}' at '{texturePath}'"); } }
+			var id = CardId.ToString();
+			var separator = id.Find('/');
+			var type = separator >= 0 ? id[..(separator)] : "unknown";
+			var name = separator >= 0 ? id[(separator + 1)..] : id;
+
+			DisplayName = name.Capitalize();
+
+			string textureRoot = $"res://assets/cards/{type}";
+			if (ResourceLoader.Exists($"{textureRoot}/{name}.png")) {
+				Texture = ResourceLoader.Load<Texture2D>($"{textureRoot}/{name}.png");
+				_renderName = false;
+			}
+			else {
+				_renderName = true;
+				if (ResourceLoader.Exists($"{textureRoot}/template.png")) { Texture = ResourceLoader.Load<Texture2D>($"{textureRoot}/template.png"); }
+				else { Texture = ThemeDB.FallbackIcon; }
+			}
 		}
 	}
+	public string DisplayName { get; private set; }
+	private bool _renderName = false;
+
 	[Export(PropertyHint.Range, "0,0.5,")] public float CornerRadius { get; set { field = value; RebuildMeshes(); } } = 0.15f;
 	[Export] public int CornerResolution { get; set { field = Math.Max(value, 1); RebuildMeshes(); } } = 10;
 
@@ -163,5 +180,9 @@ public partial class CardDisplay : Control, IReloadableToolScript
 		
 		if (ShadowOpacity > 0) { DrawMesh(_shadowMesh, s_shadowGradientTexture, trans.Translated(ShadowOffset.Rotated(-Rotation)), new Color(Colors.White, ShadowOpacity)); }
 		DrawMesh(_cardMesh, Texture, trans);
+
+		if (_renderName) {
+			DrawString(ThemeDB.GetDefaultTheme().DefaultFont, Size / 2f - new Vector2(_textureAspectRatio * Size.Y / 2f, 0f), DisplayName, HorizontalAlignment.Center, _textureAspectRatio * Size.Y, 18, Colors.Black);
+		}
 	}
 }

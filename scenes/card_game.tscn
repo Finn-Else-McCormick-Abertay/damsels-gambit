@@ -80,6 +80,7 @@ theme = SubResource("Theme_k5s5f")
 script = ExtResource("4_dw2x6")
 
 [node name="HandContainer" type="Container" parent="."]
+layout_mode = 0
 offset_left = 230.0
 offset_top = 362.0
 offset_right = 935.0
@@ -93,7 +94,7 @@ metadata/_edit_group_ = true
 [node name="CardDisplay" type="Control" parent="HandContainer"]
 layout_mode = 2
 script = ExtResource("2_kdxpq")
-CardId = "subject/animals"
+CardId = &"subject/animals"
 CornerRadius = 0.08
 ShadowOffset = Vector2(-10.175, 1)
 ShadowOpacity = 0.4
@@ -101,7 +102,7 @@ ShadowOpacity = 0.4
 [node name="CardDisplay2" type="Control" parent="HandContainer"]
 layout_mode = 2
 script = ExtResource("2_kdxpq")
-CardId = "action/secret"
+CardId = &"action/secret"
 CornerRadius = 0.08
 ShadowOffset = Vector2(-10.175, 1)
 ShadowOpacity = 0.4
@@ -109,7 +110,7 @@ ShadowOpacity = 0.4
 [node name="CardDisplay3" type="Control" parent="HandContainer"]
 layout_mode = 2
 script = ExtResource("2_kdxpq")
-CardId = "question/thoughts"
+CardId = &"question/thoughts"
 CornerRadius = 0.08
 ShadowOffset = Vector2(-10.175, 1)
 ShadowOpacity = 0.4
@@ -117,7 +118,7 @@ ShadowOpacity = 0.4
 [node name="CardDisplay5" type="Control" parent="HandContainer"]
 layout_mode = 2
 script = ExtResource("2_kdxpq")
-CardId = "question/thoughts"
+CardId = &"question/thoughts"
 CornerRadius = 0.08
 ShadowOffset = Vector2(-10.175, 1)
 ShadowOpacity = 0.4
@@ -125,13 +126,14 @@ ShadowOpacity = 0.4
 [node name="CardDisplay4" type="Control" parent="HandContainer"]
 layout_mode = 2
 script = ExtResource("2_kdxpq")
-CardId = "subject/animals"
+CardId = &"subject/animals"
 CornerRadius = 0.08
 ShadowOffset = Vector2(-10.175, 1)
 ShadowOpacity = 0.4
 
 [node name="CardDisplay" type="Container" parent="."]
 visible = false
+layout_mode = 0
 offset_left = 1330.0
 offset_top = 45.0
 offset_right = 1765.0
@@ -139,7 +141,7 @@ offset_bottom = 353.0
 rotation = 0.000357453
 pivot_offset = Vector2(217.5, 154)
 script = ExtResource("2_kdxpq")
-CardId = "subject/animals"
+CardId = &"subject/animals"
 ShadowFalloff = 0.08
 ShadowOffset = Vector2(-23.615, 34.36)
 ShadowOpacity = 0.13
