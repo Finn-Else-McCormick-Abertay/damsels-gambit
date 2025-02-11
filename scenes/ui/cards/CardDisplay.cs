@@ -10,7 +10,7 @@ namespace DamselsGambit;
 [Tool, GlobalClass, Icon("res://assets/editor/icons/card.svg")]
 public partial class CardDisplay : Control, IReloadableToolScript
 {
-	[Export] public string CardId {
+	[Export] public StringName CardId {
 		get; set {
 			field = value;
 			string texturePath = $"res://assets/cards/{CardId}.png";
@@ -37,12 +37,10 @@ public partial class CardDisplay : Control, IReloadableToolScript
 
 	public override void _EnterTree() {
 		RebuildMeshes(); UpdatePivot();
-		this.TryConnect(SignalName.ItemRectChanged, Callable.From(UpdatePivot));
-		//if (!IsConnected(SignalName.ItemRectChanged, Callable.From(UpdatePivot))) { Connect(SignalName.ItemRectChanged, Callable.From(UpdatePivot)); }
+		this.TryConnect(SignalName.ItemRectChanged, new Callable(this, MethodName.UpdatePivot));
 	}
 	public override void _ExitTree() {
-		this.TryDisconnect(SignalName.ItemRectChanged, Callable.From(UpdatePivot));
-		//if (IsConnected(SignalName.ItemRectChanged, Callable.From(UpdatePivot))) { Disconnect(SignalName.ItemRectChanged, Callable.From(UpdatePivot)); }
+		this.TryDisconnect(SignalName.ItemRectChanged, new Callable(this, MethodName.UpdatePivot));
 	}
 
 	public void UpdatePivot() { PivotOffset = Size / 2f; }

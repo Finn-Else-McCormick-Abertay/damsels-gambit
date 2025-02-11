@@ -11,9 +11,9 @@ public partial class HandContainer : Container, IReloadableToolScript
     [Export] public BoxContainer.AlignmentMode Alignment { get; set { field = value; QueueSort(); } } = BoxContainer.AlignmentMode.Center;
     [Export] public bool Fill { get; set { field = value; QueueSort(); } } = false;
 
-    [Export] public Curve SeparationCurve { get; set { SeparationCurve?.TryDisconnect(Resource.SignalName.Changed, Callable.From(QueueSort)); field = value; QueueSort(); SeparationCurve?.TryConnect(Resource.SignalName.Changed, Callable.From(QueueSort)); } }
-    [Export] public Curve OffsetCurve { get; set { OffsetCurve?.TryDisconnect(Resource.SignalName.Changed, Callable.From(QueueSort)); field = value; QueueSort(); OffsetCurve?.TryConnect(Resource.SignalName.Changed, Callable.From(QueueSort)); } }
-    [Export] public Curve RotationCurve { get; set { RotationCurve?.TryDisconnect(Resource.SignalName.Changed, Callable.From(QueueSort)); field = value; QueueSort(); RotationCurve?.TryConnect(Resource.SignalName.Changed, Callable.From(QueueSort)); } }
+    [Export] public Curve SeparationCurve { get; set { SeparationCurve?.TryDisconnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); field = value; QueueSort(); SeparationCurve?.TryConnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); } }
+    [Export] public Curve OffsetCurve { get; set { OffsetCurve?.TryDisconnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); field = value; QueueSort(); OffsetCurve?.TryConnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); } }
+    [Export] public Curve RotationCurve { get; set { RotationCurve?.TryDisconnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); field = value; QueueSort(); RotationCurve?.TryConnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); } }
 
     private static readonly Curve s_defaultSeparationCurve, s_defaultOffsetCurve, s_defaultRotationCurve;
 

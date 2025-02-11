@@ -13,12 +13,12 @@ public partial class DialogueManager : Node
     private readonly HashSet<NodePath> _characterDisplayPaths = [];
 
     public static void RegisterDisplay(CharacterDisplay display) {
+        if (Instance is null) return;
         Instance._characterDisplayPaths.Add(display.GetPath());
-        GD.Print($"Register Display for {display.CharacterName}");
     }
     public static void DeregisterDisplay(CharacterDisplay display) {
+        if (Instance is null) return;
         Instance._characterDisplayPaths.Remove(display.GetPath());
-        GD.Print($"Deregister Display for {display.CharacterName}");
     }
 
     public static CharacterDisplay GetCharacterDisplay(string characterName) {
@@ -35,7 +35,6 @@ public partial class DialogueManager : Node
     {    
         [YarnCommand("emote")]
         public static void Emote(string characterName, string emotionName) {
-            GD.Print($"Emote {emotionName} on {characterName}");
             var display = GetCharacterDisplay(characterName);
             if (display is null) return;
             display.SpriteName = emotionName;
