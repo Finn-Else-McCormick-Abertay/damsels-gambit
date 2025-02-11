@@ -4,44 +4,60 @@ using System;
 public partial class LCard2 : Sprite2D
 {
 	// Called when the node enters the scene tree for the first time.
+	[Export]
+	public bool select { get; set; } = false;
 	public override void _Ready()
 	{
+		Position = new Vector2(
+   		 	x: (310),
+			y: (550)); 
+		select = false;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	bool selected = false;
-	public override async void _Process(double delta)
+	[Signal] public delegate void C2SELECTEventHandler();
+	private bool selected = false;
+	public override void _Process(double delta)
 	{
-
+		
 		Vector2 mousepos = GetViewport().GetMousePosition();
-		if(!selected){ 
-		if (mousepos.X > 260 && mousepos.X < 360 && mousepos.Y > 480){
+		if(!selected){
+		if(mouseover()){
 			Position = new Vector2(
    		 	x: (310),
 			y: (550)); 
+			if(Input.IsActionPressed("Left_Click")){
+				selected = true;
+				EmitSignal(SignalName.C2SELECT);
+			}
 		}else{
 			Position = new Vector2(
    		 	x: (310),
 			y: (600)); 
-		}}
-		if (mousepos.X > 260 && mousepos.X < 360 && mousepos.Y > 480 && Input.IsActionPressed("Left_Click")|| selected){
+		}}else{
+			Position = new Vector2(
+   		 	x: (310),
+			y: (500)); 
+		}
 
-			selected = true;
-		}
-		if(selected){
-			Position = new Vector2(
-   		 	x: (450),
-			y: (400)); 
-		}
-		if (mousepos.X > 400 && mousepos.X < 500 && mousepos.Y > 330 && mousepos.Y < 470 && Input.IsActionPressed("Left_Click") && selected){
-			Position = new Vector2(
-   		 	x: (430),
-			y: (600)); 
-			deselect();
-		}
-		
+
 	}
-			public void deselect(){
-			selected = false;
+
+	private void OnC1SELECTSignal(){
+		selected =false;
+	}
+	private void OnC3SELECTSignal(){
+		selected =false;
+	}
+
+		private bool mouseover(){
+
+		Vector2 mousepos = GetViewport().GetMousePosition();
+
+		if(mousepos.X > Position.X - 50 && mousepos.X < Position.X +50 && mousepos.Y > Position.Y -70 && mousepos.Y < Position.Y +70 ){
+			return true;
 		}
+			return false;
+		}
+
 }

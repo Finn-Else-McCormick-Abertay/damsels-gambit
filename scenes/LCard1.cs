@@ -12,46 +12,48 @@ public partial class LCard1 : Sprite2D
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	bool selected = false;
+	[Signal] public delegate void C1SELECTEventHandler();
+	private bool selected = false;
 	public override void _Process(double delta)
 	{
 		
 		Vector2 mousepos = GetViewport().GetMousePosition();
 		if(!selected){
-		if (mousepos.X > 140 && mousepos.X < 240 && mousepos.Y > 480){
+		if(mouseover()){
 			Position = new Vector2(
    		 	x: (190),
 			y: (550)); 
+			if(Input.IsActionPressed("Left_Click")){
+				selected = true;
+				EmitSignal(SignalName.C1SELECT);
+			}
 		}else{
 			Position = new Vector2(
    		 	x: (190),
 			y: (600)); 
-		}}
-		if (mousepos.X > 140 && mousepos.X < 240 && mousepos.Y > 480 && Input.IsActionPressed("Left_Click")|| selected){
-
-			selected = true;
-		}
-		if(selected){
+		}}else{
 			Position = new Vector2(
-   		 	x: (450),
-			y: (400)); 
-		}
-		if (mousepos.X > 400 && mousepos.X < 500 && mousepos.Y > 330 && mousepos.Y < 470 && Input.IsActionPressed("Left_Click") && selected){
-			Position = new Vector2(
-   		 	x: (430),
-			y: (600)); 
-			deselect();
+   		 	x: (190),
+			y: (500)); 
 		}
 
 
 	}
-		public void deselect(){
-			selected = false;
-			select = false;
-		}
+	private void OnC2SELECTSignal(){
+		selected =false;
+	}
+	private void _on_l_card_3_c_3select(){
+		selected =false;
+	}
 
-		public void move(Vector2 place){
-			Position = place;
+		private bool mouseover(){
+
+		Vector2 mousepos = GetViewport().GetMousePosition();
+
+		if(mousepos.X > Position.X - 50 && mousepos.X < Position.X +50 && mousepos.Y > Position.Y -70 && mousepos.Y < Position.Y +70 ){
+			return true;
+		}
+			return false;
 		}
 
 }

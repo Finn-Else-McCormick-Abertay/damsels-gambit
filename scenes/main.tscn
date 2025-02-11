@@ -42,5 +42,9 @@ script = ExtResource("5_62q3f")
 
 [node name="discard" type="Node2D" parent="right deck"]
 
-[connection signal="C1Select" from="left deck/hand" to="left deck/hand/LCard2" method="_on_hand_c_1_select"]
-[connection signal="C1Select" from="left deck/hand" to="left deck/hand/LCard3" method="_on_hand_c_1_select"]
+[connection signal="C1SELECT" from="left deck/hand/LCard1" to="left deck/hand/LCard2" method="OnC1SELECTSignal"]
+[connection signal="C1SELECT" from="left deck/hand/LCard1" to="left deck/hand/LCard3" method="OnC1SELECTSignal"]
+[connection signal="C2SELECT" from="left deck/hand/LCard2" to="left deck/hand/LCard1" method="OnC2SELECTSignal"]
+[connection signal="C2SELECT" from="left deck/hand/LCard2" to="left deck/hand/LCard3" method="OnC2SELECTSignal"]
+[connection signal="C3SELECT" from="left deck/hand/LCard3" to="left deck/hand/LCard1" method="OnC3SELECTSignal"]
+[connection signal="C3SELECT" from="left deck/hand/LCard3" to="left deck/hand/LCard2" method="OnC3SELECTSignal"]
