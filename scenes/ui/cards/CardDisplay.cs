@@ -52,12 +52,20 @@ public partial class CardDisplay : Control, IReloadableToolScript
         s_shadowGradientTexture = new GradientTexture1D { Gradient = gradient };
 	}
 
+	public bool IsMousedOver = false;
+	private void OnMouseEntered() { IsMousedOver = true; QueueRedraw(); }
+	private void OnMouseExited() { IsMousedOver = false; QueueRedraw(); }
+
 	public override void _EnterTree() {
 		RebuildMeshes(); UpdatePivot();
 		this.TryConnect(SignalName.ItemRectChanged, new Callable(this, MethodName.UpdatePivot));
+		this.TryConnect(SignalName.MouseEntered, new Callable(this, MethodName.OnMouseEntered));
+		this.TryConnect(SignalName.MouseExited, new Callable(this, MethodName.OnMouseExited));
 	}
 	public override void _ExitTree() {
 		this.TryDisconnect(SignalName.ItemRectChanged, new Callable(this, MethodName.UpdatePivot));
+		this.TryDisconnect(SignalName.MouseEntered, new Callable(this, MethodName.OnMouseEntered));
+		this.TryDisconnect(SignalName.MouseExited, new Callable(this, MethodName.OnMouseExited));
 	}
 
 	public void UpdatePivot() { PivotOffset = Size / 2f; }

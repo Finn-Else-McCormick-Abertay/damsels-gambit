@@ -41,22 +41,22 @@ AffectionMeter/styles/love = SubResource("StyleBoxEmpty_v2fsc")
 AffectionMeter/styles/over = SubResource("StyleBox_qyobw")
 AffectionMeter/styles/under = SubResource("StyleBoxEmpty_12y3c")
 
-[sub_resource type="Curve" id="Curve_oldke"]
+[sub_resource type="Curve" id="Curve_6espp"]
 min_value = -50.0
 max_value = 50.0
-_data = [Vector2(0, -11.6629), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, -16.0156), 0.0, 0.0, 0, 0]
 point_count = 1
 
-[sub_resource type="Curve" id="Curve_c0hag"]
+[sub_resource type="Curve" id="Curve_2cmp0"]
 min_value = -50.0
 max_value = 50.0
-_data = [Vector2(0, -19.7425), 0.0, 0.0, 0, 0, Vector2(0.497143, 33.3147), 0.0, 0.0, 0, 0, Vector2(1, -21.8348), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, -16.7411), 0.0, 0.0, 0, 0, Vector2(0.502857, 20.9821), 0.0, 0.0, 0, 0, Vector2(1, -16.7411), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[sub_resource type="Curve" id="Curve_fyy4x"]
+[sub_resource type="Curve" id="Curve_kxdyk"]
 min_value = -90.0
 max_value = 90.0
-_data = [Vector2(0, -9), 0.0, 0.0, 0, 0, Vector2(0.5, 0), 0.0, 0.0, 0, 0, Vector2(1, 9), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, -7.93526), 0.0, 0.0, 0, 0, Vector2(0.5, 0), 0.0, 0.0, 0, 0, Vector2(1, 10.346), 0.0, 0.0, 0, 0]
 point_count = 3
 
 [node name="CardGame" type="Control"]
@@ -81,14 +81,16 @@ script = ExtResource("4_dw2x6")
 
 [node name="HandContainer" type="Container" parent="."]
 layout_mode = 0
-offset_left = 230.0
-offset_top = 362.0
-offset_right = 935.0
-offset_bottom = 561.0
+offset_left = 284.0
+offset_top = 306.0
+offset_right = 989.0
+offset_bottom = 505.0
 script = ExtResource("4_xg83y")
-SeparationCurve = SubResource("Curve_oldke")
-OffsetCurve = SubResource("Curve_c0hag")
-RotationCurve = SubResource("Curve_fyy4x")
+AnimationTimeReorder = 0.3
+AnimationTimeHighlight = 0.1
+CurveSeparation = SubResource("Curve_6espp")
+CurveOffset = SubResource("Curve_2cmp0")
+CurveRotation = SubResource("Curve_kxdyk")
 metadata/_edit_group_ = true
 
 [node name="CardDisplay" type="Control" parent="HandContainer"]
@@ -99,10 +101,10 @@ CornerRadius = 0.08
 ShadowOffset = Vector2(-10.175, 1)
 ShadowOpacity = 0.4
 
-[node name="CardDisplay2" type="Control" parent="HandContainer"]
+[node name="CardDisplay5" type="Control" parent="HandContainer"]
 layout_mode = 2
 script = ExtResource("2_kdxpq")
-CardId = &"action/secret"
+CardId = &"question/thoughts"
 CornerRadius = 0.08
 ShadowOffset = Vector2(-10.175, 1)
 ShadowOpacity = 0.4
@@ -115,10 +117,10 @@ CornerRadius = 0.08
 ShadowOffset = Vector2(-10.175, 1)
 ShadowOpacity = 0.4
 
-[node name="CardDisplay5" type="Control" parent="HandContainer"]
+[node name="CardDisplay2" type="Control" parent="HandContainer"]
 layout_mode = 2
 script = ExtResource("2_kdxpq")
-CardId = &"question/thoughts"
+CardId = &"action/secret"
 CornerRadius = 0.08
 ShadowOffset = Vector2(-10.175, 1)
 ShadowOpacity = 0.4

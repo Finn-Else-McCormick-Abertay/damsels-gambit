@@ -1,6 +1,7 @@
 using DamselsGambit.Util;
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DamselsGambit;
@@ -11,9 +12,15 @@ public partial class HandContainer : Container, IReloadableToolScript
     [Export] public BoxContainer.AlignmentMode Alignment { get; set { field = value; QueueSort(); } } = BoxContainer.AlignmentMode.Center;
     [Export] public bool Fill { get; set { field = value; QueueSort(); } } = false;
 
-    [Export] public Curve SeparationCurve { get; set { SeparationCurve?.TryDisconnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); field = value; QueueSort(); SeparationCurve?.TryConnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); } }
-    [Export] public Curve OffsetCurve { get; set { OffsetCurve?.TryDisconnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); field = value; QueueSort(); OffsetCurve?.TryConnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); } }
-    [Export] public Curve RotationCurve { get; set { RotationCurve?.TryDisconnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); field = value; QueueSort(); RotationCurve?.TryConnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); } }
+    [ExportGroup("Animation", "Animation")]
+    [Export] public double AnimationTimeAdd { get; set; } = 0.0;
+    [Export] public double AnimationTimeReorder { get; set; } = 0.0;
+    [Export] public double AnimationTimeHighlight { get; set; } = 0.0;
+
+    [ExportGroup("Curves", "Curve")]
+    [Export] public Curve CurveSeparation { get; set { CurveSeparation?.TryDisconnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); field = value; QueueSort(); CurveSeparation?.TryConnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); } }
+    [Export] public Curve CurveOffset { get; set { CurveOffset?.TryDisconnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); field = value; QueueSort(); CurveOffset?.TryConnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); } }
+    [Export] public Curve CurveRotation { get; set { CurveRotation?.TryDisconnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); field = value; QueueSort(); CurveRotation?.TryConnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); } }
 
     private static readonly Curve s_defaultSeparationCurve, s_defaultOffsetCurve, s_defaultRotationCurve;
 
@@ -29,17 +36,42 @@ public partial class HandContainer : Container, IReloadableToolScript
     }
 
     public override bool _PropertyCanRevert(StringName property) {
-        if (property == PropertyName.SeparationCurve) return true;
-        if (property == PropertyName.OffsetCurve) return true;
-        if (property == PropertyName.RotationCurve) return true;
+        if (property == PropertyName.CurveSeparation) return true;
+        if (property == PropertyName.CurveOffset) return true;
+        if (property == PropertyName.CurveRotation) return true;
         return base._PropertyCanRevert(property);
     }
     public override Variant _PropertyGetRevert(StringName property) {
-        if (property == PropertyName.SeparationCurve) return s_defaultSeparationCurve.Duplicate();
-        if (property == PropertyName.OffsetCurve) return s_defaultOffsetCurve.Duplicate();
-        if (property == PropertyName.RotationCurve) return s_defaultRotationCurve.Duplicate();
+        if (property == PropertyName.CurveSeparation) return s_defaultSeparationCurve.Duplicate();
+        if (property == PropertyName.CurveOffset) return s_defaultOffsetCurve.Duplicate();
+        if (property == PropertyName.CurveRotation) return s_defaultRotationCurve.Duplicate();
         return base._PropertyGetRevert(property);
     }
+
+    public override void _EnterTree() {
+        this.TryConnect(SignalName.ChildEnteredTree, new Callable(this, MethodName.OnChildEnteredTree));
+        this.TryConnect(SignalName.ChildExitingTree, new Callable(this, MethodName.OnChildExitingTree));
+    }
+    private void OnChildEnteredTree(Node child) {
+        if (!Engine.IsEditorHint()) {
+            child.TryConnect(SignalName.MouseEntered, new Callable(this, MethodName.QueueSort));
+            child.TryConnect(SignalName.MouseExited, new Callable(this, MethodName.QueueSort));
+            _newChildren.Add(child);
+        }
+    }
+    private void OnChildExitingTree(Node child) {
+        if (!Engine.IsEditorHint()) {
+            child.TryDisconnect(SignalName.MouseEntered, new Callable(this, MethodName.QueueSort));
+            child.TryConnect(SignalName.MouseExited, new Callable(this, MethodName.QueueSort));
+            _prevMouseOverState.Remove(child);
+            _prevIndex.Remove(child);
+        }
+    }
+
+    private readonly HashSet<Node> _newChildren = [];
+    private readonly Dictionary<Node, bool> _prevMouseOverState = [];
+    private readonly Dictionary<Node, int> _prevIndex = [];
+    private readonly Dictionary<Node, Tween> _tweens = [];
 
     private void OnSortChildren() {
         var childCount = GetChildCount();
@@ -54,7 +86,7 @@ public partial class HandContainer : Container, IReloadableToolScript
                 return cardsWidth + card.Size.X;
             });
 
-        var theoreticalSeparationTotalWidth = Enumerable.Range(0, childCount).Aggregate(0f, (x, i) => x + SeparationCurve?.Sample((i + 0.5f) / childCount) ?? 0f);
+        var theoreticalSeparationTotalWidth = Enumerable.Range(0, childCount).Aggregate(0f, (x, i) => x + CurveSeparation?.Sample((i + 0.5f) / childCount) ?? 0f);
 
         var totalWidth = Fill ? Size.X : MathF.Min(Size.X, theoreticalCardsTotalWidth + theoreticalSeparationTotalWidth);
         
@@ -72,9 +104,47 @@ public partial class HandContainer : Container, IReloadableToolScript
             (runningTotal, pair) => {
                 if (pair.Item is not Control card || !card.Visible) { return runningTotal; }
                 var samplePoint = (pair.Index + 0.5f) / childCount;
-                if (pair.Index > 0) { runningTotal += Fill ? maxSeparation : MathF.Min(SeparationCurve?.Sample(samplePoint) ?? 0f, maxSeparation); }
-                card.Position = new(runningTotal, -OffsetCurve?.Sample(samplePoint) ?? 0f);
-                card.Rotation = RotationCurve is not null ? RotationCurve.Sample(samplePoint) / 180 * MathF.PI : 0f;
+                if (pair.Index > 0) { runningTotal += Fill ? maxSeparation : MathF.Min(CurveSeparation?.Sample(samplePoint) ?? 0f, maxSeparation); }
+
+                Vector2 newPosition = new(runningTotal, -CurveOffset?.Sample(samplePoint) ?? 0f);
+                float newRotation = CurveRotation is not null ? CurveRotation.Sample(samplePoint) / 180 * MathF.PI : 0f;
+
+                bool mousedOver = (card as CardDisplay)?.IsMousedOver ?? false;
+                if (mousedOver && !Engine.IsEditorHint()) { newPosition += new Vector2(0f, -20f); }
+                
+                _prevMouseOverState.TryGetValue(card, out bool prevMousedOver);
+
+                _prevIndex.TryGetValueOr(card, out int prevIndex, -1);
+                _prevIndex[card] = pair.Index;
+
+                bool hasTween = _tweens.TryGetValue(card, out Tween oldTween);
+                if (!(prevMousedOver && hasTween && oldTween.IsRunning())) { _prevMouseOverState[card] = mousedOver; }
+
+                bool skipAnimation = false;
+
+                if (hasTween) {
+                    if (oldTween.IsRunning() && prevIndex == pair.Index) {
+                        skipAnimation = true;
+                        oldTween.TryConnect(Tween.SignalName.Finished, new Callable(this, MethodName.QueueSort));
+                    }
+                    else { oldTween.Kill(); _tweens.Remove(card); }
+                }
+                
+                if (!skipAnimation) {
+                    var isNew = _newChildren.Contains(card); if (isNew) { _newChildren.Remove(card); }
+                    var animationTime = isNew ? AnimationTimeAdd : mousedOver != prevMousedOver ? AnimationTimeHighlight : AnimationTimeReorder;
+
+                    if (animationTime > 0.0 && !Engine.IsEditorHint()) {
+                        var tween = CreateTween().SetParallel(true);
+                        tween.TweenProperty(card, "position", newPosition, animationTime).SetEase(Tween.EaseType.InOut);
+                        tween.TweenProperty(card, "rotation", newRotation, animationTime).SetEase(Tween.EaseType.InOut);
+                        _tweens.Add(card, tween);
+                    }
+                    else {
+                        card.Position = newPosition;
+                        card.Rotation = newRotation;
+                    }
+                }
                 return runningTotal + card.Size.X;
             });
     }
@@ -82,10 +152,7 @@ public partial class HandContainer : Container, IReloadableToolScript
     protected void OnScriptReload() => QueueSort();
     public override void _Notification(int what) {
         switch ((long)what) {
-            case NotificationLayoutDirectionChanged:
-            case NotificationSortChildren: {
-                OnSortChildren();
-            } break;
+            case NotificationSortChildren: { OnSortChildren(); } break;
         }
         base._Notification(what);
     }
