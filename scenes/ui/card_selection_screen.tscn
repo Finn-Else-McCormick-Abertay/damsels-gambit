@@ -48,7 +48,8 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_hc2nn")
-CardId = "subject/animals"
+CardId = &"subject/animals"
+CornerRadius = 0.0
 ShadowOpacity = 0.0
 
 [node name="CardDisplay2" type="Control" parent="Subjects ScrollContainer/GridContainer"]
@@ -56,7 +57,8 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_hc2nn")
-CardId = "subject/animals"
+CardId = &"subject/animals"
+CornerRadius = 0.0
 ShadowOpacity = 0.0
 
 [node name="CardDisplay3" type="Control" parent="Subjects ScrollContainer/GridContainer"]
@@ -64,7 +66,8 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_hc2nn")
-CardId = "subject/animals"
+CardId = &"subject/animals"
+CornerRadius = 0.0
 ShadowOpacity = 0.0
 
 [node name="CardDisplay4" type="Control" parent="Subjects ScrollContainer/GridContainer"]
@@ -72,7 +75,8 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_hc2nn")
-CardId = "subject/animals"
+CardId = &"subject/animals"
+CornerRadius = 0.0
 ShadowOpacity = 0.0
 
 [node name="CardDisplay5" type="Control" parent="Subjects ScrollContainer/GridContainer"]
@@ -80,7 +84,8 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_hc2nn")
-CardId = "subject/animals"
+CardId = &"subject/animals"
+CornerRadius = 0.0
 ShadowOpacity = 0.0
 
 [node name="CardDisplay6" type="Control" parent="Subjects ScrollContainer/GridContainer"]
@@ -88,7 +93,8 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_hc2nn")
-CardId = "subject/animals"
+CardId = &"subject/animals"
+CornerRadius = 0.0
 ShadowOpacity = 0.0
 
 [node name="CardDisplay7" type="Control" parent="Subjects ScrollContainer/GridContainer"]
@@ -96,7 +102,8 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_hc2nn")
-CardId = "subject/animals"
+CardId = &"subject/animals"
+CornerRadius = 0.0
 ShadowOpacity = 0.0
 
 [node name="CardDisplay8" type="Control" parent="Subjects ScrollContainer/GridContainer"]
@@ -104,7 +111,8 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_hc2nn")
-CardId = "subject/animals"
+CardId = &"subject/animals"
+CornerRadius = 0.0
 ShadowOpacity = 0.0
 
 [node name="CardDisplay9" type="Control" parent="Subjects ScrollContainer/GridContainer"]
@@ -112,7 +120,8 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_hc2nn")
-CardId = "subject/animals"
+CardId = &"subject/animals"
+CornerRadius = 0.0
 ShadowOpacity = 0.0
 
 [node name="CardDisplay10" type="Control" parent="Subjects ScrollContainer/GridContainer"]
@@ -120,7 +129,8 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_hc2nn")
-CardId = "subject/animals"
+CardId = &"subject/animals"
+CornerRadius = 0.0
 ShadowOpacity = 0.0
 
 [node name="CardDisplay11" type="Control" parent="Subjects ScrollContainer/GridContainer"]
@@ -128,7 +138,8 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_hc2nn")
-CardId = "subject/animals"
+CardId = &"subject/animals"
+CornerRadius = 0.0
 ShadowOpacity = 0.0
 
 [node name="CardDisplay12" type="Control" parent="Subjects ScrollContainer/GridContainer"]
@@ -136,7 +147,8 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_hc2nn")
-CardId = "subject/animals"
+CardId = &"subject/animals"
+CornerRadius = 0.0
 ShadowOpacity = 0.0
 
 [node name="Modifiers ScrollContainer" type="ScrollContainer" parent="."]
@@ -166,7 +178,8 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_hc2nn")
-CardId = "question/thoughts"
+CardId = &"question/thoughts"
+CornerRadius = 0.0
 ShadowOpacity = 0.0
 
 [node name="CardDisplay2" type="Control" parent="Modifiers ScrollContainer/GridContainer"]
@@ -174,7 +187,8 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_hc2nn")
-CardId = "action/secret"
+CardId = &"action/secret"
+CornerRadius = 0.0
 ShadowOpacity = 0.0
 
 [node name="Subject Cards Title" type="RichTextLabel" parent="."]

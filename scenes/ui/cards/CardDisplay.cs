@@ -49,7 +49,7 @@ public partial class CardDisplay : Control, IReloadableToolScript
 	static CardDisplay() {
 		var gradient = new Gradient{ InterpolationColorSpace = Gradient.ColorSpace.Oklab };
 		gradient.SetColor(0, Colors.Black); gradient.SetColor(1, new Color(Colors.Black, 0f));
-        s_shadowGradientTexture = new GradientTexture1D { Gradient = gradient };
+		s_shadowGradientTexture = new GradientTexture1D { Gradient = gradient };
 	}
 
 	public bool IsMousedOver = false;
