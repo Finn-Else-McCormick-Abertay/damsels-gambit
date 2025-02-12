@@ -9,6 +9,7 @@ namespace DamselsGambit.Dialogue;
 
 public partial class DialogueView : Node, DialogueViewBase
 {
+	[Export] public Control Root { get; set; }
 	[Export] public Control TitleRoot { get; set { field = value; TitleLabel = TitleRoot is null ? null : TitleRoot is RichTextLabel ? TitleRoot as RichTextLabel : (Control)TitleRoot?.FindChildOfType<RichTextLabel>() ?? TitleRoot?.FindChildOfType<Label>(); } }
 	[Export] public Control LineRoot { get; set { field = value; LineLabel = LineRoot is null ? null : LineRoot is RichTextLabel ? LineRoot as RichTextLabel : (Control)LineRoot?.FindChildOfType<RichTextLabel>() ?? TitleRoot?.FindChildOfType<Label>(); } }
 	[Export] public Control OptionRoot { get; set; }
@@ -28,6 +29,7 @@ public partial class DialogueView : Node, DialogueViewBase
 
 	public override void _EnterTree() {
 		ContinueButton?.TryConnect(Button.SignalName.Pressed, OnContinue);
+		Root.Hide();
 		TitleRoot.Hide();
 		LineRoot.Hide();
 		ContinueButton.Hide();
@@ -40,6 +42,7 @@ public partial class DialogueView : Node, DialogueViewBase
 	}
 
 	public void DialogueStarted() {
+		Root.Show();
 		State = DialogueState.Waiting;
 	}
 

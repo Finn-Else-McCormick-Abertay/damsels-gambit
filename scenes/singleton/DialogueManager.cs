@@ -56,6 +56,18 @@ public partial class DialogueManager : Node
         return null;
     }
 
+    public static void Run(string nodeName) {
+        if (Runner.IsDialogueRunning) { Runner.Stop(); }
+		if (Runner.yarnProject.Program.Nodes.ContainsKey(nodeName)) {
+			Runner.StartDialogue(nodeName);
+		}
+        else {
+			Runner.StartDialogue("error");
+            Console.Error($"No such node '{nodeName}'");
+            GD.PushWarning($"No such node '{nodeName}'");
+        }
+    }
+
     // Dialogue commands
     static class Commands
     {    
@@ -66,5 +78,9 @@ public partial class DialogueManager : Node
             display.SpriteName = emotionName;
         }
 
+        [YarnCommand("score")]
+        public static void Score(int val) {
+            GameManager.CardGameController.Score += val;
+        }
     }
 }

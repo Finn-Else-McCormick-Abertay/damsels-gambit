@@ -13,10 +13,13 @@ public partial class GameManager : Node
 {
     public static GameManager Instance { get; private set; }
 
+    public static CardGameController CardGameController { get; private set; }
+
     public override void _EnterTree() { Instance = this; }
     public override void _Ready() {
         if (Console.Initialise(GetTree().Root.GetNode("LimboConsole"))) { RegisterCommands(); }
         //if (GUIDE.Initialise(GetTree().Root.GetNode("GUIDE"))) { GUIDE.EnableMappingContext(GUIDE.MappingContextDefault); }
+        CardGameController = GetTree().Root.FindChildOfType<CardGameController>();
     }
 
     private void RegisterCommands() {
@@ -31,8 +34,7 @@ public partial class GameManager : Node
         Console.RegisterCommand("switch", "switch scenes", Callable.From<string>(SwitchScenes), new Dictionary<int, IEnumerable<string>> { { 1, scenePaths } });
 
         Console.RegisterCommand("run", "", (string node) => {
-            if (DialogueManager.Runner.IsDialogueRunning) { DialogueManager.Runner.Stop(); }
-            DialogueManager.Runner.StartDialogue(node);            
+            DialogueManager.Run(node);         
         }, new Dictionary<int, Func<Godot.Collections.Array>> { { 1, () => new Godot.Collections.Array(DialogueManager.Runner.yarnProject.Program.Nodes.Select(x => Variant.From(x.Key))) } });
     }
 

@@ -1,0 +1,14 @@
+[remap]
+
+importer="yarnscript"
+type="Resource"
+uid="uid://b3gjhy6a30knv"
+path="res://.godot/imported/error.yarn-dcf6c240f51346efa84e52ac6ca6f9c3.tres"
+
+[deps]
+
+source_file="res://assets/dialogue/error.yarn"
+dest_files=["res://.godot/imported/error.yarn-dcf6c240f51346efa84e52ac6ca6f9c3.tres"]
+
+[params]
+

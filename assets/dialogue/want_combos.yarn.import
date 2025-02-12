@@ -1,0 +1,14 @@
+[remap]
+
+importer="yarnscript"
+type="Resource"
+uid="uid://cg8r6ammwi8gs"
+path="res://.godot/imported/want_combos.yarn-269db24ecb7f2dc18e16c5a5eb3ac60c.tres"
+
+[deps]
+
+source_file="res://assets/dialogue/want_combos.yarn"
+dest_files=["res://.godot/imported/want_combos.yarn-269db24ecb7f2dc18e16c5a5eb3ac60c.tres"]
+
+[params]
+
