@@ -4,27 +4,53 @@ using YarnSpinnerGodot;
 
 namespace DamselsGambit.Dialogue;
 
+// This is an autoload singleton. Because of how Godot works, you can technically instantiate it yourself. Don't.
 public partial class DialogueManager : Node
 {
     public static DialogueManager Instance { get; private set; }
+    public static DialogueRunner Runner { get; private set; }
 
-    public override void _EnterTree() { Instance = this; }
+    public override void _EnterTree() {
+        Instance = this;
+        Runner = new DialogueRunner {
+            yarnProject = ResourceLoader.Load<YarnProject>("res://assets/dialogue/DamselsGambit.yarnproject"),
+            startAutomatically = false
+        };
+        AddChild(Runner);
+        //Runner.SetDialogueViews(_dialogueViews);
+        Runner.Ready += () => { Runner.SetDialogueViews(_dialogueViews); };
+    }
 
-    private readonly HashSet<NodePath> _characterDisplayPaths = [];
+    private readonly HashSet<CharacterDisplay> _characterDisplays = [];
+    private readonly HashSet<DialogueView> _dialogueViews = [];
 
     public static void RegisterDisplay(CharacterDisplay display) {
         if (Instance is null) return;
-        Instance._characterDisplayPaths.Add(display.GetPath());
+        Instance._characterDisplays.Add(display);
     }
     public static void DeregisterDisplay(CharacterDisplay display) {
         if (Instance is null) return;
-        Instance._characterDisplayPaths.Remove(display.GetPath());
+        Instance._characterDisplays.Remove(display);
+    }
+
+    public static void RegisterView(DialogueView view) {
+        if (Instance is null) return;
+        Instance._dialogueViews.Add(view);
+        if (Runner is not null && Runner.IsNodeReady()) {
+            Runner.dialogueViews.Add(view);
+        }
+    }
+    public static void DeregisterView(DialogueView view) {
+        if (Runner is null) return;
+        Instance._dialogueViews.Remove(view);
+        if (Runner is not null && Runner.IsNodeReady()) {
+            Runner.dialogueViews.Remove(view);
+        }
     }
 
     public static CharacterDisplay GetCharacterDisplay(string characterName) {
         if (Instance is null) return null;
-        foreach (var path in Instance._characterDisplayPaths) {
-            var node = Instance.GetTree().Root.GetNode(path);
+        foreach (var node in Instance._characterDisplays) {
             if (node is CharacterDisplay display && display.CharacterName == characterName) return display;
         }
         return null;

@@ -1,11 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://gqmapmoqb22o"]
+[gd_scene load_steps=3 format=3 uid="uid://gqmapmoqb22o"]
 
-[ext_resource type="Script" path="res://addons/YarnSpinner-Godot/Runtime/DialogueRunner.cs" id="1_bfb14"]
 [ext_resource type="Theme" uid="uid://cj01ghso8eli6" path="res://assets/dialogue/dialogue_theme.tres" id="1_gxacw"]
-[ext_resource type="Resource" uid="uid://cr0la80f5yxnp" path="res://assets/dialogue/DamselsGambit.yarnproject" id="2_6kdll"]
-[ext_resource type="Script" path="res://addons/YarnSpinner-Godot/Runtime/InMemoryVariableStorage.cs" id="3_mp8vo"]
 [ext_resource type="Script" path="res://scenes/ui/dialogue/DialogueView.cs" id="5_o0l0u"]
-[ext_resource type="Script" path="res://addons/YarnSpinner-Godot/Runtime/LineProviders/TextLineProvider.cs" id="6_asp0m"]
 
 [node name="DialogueSystem" type="Control"]
 layout_mode = 3
@@ -15,20 +11,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_gxacw")
-
-[node name="DialogueRunner" type="Node" parent="." node_paths=PackedStringArray("variableStorage", "dialogueViews", "lineProvider")]
-script = ExtResource("1_bfb14")
-yarnProject = ExtResource("2_6kdll")
-variableStorage = NodePath("../InMemoryVariableStorage")
-dialogueViews = [NodePath("../DialogueView")]
-startNode = "Test"
-lineProvider = NodePath("../TextLineProvider")
-
-[node name="InMemoryVariableStorage" type="Node" parent="."]
-script = ExtResource("3_mp8vo")
-
-[node name="TextLineProvider" type="Node" parent="."]
-script = ExtResource("6_asp0m")
 
 [node name="DialogueView" type="Node" parent="." node_paths=PackedStringArray("TitleRoot", "LineRoot", "OptionRoot", "OptionArchetype", "ContinueButton")]
 script = ExtResource("5_o0l0u")

@@ -28,19 +28,19 @@ public partial class DialogueView : Node, DialogueViewBase
 
 	public override void _EnterTree() {
 		ContinueButton?.TryConnect(Button.SignalName.Pressed, OnContinue);
-	}
-	public override void _ExitTree() {
-		ContinueButton?.TryDisconnect(Button.SignalName.Pressed, OnContinue);
-		TitleRoot = TitleRoot;
-		LineRoot = LineRoot;
-	}
-
-	public void DialogueStarted() {
-		State = DialogueState.Waiting;
 		TitleRoot.Hide();
 		LineRoot.Hide();
 		ContinueButton.Hide();
 		OptionRoot.Hide();
+		DialogueManager.RegisterView(this);
+	}
+	public override void _ExitTree() {
+		ContinueButton?.TryDisconnect(Button.SignalName.Pressed, OnContinue);
+		DialogueManager.DeregisterView(this);
+	}
+
+	public void DialogueStarted() {
+		State = DialogueState.Waiting;
 	}
 
     public void RunLine(LocalizedLine dialogueLine, Action onDialogueLineFinished) {
