@@ -1,0 +1,14 @@
+[remap]
+
+importer="yarnscript"
+type="Resource"
+uid="uid://usycettx38mr"
+path="res://.godot/imported/give.yarn-8542f0b74fd30923e37b0adb26967d24.tres"
+
+[deps]
+
+source_file="res://assets/dialogue/action/give.yarn"
+dest_files=["res://.godot/imported/give.yarn-8542f0b74fd30923e37b0adb26967d24.tres"]
+
+[params]
+

@@ -1,0 +1,89 @@
+title: action/want+subject/parents
+---
+Princess: I want...
+	-> Different parents.
+		<<score -3>>
+	-> To bring my parents a gift!
+		<<score 3>>
+===
+
+title: action/want+subject/food
+---
+Princess: I want...
+	-> To have wolf-shaped jelly!
+		<<score -3>>
+	-> Tallow fried chicken!
+		<<score 3>>
+===
+
+title: action/want+subject/animals
+---
+Princess: I want...
+	-> A pet cat, they're so elegant!
+		<<score -3>>
+	-> A pet wolf, don't you see how majestic they are?
+		<<score 3>>
+===
+
+title: action/want+subject/art
+---
+Princess: I want...
+	-> To learn how to paint one day...
+		<<score 3>>
+	-> To stay away from art my whole life!
+		<<score -3>>
+===
+
+title: action/want+subject/loyalty
+---
+Princess: I want...
+	-> To kiss the waiter...?!
+		<<score -3>>
+	-> To discuss our engagement.
+		<<score 3>>
+===
+
+title: action/want+subject/witchcraft
+---
+Princess: I want...
+	-> To go on a witch hunt!!
+		<<score 3>>
+	-> To abolish witch hunting!
+		<<score -3>>
+===
+
+title: action/want+subject/religion
+---
+Princess: I want...
+	-> To visit the Central Church, it's a sight.
+		<<score 3>>
+	-> To abolish all religion!
+		<<score -3>>
+===
+
+title: action/want+subject/children
+---
+Princess: I want...
+	-> To have children in the future.
+		<<score 3>>
+	-> To never have children.
+		<<score -3>>
+===
+
+title: action/want+subject/weather
+---
+Princess: I want...
+	-> Some warm summer weather!
+		<<score -3>>
+	-> Some cool autumn breeze.
+		<<score 3>>
+===
+
+title: action/want+subject/hobbies
+---
+Princess: I want...
+	-> To learn archery.
+		<<score 3>>
+	-> To learn swordsmanship.
+		<<score -3>>
+===

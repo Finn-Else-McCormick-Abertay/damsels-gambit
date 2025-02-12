@@ -52,13 +52,13 @@ point_count = 1
 [sub_resource type="Curve" id="Curve_2cmp0"]
 min_value = -50.0
 max_value = 50.0
-_data = [Vector2(0, -22.5581), 0.0, 144.798, 0, 0, Vector2(0.464497, 22.7907), 53.908, 53.908, 0, 0, Vector2(1, 33.3721), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, -24.8256), 0.0, 144.798, 0, 0, Vector2(0.488166, 22.7907), 67.6231, 67.6231, 0, 0, Vector2(1, 33.3721), 0.0, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="Curve" id="Curve_kxdyk"]
 min_value = -90.0
 max_value = 90.0
-_data = [Vector2(0, -13.1585), 0.0, 0.0, 0, 0, Vector2(0.505917, -5.32366), 49.8312, 49.8312, 0, 0, Vector2(1, -1.40625), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, -18.3817), 0.0, 0.0, 0, 0, Vector2(0.529586, -7.93526), 56.3441, 56.3441, 0, 0, Vector2(1, -1.40625), 0.0, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="Curve" id="Curve_5nabb"]
@@ -105,17 +105,16 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 110.0
-offset_top = 417.0
-offset_right = -613.0
-offset_bottom = -32.0
+offset_left = 95.0
+offset_top = 414.0
+offset_right = -628.0
+offset_bottom = -35.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 0
 script = ExtResource("4_xg83y")
 Alignment = 0
-AnimationTimeReorder = 0.3
-AnimationTimeHighlight = 0.1
+MaxSelected = -1
 CurveSeparation = SubResource("Curve_6espp")
 CurveOffset = SubResource("Curve_2cmp0")
 CurveRotation = SubResource("Curve_kxdyk")
@@ -162,8 +161,7 @@ grow_vertical = 2
 mouse_filter = 0
 script = ExtResource("4_xg83y")
 Alignment = 2
-AnimationTimeReorder = 0.3
-AnimationTimeHighlight = 0.1
+MaxSelected = -1
 CurveSeparation = SubResource("Curve_6espp")
 CurveOffset = SubResource("Curve_5nabb")
 CurveRotation = SubResource("Curve_mupma")

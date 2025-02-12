@@ -8,7 +8,7 @@
 [node name="Main" type="Node"]
 
 [node name="Suitor" type="Sprite2D" parent="."]
-position = Vector2(590, 365)
+position = Vector2(573, 365)
 scale = Vector2(0.777764, 0.777764)
 texture = ExtResource("3_1tb4e")
 script = ExtResource("2_fjr5l")

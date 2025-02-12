@@ -1,0 +1,89 @@
+title: action/give+subject/parents
+---
+Princess: I got this...
+	-> Elegant fox pelt slippers for your mother.
+		<<score 3>>
+	-> Occult dreamwatcher for your father, so he may see visions in his dreams.
+		<<score -3>>
+===
+
+title: action/give+subject/food
+---
+Princess: Here, I got this for you...
+	-> Wolf-shaped jelly.
+		<<score -3>>
+	-> Tear pasta..? (Mmm a delicious mix of cheese, pasta, and salt from tears).
+		<<score 3>>
+===
+
+title: action/give+subject/animals
+---
+Princess: Here you are...
+	-> A wolf pelt!
+		<<score 3>>
+	-> A leopard pelt.
+		<<score -3>>
+===
+
+title: action/give+subject/art
+---
+Princess: I got this for you..
+	-> It's a painting of the serene magical lake of Rosewood. Painted by our most renowned painter!
+		<<score 3>>
+	-> It's a broken vase, but I promise you it was expensive when it was intact!
+		<<score -3>>
+===
+
+title: action/give+subject/loyalty
+---
+Princess: I got this for you..
+	-> It's a necklace that lights up when you're close to mine!
+		<<score 3>>
+	-> It's an... upside-down pineapple ornament...
+		<<score -3>>
+===
+
+title: action/give+subject/witchcraft
+---
+Princess: Here, I got you a...
+	-> Newly made pitchfork crafted from black iron for your next witch hunt!
+		<<score 3>>
+	-> Sacrificial doll...
+		<<score -3>>
+===
+
+title: action/give+subject/religion
+---
+Princess: I got this for you...
+	-> It's an idol of our God, it will protect you.
+		<<score 3>>
+	-> It's a broken necklace from the church... might not have the connection to God, but it's still pretty!
+		<<score -3>>
+===
+
+title: action/give+subject/children
+---
+Princess: Here, take...
+	-> This *How to Be a Father for Dummies* book.
+		<<score 3>>
+	-> This *Top 1000 Reasons to Never Start a Family* wiki.
+		<<score -3>>
+===
+
+title: action/give+subject/weather
+---
+Princess: Here you are...
+	-> It's a winter coat! Made of our finest leather and fur.
+		<<score 3>>
+	-> It's a pair of sunglasses! (Designer too!)
+		<<score -3>>
+===
+
+title: action/give+subject/hobbies
+---
+Princess: *Searches around...* Here it is...!
+	-> I got you a brand new sword, made from black steel!
+		<<score 3>>
+	-> I got you a bow made of the finest willow wood!
+		<<score -3>>
+===

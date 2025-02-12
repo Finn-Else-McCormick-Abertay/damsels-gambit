@@ -47,16 +47,24 @@ public partial class DialogueView : Node, DialogueViewBase
 	}
 
     public void RunLine(LocalizedLine dialogueLine, Action onDialogueLineFinished) {
+		var tags = dialogueLine.Metadata;
+		bool lastLine = tags.Contains("lastline");
+
         static void TrySetText(Control control, string text) {
 			if (control is Label label) { label.Text = text; }
 			if (control is RichTextLabel richTextLabel) { richTextLabel.Text = text; }
 		}
 		TrySetText(TitleLabel, dialogueLine.CharacterName);
 		TrySetText(LineLabel, dialogueLine.TextWithoutCharacterName.Text);
-		TitleRoot.Show();
-		LineRoot.Show();
-		ContinueButton.Show();
+		TitleRoot.Show(); LineRoot.Show();
 		_onLineFinishedAction = onDialogueLineFinished;
+		if (lastLine && dialogueLine.CharacterName == "Princess") {
+			ContinueButton.Hide();
+			_onLineFinishedAction?.Invoke();
+		}
+		else {
+			ContinueButton.Show();
+		}
 		State = DialogueState.DisplayingLine;
 	}
 
