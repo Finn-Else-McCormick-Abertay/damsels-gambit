@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Godot;
 using YarnSpinnerGodot;
 
@@ -56,16 +57,15 @@ public partial class DialogueManager : Node
         return null;
     }
 
-    public static void Run(string nodeName) {
-        if (Runner.IsDialogueRunning) { Runner.Stop(); }
+    public static bool Run(string nodeName, bool force = false, bool orErrorDialogue = true) {
+        if (Runner.IsDialogueRunning) { if (force) { Runner.Stop(); } else { return false; } }
 		if (Runner.yarnProject.Program.Nodes.ContainsKey(nodeName)) {
 			Runner.StartDialogue(nodeName);
+            return true;
 		}
-        else {
-			Runner.StartDialogue("error");
-            Console.Error($"No such node '{nodeName}'");
-            GD.PushWarning($"No such node '{nodeName}'");
-        }
+        Console.Error($"No such node '{nodeName}'"); GD.PushWarning($"No such node '{nodeName}'");
+        if (orErrorDialogue) { Runner.StartDialogue("error"); }
+        return false;
     }
 
     // Dialogue commands

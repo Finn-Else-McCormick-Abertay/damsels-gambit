@@ -78,7 +78,10 @@ public partial class HandContainer : Container, IReloadableToolScript
         if (!Engine.IsEditorHint()) {
             child.TryDisconnect(SignalName.MouseEntered, new Callable(this, MethodName.QueueSort));
             child.TryConnect(SignalName.MouseExited, new Callable(this, MethodName.QueueSort));
+            _newChildren.Remove(child);
+            _selectedCards.Remove(child);
             _prevMouseOverState.Remove(child);
+            _prevSelectedState.Remove(child);
             _prevIndex.Remove(child);
         }
     }

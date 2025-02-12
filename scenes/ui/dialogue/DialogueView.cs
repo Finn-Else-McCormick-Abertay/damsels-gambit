@@ -113,6 +113,7 @@ public partial class DialogueView : Node, DialogueViewBase
 		State = DialogueState.Inactive;
 		TitleRoot.Hide();
 		LineRoot.Hide();
+		Root.Hide();
 	}
 
 	public void UserRequestedViewAdvancement() {}

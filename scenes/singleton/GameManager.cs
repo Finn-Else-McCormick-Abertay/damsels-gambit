@@ -34,7 +34,7 @@ public partial class GameManager : Node
         Console.RegisterCommand("switch", "switch scenes", Callable.From<string>(SwitchScenes), new Dictionary<int, IEnumerable<string>> { { 1, scenePaths } });
 
         Console.RegisterCommand("run", "", (string node) => {
-            DialogueManager.Run(node);         
+            DialogueManager.Run(node, true, false);         
         }, new Dictionary<int, Func<Godot.Collections.Array>> { { 1, () => new Godot.Collections.Array(DialogueManager.Runner.yarnProject.Program.Nodes.Select(x => Variant.From(x.Key))) } });
     }
 
