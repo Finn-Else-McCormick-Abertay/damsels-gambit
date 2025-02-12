@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://batwxl882qxsf"
-path="res://.godot/imported/Sad 1.png-de0aeb6e8c3eb35fd6b5d02be4838646.ctex"
+uid="uid://cg4pxjjejc5yn"
+path="res://.godot/imported/sad_1.png-024fa60198bf8437e4deb833deee631a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/Suitor/Sad 1.png"
-dest_files=["res://.godot/imported/Sad 1.png-de0aeb6e8c3eb35fd6b5d02be4838646.ctex"]
+source_file="res://assets/characters/lady_in_waiting/sad_1.png"
+dest_files=["res://.godot/imported/sad_1.png-024fa60198bf8437e4deb833deee631a.ctex"]
 
 [params]
 

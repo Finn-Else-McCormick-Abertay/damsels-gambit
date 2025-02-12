@@ -52,9 +52,15 @@ public partial class CardDisplay : Control, IReloadableToolScript
 		s_shadowGradientTexture = new GradientTexture1D { Gradient = gradient };
 	}
 
-	public bool IsMousedOver = false;
+	public CardDisplay() {
+		MouseFilter = MouseFilterEnum.Pass;
+	}
+
+	public bool IsMousedOver { get; private set; } = false;
 	private void OnMouseEntered() { IsMousedOver = true; QueueRedraw(); }
 	private void OnMouseExited() { IsMousedOver = false; QueueRedraw(); }
+
+	public Rect2 CardRect { get => new(0f, 0f, _textureAspectRatio * Size.Y, Size.Y); }
 
 	public override void _EnterTree() {
 		RebuildMeshes(); UpdatePivot();

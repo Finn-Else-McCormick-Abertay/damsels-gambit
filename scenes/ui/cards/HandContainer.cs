@@ -2,6 +2,7 @@ using DamselsGambit.Util;
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace DamselsGambit;
@@ -11,6 +12,20 @@ public partial class HandContainer : Container, IReloadableToolScript
 {
     [Export] public BoxContainer.AlignmentMode Alignment { get; set { field = value; QueueSort(); } } = BoxContainer.AlignmentMode.Center;
     [Export] public bool Fill { get; set { field = value; QueueSort(); } } = false;
+
+    [ExportGroup("Input")]
+    [Export] public int MaxSelected { get; set; } = 1;
+    /*[Export(PropertyHint.ResourceType, "GUIDEAction")] private Resource _selectAction { get; set { field = value; SelectAction = GDScriptBridge.As<GUIDEActionBridge>(_selectAction); } }
+    [Export(PropertyHint.ResourceType, "GUIDEAction")] private Resource _pointerAction { get; set { field = value; PointerAction = GDScriptBridge.As<GUIDEActionBridge>(_pointerAction); } }
+    
+    public GUIDEActionBridge SelectAction { get; set {
+            var onSelectCallable = new Callable(this, MethodName.OnSelectCompleted);
+            if (SelectAction is not null && SelectAction.IsConnected(GUIDEActionBridge.SignalName.Completed, onSelectCallable)) SelectAction.Disconnect(GUIDEActionBridge.SignalName.Completed, onSelectCallable);
+            field = value;
+            if (SelectAction is not null && !SelectAction.IsConnected(GUIDEActionBridge.SignalName.Completed, onSelectCallable)) SelectAction.Connect(GUIDEActionBridge.SignalName.Completed, onSelectCallable);
+        }
+    }
+    public GUIDEActionBridge PointerAction { get; set; }*/
 
     [ExportGroup("Animation", "Animation")]
     [Export] public double AnimationTimeAdd { get; set; } = 0.0;
@@ -68,8 +83,48 @@ public partial class HandContainer : Container, IReloadableToolScript
         }
     }
 
+    /*private void OnSelectCompleted() {
+        if (Engine.IsEditorHint()) return;
+
+        CardDisplay cardToSelect = null;
+        foreach (var child in GetChildren()) {
+            if (child is not CardDisplay card) continue;
+            if (card.IsMousedOver) { cardToSelect = card; }
+        }
+
+        if (cardToSelect is not null) {
+            if (_selectedCards.Contains(cardToSelect)) { _selectedCards.Remove(cardToSelect); }
+            else { _selectedCards.Add(cardToSelect); }
+            QueueSort();
+        }
+    }*/
+
+    public override void _GuiInput(InputEvent @event) {
+        if (@event is InputEventMouseButton buttonEvent) {
+            if (buttonEvent.ButtonIndex == MouseButton.Left && !buttonEvent.Pressed) {
+                CardDisplay selectedCard = null;
+                foreach (Control child in GetChildren().Cast<Control>()) {
+                    if (child is not CardDisplay card) continue;
+                    var positionLocal = child.GetTransform().AffineInverse() * buttonEvent.Position;
+                    if (card.CardRect.HasPoint(positionLocal)) { selectedCard = card; }
+                }
+                if (selectedCard is not null) {
+                    bool isSelected = _selectedCards.Contains(selectedCard);
+                    _prevSelectedState[selectedCard] = isSelected;
+                    if (isSelected) { _selectedCards.Remove(selectedCard); }
+                    else if (MaxSelected == -1 || _selectedCards.Count < MaxSelected) { _selectedCards.Add(selectedCard); }
+                    QueueSort();
+                }
+            }
+        }
+    }
+
+    public IEnumerable<CardDisplay> GetSelected() => _selectedCards.Select(x => x as CardDisplay);
+
     private readonly HashSet<Node> _newChildren = [];
+    private readonly HashSet<Node> _selectedCards = [];
     private readonly Dictionary<Node, bool> _prevMouseOverState = [];
+    private readonly Dictionary<Node, bool> _prevSelectedState = [];
     private readonly Dictionary<Node, int> _prevIndex = [];
     private readonly Dictionary<Node, Tween> _tweens = [];
 
@@ -109,6 +164,11 @@ public partial class HandContainer : Container, IReloadableToolScript
                 Vector2 newPosition = new(runningTotal, -CurveOffset?.Sample(samplePoint) ?? 0f);
                 float newRotation = CurveRotation is not null ? CurveRotation.Sample(samplePoint) / 180 * MathF.PI : 0f;
 
+                bool selected = _selectedCards.Contains(card);
+                if (selected) { newPosition += new Vector2(0f, -40f); }
+                
+                _prevSelectedState.TryGetValue(card, out bool wasSelected);
+
                 bool mousedOver = (card as CardDisplay)?.IsMousedOver ?? false;
                 if (mousedOver && !Engine.IsEditorHint()) { newPosition += new Vector2(0f, -20f); }
                 
@@ -119,6 +179,7 @@ public partial class HandContainer : Container, IReloadableToolScript
 
                 bool hasTween = _tweens.TryGetValue(card, out Tween oldTween);
                 if (!(prevMousedOver && hasTween && oldTween.IsRunning())) { _prevMouseOverState[card] = mousedOver; }
+                if (!(wasSelected && hasTween && oldTween.IsRunning())) { _prevSelectedState[card] = selected; }
 
                 bool skipAnimation = false;
 
@@ -132,7 +193,7 @@ public partial class HandContainer : Container, IReloadableToolScript
                 
                 if (!skipAnimation) {
                     var isNew = _newChildren.Contains(card); if (isNew) { _newChildren.Remove(card); }
-                    var animationTime = isNew ? AnimationTimeAdd : mousedOver != prevMousedOver ? AnimationTimeHighlight : AnimationTimeReorder;
+                    var animationTime = isNew ? AnimationTimeAdd : (mousedOver != prevMousedOver || selected != wasSelected) ? AnimationTimeHighlight : AnimationTimeReorder;
 
                     if (animationTime > 0.0 && !Engine.IsEditorHint()) {
                         var tween = CreateTween().SetParallel(true);

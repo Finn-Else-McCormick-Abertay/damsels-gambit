@@ -18,10 +18,10 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-GUIDE="*res://addons/guide/guide.gd"
 LimboConsole="*res://addons/limbo_console/limbo_console.gd"
 DialogueManager="*res://scenes/singleton/DialogueManager.cs"
 GameManager="*res://scenes/singleton/GameManager.cs"
+GUIDE="*res://addons/guide/guide.gd"
 
 [display]
 
@@ -34,7 +34,7 @@ project/assembly_name="Damsels Gambit"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/AnchorsOnlyPreset/plugin.cfg", "res://addons/YarnSpinner-Godot/plugin.cfg", "res://addons/limbo_console/plugin.cfg")
+enabled=PackedStringArray("res://addons/AnchorsOnlyPreset/plugin.cfg", "res://addons/YarnSpinner-Godot/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/limbo_console/plugin.cfg")
 
 [file_customization]
 

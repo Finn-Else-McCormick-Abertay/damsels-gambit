@@ -5,7 +5,7 @@ using Godot;
 
 namespace DamselsGambit;
 
-// Setup by GameManager
+// Setup by GameManager - bridge to LimboConsole GDScript autoload
 public sealed class Console
 {
     private static Console Instance { get; } = new();
@@ -13,8 +13,8 @@ public sealed class Console
 
     private Node _limboConsole;
 
-    public static bool Setup(Node limboConsole) {
-        if (Instance._limboConsole is not null) throw new Exception("Attempted to setup console more than once");
+    public static bool Initialise(Node limboConsole) {
+        if (Instance._limboConsole is not null) throw new Exception("Attempted to init console more than once");
         Instance._limboConsole = limboConsole;
         return Instance._limboConsole is not null;
     }

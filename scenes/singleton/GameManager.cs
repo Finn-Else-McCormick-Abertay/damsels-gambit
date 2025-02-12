@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DamselsGambit.Dialogue;
+using DamselsGambit.Util;
 using Godot;
 
 namespace DamselsGambit;
@@ -16,7 +15,8 @@ public partial class GameManager : Node
 
     public override void _EnterTree() { Instance = this; }
     public override void _Ready() {
-        if (Console.Setup(GetTree().Root.GetNode("LimboConsole"))) { RegisterCommands(); }
+        if (Console.Initialise(GetTree().Root.GetNode("LimboConsole"))) { RegisterCommands(); }
+        //if (GUIDE.Initialise(GetTree().Root.GetNode("GUIDE"))) { GUIDE.EnableMappingContext(GUIDE.MappingContextDefault); }
     }
 
     private void RegisterCommands() {
@@ -52,9 +52,5 @@ public partial class GameManager : Node
             Console.Info($"Switched to {normalisedPath}");
         }
         else { Console.Error($"Failed to switch to scene {normalisedPath}: no such scene exists."); }
-    }
-
-    private void TriggerDialogue(string node) {
-
     }
 } 

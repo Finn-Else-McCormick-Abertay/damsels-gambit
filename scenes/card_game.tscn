@@ -71,20 +71,26 @@ grow_vertical = 2
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
-offset_left = 51.0
-offset_top = 67.0
-offset_right = 194.0
-offset_bottom = -147.0
+offset_left = 23.0
+offset_top = 19.0
+offset_right = 117.0
+offset_bottom = -260.0
 grow_vertical = 2
 theme = SubResource("Theme_k5s5f")
 script = ExtResource("4_dw2x6")
 
 [node name="HandContainer" type="Container" parent="."]
-layout_mode = 0
-offset_left = 284.0
-offset_top = 306.0
-offset_right = 989.0
-offset_bottom = 505.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 126.0
+offset_top = 395.0
+offset_right = -153.0
+offset_bottom = -54.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
 script = ExtResource("4_xg83y")
 AnimationTimeReorder = 0.3
 AnimationTimeHighlight = 0.1
@@ -95,6 +101,7 @@ metadata/_edit_group_ = true
 
 [node name="CardDisplay" type="Control" parent="HandContainer"]
 layout_mode = 2
+mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"subject/animals"
 CornerRadius = 0.08
@@ -103,6 +110,7 @@ ShadowOpacity = 0.4
 
 [node name="CardDisplay5" type="Control" parent="HandContainer"]
 layout_mode = 2
+mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"question/thoughts"
 CornerRadius = 0.08
@@ -111,6 +119,7 @@ ShadowOpacity = 0.4
 
 [node name="CardDisplay3" type="Control" parent="HandContainer"]
 layout_mode = 2
+mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"question/thoughts"
 CornerRadius = 0.08
@@ -119,6 +128,7 @@ ShadowOpacity = 0.4
 
 [node name="CardDisplay2" type="Control" parent="HandContainer"]
 layout_mode = 2
+mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"action/secret"
 CornerRadius = 0.08
@@ -127,6 +137,7 @@ ShadowOpacity = 0.4
 
 [node name="CardDisplay4" type="Control" parent="HandContainer"]
 layout_mode = 2
+mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"subject/animals"
 CornerRadius = 0.08

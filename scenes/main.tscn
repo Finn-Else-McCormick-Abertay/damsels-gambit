@@ -6,12 +6,19 @@
 
 [node name="Main" type="Node"]
 
-[node name="CharacterDisplay" type="Sprite2D" parent="."]
-position = Vector2(615, 363)
+[node name="CardGame2" parent="." instance=ExtResource("1_nxi0a")]
+
+[node name="LadyInWaiting" type="Sprite2D" parent="."]
+position = Vector2(604, 370)
 scale = Vector2(0.54515, 0.54515)
 script = ExtResource("2_fjr5l")
-CharacterName = &""
-SpriteName = "Explaining 1"
+CharacterName = &"lady_in_waiting"
+
+[node name="Suitor" type="Sprite2D" parent="."]
+position = Vector2(604, 370)
+scale = Vector2(0.54515, 0.54515)
+script = ExtResource("2_fjr5l")
+CharacterName = &"suitor"
 
 [node name="CardGame" parent="." instance=ExtResource("1_nxi0a")]
 visible = false
