@@ -1,0 +1,8 @@
+title: tutorial_intro
+---
+<<show lady_in_waiting>>
+<<show chamber>>
+Lady in Waiting: Don't worry Princess, I'm sure you can get out of this.
+<<hide lady_in_waiting>>
+<<hide chamber>>
+===

@@ -1,0 +1,117 @@
+[gd_scene load_steps=17 format=3 uid="uid://d4dgonbop8ygy"]
+
+[ext_resource type="Script" path="res://scenes/environment/EnvironmentLayer.cs" id="1_84xex"]
+[ext_resource type="Texture2D" uid="uid://b85kbbob2a0hh" path="res://assets/characters/suitor/neutral.png" id="1_jtctn"]
+[ext_resource type="Texture2D" uid="uid://120j1ta6afcx" path="res://assets/environment/props/Seat.png" id="2_cqnjh"]
+[ext_resource type="Texture2D" uid="uid://dggitk1waeglj" path="res://assets/environment/library_background.png" id="2_lrhu2"]
+[ext_resource type="Script" path="res://scenes/character/CharacterDisplay.cs" id="2_s5131"]
+[ext_resource type="Texture2D" uid="uid://bv2ngki8juk5k" path="res://assets/environment/props/Table.png" id="5_tcu6h"]
+[ext_resource type="Texture2D" uid="uid://0qhn15hlp2pn" path="res://assets/environment/props/Reference.png" id="6_447i8"]
+[ext_resource type="Texture2D" uid="uid://cmepnlsnu6oqf" path="res://assets/environment/props/Cloth.png" id="7_f4vx0"]
+[ext_resource type="Texture2D" uid="uid://duhbk7c10lnr6" path="res://assets/environment/props/Cutlery.png" id="9_cmbj8"]
+[ext_resource type="Texture2D" uid="uid://5mih1v3tagx0" path="res://assets/environment/props/Plates.png" id="10_qv071"]
+[ext_resource type="Texture2D" uid="uid://bbd555fimwvu" path="res://assets/environment/props/Candle Holder Thing.png" id="11_vf4ml"]
+[ext_resource type="Texture2D" uid="uid://c5gkp3pcwksoa" path="res://assets/environment/props/Candle 1.png" id="12_fh3wo"]
+[ext_resource type="Texture2D" uid="uid://dqpr258weyxql" path="res://assets/environment/props/Candle 2.png" id="13_ds0vu"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_gw1xy"]
+blend_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_by1ux"]
+colors = PackedColorArray(0.55362, 0.417913, 0.330777, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_sxxwc"]
+gradient = SubResource("Gradient_by1ux")
+fill = 1
+fill_from = Vector2(0.491453, 0.777778)
+fill_to = Vector2(0.504274, 0)
+
+[node name="Library" type="Node"]
+
+[node name="Background" type="CanvasLayer" parent="."]
+layer = -1
+follow_viewport_enabled = true
+script = ExtResource("1_84xex")
+EnvironmentName = &"library"
+
+[node name="LibraryBackground" type="Sprite2D" parent="Background"]
+position = Vector2(541, 298)
+scale = Vector2(0.668866, 0.668866)
+texture = ExtResource("2_lrhu2")
+
+[node name="Gradient" type="Sprite2D" parent="Background"]
+modulate = Color(1, 1, 1, 0.780392)
+material = SubResource("CanvasItemMaterial_gw1xy")
+position = Vector2(575, 316.25)
+scale = Vector2(30.5313, 11.5859)
+texture = SubResource("GradientTexture2D_sxxwc")
+
+[node name="Seat" type="Sprite2D" parent="Background"]
+position = Vector2(569, 365)
+scale = Vector2(0.618601, 0.618601)
+texture = ExtResource("2_cqnjh")
+
+[node name="SuitorLayer" type="CanvasLayer" parent="."]
+follow_viewport_enabled = true
+
+[node name="Suitor" type="Sprite2D" parent="SuitorLayer"]
+position = Vector2(569, 325)
+scale = Vector2(0.666757, 0.666757)
+texture = ExtResource("1_jtctn")
+script = ExtResource("2_s5131")
+CharacterName = &"suitor"
+SpriteName = "neutral"
+
+[node name="Foreground" type="CanvasLayer" parent="."]
+layer = 2
+follow_viewport_enabled = true
+script = ExtResource("1_84xex")
+EnvironmentName = &"library"
+
+[node name="Table" type="Sprite2D" parent="Foreground"]
+position = Vector2(584, 506)
+scale = Vector2(0.639558, 0.639558)
+texture = ExtResource("5_tcu6h")
+offset = Vector2(-16.5457, 105.893)
+
+[node name="Cloth" type="Sprite2D" parent="Foreground"]
+position = Vector2(575, 505)
+scale = Vector2(0.658545, 0.658545)
+texture = ExtResource("7_f4vx0")
+offset = Vector2(-22.8421, 97.8948)
+
+[node name="Cutlery" type="Sprite2D" parent="Foreground"]
+position = Vector2(582, 504.851)
+scale = Vector2(0.647059, 0.647059)
+texture = ExtResource("9_cmbj8")
+offset = Vector2(-242.636, 23.1818)
+
+[node name="Plates" type="Sprite2D" parent="Foreground"]
+position = Vector2(582, 504.851)
+scale = Vector2(0.611386, 0.611386)
+texture = ExtResource("10_qv071")
+offset = Vector2(-17.9919, 26.17)
+
+[node name="CandleHolderThing" type="Sprite2D" parent="Foreground"]
+position = Vector2(582, 504.851)
+scale = Vector2(0.613807, 0.613807)
+texture = ExtResource("11_vf4ml")
+offset = Vector2(-526.224, -35.8419)
+
+[node name="Candle1" type="Sprite2D" parent="Foreground"]
+position = Vector2(582, 504.851)
+scale = Vector2(0.5875, 0.5875)
+texture = ExtResource("12_fh3wo")
+offset = Vector2(-495.319, 112.34)
+
+[node name="Candle2" type="Sprite2D" parent="Foreground"]
+position = Vector2(582, 504.851)
+scale = Vector2(0.554795, 0.554795)
+texture = ExtResource("13_ds0vu")
+offset = Vector2(-627.259, 156.815)
+
+[node name="Reference" type="Sprite2D" parent="Foreground"]
+visible = false
+position = Vector2(577, 321)
+scale = Vector2(0.621875, 0.621875)
+texture = ExtResource("6_447i8")

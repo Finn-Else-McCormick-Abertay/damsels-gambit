@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using DamselsGambit.Dialogue;
 using DamselsGambit.Util;
 using Godot;
@@ -31,11 +32,13 @@ public partial class GameManager : Node
         }
         TraverseAndAddScenes("res://scenes");
 
-        Console.RegisterCommand("switch", "switch scenes", Callable.From<string>(SwitchScenes), new Dictionary<int, IEnumerable<string>> { { 1, scenePaths } });
+        Console.RegisterCommand<string>("switch", "switch scenes", SwitchScenes, new Dictionary<int, IEnumerable<string>> { { 1, scenePaths } });
 
         Console.RegisterCommand("run", "", (string node) => {
             DialogueManager.Run(node, true, false);         
         }, new Dictionary<int, Func<Godot.Collections.Array>> { { 1, () => new Godot.Collections.Array(DialogueManager.Runner.yarnProject.Program.Nodes.Select(x => Variant.From(x.Key))) } });
+
+        Console.RegisterCommand<string>("get", "", GetCommand, new Dictionary<int, IEnumerable<string>> { { 1, [ "cards" ] } });
     }
 
     private void SwitchScenes(string scenePath) {
@@ -54,5 +57,15 @@ public partial class GameManager : Node
             Console.Info($"Switched to {normalisedPath}");
         }
         else { Console.Error($"Failed to switch to scene {normalisedPath}: no such scene exists."); }
+    }
+
+    private void GetCommand(string what) {
+        if (what == "cards") {
+            var sb = new StringBuilder();
+            sb.Append("Subject Deck  : [").AppendJoin(", ", CardGameController.RemainingSubjectDeck).Append("]\n");
+            sb.Append("Modifier Deck : [").AppendJoin(", ", CardGameController.RemainingModifierDeck).Append(']');
+
+            Console.Info(sb.ToString());
+        }
     }
 } 

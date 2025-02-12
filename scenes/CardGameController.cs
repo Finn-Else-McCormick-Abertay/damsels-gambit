@@ -4,7 +4,9 @@ using DamselsGambit.Util;
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using YarnSpinnerGodot;
 
 public partial class CardGameController : Control
@@ -14,13 +16,22 @@ public partial class CardGameController : Control
 
 	private List<string> _subjectDeckWorking, _modifierDeckWorking;
 
+	public ReadOnlyCollection<string> RemainingSubjectDeck => _subjectDeckWorking.AsReadOnly();
+	public ReadOnlyCollection<string> RemainingModifierDeck => _modifierDeckWorking.AsReadOnly();
+
 	[Export] AffectionMeter AffectionMeter { get; set; }
 	[Export] HandContainer SubjectHand { get; set; }
 	[Export] HandContainer ModifierHand { get; set; }
 	[Export] Button PlayButton { get; set; }
 
 	private readonly int _scoreMax = 10, _scoreMin = -10;
-	public int Score { get; set { field = value; AffectionMeter.ValuePercent = 1 - ((Score / (float)(Math.Abs(_scoreMax) + Math.Abs(_scoreMin))) + Math.Abs(_scoreMin) / (float)(Math.Abs(_scoreMax) + Math.Abs(_scoreMin))); } }
+	public int Score { get; set {
+			field = value;
+			var newDisplayValue = 1 - ((Score / (float)(Math.Abs(_scoreMax) + Math.Abs(_scoreMin))) + Math.Abs(_scoreMin) / (float)(Math.Abs(_scoreMax) + Math.Abs(_scoreMin)));
+			var valueTween = AffectionMeter.CreateTween();
+			valueTween.TweenProperty(AffectionMeter, AffectionMeter.PropertyName.ValuePercent.ToString(), newDisplayValue, 1.0);
+		}
+	}
 
 	public override void _Ready() {
 		PlayButton?.TryConnect(Button.SignalName.Pressed, new Callable(this, MethodName.PlayHand));
@@ -33,9 +44,21 @@ public partial class CardGameController : Control
 		_subjectDeckWorking = SubjectDeck.Select(x => x).ToList();
 		_modifierDeckWorking = ModifierDeck.Select(x => x).ToList();
 
-		//TODO: Shuffle
+		// Shuffle
+		_subjectDeckWorking = _subjectDeckWorking.OrderBy(x => Random.Shared.Next()).ToList();
+		_modifierDeckWorking = _modifierDeckWorking.OrderBy(x => Random.Shared.Next()).ToList();
 
-		Deal();
+		Hide();
+		
+		void onTutorialComplete() {
+			DialogueManager.Runner.TryDisconnect(DialogueRunner.SignalName.onDialogueComplete, onTutorialComplete);
+			DialogueManager.Run("suitor_intro", true);
+			Show();
+			Deal();
+			DialogueManager.Runner.TryConnect(DialogueRunner.SignalName.onDialogueComplete, new Callable(this, MethodName.OnDialogueComplete));
+		}
+		DialogueManager.Runner.TryConnect(DialogueRunner.SignalName.onDialogueComplete, onTutorialComplete);
+		DialogueManager.Run("tutorial_intro");
 	}
 
 	public override void _Process(double delta) {
@@ -51,30 +74,30 @@ public partial class CardGameController : Control
 		selectedSubject.QueueFree();
 		selectedModifier.QueueFree();
 		PlayButton.Hide();
-		
-		DialogueManager.Runner.TryConnect(DialogueRunner.SignalName.onDialogueComplete, new Callable(this, MethodName.OnDialogueComplete));
 
 		DialogueManager.Run(cardId);
 	}
 
 	private void OnDialogueComplete() {
-		DialogueManager.Runner.TryDisconnect(DialogueRunner.SignalName.onDialogueComplete, new Callable(this, MethodName.OnDialogueComplete));
 		PlayButton.Show();
 		Deal();
 	}
 
 	private void Deal() {
-        static void InternalDeal(HandContainer container, List<string> workingDeck) {
+        void InternalDeal(HandContainer container, List<string> workingDeck, Vector2 startPosition, float startAngle, double waitTime = 0.2) {
 			int cardsToDeal = Math.Max(3 - container.GetChildCount(), 0);
 			for (int i = 0; i < cardsToDeal; ++i) {
 				var cardId = workingDeck.First();
 				workingDeck.RemoveAt(0);
-				var cardDisplay = new CardDisplay{ CardId = cardId, ShadowOffset = new(-10, 1), ShadowOpacity = 0.4f };
-				container.AddChild(cardDisplay);
-				cardDisplay.Owner = container;
+				var cardDisplay = new CardDisplay{ CardId = cardId, ShadowOffset = new(-10, 1), ShadowOpacity = 0.4f, GlobalPosition = startPosition, RotationDegrees = startAngle };
+				Task.Factory.StartNew(async () => {
+					await ToSignal(GetTree().CreateTimer(waitTime * i), Timer.SignalName.Timeout);
+					container.AddChild(cardDisplay);
+					cardDisplay.Owner = container;
+				});
 			}
 		}
-		InternalDeal(SubjectHand, _subjectDeckWorking);
-		InternalDeal(ModifierHand, _modifierDeckWorking);
+		InternalDeal(SubjectHand, _subjectDeckWorking, new Vector2(-200f, 100f), -30f);
+		InternalDeal(ModifierHand, _modifierDeckWorking, new Vector2(500f, 100f), 30f);
 	}
 }

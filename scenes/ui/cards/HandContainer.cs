@@ -13,6 +13,8 @@ public partial class HandContainer : Container, IReloadableToolScript
     [Export] public BoxContainer.AlignmentMode Alignment { get; set { field = value; QueueSort(); } } = BoxContainer.AlignmentMode.Center;
     [Export] public bool Fill { get; set { field = value; QueueSort(); } } = false;
 
+    [Export] public int HandSize { get; set { field = value; QueueSort(); } } = -1;
+
     [ExportGroup("Input")]
     [Export] public int MaxSelected { get; set; } = 1;
     /*[Export(PropertyHint.ResourceType, "GUIDEAction")] private Resource _selectAction { get; set { field = value; SelectAction = GDScriptBridge.As<GUIDEActionBridge>(_selectAction); } }
@@ -143,8 +145,9 @@ public partial class HandContainer : Container, IReloadableToolScript
                 maxCardWidth = MathF.Max(maxCardWidth, card.Size.X);
                 return cardsWidth + card.Size.X;
             });
+        for (int i = childCount; i < HandSize; ++i) { theoreticalCardsTotalWidth += maxCardWidth; }
 
-        var theoreticalSeparationTotalWidth = Enumerable.Range(0, childCount).Aggregate(0f, (x, i) => x + CurveSeparation?.Sample((i + 0.5f) / childCount) ?? 0f);
+        var theoreticalSeparationTotalWidth = Enumerable.Range(0, Math.Max(childCount, HandSize)).Aggregate(0f, (x, i) => x + CurveSeparation?.Sample((i + 0.5f) / Math.Max(childCount, HandSize)) ?? 0f);
 
         var totalWidth = Fill ? Size.X : MathF.Min(Size.X, theoreticalCardsTotalWidth + theoreticalSeparationTotalWidth);
         
@@ -161,7 +164,7 @@ public partial class HandContainer : Container, IReloadableToolScript
         var _ = GetChildren().Index().Aggregate(startPoint,
             (runningTotal, pair) => {
                 if (pair.Item is not Control card || !card.Visible) { return runningTotal; }
-                var samplePoint = (pair.Index + 0.5f) / childCount;
+                var samplePoint = (pair.Index + 0.5f) / Math.Max(childCount, HandSize);
                 if (pair.Index > 0) { runningTotal += Fill ? maxSeparation : MathF.Min(CurveSeparation?.Sample(samplePoint) ?? 0f, maxSeparation); }
 
                 Vector2 newPosition = new(runningTotal, -CurveOffset?.Sample(samplePoint) ?? 0f);

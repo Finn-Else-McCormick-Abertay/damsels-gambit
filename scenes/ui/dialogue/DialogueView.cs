@@ -34,11 +34,11 @@ public partial class DialogueView : Node, DialogueViewBase
 		LineRoot.Hide();
 		ContinueButton.Hide();
 		OptionRoot.Hide();
-		DialogueManager.RegisterView(this);
+		DialogueManager.Register(this);
 	}
 	public override void _ExitTree() {
 		ContinueButton?.TryDisconnect(Button.SignalName.Pressed, OnContinue);
-		DialogueManager.DeregisterView(this);
+		DialogueManager.Deregister(this);
 	}
 
 	public void DialogueStarted() {
@@ -47,25 +47,20 @@ public partial class DialogueView : Node, DialogueViewBase
 	}
 
     public void RunLine(LocalizedLine dialogueLine, Action onDialogueLineFinished) {
-		var tags = dialogueLine.Metadata;
-		bool lastLine = tags.Contains("lastline");
-
-        static void TrySetText(Control control, string text) {
-			if (control is Label label) { label.Text = text; }
-			if (control is RichTextLabel richTextLabel) { richTextLabel.Text = text; }
-		}
-		TrySetText(TitleLabel, dialogueLine.CharacterName);
-		TrySetText(LineLabel, dialogueLine.TextWithoutCharacterName.Text);
-		TitleRoot.Show(); LineRoot.Show();
 		_onLineFinishedAction = onDialogueLineFinished;
-		if (lastLine && dialogueLine.CharacterName == "Princess") {
-			ContinueButton.Hide();
-			_onLineFinishedAction?.Invoke();
-		}
-		else {
-			ContinueButton.Show();
-		}
+
+		//bool lastLine = dialogueLine?.Metadata?.Contains("lastline") ?? false;
+		bool withNext = dialogueLine?.Metadata?.Contains("withnext") ?? false;
+
+		TitleLabel?.Set(Label.PropertyName.Text, dialogueLine.CharacterName);
+		LineLabel?.Set(Label.PropertyName.Text, dialogueLine.TextWithoutCharacterName.Text);
+
+		TitleRoot.Visible = dialogueLine.CharacterName is not null && dialogueLine.CharacterName != "";
+		LineRoot.Visible = true;
+		ContinueButton.Visible = !withNext;
+		
 		State = DialogueState.DisplayingLine;
+		if (withNext) { _onLineFinishedAction?.Invoke(); }
 	}
 
 	private void OnContinue() {

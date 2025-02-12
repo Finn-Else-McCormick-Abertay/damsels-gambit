@@ -13,6 +13,6 @@ public partial class CharacterDisplay : Sprite2D
 	private string TextureRoot { get; set { field = value; TexturePath = TextureRoot + SpriteName + ".png"; } }
 	private string TexturePath { get; set { field = value; Texture = ResourceLoader.Exists(TexturePath) ? ResourceLoader.Load<Texture2D>(TexturePath) : null; } }
 
-	public override void _EnterTree() { if(!Engine.IsEditorHint()) DialogueManager.RegisterDisplay(this); }
-	public override void _ExitTree() { if(!Engine.IsEditorHint()) DialogueManager.DeregisterDisplay(this); }
+	public override void _EnterTree() { if(!Engine.IsEditorHint()) { DialogueManager.Register(this); Hide(); } }
+	public override void _ExitTree() { if(!Engine.IsEditorHint()) DialogueManager.Deregister(this); }
 }

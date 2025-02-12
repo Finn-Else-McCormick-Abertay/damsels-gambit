@@ -1,0 +1,14 @@
+[remap]
+
+importer="yarnscript"
+type="Resource"
+uid="uid://clhpglfyyxars"
+path="res://.godot/imported/tutorial_intro.yarn-1e02f21dc30268d247a1c47d2fb5686d.tres"
+
+[deps]
+
+source_file="res://assets/dialogue/tutorial_intro.yarn"
+dest_files=["res://.godot/imported/tutorial_intro.yarn-1e02f21dc30268d247a1c47d2fb5686d.tres"]
+
+[params]
+
