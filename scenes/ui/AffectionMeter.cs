@@ -34,6 +34,8 @@ public partial class AffectionMeter : Control, IReloadableToolScript
 		var hate = Theme?.TryGetStylebox(ThemeProperties.Stylebox.Hate, TypeName) ?? new StyleBoxFlat{ BgColor = Colors.Black };
 		var marker = Theme?.TryGetIcon(ThemeProperties.Icon.Marker, TypeName) ?? ThemeDB.FallbackIcon;
 
+		GD.Print(ValuePercent);
+
 		DrawStyleBox(under, new Rect2(0f, 0f, Size));
 		DrawStyleBox(love, new Rect2(0f, 0f, Size with { Y = Size.Y * LovePercent }));
 		DrawStyleBox(hate, new Rect2(0f, (1 - HatePercent) * Size.Y, Size with { Y = Size.Y * HatePercent }));

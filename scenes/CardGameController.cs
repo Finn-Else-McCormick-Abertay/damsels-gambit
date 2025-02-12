@@ -13,10 +13,12 @@ public partial class CardGameController : Control
 	[Export] Button PlayButton { get; set; }
 
 	private readonly int _scoreMax = 10, _scoreMin = -10;
-	public int Score { get; set { field = value; AffectionMeter.ValuePercent = (Score / (float)(_scoreMax + _scoreMin)) - _scoreMin / (float)(_scoreMax + _scoreMin); } }
+	public int Score { get; set { field = value; AffectionMeter.ValuePercent = 1 - ((Score / (float)(Math.Abs(_scoreMax) + Math.Abs(_scoreMin))) + Math.Abs(_scoreMin) / (float)(Math.Abs(_scoreMax) + Math.Abs(_scoreMin))); } }
 
 	public override void _Ready() {
 		PlayButton?.TryConnect(Button.SignalName.Pressed, new Callable(this, MethodName.PlayHand));
+		var suitor = DialogueManager.GetCharacterDisplay("suitor");
+		if (suitor is not null) { suitor.SpriteName = "neutral"; }
 	}
 
 	public override void _Process(double delta) {

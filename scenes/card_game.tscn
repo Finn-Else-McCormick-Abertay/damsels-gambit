@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://dipd7bv4d85ws"]
+[gd_scene load_steps=17 format=3 uid="uid://dipd7bv4d85ws"]
 
 [ext_resource type="Script" path="res://scenes/CardGameController.cs" id="1_4k8rw"]
 [ext_resource type="Texture2D" uid="uid://cqyuo4io822v2" path="res://assets/ui/affection bar v1.png" id="1_a886k"]
@@ -8,9 +8,8 @@
 [ext_resource type="Script" path="res://scenes/ui/cards/HandContainer.cs" id="4_xg83y"]
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/default_theme.tres" id="6_7wss3"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a1rw6"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v2fsc"]
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_k8jvk"]
+size = Vector2(40, 5)
 
 [sub_resource type="StyleBox" id="StyleBox_qyobw"]
 resource_local_to_scene = false
@@ -21,16 +20,16 @@ content_margin_right = -1.0
 content_margin_bottom = -1.0
 script = ExtResource("2_k8r2y")
 Texture = ExtResource("1_a886k")
-Scale = 1.0
+Scale = 0.0
 DrawCenter = true
-TextureMarginLeft = 0
-TextureMarginTop = 0
-TextureMarginRight = 0
-TextureMarginBottom = 0
-ExpandMarginLeft = 0.0
-ExpandMarginTop = 0.0
-ExpandMarginRight = 0.0
-ExpandMarginBottom = 0.0
+TextureMarginLeft = 175
+TextureMarginTop = 135
+TextureMarginRight = 190
+TextureMarginBottom = 275
+ExpandMarginLeft = 21.89
+ExpandMarginTop = 12.45
+ExpandMarginRight = 24.86
+ExpandMarginBottom = 4.605
 AxisStretchHorizontal = 0
 AxisStretchVertical = 0
 ModulateColor = Color(1, 1, 1, 1)
@@ -38,8 +37,9 @@ ModulateColor = Color(1, 1, 1, 1)
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_12y3c"]
 
 [sub_resource type="Theme" id="Theme_k5s5f"]
-AffectionMeter/styles/hate = SubResource("StyleBoxEmpty_a1rw6")
-AffectionMeter/styles/love = SubResource("StyleBoxEmpty_v2fsc")
+AffectionMeter/icons/marker = SubResource("PlaceholderTexture2D_k8jvk")
+AffectionMeter/styles/hate = null
+AffectionMeter/styles/love = null
 AffectionMeter/styles/over = SubResource("StyleBox_qyobw")
 AffectionMeter/styles/under = SubResource("StyleBoxEmpty_12y3c")
 
@@ -90,10 +90,10 @@ PlayButton = NodePath("PlayHandButton")
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
-offset_left = 23.0
-offset_top = 19.0
-offset_right = 117.0
-offset_bottom = -260.0
+offset_left = 42.0
+offset_top = 28.0
+offset_right = 80.0
+offset_bottom = -251.0
 grow_vertical = 2
 theme = SubResource("Theme_k5s5f")
 script = ExtResource("4_dw2x6")
