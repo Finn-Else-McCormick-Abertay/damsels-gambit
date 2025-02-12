@@ -6,10 +6,10 @@ public partial class LeftDeck : Node2D
 {
 	// Called when the node enters the scene tree for the first time.
 
-	private int[] Deck = {0,0,0,0,0,0};
+	private string[] Deck = {" "," "," "," "," "," "};
 	public override void _Ready()
 	{
-		Ongetdeck(01,02,03,04,05,06);
+		Ongetdeck("question/DoYouLike", "question/DoYouLike", "action/TellASecret", "action/TellASecret","action/Give","action/Give");
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -17,7 +17,7 @@ public partial class LeftDeck : Node2D
 	{
 	}
 
-	private void Ongetdeck(int c1, int c2, int c3, int c4, int c5, int c6){
+	private void Ongetdeck(string c1, string c2, string c3, string c4, string c5, string c6){
 		Deck[0] = c1;
 		Deck[1] = c2;
 		Deck[2] = c3;
@@ -28,7 +28,7 @@ public partial class LeftDeck : Node2D
 	}
 	private void OndrawSignal(int lastplay){
 		if(lastplay !=3){
-		int temp = Deck[lastplay];
+		string temp = Deck[lastplay];
 		Deck[lastplay] = Deck[3]; 
 		Deck[3] = temp;}
 
@@ -39,7 +39,7 @@ public partial class LeftDeck : Node2D
 
 	private void shuffle(int size){
 		Random rnd = new Random();
-		int temp=0;
+		string temp =" ";
 		for(int i=size; i>-1;i--){
 			int num = rnd.Next(i);
 			temp = Deck[num];

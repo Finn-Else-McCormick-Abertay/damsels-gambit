@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://dmi01ml60nrj6"]
+[gd_scene load_steps=10 format=3 uid="uid://dmi01ml60nrj6"]
 
 [ext_resource type="Script" path="res://scenes/LeftDeck.cs" id="1_finbn"]
 [ext_resource type="Script" path="res://scenes/Hand.cs" id="2_4x8em"]
@@ -6,6 +6,9 @@
 [ext_resource type="Script" path="res://scenes/LCard1.cs" id="3_fiiru"]
 [ext_resource type="Script" path="res://scenes/LCard2.cs" id="4_lwf6o"]
 [ext_resource type="Script" path="res://scenes/LCard3.cs" id="5_62q3f"]
+[ext_resource type="Script" path="res://scenes/RCard1.cs" id="7_wjxkp"]
+[ext_resource type="Script" path="res://scenes/RCard2.cs" id="8_np080"]
+[ext_resource type="Script" path="res://scenes/RCard3.cs" id="9_f3jfv"]
 
 [node name="Main" type="Node"]
 
@@ -14,6 +17,11 @@ script = ExtResource("1_finbn")
 
 [node name="hand" type="Node2D" parent="left deck"]
 script = ExtResource("2_4x8em")
+
+[node name="LCard1" type="Sprite2D" parent="left deck/hand"]
+position = Vector2(190, 600)
+texture = ExtResource("2_we7gv")
+script = ExtResource("3_fiiru")
 
 [node name="LCard2" type="Sprite2D" parent="left deck/hand"]
 position = Vector2(310, 600)
@@ -25,26 +33,76 @@ position = Vector2(430, 600)
 texture = ExtResource("2_we7gv")
 script = ExtResource("5_62q3f")
 
-[node name="LCard1" type="Sprite2D" parent="left deck/hand"]
-position = Vector2(190, 600)
-texture = ExtResource("2_we7gv")
-script = ExtResource("3_fiiru")
-
 [node name="deck" type="Node2D" parent="left deck"]
 
 [node name="discard" type="Node2D" parent="left deck"]
 
-[node name="right deck" type="Node2D" parent="."]
+[node name="score" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
 
-[node name="hand" type="Node2D" parent="right deck"]
+[node name="right deck" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
-[node name="deck" type="Node2D" parent="right deck"]
+[node name="hand" type="Control" parent="right deck"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
-[node name="discard" type="Node2D" parent="right deck"]
+[node name="RCard1control" type="Control" parent="right deck/hand"]
+anchors_preset = 0
+offset_left = 750.0
+offset_top = 530.0
+offset_right = 850.0
+offset_bottom = 670.0
 
+[node name="RCard1" type="Sprite2D" parent="right deck/hand/RCard1control"]
+position = Vector2(50, 70)
+texture = ExtResource("2_we7gv")
+script = ExtResource("7_wjxkp")
+
+[node name="RCard2control" type="Control" parent="right deck/hand"]
+anchors_preset = 0
+offset_left = 870.0
+offset_top = 530.0
+offset_right = 970.0
+offset_bottom = 670.0
+
+[node name="RCard2" type="Sprite2D" parent="right deck/hand/RCard2control"]
+position = Vector2(50, 70)
+texture = ExtResource("2_we7gv")
+script = ExtResource("8_np080")
+
+[node name="RCard3control" type="Control" parent="right deck/hand"]
+anchors_preset = 0
+offset_left = 990.0
+offset_top = 530.0
+offset_right = 1090.0
+offset_bottom = 670.0
+
+[node name="RCard3" type="Sprite2D" parent="right deck/hand/RCard3control"]
+position = Vector2(50, 70)
+texture = ExtResource("2_we7gv")
+script = ExtResource("9_f3jfv")
+
+[connection signal="C1SELECT" from="left deck/hand/LCard1" to="left deck/hand/LCard2" method="OnC1SELECTSignal"]
+[connection signal="C1SELECT" from="left deck/hand/LCard1" to="left deck/hand/LCard3" method="OnC1SELECTSignal"]
 [connection signal="C2SELECT" from="left deck/hand/LCard2" to="left deck/hand/LCard1" method="OnC2SELECTSignal"]
 [connection signal="C2SELECT" from="left deck/hand/LCard2" to="left deck/hand/LCard3" method="OnC2SELECTSignal"]
 [connection signal="C3SELECT" from="left deck/hand/LCard3" to="left deck/hand/LCard1" method="OnC3SELECTSignal"]
 [connection signal="C3SELECT" from="left deck/hand/LCard3" to="left deck/hand/LCard2" method="OnC3SELECTSignal"]
-[connection signal="C1SELECT" from="left deck/hand/LCard1" to="left deck/hand/LCard2" method="OnC1SELECTSignal"]
-[connection signal="C1SELECT" from="left deck/hand/LCard1" to="left deck/hand/LCard3" method="OnC1SELECTSignal"]
+[connection signal="mouse_entered" from="right deck/hand/RCard1control" to="right deck/hand/RCard1control/RCard1" method="mouseover"]
+[connection signal="mouse_exited" from="right deck/hand/RCard1control" to="right deck/hand/RCard1control/RCard1" method="mouseleft"]
+[connection signal="C4SELECT" from="right deck/hand/RCard1control/RCard1" to="right deck/hand/RCard2control/RCard2" method="deselect"]
+[connection signal="C4SELECT" from="right deck/hand/RCard1control/RCard1" to="right deck/hand/RCard3control/RCard3" method="deselect"]
+[connection signal="mouse_entered" from="right deck/hand/RCard2control" to="right deck/hand/RCard2control/RCard2" method="mouseover2"]
+[connection signal="mouse_exited" from="right deck/hand/RCard2control" to="right deck/hand/RCard2control/RCard2" method="mouseleft2"]
+[connection signal="C5SELECT" from="right deck/hand/RCard2control/RCard2" to="right deck/hand/RCard1control/RCard1" method="deselect"]
+[connection signal="C5SELECT" from="right deck/hand/RCard2control/RCard2" to="right deck/hand/RCard3control/RCard3" method="deselect"]
+[connection signal="mouse_entered" from="right deck/hand/RCard3control" to="right deck/hand/RCard3control/RCard3" method="mouseover3"]
+[connection signal="mouse_exited" from="right deck/hand/RCard3control" to="right deck/hand/RCard3control/RCard3" method="mouseleft3"]
+[connection signal="C6SELECT" from="right deck/hand/RCard3control/RCard3" to="right deck/hand/RCard1control/RCard1" method="deselect"]
+[connection signal="C6SELECT" from="right deck/hand/RCard3control/RCard3" to="right deck/hand/RCard2control/RCard2" method="deselect"]

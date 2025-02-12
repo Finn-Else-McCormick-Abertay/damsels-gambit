@@ -4,11 +4,9 @@ using System;
 public partial class LCard1 : Sprite2D
 {
 	// Called when the node enters the scene tree for the first time.
-	[Export]
-	public bool select { get; set; } = false;
+
 	public override void _Ready()
 	{
-		select = false;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -42,7 +40,7 @@ public partial class LCard1 : Sprite2D
 	private void OnC2SELECTSignal(){
 		selected =false;
 	}
-	private void _on_l_card_3_c_3select(){
+	private void OnC3SELECTSignal(){
 		selected =false;
 	}
 

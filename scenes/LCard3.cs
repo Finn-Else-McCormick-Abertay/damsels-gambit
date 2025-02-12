@@ -4,11 +4,9 @@
 	public partial class LCard3 : Sprite2D
 	{
 		// Called when the node enters the scene tree for the first time.
-	[Export]
-	public bool select { get; set; } = false;
+
 	public override void _Ready()
 	{
-		select = false;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.

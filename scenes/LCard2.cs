@@ -4,8 +4,7 @@ using System;
 public partial class LCard2 : Sprite2D
 {
 	// Called when the node enters the scene tree for the first time.
-	[Export]
-	public bool select { get; set; } = false;
+
 	public override void _Ready()
 	{
 		Position = new Vector2(
