@@ -191,6 +191,42 @@ CardId = &"action/secret"
 CornerRadius = 0.0
 ShadowOpacity = 0.0
 
+[node name="CardDisplay3" type="Control" parent="Modifiers ScrollContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("2_hc2nn")
+CardId = &"action/secret"
+CornerRadius = 0.0
+ShadowOpacity = 0.0
+
+[node name="CardDisplay4" type="Control" parent="Modifiers ScrollContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("2_hc2nn")
+CardId = &"action/secret"
+CornerRadius = 0.0
+ShadowOpacity = 0.0
+
+[node name="CardDisplay5" type="Control" parent="Modifiers ScrollContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("2_hc2nn")
+CardId = &"action/secret"
+CornerRadius = 0.0
+ShadowOpacity = 0.0
+
+[node name="CardDisplay6" type="Control" parent="Modifiers ScrollContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("2_hc2nn")
+CardId = &"action/secret"
+CornerRadius = 0.0
+ShadowOpacity = 0.0
+
 [node name="Subject Cards Title" type="RichTextLabel" parent="."]
 layout_mode = 1
 anchors_preset = -1

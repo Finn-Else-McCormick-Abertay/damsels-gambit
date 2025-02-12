@@ -1,8 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://bw48k06y7bd6q"]
+[gd_scene load_steps=5 format=3 uid="uid://q1kh0whg1g0g"]
 
 [ext_resource type="Texture2D" uid="uid://b3uynpkv1oxnh" path="res://assets/ui/panels/papertexturehole.png" id="1_wfhrk"]
 [ext_resource type="FontFile" uid="uid://c27txckdp7a4a" path="res://assets/fonts/vinque/Vinque Rg.otf" id="2_knaur"]
-[ext_resource type="Texture2D" uid="uid://byy18p88b7f7o" path="res://assets/cards/action/secret.png" id="3_o48n7"]
+[ext_resource type="Texture2D" uid="uid://bfoqt200g8dkj" path="res://assets/characters/Suitor/Suitor Card.png" id="3_egqja"]
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/default_theme.tres" id="4_7j741"]
 
 [node name="Princeprofile" type="Control"]
@@ -30,44 +30,59 @@ expand_mode = 4
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.218
+anchor_left = 0.216
 anchor_top = 0.091
 anchor_right = 0.455
-anchor_bottom = 0.185
-offset_left = -3.13602
-offset_top = -0.968002
-offset_right = 2.83997
-offset_bottom = 3.12
+anchor_bottom = 0.145
+offset_left = 0.167999
+offset_top = -2.968
+offset_right = 9.83997
+offset_bottom = 0.0399933
 theme_override_colors/default_color = Color(0.194108, 0.0772505, 0.0219393, 1)
 theme_override_fonts/normal_font = ExtResource("2_knaur")
 theme_override_font_sizes/normal_font_size = 28
-text = "Prince Name Surname"
+text = "King Bófi of Frostholm"
 
 [node name="TextureRect2" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.048
 anchor_top = 0.063
-anchor_right = 0.205
-anchor_bottom = 0.434
-offset_left = 1.704
-offset_top = 2.176
-offset_right = 1.83998
-offset_bottom = 1.76801
-texture = ExtResource("3_o48n7")
+anchor_right = 0.237
+anchor_bottom = 0.573
+offset_left = -7.296
+offset_top = -5.824
+offset_right = -0.0240173
+offset_bottom = -0.304016
+texture = ExtResource("3_egqja")
 expand_mode = 1
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.32
-anchor_top = 0.826
+anchor_left = 0.308
+anchor_top = 0.9
 anchor_right = 0.471
-anchor_bottom = 0.954
-offset_left = 0.359985
-offset_top = -0.248047
-offset_right = 0.407959
-offset_bottom = -0.192017
+anchor_bottom = 0.92
+offset_left = 0.18396
+offset_top = -12.2
+offset_right = -29.592
+offset_bottom = -0.160034
 theme = ExtResource("4_7j741")
 theme_override_font_sizes/font_size = 20
 text = "Close"
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.258
+anchor_top = 0.227
+anchor_right = 0.457
+anchor_bottom = 0.488
+offset_left = -0.216003
+offset_top = -0.0960083
+offset_right = 0.536011
+offset_bottom = -0.22403
+theme = ExtResource("4_7j741")
+theme_override_colors/default_color = Color(0.192157, 0.0784314, 0.0235294, 1)
+text = "Frostholm is a freezing, harsh kingdom in the far north, where survival requires resilience and sensibleness. Its citizens value hard work, loyalty, and community. The kingdom is known for it's ice carving traditions, and hardy crops."
