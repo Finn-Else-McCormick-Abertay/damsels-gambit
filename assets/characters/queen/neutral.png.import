@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://r3pis33f1edo"
-path="res://.godot/imported/fireplace_background.png-d12493e9a90a84ae5bfb97f3d0ea311e.ctex"
+uid="uid://845c6vjf6v1i"
+path="res://.godot/imported/neutral.png-81f6c4fbc11aa1ec1816a4f1050e724c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/environment/fireplace_background.png"
-dest_files=["res://.godot/imported/fireplace_background.png-d12493e9a90a84ae5bfb97f3d0ea311e.ctex"]
+source_file="res://assets/characters/queen/neutral.png"
+dest_files=["res://.godot/imported/neutral.png-81f6c4fbc11aa1ec1816a4f1050e724c.ctex"]
 
 [params]
 

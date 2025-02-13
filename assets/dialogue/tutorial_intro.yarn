@@ -1,8 +1,17 @@
 title: tutorial_intro
 ---
-<<show lady_in_waiting>>
 <<show chamber>>
+<<show queen>>
+Queen: Princess you need to be married. I have arranged a date with a suitor tonight.
+<<emote queen turn_right>>
+Queen: I am giving you his profile, get ready.
+<<hide queen>>
+<<show lady_in_waiting>>
 Lady in Waiting: Don't worry Princess, I'm sure you can get out of this.
+Lady in Waiting: But you'll need to be careful. If he likes you too much you'll be married off, but if he dislikes you our kingdom might be at war.
+Lady in Waiting: Choose your cards carefully. You'll need to combine a Subject card with a Modifier card, which can be a question or an action, to interact with the Suitor.
+Lady in Waiting: Mind the Affection Bar, you want to always stay neutral.
+Lady in Waiting: Good luck Princess. I'll always be here to support you.
 <<hide lady_in_waiting>>
 <<hide chamber>>
 ===

@@ -907,12 +907,6 @@ public partial class DialogueRunner : Godot.Node
             }
         }
 
-        if (dialogueViews.Count == 0)
-        {
-            GD.PrintErr(
-                "Dialogue Runner doesn't have any dialogue views set up. No lines or options will be visible.");
-        }
-
         foreach (var view in dialogueViews.Where(IsInstanceValid))
         {
             (view as DialogueViewBase).requestInterrupt = OnViewRequestedInterrupt;

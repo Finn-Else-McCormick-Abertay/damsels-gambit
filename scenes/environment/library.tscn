@@ -53,6 +53,8 @@ texture = ExtResource("2_cqnjh")
 
 [node name="SuitorLayer" type="CanvasLayer" parent="."]
 follow_viewport_enabled = true
+script = ExtResource("1_84xex")
+EnvironmentName = &"library"
 
 [node name="Suitor" type="Sprite2D" parent="SuitorLayer"]
 position = Vector2(569, 325)

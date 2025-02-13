@@ -18,7 +18,7 @@ public partial class DialogueManager : Node
             startAutomatically = false
         };
         AddChild(Runner);
-        //Runner.SetDialogueViews(_dialogueViews);
+        Runner.SetDialogueViews(_dialogueViews);
         Runner.Ready += () => { Runner.SetDialogueViews(_dialogueViews); };
     }
 

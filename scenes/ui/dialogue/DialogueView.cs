@@ -49,7 +49,6 @@ public partial class DialogueView : Node, DialogueViewBase
     public void RunLine(LocalizedLine dialogueLine, Action onDialogueLineFinished) {
 		_onLineFinishedAction = onDialogueLineFinished;
 
-		//bool lastLine = dialogueLine?.Metadata?.Contains("lastline") ?? false;
 		bool withNext = dialogueLine?.Metadata?.Contains("withnext") ?? false;
 
 		TitleLabel?.Set(Label.PropertyName.Text, dialogueLine.CharacterName);
@@ -64,7 +63,8 @@ public partial class DialogueView : Node, DialogueViewBase
 	}
 
 	private void OnContinue() {
-		if (State != DialogueState.DisplayingLine) return;
+		//GD.Print($"Continue Pressed - Current State is {Enum.GetName(State)}");
+		//if (State != DialogueState.DisplayingLine) return;
 
 		_onLineFinishedAction?.Invoke();
 	}
@@ -74,6 +74,7 @@ public partial class DialogueView : Node, DialogueViewBase
     }
 
 	public void DismissLine(Action onDismissalComplete) {
+
 		ContinueButton.Hide();
         onDismissalComplete?.Invoke();
 		State = DialogueState.Waiting;
