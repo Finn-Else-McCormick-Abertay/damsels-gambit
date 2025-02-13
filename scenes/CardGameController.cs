@@ -105,6 +105,18 @@ public partial class CardGameController : Control
 		if (Score >= _loveThreshold) { DialogueManager.Run("love_ending", true); }
 		else if (Score <= _hateThreshold) { DialogueManager.Run("hate_ending", true); }
 		else { DialogueManager.Run("neutral_ending", true); }
+		Callable.From(() => { 
+			DialogueManager.Runner.TryConnect(DialogueRunner.SignalName.onDialogueComplete, new Callable(this, MethodName.OnGameEndDialogueComplete));
+		}).CallDeferred();
+	}
+
+	private void OnGameEndDialogueComplete() {
+		DialogueManager.Runner.TryDisconnect(DialogueRunner.SignalName.onDialogueComplete, new Callable(this, MethodName.OnGameEndDialogueComplete));
+		var endScreen = ResourceLoader.Load<PackedScene>("res://scenes/ui/end_screen.tscn").Instantiate<EndScreen>();
+		AddChild(endScreen);
+		if (Score >= _loveThreshold) { endScreen.MessageLabel.Text = "Prepare for marriage."; }
+		else if (Score <= _hateThreshold) { endScreen.MessageLabel.Text = "Prepare for war."; }
+		else { endScreen.MessageLabel.Text = "You win!"; }	
 	}
 
 	private void Deal() {
