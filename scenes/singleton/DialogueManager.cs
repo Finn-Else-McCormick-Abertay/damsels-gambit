@@ -13,6 +13,14 @@ public partial class DialogueManager : Node
 
     public override void _EnterTree() {
         Instance = this;
+        InitRunner();
+    }
+
+    public void InitRunner() {
+        if (Runner is not null) {
+            RemoveChild(Runner);
+            Runner.QueueFree();
+        }
         Runner = new DialogueRunner {
             yarnProject = ResourceLoader.Load<YarnProject>("res://assets/dialogue/DamselsGambit.yarnproject"),
             startAutomatically = false

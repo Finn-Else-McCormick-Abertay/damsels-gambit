@@ -23,6 +23,19 @@ public partial class GameManager : Node
         CardGameController = GetTree().Root.FindChildOfType<CardGameController>();
     }
 
+    public void QuitToTitle() {
+        DialogueManager.Instance.InitRunner();
+        var mainNode = GetTree().Root.GetNode("Main");
+        GetTree().Root.RemoveChild(mainNode); mainNode.QueueFree();
+
+        var mainScene = ResourceLoader.Load<PackedScene>("res://scenes/main.tscn");
+        var newMainNode = mainScene.Instantiate();
+        GetTree().Root.AddChild(newMainNode);
+        GetTree().Paused = false;
+
+        CardGameController = GetTree().Root.FindChildOfType<CardGameController>();
+    }
+
     private void RegisterCommands() {
         List<string> scenePaths = [];
         void AddPath(string path) { scenePaths.Add(path); if (path[0..7] == "scenes/") { scenePaths.Add(path[7..]); } }
