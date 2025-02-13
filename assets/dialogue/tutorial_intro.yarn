@@ -1,7 +1,7 @@
 title: tutorial_intro
 ---
 <<show chamber>>
-<<show queen>>
+<<fade in queen 1>>
 Queen: Princess you need to be married. I have arranged a date with a suitor tonight.
 <<emote queen turn_right>>
 Queen: I am giving you his profile, get ready.

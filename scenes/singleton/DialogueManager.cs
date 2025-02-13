@@ -106,6 +106,39 @@ public partial class DialogueManager : Node
             display.SpriteName = emotionName;
         }
 
+        [YarnCommand("move")]
+        public static void Move(string characterName, float x, float y, float time = 0f) {
+            var display = GetCharacterDisplay(characterName);
+            if (display is null) return;
+            if (time <= 0f) {
+                display.Position += new Vector2(x, y);
+                return;
+            }
+            var tween = display.CreateTween();
+            tween.TweenProperty(display, Node2D.PropertyName.Position.ToString(), new Vector2(x, y), time).AsRelative();
+        }
+
+        [YarnCommand("fade")]
+        public static void Fade(string inOut, string characterName, float time) {
+            var display = GetCharacterDisplay(characterName);
+            if (display is null) return;
+            if (time <= 0f) {
+                if (inOut == "in") { display.Show(); } else if (inOut == "out") { display.Hide(); }
+                return;
+            }
+
+            float target;
+            if (inOut == "in") { display.Modulate = display.Modulate with { A = 0f }; target = 1f; } else if (inOut == "out") { display.Modulate = display.Modulate with { A = 1f }; target = 0f; }
+            else { return; }
+            
+            display.Show();
+
+            var tween = display.CreateTween();
+            tween.TweenProperty(display, "modulate:a", target, time);
+
+            if (inOut == "out") { tween.TweenCallback(Callable.From(() => { display.Hide(); })); }
+        }
+
         [YarnCommand("score")]
         public static void Score(int val) {
             GameManager.CardGameController.Score += val;

@@ -80,7 +80,7 @@ EnvironmentName = &"chamber"
 
 [node name="LadyInWaiting" type="Sprite2D" parent="CharacterLayer"]
 clip_children = 2
-position = Vector2(590, 364)
+position = Vector2(597, 382)
 scale = Vector2(0.59188, 0.59188)
 texture = ExtResource("2_4vov1")
 script = ExtResource("3_fascp")

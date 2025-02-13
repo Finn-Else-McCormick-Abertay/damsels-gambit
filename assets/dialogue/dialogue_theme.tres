@@ -137,6 +137,7 @@ DialogueOptionButton/styles/normal = SubResource("StyleBoxFlat_v7lci")
 DialogueOptionButton/styles/pressed = SubResource("StyleBoxFlat_qa82f")
 PanelContainer/styles/panel = ExtResource("1_fkwea")
 RichTextLabel/colors/default_color = Color(0.337255, 0, 0.0823529, 1)
+RichTextLabel/font_sizes/normal_font_size = 20
 TitleLabel/base_type = &"Label"
 TitleLabel/colors/font_color = Color(0.337255, 0, 0.0823529, 1)
 TitleLabel/font_sizes/font_size = 20
