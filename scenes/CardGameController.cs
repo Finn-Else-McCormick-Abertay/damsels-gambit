@@ -11,6 +11,9 @@ using YarnSpinnerGodot;
 
 public partial class CardGameController : Control
 {
+	public readonly int MaxRound = 5;
+	private int Round { get; set { field = value; if (RoundLabel is not null) { RoundLabel.Text = $"Round {Round}/{MaxRound}"; } } }
+
 	[Export] public string[] SubjectDeck { get; set; } = [];
 	[Export] public string[] ModifierDeck { get; set; } = [];
 
@@ -23,8 +26,10 @@ public partial class CardGameController : Control
 	[Export] HandContainer SubjectHand { get; set; }
 	[Export] HandContainer ModifierHand { get; set; }
 	[Export] Button PlayButton { get; set; }
+	[Export] Label RoundLabel { get; set; }
 
 	private readonly int _scoreMax = 10, _scoreMin = -10;
+	private readonly int _loveThreshold = 4, _hateThreshold = -4;
 	public int Score { get; set {
 			field = value;
 			var newDisplayValue = 1 - ((Score / (float)(Math.Abs(_scoreMax) + Math.Abs(_scoreMin))) + Math.Abs(_scoreMin) / (float)(Math.Abs(_scoreMax) + Math.Abs(_scoreMin)));
@@ -34,6 +39,9 @@ public partial class CardGameController : Control
 	}
 
 	public override void _Ready() {
+		AffectionMeter.LovePercent = (Math.Abs(_scoreMax) - Math.Abs(_loveThreshold)) / (float)(Math.Abs(_scoreMax) + Math.Abs(_scoreMin));
+		AffectionMeter.HatePercent = (Math.Abs(_scoreMin) - Math.Abs(_hateThreshold)) / (float)(Math.Abs(_scoreMax) + Math.Abs(_scoreMin));
+
 		PlayButton?.TryConnect(Button.SignalName.Pressed, new Callable(this, MethodName.PlayHand));
 		var suitor = DialogueManager.GetCharacterDisplay("suitor");
 		if (suitor is not null) { suitor.SpriteName = "neutral"; }
@@ -49,6 +57,7 @@ public partial class CardGameController : Control
 		_modifierDeckWorking = _modifierDeckWorking.OrderBy(x => Random.Shared.Next()).ToList();
 
 		Hide();
+		Round = 1;
 		
 		void onTutorialComplete() {
 			DialogueManager.Runner.TryDisconnect(DialogueRunner.SignalName.onDialogueComplete, onTutorialComplete);
@@ -71,8 +80,8 @@ public partial class CardGameController : Control
 
 		var cardId = $"{selectedModifier.CardId}+{selectedSubject.CardId}";
 
-		selectedSubject.QueueFree();
-		selectedModifier.QueueFree();
+		SubjectHand.RemoveChild(selectedSubject); selectedSubject.QueueFree();
+		ModifierHand.RemoveChild(selectedModifier); selectedModifier.QueueFree();
 		PlayButton.Hide();
 
 		DialogueManager.Run(cardId);
@@ -80,7 +89,22 @@ public partial class CardGameController : Control
 
 	private void OnDialogueComplete() {
 		PlayButton.Show();
-		Deal();
+
+		Round += 1;
+
+		if (Round <= MaxRound) { Deal(); }
+		else { OnGameEnd(); }
+	}
+
+	private void OnGameEnd() {
+		RoundLabel.Hide();
+		SubjectHand.Hide();
+		ModifierHand.Hide();
+		PlayButton.Hide();
+		DialogueManager.Runner.TryDisconnect(DialogueRunner.SignalName.onDialogueComplete, new Callable(this, MethodName.OnDialogueComplete));
+		if (Score >= _loveThreshold) { DialogueManager.Run("love_ending", true); }
+		else if (Score <= _hateThreshold) { DialogueManager.Run("hate_ending", true); }
+		else { DialogueManager.Run("neutral_ending", true); }
 	}
 
 	private void Deal() {

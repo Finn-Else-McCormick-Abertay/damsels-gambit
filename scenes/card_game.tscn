@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://dipd7bv4d85ws"]
+[gd_scene load_steps=22 format=3 uid="uid://dipd7bv4d85ws"]
 
 [ext_resource type="Script" path="res://scenes/CardGameController.cs" id="1_4k8rw"]
 [ext_resource type="Texture2D" uid="uid://cqyuo4io822v2" path="res://assets/ui/affection bar v1.png" id="1_a886k"]
@@ -7,6 +7,13 @@
 [ext_resource type="Script" path="res://scenes/ui/AffectionMeter.cs" id="4_dw2x6"]
 [ext_resource type="Script" path="res://scenes/ui/cards/HandContainer.cs" id="4_xg83y"]
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/default_theme.tres" id="6_7wss3"]
+
+[sub_resource type="Theme" id="Theme_ouffm"]
+RoundLabel/base_type = &"Label"
+RoundLabel/colors/font_color = Color(1, 0.270588, 0.243137, 1)
+RoundLabel/colors/font_outline_color = Color(0, 0, 0, 1)
+RoundLabel/constants/outline_size = 11
+RoundLabel/font_sizes/font_size = 25
 
 [sub_resource type="Gradient" id="Gradient_xf1xp"]
 colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 1)
@@ -20,6 +27,12 @@ fill_to = Vector2(-1.25, 0)
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_k8jvk"]
 size = Vector2(40, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4lcct"]
+bg_color = Color(0.0605303, 0.0605304, 0.0605303, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ewsik"]
+bg_color = Color(1, 0.270588, 0.243137, 1)
 
 [sub_resource type="StyleBox" id="StyleBox_qyobw"]
 resource_local_to_scene = false
@@ -48,8 +61,8 @@ ModulateColor = Color(1, 1, 1, 1)
 
 [sub_resource type="Theme" id="Theme_k5s5f"]
 AffectionMeter/icons/marker = SubResource("PlaceholderTexture2D_k8jvk")
-AffectionMeter/styles/hate = null
-AffectionMeter/styles/love = null
+AffectionMeter/styles/hate = SubResource("StyleBoxFlat_4lcct")
+AffectionMeter/styles/love = SubResource("StyleBoxFlat_ewsik")
 AffectionMeter/styles/over = SubResource("StyleBox_qyobw")
 AffectionMeter/styles/under = SubResource("StyleBoxEmpty_12y3c")
 
@@ -83,13 +96,14 @@ max_value = 90.0
 _data = [Vector2(0, 5.12277), 0.0, 0.0, 0, 0, Vector2(0.502959, 9.04018), 20.9715, 20.9715, 0, 0, Vector2(1, 15.5692), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "SubjectHand", "ModifierHand", "PlayButton")]
+[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "SubjectHand", "ModifierHand", "PlayButton", "RoundLabel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = SubResource("Theme_ouffm")
 script = ExtResource("1_4k8rw")
 SubjectDeck = PackedStringArray("subject/parents", "subject/food", "subject/animals", "subject/art", "subject/loyalty", "subject/witchcraft", "subject/religion", "subject/children", "subject/weather", "subject/hobbies")
 ModifierDeck = PackedStringArray("action/secret", "action/secret", "action/want", "action/give", "question/likes", "question/likes", "question/likes", "question/thoughts", "question/thoughts", "question/thoughts")
@@ -97,6 +111,7 @@ AffectionMeter = NodePath("AffectionMeter")
 SubjectHand = NodePath("SubjectHandContainer")
 ModifierHand = NodePath("ModifierHandContainer")
 PlayButton = NodePath("PlayHandButton")
+RoundLabel = NodePath("Round Label")
 
 [node name="Vignette" type="TextureRect" parent="."]
 layout_mode = 1
@@ -238,3 +253,19 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("6_7wss3")
 text = "Play Hand"
+
+[node name="Round Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.401
+anchor_right = 0.599
+anchor_bottom = 0.104
+offset_left = 8.04797
+offset_top = 7.0
+offset_right = -8.04803
+offset_bottom = 11.608
+grow_horizontal = 2
+theme_type_variation = &"RoundLabel"
+text = "Round 1/5"
+horizontal_alignment = 1
+vertical_alignment = 1
