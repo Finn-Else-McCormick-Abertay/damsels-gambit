@@ -12,9 +12,8 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_gxacw")
 
-[node name="DialogueView" type="Node" parent="." node_paths=PackedStringArray("Root", "TitleRoot", "LineRoot", "OptionRoot", "OptionArchetype", "ContinueButton")]
+[node name="DialogueView" type="Node" parent="." node_paths=PackedStringArray("TitleRoot", "LineRoot", "OptionRoot", "OptionArchetype", "ContinueButton")]
 script = ExtResource("5_o0l0u")
-Root = NodePath("..")
 TitleRoot = NodePath("../TitlePanel")
 LineRoot = NodePath("../VBoxContainer/LinePanel")
 OptionRoot = NodePath("../VBoxContainer/OptionContainer")
