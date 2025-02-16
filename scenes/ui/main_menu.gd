@@ -15,7 +15,7 @@ func on_start_pressed()-> void:
 	get_tree().change_scene_to_packed(start_level)
 
 func on_settings_pressed()-> void:
-	MarginContainer.visible = false
+	margin_container.visible = false
 	settings_menu_acessibility.set_process(true)
 	settings_menu_acessibility.visible = true
 
@@ -24,10 +24,10 @@ func on_exit_pressed() -> void:
 
 func on_exit_settings_menu() -> void:
 	margin_container.visible = true
-	settings_menu_acessibility.visibility = false
+	settings_menu_acessibility.visible = false
 
 func handle_connecting_signals() -> void:
 	start_button.button_down.connect(on_start_pressed)
 	settings_button.button_down.connect(on_settings_pressed)
 	exit_button.button_down.connect(on_exit_pressed)
-	settings_menu_acessibility.Button_down.connect(on_exit_settings_menu)
+	settings_menu_acessibility.exit_settings_menu_acessibility.connect(on_exit_settings_menu)
