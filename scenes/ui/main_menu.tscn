@@ -16,6 +16,9 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_v8cfc")
 
+[node name="SettingsMenuAcessibility" parent="." instance=ExtResource("6_f1uj7")]
+layout_mode = 1
+
 [node name="NinePatchRect" type="NinePatchRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -76,6 +79,3 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 2
 texture_normal = ExtResource("2_pyk42")
 metadata/_edit_use_anchors_ = true
-
-[node name="SettingsMenuAcessibility" parent="." instance=ExtResource("6_f1uj7")]
-layout_mode = 1
