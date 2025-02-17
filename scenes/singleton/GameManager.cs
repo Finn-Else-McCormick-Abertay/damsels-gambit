@@ -18,7 +18,7 @@ public partial class GameManager : Node
 
     public override void _EnterTree() { Instance = this; }
     public override void _Ready() {
-        if (Console.Initialise(GetTree().Root.GetNode("LimboConsole"))) { RegisterCommands(); }
+        //if (Console.Initialise(GetTree().Root.GetNode("LimboConsole"))) { RegisterCommands(); }
         //if (GUIDE.Initialise(GetTree().Root.GetNode("GUIDE"))) { GUIDE.EnableMappingContext(GUIDE.MappingContextDefault); }
         CardGameController = GetTree().Root.FindChildOfType<CardGameController>();
     }
@@ -37,7 +37,7 @@ public partial class GameManager : Node
     }
 
     private void RegisterCommands() {
-        List<string> scenePaths = [];
+        /*List<string> scenePaths = [];
         void AddPath(string path) { scenePaths.Add(path); if (path[0..7] == "scenes/") { scenePaths.Add(path[7..]); } }
         void TraverseAndAddScenes(string path) {
             foreach (var fileName in DirAccess.GetFilesAt(path)) { if (Path.GetExtension(fileName) == ".tscn") { AddPath($"{path}/{fileName}"); } }
@@ -51,7 +51,7 @@ public partial class GameManager : Node
             DialogueManager.Run(node, true, false);         
         }, new Dictionary<int, Func<Godot.Collections.Array>> { { 1, () => new Godot.Collections.Array(DialogueManager.Runner.yarnProject.Program.Nodes.Select(x => Variant.From(x.Key))) } });
 
-        Console.RegisterCommand<string>("get", "", GetCommand, new Dictionary<int, IEnumerable<string>> { { 1, [ "cards" ] } });
+        Console.RegisterCommand<string>("get", "", GetCommand, new Dictionary<int, IEnumerable<string>> { { 1, [ "cards" ] } });*/
     }
 
     private void SwitchScenes(string scenePath) {

@@ -1,0 +1,129 @@
+using Godot;
+using System;
+using System.Text;
+
+namespace DamselsGambit;
+
+public partial class ConsoleWindow : Control
+{
+	[Export] public RichTextLabel OutputLabel { get; private set; }
+	[Export] public TextEdit TextEdit { get; private set; }
+	[Export] public TextEdit Autofill { get; private set; }
+
+	private string _autofillSuggestion = "";
+
+	public override void _EnterTree() {
+		Console.OnPrint += OnPrint;
+		Console.OnClear += OnClear;
+		VisibilityChanged += OnVisibilityChanged;
+	}
+	public override void _ExitTree() {
+		Console.OnPrint -= OnPrint;
+		Console.OnClear -= OnClear;
+		VisibilityChanged -= OnVisibilityChanged;
+	}
+
+	public override void _Ready() {
+		TextEdit.Text = ""; OutputLabel.Text = ""; Autofill.Text = "";
+		TextEdit.Connect(Control.SignalName.GuiInput, new Callable(this, MethodName.OnTextEditGuiInput));
+		TextEdit.Connect(TextEdit.SignalName.CaretChanged, new Callable(this, MethodName.UpdateAutofillSuggestion));
+		var editMenu = TextEdit.GetMenu();
+		for (int i = 13; i > 8; --i) { editMenu.RemoveItem(i); }
+
+		_fontHeight = Theme.GetFont("normal_font", "RichTextLabel").GetHeight(Theme.GetFontSize("normal_font_size", "RichTextLabel")) + Theme.GetConstant("line_padding", "RichTextLabel");
+	}
+
+	private float _fontHeight;
+
+	private void OnPrint(string text) {
+		if (!Visible) return;
+		var scrollBar = OutputLabel.GetVScrollBar();
+		bool shouldReadjustScroll = scrollBar.Value + _fontHeight + OutputLabel.Size.Y >= OutputLabel.GetContentHeight();
+
+		OutputLabel.Text = Console.LogText;
+
+		if (shouldReadjustScroll) { Callable.From(() => { scrollBar.Value = OutputLabel.GetContentHeight(); }).CallDeferred(); }
+	}
+
+	private void OnClear() { OutputLabel.Text = Console.LogText; }
+
+	private void OnVisibilityChanged() {
+		if (!Visible) return;
+		OutputLabel.Text = Console.LogText;
+		UpdateAutofillSuggestion();
+	}
+
+	private void UpdateAutofillSuggestion() {
+		if (TextEdit.GetCaretCount() > 1) { _autofillSuggestion = Autofill.Text = ""; return; }
+
+		int caretLine = TextEdit.GetCaretLine(), caretColumn = TextEdit.GetCaretColumn();
+
+		var priorSb = new StringBuilder();
+		for (int i = 0; i < caretLine; ++i) { priorSb.AppendLine(TextEdit.GetLine(i)); }
+		var lineString = TextEdit.GetLine(caretLine);
+		var lastWordBeginning = lineString[..caretColumn].LastIndexOf(' ') + 1;
+		var nextSpace = lineString.Find(' ', caretColumn); if (nextSpace == -1) { nextSpace = lineString.Length; }
+		var wordUnderCaret = TextEdit.GetWordUnderCaret(); if (wordUnderCaret == "") { wordUnderCaret = lineString[lastWordBeginning..nextSpace]; }
+		if (lineString.Length > caretColumn) {
+			priorSb.Append(lineString[..lastWordBeginning]);
+			priorSb.Append(wordUnderCaret);
+		}
+		else { priorSb.Append(lineString); }
+		
+		_autofillSuggestion = Console.GetAutofillSuggestion(priorSb.ToString());
+		if (wordUnderCaret == _autofillSuggestion) { _autofillSuggestion = ""; }
+		if (_autofillSuggestion == "") { Autofill.Text = ""; return; }
+		
+		var fillSb = new StringBuilder();
+		fillSb.Append('\n', caretLine);
+		fillSb.Append(' ', lastWordBeginning);
+		fillSb.Append(_autofillSuggestion);
+
+		Autofill.Text = fillSb.ToString();
+	}
+
+	private void AcceptAutofill() {
+		int caretLine = TextEdit.GetCaretLine(), caretColumn = TextEdit.GetCaretColumn();
+
+		var sb = new StringBuilder();
+		var lineString = TextEdit.GetLine(caretLine);
+		var lastWordBeginning = lineString[..caretColumn].LastIndexOf(' ') + 1;
+		var nextSpace = lineString.Find(' ', caretColumn);
+		sb.Append(lineString[0..lastWordBeginning]);
+
+		sb.Append(_autofillSuggestion);
+
+		if (lineString.Length > caretColumn && nextSpace != -1) { sb.Append(lineString[nextSpace..]); }
+
+		var newLine = sb.ToString();
+		TextEdit.SetLine(caretLine, newLine);
+		var newNextSpace = newLine.Find(' ', caretColumn); if (newNextSpace == -1) { newNextSpace = newLine.Length; }
+		TextEdit.SetCaretColumn(newNextSpace);
+		Callable.From(() => {
+		}).CallDeferred();
+
+		UpdateAutofillSuggestion();
+	}
+
+	private void OnTextEditGuiInput(InputEvent @event) {
+		if (@event is InputEventKey keyEvent) {
+			if (@event.IsPressed() && keyEvent.Keycode == Key.Enter) {
+				if (keyEvent.ShiftPressed) {
+				TextEdit.InsertTextAtCaret("\n");
+				}
+				else {
+					Console.RunCommand(TextEdit.Text);
+					TextEdit.Text = "";
+					OutputLabel.GetVScrollBar().Value = OutputLabel.GetContentHeight();
+				}
+				TextEdit.AcceptEvent();
+			}
+			else if (@event.IsPressed() && keyEvent.Keycode == Key.Tab) {
+				if (_autofillSuggestion != "") {
+					AcceptAutofill();
+					TextEdit.AcceptEvent();
+				}
+			}
+		}
+	}
+}

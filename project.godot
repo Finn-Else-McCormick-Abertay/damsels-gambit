@@ -11,17 +11,18 @@ config_version=5
 [application]
 
 config/name="Damsel's Gambit"
-config/version="0.0.1"
+config/version="0.1.0"
 run/main_scene="res://scenes/ui/menu/main_menu.tscn"
 config/features=PackedStringArray("4.3", "C#", "Forward Plus")
+boot_splash/show_image=false
 config/icon="res://icon.svg"
 
 [autoload]
 
-LimboConsole="*res://addons/limbo_console/limbo_console.gd"
 DialogueManager="*res://scenes/singleton/DialogueManager.cs"
 GameManager="*res://scenes/singleton/GameManager.cs"
 GUIDE="*res://addons/guide/guide.gd"
+Console="*res://scenes/singleton/Console.cs"
 
 [display]
 
@@ -36,7 +37,7 @@ project/assembly_name="Damsels Gambit"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/AnchorsOnlyPreset/plugin.cfg", "res://addons/YarnSpinner-Godot/plugin.cfg", "res://addons/guide/plugin.cfg", "res://addons/limbo_console/plugin.cfg")
+enabled=PackedStringArray("res://addons/AnchorsOnlyPreset/plugin.cfg", "res://addons/YarnSpinner-Godot/plugin.cfg", "res://addons/guide/plugin.cfg")
 
 [file_customization]
 
@@ -51,9 +52,15 @@ folder_colors={
 
 theme/custom_font="res://assets/fonts/vinque/Vinque Rg.otf"
 
+[importer_defaults]
+
+font_data_dynamic={
+"multichannel_signed_distance_field": true
+}
+
 [input]
 
-limbo_console_toggle={
+console_toggle={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":true,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194306,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
