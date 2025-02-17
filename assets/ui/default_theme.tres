@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://dgr53q4axrft6" path="res://assets/ui/buttons/button disabled.png" id="1_anoa5"]
 [ext_resource type="Texture2D" uid="uid://dn3tf17kvvgr4" path="res://assets/ui/buttons/button normal.png" id="1_yvyp5"]
-[ext_resource type="Script" path="res://scenes/ui/StyleBoxScaledTexture.cs" id="2_jmvio"]
+[ext_resource type="Script" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="2_0sphh"]
 [ext_resource type="Texture2D" uid="uid://36qx2wgud0id" path="res://assets/ui/buttons/button focused.png" id="3_5sm8g"]
 [ext_resource type="Texture2D" uid="uid://bqhy8hy1d6ury" path="res://assets/ui/buttons/button hovered.png" id="4_nlges"]
 [ext_resource type="Texture2D" uid="uid://uw61bnsai54f" path="res://assets/ui/buttons/button pressed.png" id="6_gp8hj"]
@@ -14,7 +14,7 @@ content_margin_left = -1.0
 content_margin_top = -1.0
 content_margin_right = -1.0
 content_margin_bottom = -1.0
-script = ExtResource("2_jmvio")
+script = ExtResource("2_0sphh")
 Texture = ExtResource("1_anoa5")
 Scale = 0.11
 DrawCenter = true
@@ -37,7 +37,7 @@ content_margin_left = -1.0
 content_margin_top = -1.0
 content_margin_right = -1.0
 content_margin_bottom = -1.0
-script = ExtResource("2_jmvio")
+script = ExtResource("2_0sphh")
 Texture = ExtResource("3_5sm8g")
 Scale = 0.11
 DrawCenter = true
@@ -60,7 +60,7 @@ content_margin_left = -1.0
 content_margin_top = -1.0
 content_margin_right = -1.0
 content_margin_bottom = -1.0
-script = ExtResource("2_jmvio")
+script = ExtResource("2_0sphh")
 Texture = ExtResource("4_nlges")
 Scale = 0.11
 DrawCenter = true
@@ -83,7 +83,7 @@ content_margin_left = -1.0
 content_margin_top = -1.0
 content_margin_right = -1.0
 content_margin_bottom = -1.0
-script = ExtResource("2_jmvio")
+script = ExtResource("2_0sphh")
 Texture = ExtResource("1_yvyp5")
 Scale = 0.11
 DrawCenter = true
@@ -106,7 +106,7 @@ content_margin_left = -1.0
 content_margin_top = -1.0
 content_margin_right = -1.0
 content_margin_bottom = -1.0
-script = ExtResource("2_jmvio")
+script = ExtResource("2_0sphh")
 Texture = ExtResource("6_gp8hj")
 Scale = 0.11
 DrawCenter = true

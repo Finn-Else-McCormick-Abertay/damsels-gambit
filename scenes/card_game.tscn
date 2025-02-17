@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scenes/CardGameController.cs" id="1_4k8rw"]
 [ext_resource type="Texture2D" uid="uid://cqyuo4io822v2" path="res://assets/ui/affection bar v1.png" id="1_a886k"]
-[ext_resource type="Script" path="res://scenes/ui/StyleBoxScaledTexture.cs" id="2_k8r2y"]
+[ext_resource type="Script" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="2_k8r2y"]
 [ext_resource type="Script" path="res://scenes/ui/cards/CardDisplay.cs" id="2_kdxpq"]
 [ext_resource type="Script" path="res://scenes/ui/AffectionMeter.cs" id="4_dw2x6"]
 [ext_resource type="Script" path="res://scenes/ui/cards/HandContainer.cs" id="4_xg83y"]
