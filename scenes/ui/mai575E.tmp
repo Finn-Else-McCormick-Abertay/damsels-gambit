@@ -78,5 +78,4 @@ texture_normal = ExtResource("2_pyk42")
 metadata/_edit_use_anchors_ = true
 
 [node name="SettingsMenuAcessibility" parent="." instance=ExtResource("6_f1uj7")]
-visible = false
 layout_mode = 1
