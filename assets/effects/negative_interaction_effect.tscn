@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://da1rpo1wiovv6"]
+[gd_scene load_steps=2 format=3 uid="uid://b56gjp8w7826a"]
 
-[ext_resource type="Texture2D" uid="uid://csep3fm0vd8ku" path="res://assets/ui/panels/linked rings icon.png" id="1_aq2ro"]
+[ext_resource type="Texture2D" uid="uid://4iq8whdq2gd7" path="res://assets/ui/panels/crossed swords icon.png" id="1_im13s"]
 
 [node name="PositiveInteractionEffect" type="Node2D"]
 
@@ -11,7 +11,7 @@ preprocess = 24.0
 speed_scale = 0.9
 explosiveness = 1.0
 randomness = 0.75
-texture = ExtResource("1_aq2ro")
+texture = ExtResource("1_im13s")
 spread = 180.0
 gravity = Vector2(0, 600)
 initial_velocity_min = 51.77
