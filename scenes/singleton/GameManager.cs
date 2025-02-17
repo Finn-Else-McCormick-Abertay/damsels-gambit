@@ -24,7 +24,7 @@ public partial class GameManager : Node
     }
 
     public void QuitToTitle() {
-        DialogueManager.Instance.InitRunner();
+        DialogueManager.Instance.Reset();
         var mainNode = GetTree().Root.GetNode("Main");
         GetTree().Root.RemoveChild(mainNode); mainNode.QueueFree();
 

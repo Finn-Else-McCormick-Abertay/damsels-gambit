@@ -1,6 +1,5 @@
-[gd_scene load_steps=15 format=3 uid="uid://bbvpf523ln0aj"]
+[gd_scene load_steps=14 format=3 uid="uid://bbvpf523ln0aj"]
 
-[ext_resource type="Script" path="res://scenes/environment/EnvironmentLayer.cs" id="1_tpk4d"]
 [ext_resource type="Texture2D" uid="uid://lioraxfo5wox" path="res://assets/characters/lady_in_waiting/neutral.png" id="2_4vov1"]
 [ext_resource type="Script" path="res://scenes/character/CharacterDisplay.cs" id="3_fascp"]
 [ext_resource type="Texture2D" uid="uid://r3pis33f1edo" path="res://assets/environment/fireplace_background.png" id="4_gprf7"]
@@ -51,8 +50,6 @@ fill_to = Vector2(0.606838, 0.320513)
 [node name="Background" type="CanvasLayer" parent="."]
 layer = -1
 follow_viewport_enabled = true
-script = ExtResource("1_tpk4d")
-EnvironmentName = &"chamber"
 
 [node name="FireplaceBackground" type="Sprite2D" parent="Background"]
 position = Vector2(740.667, 294.938)
@@ -77,8 +74,6 @@ metadata/_edit_lock_ = true
 
 [node name="CharacterLayer" type="CanvasLayer" parent="."]
 follow_viewport_enabled = true
-script = ExtResource("1_tpk4d")
-EnvironmentName = &"chamber"
 
 [node name="LadyInWaiting" type="Sprite2D" parent="CharacterLayer"]
 clip_children = 2
@@ -120,5 +115,3 @@ metadata/_edit_lock_ = true
 [node name="Foreground" type="CanvasLayer" parent="."]
 layer = 2
 follow_viewport_enabled = true
-script = ExtResource("1_tpk4d")
-EnvironmentName = &"chamber"

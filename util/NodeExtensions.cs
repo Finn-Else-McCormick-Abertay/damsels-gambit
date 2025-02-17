@@ -30,6 +30,12 @@ static class NodeExtensions
         return [.. validChildren];
     }
 
+    public static Godot.Collections.Array<Node> GetSelfAndChildren(this Node self) {
+        var array = new Godot.Collections.Array<Node> { self };
+        array.AddRange(self.GetChildren());
+        return array;
+    }
+
     // Signal helper functions
 
     public static Error Connect(this GodotObject self, StringName signal, Action action) {

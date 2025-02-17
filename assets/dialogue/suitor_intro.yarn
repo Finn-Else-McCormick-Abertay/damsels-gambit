@@ -1,6 +1,6 @@
 title: suitor_intro
 ---
-<<show library>>
+<<scene library>>
 <<fade in suitor 1>>
 <<emote suitor neutral>>
 ===

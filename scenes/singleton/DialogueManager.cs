@@ -1,5 +1,8 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using DamselsGambit.Util;
 using Godot;
 using YarnSpinnerGodot;
 
@@ -14,65 +17,59 @@ public partial class DialogueManager : Node
     public override void _EnterTree() {
         Instance = this;
         InitRunner();
+        LoadEnvironments();
     }
 
-    public void InitRunner() {
-        if (Runner is not null) {
-            RemoveChild(Runner);
-            Runner.QueueFree();
-        }
-        Runner = new DialogueRunner {
-            yarnProject = ResourceLoader.Load<YarnProject>("res://assets/dialogue/DamselsGambit.yarnproject"),
-            startAutomatically = false
-        };
+    public void Reset() {
+        if (Runner is not null) { RemoveChild(Runner); Runner.QueueFree(); }
+        InitRunner();
+    }
+
+    private void InitRunner() {
+        if (Runner is not null) return;
+        Runner = new DialogueRunner { yarnProject = ResourceLoader.Load<YarnProject>("res://assets/dialogue/DamselsGambit.yarnproject"), startAutomatically = false };
         AddChild(Runner);
         Runner.SetDialogueViews(_dialogueViews);
         Runner.Ready += () => { Runner.SetDialogueViews(_dialogueViews); };
     }
 
-    private readonly HashSet<CharacterDisplay> _characterDisplays = [];
-    private readonly HashSet<EnvironmentLayer> _environmentLayers = [];
+    private void LoadEnvironments() {
+        foreach (var file in DirAccess.GetFilesAt("res://scenes/environment/")) {
+            if (Path.GetExtension(file) != ".tscn") continue;
+            var scene = ResourceLoader.Load<PackedScene>($"res://scenes/environment/{file}");
+            var node = scene.Instantiate(); AddChild(node);
+            var environmentName = Path.GetFileNameWithoutExtension(file);
+            _environments.Add(environmentName, node);
+            foreach (var item in GetEnvironmentItems(environmentName)) {
+                item?.Set(CanvasItem.PropertyName.Visible, false);
+            }
+        }
+    }
+
+    private readonly Dictionary<string, Node> _environments = [];
+    private readonly Dictionary<string, CharacterDisplay> _characterDisplays = [];
     private readonly HashSet<DialogueView> _dialogueViews = [];
 
-    public static void Register(CharacterDisplay display) {
-        if (Instance is null) return;
-        Instance._characterDisplays.Add(display);
-    }
-    public static void Deregister(CharacterDisplay display) {
-        if (Instance is null) return;
-        Instance._characterDisplays.Remove(display);
-    }
-    
-    public static void Register(EnvironmentLayer layer) {
-        if (Instance is null) return;
-        Instance._environmentLayers.Add(layer);
-    }
-    public static void Deregister(EnvironmentLayer layer) {
-        if (Instance is null) return;
-        Instance._environmentLayers.Remove(layer);
-    }
+    public static void Register(CharacterDisplay display) => Instance?._characterDisplays?.Add(display.CharacterName, display);
+    public static void Deregister(CharacterDisplay display) => Instance?._characterDisplays?.Remove(display.CharacterName);
 
-    public static void Register(DialogueView view) {
-        if (Instance is null) return;
-        Instance._dialogueViews.Add(view);
-        if (Runner is not null && Runner.IsNodeReady()) { Runner.dialogueViews.Add(view); }
-    }
-    public static void Deregister(DialogueView view) {
-        if (Runner is null) return;
-        Instance._dialogueViews.Remove(view);
-        if (Runner is not null && Runner.IsNodeReady()) { Runner.dialogueViews.Remove(view); }
-    }
+    public static void Register(DialogueView view) { Instance?._dialogueViews?.Add(view); if (Runner?.IsNodeReady() ?? false) { Runner.dialogueViews.Add(view); } }
+    public static void Deregister(DialogueView view) { Instance?._dialogueViews?.Remove(view); if (Runner?.IsNodeReady() ?? false) { Runner.dialogueViews.Remove(view); } }
 
     public static CharacterDisplay GetCharacterDisplay(string characterName) {
         if (Instance is null) return null;
-        foreach (var display in Instance._characterDisplays) { if (display.CharacterName == characterName) return display; }
-        return null;
+        Instance._characterDisplays.TryGetValue(characterName, out var display);
+        return display;
     }
 
-    public static IEnumerable<EnvironmentLayer> GetEnvironmentLayers(string environmentName) {
-        if (Instance is null) return null;
-        var layers = new List<EnvironmentLayer>();
-        foreach (var layer in Instance._environmentLayers) { if (layer.EnvironmentName == environmentName) layers.Add(layer); }
+    // These are either CanvasLayers or CanvasItems - have to do it this way as they both have 'Visible' fields but are not derived from a shared interface
+    public static IEnumerable<Node> GetEnvironmentItems(string environmentName) {
+        if (Instance is null) return [];
+        Instance._environments.TryGetValue(environmentName, out var environment);
+        if (environment is null) return [];
+
+        var layers = new List<Node>();
+        foreach (var node in environment.GetSelfAndChildren()) { if (node is CanvasLayer || node is CanvasItem) { layers.Add(node); } }
         return layers;
     }
 
@@ -90,20 +87,25 @@ public partial class DialogueManager : Node
     // Dialogue commands
     static class Commands
     {
+        [YarnCommand("scene")]
+        public static void Scene(string sceneName) {
+            if (Instance is null) return;
+            foreach (var (name, root) in Instance._environments) {
+                bool visible = name == sceneName;
+                foreach (var node in root.GetSelfAndChildren()) { if (node is CanvasLayer || node is CanvasItem) { node?.Set(CanvasItem.PropertyName.Visible, visible); } }
+            }
+        }
+
         [YarnCommand("show")]
         public static void Show(string itemName) {
-            var characterDisplay = GetCharacterDisplay(itemName);
-            characterDisplay?.Show();
-            var environmentLayers = GetEnvironmentLayers(itemName);
-            foreach (var layer in environmentLayers) { layer?.Show(); }
+            GetCharacterDisplay(itemName)?.Show();
+            foreach (var item in GetEnvironmentItems(itemName)) { item?.Set(CanvasItem.PropertyName.Visible, true); }
         }
 
         [YarnCommand("hide")]
         public static void Hide(string itemName) {
-            var characterDisplay = GetCharacterDisplay(itemName);
-            characterDisplay?.Hide();
-            var environmentLayers = GetEnvironmentLayers(itemName);
-            foreach (var layer in environmentLayers) { layer?.Hide(); }
+            GetCharacterDisplay(itemName)?.Hide();
+            foreach (var item in GetEnvironmentItems(itemName)) { item?.Set(CanvasItem.PropertyName.Visible, false); }
         }
 
         [YarnCommand("emote")]
