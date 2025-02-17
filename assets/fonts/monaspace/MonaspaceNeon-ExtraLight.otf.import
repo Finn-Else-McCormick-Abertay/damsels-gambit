@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://lmejq44v7nl"
-path="res://.godot/imported/._OpenDyslexic3-Regular.ttf-76c72fd2e359f590d46d7a833da2e9e5.fontdata"
+uid="uid://dlmf4yccm7huo"
+path="res://.godot/imported/MonaspaceNeon-ExtraLight.otf-3ccae0e1845a5e5a3552860655f4789a.fontdata"
 
 [deps]
 
-source_file="res://assets/fonts/OpenDyslexic 3 (Beta - Windows, MacOS, Linux TTF)/__MACOSX/._OpenDyslexic3-Regular.ttf"
-dest_files=["res://.godot/imported/._OpenDyslexic3-Regular.ttf-76c72fd2e359f590d46d7a833da2e9e5.fontdata"]
+source_file="res://assets/fonts/monaspace/MonaspaceNeon-ExtraLight.otf"
+dest_files=["res://.godot/imported/MonaspaceNeon-ExtraLight.otf-3ccae0e1845a5e5a3552860655f4789a.fontdata"]
 
 [params]
 
@@ -16,7 +16,7 @@ Rendering=null
 antialiasing=1
 generate_mipmaps=false
 disable_embedded_bitmaps=true
-multichannel_signed_distance_field=false
+multichannel_signed_distance_field=true
 msdf_pixel_range=8
 msdf_size=48
 allow_system_fallback=true

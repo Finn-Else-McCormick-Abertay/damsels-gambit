@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scenes/ui/menu/settings_menu.gd" id="1_kwkr7"]
 [ext_resource type="Texture2D" uid="uid://2cbl24t405i5" path="res://assets/ui/panels/Paper texture.png" id="1_tfbc3"]
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/default_theme.tres" id="2_k810m"]
-[ext_resource type="FontFile" uid="uid://bhgm14ci7wv3k" path="res://assets/fonts/MATURASC.TTF" id="4_qbibt"]
+[ext_resource type="FontFile" uid="uid://bhgm14ci7wv3k" path="res://assets/fonts/maturasc/MATURASC.TTF" id="4_qbibt"]
 
 [node name="SettingsMenuAcessibility" type="Control"]
 layout_mode = 3

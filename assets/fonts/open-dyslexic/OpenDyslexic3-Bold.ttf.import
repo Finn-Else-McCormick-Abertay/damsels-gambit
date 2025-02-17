@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://bhgm14ci7wv3k"
-path="res://.godot/imported/MATURASC.TTF-c3fa6dd4fd3b80650b87684bb5b1ca8c.fontdata"
+uid="uid://cki1g1tj0cr73"
+path="res://.godot/imported/OpenDyslexic3-Bold.ttf-ed7414599462e1672fa0eaff1071c635.fontdata"
 
 [deps]
 
-source_file="res://assets/fonts/MATURASC.TTF"
-dest_files=["res://.godot/imported/MATURASC.TTF-c3fa6dd4fd3b80650b87684bb5b1ca8c.fontdata"]
+source_file="res://assets/fonts/open-dyslexic/OpenDyslexic3-Bold.ttf"
+dest_files=["res://.godot/imported/OpenDyslexic3-Bold.ttf-ed7414599462e1672fa0eaff1071c635.fontdata"]
 
 [params]
 

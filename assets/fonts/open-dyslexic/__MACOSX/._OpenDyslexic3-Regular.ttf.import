@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://cki1g1tj0cr73"
-path="res://.godot/imported/OpenDyslexic3-Bold.ttf-dbc9b327d86042c0c5e333d1fecf3701.fontdata"
+uid="uid://lmejq44v7nl"
+path="res://.godot/imported/._OpenDyslexic3-Regular.ttf-89a2c3619c7564b9f61691c89deb3c3c.fontdata"
 
 [deps]
 
-source_file="res://assets/fonts/OpenDyslexic 3 (Beta - Windows, MacOS, Linux TTF)/OpenDyslexic3-Bold.ttf"
-dest_files=["res://.godot/imported/OpenDyslexic3-Bold.ttf-dbc9b327d86042c0c5e333d1fecf3701.fontdata"]
+source_file="res://assets/fonts/open-dyslexic/__MACOSX/._OpenDyslexic3-Regular.ttf"
+dest_files=["res://.godot/imported/._OpenDyslexic3-Regular.ttf-89a2c3619c7564b9f61691c89deb3c3c.fontdata"]
 
 [params]
 
