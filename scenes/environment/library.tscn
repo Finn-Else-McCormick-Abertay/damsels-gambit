@@ -1,7 +1,6 @@
-[gd_scene load_steps=17 format=3 uid="uid://d4dgonbop8ygy"]
+[gd_scene load_steps=16 format=3 uid="uid://d4dgonbop8ygy"]
 
-[ext_resource type="Script" path="res://scenes/environment/EnvironmentLayer.cs" id="1_84xex"]
-[ext_resource type="Texture2D" uid="uid://b85kbbob2a0hh" path="res://assets/characters/suitor/Neutral.png" id="1_jtctn"]
+[ext_resource type="Texture2D" uid="uid://b85kbbob2a0hh" path="res://assets/characters/suitor/neutral.png" id="1_jtctn"]
 [ext_resource type="Texture2D" uid="uid://120j1ta6afcx" path="res://assets/environment/props/Seat.png" id="2_cqnjh"]
 [ext_resource type="Texture2D" uid="uid://dggitk1waeglj" path="res://assets/environment/library_background.png" id="2_lrhu2"]
 [ext_resource type="Script" path="res://scenes/character/CharacterDisplay.cs" id="2_s5131"]
@@ -31,8 +30,6 @@ fill_to = Vector2(0.504274, 0)
 [node name="Background" type="CanvasLayer" parent="."]
 layer = -1
 follow_viewport_enabled = true
-script = ExtResource("1_84xex")
-EnvironmentName = &"library"
 
 [node name="LibraryBackground" type="Sprite2D" parent="Background"]
 position = Vector2(541, 298)
@@ -53,8 +50,6 @@ texture = ExtResource("2_cqnjh")
 
 [node name="SuitorLayer" type="CanvasLayer" parent="."]
 follow_viewport_enabled = true
-script = ExtResource("1_84xex")
-EnvironmentName = &"library"
 
 [node name="Suitor" type="Sprite2D" parent="SuitorLayer"]
 position = Vector2(569, 325)
@@ -67,8 +62,6 @@ SpriteName = "neutral"
 [node name="Foreground" type="CanvasLayer" parent="."]
 layer = 2
 follow_viewport_enabled = true
-script = ExtResource("1_84xex")
-EnvironmentName = &"library"
 
 [node name="Table" type="Sprite2D" parent="Foreground"]
 position = Vector2(584, 506)

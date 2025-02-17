@@ -1,6 +1,6 @@
 title: tutorial_intro
 ---
-<<show chamber>>
+<<scene chamber>>
 <<fade in queen 1>>
 Queen: My daughter, you need to be married. I have arranged a date with a suitor tonight.
 <<emote queen turn_right>>
@@ -26,5 +26,4 @@ Lady in Waiting: Oh, never you mind all that.
 <<emote lady_in_waiting happy>>
 Lady in Waiting: Good luck, Princess. I'll always be here to support you.
 <<hide lady_in_waiting>>
-<<hide chamber>>
 ===
