@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3 uid="uid://b56gjp8w7826a"]
+
+[ext_resource type="Texture2D" uid="uid://4iq8whdq2gd7" path="res://assets/ui/panels/crossed swords icon.png" id="1_ymcdd"]
+
+[node name="PositiveInteractionEffect" type="Node2D"]
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+position = Vector2(552, 145)
+amount = 3
+preprocess = 24.0
+speed_scale = 0.9
+explosiveness = 1.0
+randomness = 0.75
+texture = ExtResource("1_ymcdd")
+spread = 180.0
+gravity = Vector2(0, 600)
+initial_velocity_min = 51.77
+initial_velocity_max = 51.77
+angular_velocity_min = 239.35
+angular_velocity_max = 243.27
+linear_accel_min = 34.18
+linear_accel_max = 34.18
+radial_accel_min = 42.91
+radial_accel_max = 42.91
+tangential_accel_min = 64.0
+tangential_accel_max = 64.0
+angle_min = 439.9
+angle_max = 439.9
+scale_amount_min = 0.2
+scale_amount_max = 0.2
