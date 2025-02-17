@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://blj64xawofmhc"
-path="res://.godot/imported/Angry.png-87c17655a471d70817723fdfbd3dfbda.ctex"
+uid="uid://dl5mdiers42wb"
+path="res://.godot/imported/affection bar v2.png-ffe964ecbcc83d4fe294c37f03a8c348.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/suitor/Angry.png"
-dest_files=["res://.godot/imported/Angry.png-87c17655a471d70817723fdfbd3dfbda.ctex"]
+source_file="res://assets/ui/panels/affection bar v2.png"
+dest_files=["res://.godot/imported/affection bar v2.png-ffe964ecbcc83d4fe294c37f03a8c348.ctex"]
 
 [params]
 

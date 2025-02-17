@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://blj64xawofmhc"
-path="res://.godot/imported/Angry.png-87c17655a471d70817723fdfbd3dfbda.ctex"
+uid="uid://csep3fm0vd8ku"
+path="res://.godot/imported/linked rings icon.png-3743500a4198a995f4618ce2d73dedd5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/suitor/Angry.png"
-dest_files=["res://.godot/imported/Angry.png-87c17655a471d70817723fdfbd3dfbda.ctex"]
+source_file="res://assets/ui/panels/linked rings icon.png"
+dest_files=["res://.godot/imported/linked rings icon.png-3743500a4198a995f4618ce2d73dedd5.ctex"]
 
 [params]
 

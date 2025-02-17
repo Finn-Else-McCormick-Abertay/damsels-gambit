@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://wsn32iqbq8sp"]
+[gd_scene load_steps=5 format=3 uid="uid://wsn32iqbq8sp"]
 
 [ext_resource type="Texture2D" uid="uid://s06h1082sb1h" path="res://assets/ui/panels/Book Background.png" id="1_xc1rq"]
 [ext_resource type="Script" path="res://scenes/ui/cards/CardDisplay.cs" id="2_hc2nn"]
+[ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/default_theme.tres" id="4_s6hri"]
 [ext_resource type="FontFile" uid="uid://c27txckdp7a4a" path="res://assets/fonts/vinque/Vinque Rg.otf" id="5_qtjjj"]
 
 [node name="CardSelectionScreen" type="Control"]
@@ -11,6 +12,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_horizontal_guides_ = [569.0]
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
@@ -28,12 +30,12 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.057
 anchor_top = 0.211
-anchor_right = 0.481
-anchor_bottom = 0.932
+anchor_right = 0.485
+anchor_bottom = 0.878
 offset_left = -3.664
 offset_top = -5.72801
-offset_right = 2.888
-offset_bottom = 3.06403
+offset_right = 0.279968
+offset_bottom = 0.0559692
 focus_mode = 1
 horizontal_scroll_mode = 0
 
@@ -41,140 +43,142 @@ horizontal_scroll_mode = 0
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/h_separation = 30
+theme_override_constants/v_separation = 10
 columns = 3
 
 [node name="CardDisplay" type="Control" parent="Subjects ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(0, 150)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 script = ExtResource("2_hc2nn")
 CardId = &"subject/animals"
-CornerRadius = 0.0
+CornerRadius = 0.02
 ShadowOpacity = 0.0
 
 [node name="CardDisplay2" type="Control" parent="Subjects ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(0, 150)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 script = ExtResource("2_hc2nn")
 CardId = &"subject/animals"
-CornerRadius = 0.0
+CornerRadius = 0.02
 ShadowOpacity = 0.0
 
 [node name="CardDisplay3" type="Control" parent="Subjects ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(0, 150)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 script = ExtResource("2_hc2nn")
 CardId = &"subject/animals"
-CornerRadius = 0.0
+CornerRadius = 0.02
 ShadowOpacity = 0.0
 
 [node name="CardDisplay4" type="Control" parent="Subjects ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(0, 150)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 script = ExtResource("2_hc2nn")
 CardId = &"subject/animals"
-CornerRadius = 0.0
+CornerRadius = 0.02
 ShadowOpacity = 0.0
 
 [node name="CardDisplay5" type="Control" parent="Subjects ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(0, 150)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 script = ExtResource("2_hc2nn")
 CardId = &"subject/animals"
-CornerRadius = 0.0
+CornerRadius = 0.02
 ShadowOpacity = 0.0
 
 [node name="CardDisplay6" type="Control" parent="Subjects ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(0, 150)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 script = ExtResource("2_hc2nn")
 CardId = &"subject/animals"
-CornerRadius = 0.0
+CornerRadius = 0.02
 ShadowOpacity = 0.0
 
 [node name="CardDisplay7" type="Control" parent="Subjects ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(0, 150)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 script = ExtResource("2_hc2nn")
 CardId = &"subject/animals"
-CornerRadius = 0.0
+CornerRadius = 0.02
 ShadowOpacity = 0.0
 
 [node name="CardDisplay8" type="Control" parent="Subjects ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(0, 150)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 script = ExtResource("2_hc2nn")
 CardId = &"subject/animals"
-CornerRadius = 0.0
+CornerRadius = 0.02
 ShadowOpacity = 0.0
 
 [node name="CardDisplay9" type="Control" parent="Subjects ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(0, 150)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 script = ExtResource("2_hc2nn")
 CardId = &"subject/animals"
-CornerRadius = 0.0
+CornerRadius = 0.02
 ShadowOpacity = 0.0
 
 [node name="CardDisplay10" type="Control" parent="Subjects ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(0, 150)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 script = ExtResource("2_hc2nn")
 CardId = &"subject/animals"
-CornerRadius = 0.0
+CornerRadius = 0.02
 ShadowOpacity = 0.0
 
 [node name="CardDisplay11" type="Control" parent="Subjects ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(0, 150)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 script = ExtResource("2_hc2nn")
 CardId = &"subject/animals"
-CornerRadius = 0.0
+CornerRadius = 0.02
 ShadowOpacity = 0.0
 
 [node name="CardDisplay12" type="Control" parent="Subjects ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(0, 150)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 script = ExtResource("2_hc2nn")
 CardId = &"subject/animals"
-CornerRadius = 0.0
+CornerRadius = 0.02
 ShadowOpacity = 0.0
 
 [node name="Modifiers ScrollContainer" type="ScrollContainer" parent="."]
 physics_interpolation_mode = 1
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.535
+anchor_left = 0.53
 anchor_top = 0.202
 anchor_right = 0.964
-anchor_bottom = 0.932
-offset_left = -0.320007
+anchor_bottom = 0.878
+offset_left = -0.560059
 offset_top = 0.103989
-offset_right = 0.471924
-offset_bottom = 3.06403
+offset_right = 0.472046
+offset_bottom = 0.0559692
 focus_mode = 1
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
@@ -183,66 +187,68 @@ vertical_scroll_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/h_separation = 30
+theme_override_constants/v_separation = 10
 columns = 3
 
 [node name="CardDisplay" type="Control" parent="Modifiers ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(0, 150)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 script = ExtResource("2_hc2nn")
 CardId = &"question/thoughts"
-CornerRadius = 0.0
+CornerRadius = 0.02
 ShadowOpacity = 0.0
 
 [node name="CardDisplay2" type="Control" parent="Modifiers ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(0, 150)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 script = ExtResource("2_hc2nn")
 CardId = &"action/secret"
-CornerRadius = 0.0
+CornerRadius = 0.02
 ShadowOpacity = 0.0
 
 [node name="CardDisplay3" type="Control" parent="Modifiers ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(0, 150)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 script = ExtResource("2_hc2nn")
 CardId = &"action/secret"
-CornerRadius = 0.0
+CornerRadius = 0.02
 ShadowOpacity = 0.0
 
 [node name="CardDisplay4" type="Control" parent="Modifiers ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(0, 150)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 script = ExtResource("2_hc2nn")
 CardId = &"action/secret"
-CornerRadius = 0.0
+CornerRadius = 0.02
 ShadowOpacity = 0.0
 
 [node name="CardDisplay5" type="Control" parent="Modifiers ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(0, 150)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 script = ExtResource("2_hc2nn")
 CardId = &"action/secret"
-CornerRadius = 0.0
+CornerRadius = 0.02
 ShadowOpacity = 0.0
 
 [node name="CardDisplay6" type="Control" parent="Modifiers ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(0, 150)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 script = ExtResource("2_hc2nn")
 CardId = &"action/secret"
-CornerRadius = 0.0
+CornerRadius = 0.02
 ShadowOpacity = 0.0
 
 [node name="Subject Cards Title" type="RichTextLabel" parent="."]
@@ -276,3 +282,17 @@ text = " Modifier Cards"
 fit_content = true
 tab_size = 11
 metadata/_edit_use_anchors_ = true
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.773
+anchor_top = 0.897
+anchor_right = 0.949
+anchor_bottom = 0.937
+offset_left = -0.496094
+offset_top = -0.255981
+offset_right = -0.248047
+offset_bottom = -0.176025
+theme = ExtResource("4_s6hri")
+text = "Confirm Selection"

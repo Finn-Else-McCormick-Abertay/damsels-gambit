@@ -25,7 +25,7 @@ public partial class DialogueView : Node, DialogueViewBase
 
 	Action _onLineFinishedAction = null;
 
-    public Action requestInterrupt { get; set; }
+	public Action requestInterrupt { get; set; }
 
 	public override void _EnterTree() {
 		ContinueButton?.TryConnect(Button.SignalName.Pressed, OnContinue);
@@ -46,7 +46,7 @@ public partial class DialogueView : Node, DialogueViewBase
 		State = DialogueState.Waiting;
 	}
 
-    public void RunLine(LocalizedLine dialogueLine, Action onDialogueLineFinished) {
+	public void RunLine(LocalizedLine dialogueLine, Action onDialogueLineFinished) {
 		_onLineFinishedAction = onDialogueLineFinished;
 
 		bool withNext = dialogueLine?.Metadata?.Contains("withnext") ?? false;
@@ -70,15 +70,15 @@ public partial class DialogueView : Node, DialogueViewBase
 	}
 
 	public void InterruptLine(LocalizedLine dialogueLine, Action onDialogueLineFinished) {
-        onDialogueLineFinished?.Invoke();
-    }
+		onDialogueLineFinished?.Invoke();
+	}
 
 	public void DismissLine(Action onDismissalComplete) {
 
 		ContinueButton.Hide();
-        onDismissalComplete?.Invoke();
+		onDismissalComplete?.Invoke();
 		State = DialogueState.Waiting;
-    }
+	}
 
 	public void RunOptions(DialogueOption[] dialogueOptions, Action<int> onOptionSelected) {
 		CleanupOptions();
@@ -104,7 +104,7 @@ public partial class DialogueView : Node, DialogueViewBase
 
 		OptionRoot.Show();
 		State = DialogueState.DisplayingOptions;
-    }
+	}
 
 	private void CleanupOptions() {
 		foreach (var child in OptionRoot.GetChildren()) { if (child != OptionArchetype) { child.QueueFree(); } }
