@@ -1,11 +1,10 @@
-[gd_resource type="Theme" load_steps=12 format=3 uid="uid://bf1esp424fk84"]
+[gd_resource type="Theme" load_steps=10 format=3 uid="uid://bf1esp424fk84"]
 
 [ext_resource type="Texture2D" uid="uid://dgr53q4axrft6" path="res://assets/ui/buttons/button disabled.png" id="1_anoa5"]
 [ext_resource type="Texture2D" uid="uid://dn3tf17kvvgr4" path="res://assets/ui/buttons/button normal.png" id="1_yvyp5"]
 [ext_resource type="Script" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="2_0sphh"]
 [ext_resource type="Texture2D" uid="uid://36qx2wgud0id" path="res://assets/ui/buttons/button focused.png" id="3_5sm8g"]
-[ext_resource type="Texture2D" uid="uid://bqhy8hy1d6ury" path="res://assets/ui/buttons/button hovered.png" id="4_nlges"]
-[ext_resource type="Texture2D" uid="uid://uw61bnsai54f" path="res://assets/ui/buttons/button pressed.png" id="6_gp8hj"]
+[ext_resource type="Texture2D" uid="uid://emppqs6pw0ah" path="res://assets/ui/buttons/button hovered.png" id="4_nlges"]
 
 [sub_resource type="StyleBox" id="StyleBox_l55ek"]
 resource_local_to_scene = false
@@ -16,29 +15,6 @@ content_margin_right = -1.0
 content_margin_bottom = -1.0
 script = ExtResource("2_0sphh")
 Texture = ExtResource("1_anoa5")
-Scale = 0.11
-DrawCenter = true
-TextureMarginLeft = 700
-TextureMarginTop = 670
-TextureMarginRight = 700
-TextureMarginBottom = 670
-ExpandMarginLeft = 27.845
-ExpandMarginTop = 25.895
-ExpandMarginRight = 31.63
-ExpandMarginBottom = 25.12
-AxisStretchHorizontal = 0
-AxisStretchVertical = 0
-ModulateColor = Color(1, 1, 1, 1)
-
-[sub_resource type="StyleBox" id="StyleBox_em8jo"]
-resource_local_to_scene = false
-resource_name = ""
-content_margin_left = -1.0
-content_margin_top = -1.0
-content_margin_right = -1.0
-content_margin_bottom = -1.0
-script = ExtResource("2_0sphh")
-Texture = ExtResource("3_5sm8g")
 Scale = 0.11
 DrawCenter = true
 TextureMarginLeft = 700
@@ -107,7 +83,7 @@ content_margin_top = -1.0
 content_margin_right = -1.0
 content_margin_bottom = -1.0
 script = ExtResource("2_0sphh")
-Texture = ExtResource("6_gp8hj")
+Texture = ExtResource("3_5sm8g")
 Scale = 0.11
 DrawCenter = true
 TextureMarginLeft = 700
@@ -142,7 +118,6 @@ Button/constants/icon_max_width = 35
 Button/constants/outline_size = 0
 Button/font_sizes/font_size = 20
 Button/styles/disabled = SubResource("StyleBox_l55ek")
-Button/styles/focus = SubResource("StyleBox_em8jo")
 Button/styles/hover = SubResource("StyleBox_juxdi")
 Button/styles/normal = SubResource("StyleBox_ebw1w")
 Button/styles/pressed = SubResource("StyleBox_5ew4r")
