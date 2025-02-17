@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bfoqt200g8dkj"
-path="res://.godot/imported/Suitor Card.png-c957ed67f473822ddd9ba15cde08ee8d.ctex"
+path="res://.godot/imported/Suitor Card.png-22a5ea33b34862fb389c212fbf8f2ca2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/suitor/Suitor Card.png"
-dest_files=["res://.godot/imported/Suitor Card.png-c957ed67f473822ddd9ba15cde08ee8d.ctex"]
+source_file="res://assets/characters/Suitor/Suitor Card.png"
+dest_files=["res://.godot/imported/Suitor Card.png-22a5ea33b34862fb389c212fbf8f2ca2.ctex"]
 
 [params]
 
