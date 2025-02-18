@@ -32,3 +32,4 @@ ModulateColor = Color(1, 1, 1, 1)
 [resource]
 AffectionMeter/icons/marker = SubResource("PlaceholderTexture2D_k8jvk")
 AffectionMeter/styles/over = SubResource("StyleBox_qyobw")
+VSlider/icons/grabber_disabled = null
