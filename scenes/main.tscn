@@ -14,6 +14,36 @@
 
 [node name="Main" type="Node"]
 
+[node name="deckbuild" type="Node" parent="."]
+
+[node name="topic" type="Control" parent="deckbuild"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="card1" type="Control" parent="deckbuild/topic"]
+anchors_preset = 0
+offset_left = 100.0
+offset_top = 100.0
+offset_right = 200.0
+offset_bottom = 240.0
+
+[node name="topic1" type="Sprite2D" parent="deckbuild/topic/card1"]
+position = Vector2(50, 70)
+texture = ExtResource("2_we7gv")
+script = ExtResource("10_mxjld")
+
+[node name="topic decklist" type="Label" parent="deckbuild/topic"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 8.0
+offset_right = 552.0
+offset_bottom = 98.0
+text = "testing"
+autowrap_mode = 2
+script = ExtResource("11_titma")
+
 [node name="deckplay" type="Node" parent="."]
 
 [node name="left deck" type="Node2D" parent="deckplay"]
@@ -94,36 +124,10 @@ script = ExtResource("9_f3jfv")
 offset_right = 40.0
 offset_bottom = 23.0
 
-[node name="deckbuild" type="Node" parent="."]
-
-[node name="topic" type="Control" parent="deckbuild"]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="card1" type="Control" parent="deckbuild/topic"]
-anchors_preset = 0
-offset_right = 100.0
-offset_bottom = 140.0
-
-[node name="topic1" type="Sprite2D" parent="deckbuild/topic/card1"]
-position = Vector2(50, 70)
-texture = ExtResource("2_we7gv")
-script = ExtResource("10_mxjld")
-
-[node name="topic decklist" type="Label" parent="deckbuild/topic"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-script = ExtResource("11_titma")
-
-[connection signal="C1SELECT" from="deckplay/left deck/hand/LCard1" to="deckplay/left deck/hand/LCard2" method="OnC1SELECTSignal"]
-[connection signal="C1SELECT" from="deckplay/left deck/hand/LCard1" to="deckplay/left deck/hand/LCard3" method="OnC1SELECTSignal"]
-[connection signal="C2SELECT" from="deckplay/left deck/hand/LCard2" to="deckplay/left deck/hand/LCard1" method="OnC2SELECTSignal"]
-[connection signal="C2SELECT" from="deckplay/left deck/hand/LCard2" to="deckplay/left deck/hand/LCard3" method="OnC2SELECTSignal"]
-[connection signal="C3SELECT" from="deckplay/left deck/hand/LCard3" to="deckplay/left deck/hand/LCard1" method="OnC3SELECTSignal"]
-[connection signal="C3SELECT" from="deckplay/left deck/hand/LCard3" to="deckplay/left deck/hand/LCard2" method="OnC3SELECTSignal"]
+[connection signal="mouse_entered" from="deckbuild/topic/card1" to="deckbuild/topic/card1/topic1" method="_mouseover"]
+[connection signal="mouse_exited" from="deckbuild/topic/card1" to="deckbuild/topic/card1/topic1" method="_mouseleave"]
+[connection signal="L1ADD" from="deckbuild/topic/card1/topic1" to="deckbuild/topic/topic decklist" method="deckadd"]
+[connection signal="L1REMOVE" from="deckbuild/topic/card1/topic1" to="deckbuild/topic/topic decklist" method="deckremove"]
 [connection signal="mouse_entered" from="deckplay/right deck/hand/RCard1control" to="deckplay/right deck/hand/RCard1control/RCard1" method="mouseover"]
 [connection signal="mouse_exited" from="deckplay/right deck/hand/RCard1control" to="deckplay/right deck/hand/RCard1control/RCard1" method="mouseleft"]
 [connection signal="C4SELECT" from="deckplay/right deck/hand/RCard1control/RCard1" to="deckplay/right deck/hand/RCard2control/RCard2" method="deselect"]
@@ -136,5 +140,3 @@ script = ExtResource("11_titma")
 [connection signal="mouse_exited" from="deckplay/right deck/hand/RCard3control" to="deckplay/right deck/hand/RCard3control/RCard3" method="mouseleft3"]
 [connection signal="C6SELECT" from="deckplay/right deck/hand/RCard3control/RCard3" to="deckplay/right deck/hand/RCard1control/RCard1" method="deselect"]
 [connection signal="C6SELECT" from="deckplay/right deck/hand/RCard3control/RCard3" to="deckplay/right deck/hand/RCard2control/RCard2" method="deselect"]
-[connection signal="mouse_entered" from="deckbuild/topic/card1" to="deckbuild/topic/card1/topic1" method="select"]
-[connection signal="L1ADD" from="deckbuild/topic/card1/topic1" to="deckbuild/topic/topic decklist" method="deckadd"]
