@@ -18,7 +18,7 @@ public class Switch : Console.Command
         }
         TraverseAndAddScenes("res://scenes");
     }
-    private List<string> _scenePaths;
+    private readonly List<string> _scenePaths;
 
     class Options
     {

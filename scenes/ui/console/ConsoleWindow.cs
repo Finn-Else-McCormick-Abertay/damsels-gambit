@@ -114,14 +114,14 @@ public partial class ConsoleWindow : Control
 		UpdateAutofillSuggestion();
 	}
 
-	private StringName ConsoleNewline = "console_newline";
-	private StringName UiTextNewline = "ui_text_newline";
-	private StringName UiTextCompletionReplace = "ui_text_completion_replace";
-	private StringName UiTextCompletionEscape = "console_text_completion_escape";
-	private StringName UiTextCaretLeft = "ui_text_caret_left";
-	private StringName UiTextCaretRight = "ui_text_caret_right";
-	private StringName UiTextCaretUp = "ui_text_caret_up";
-	private StringName UiTextCaretDown = "ui_text_caret_down";
+	private static readonly StringName ConsoleNewline = "console_newline";
+	private static readonly StringName UiTextNewline = "ui_text_newline";
+	private static readonly StringName UiTextCompletionReplace = "ui_text_completion_replace";
+	private static readonly StringName UiTextCompletionEscape = "console_text_completion_escape";
+	private static readonly StringName UiTextCaretLeft = "ui_text_caret_left";
+	private static readonly StringName UiTextCaretRight = "ui_text_caret_right";
+	private static readonly StringName UiTextCaretUp = "ui_text_caret_up";
+	private static readonly StringName UiTextCaretDown = "ui_text_caret_down";
 
 	private void OnTextEditGuiInput(InputEvent @event) {
 		if (@event.IsActionPressed(ConsoleNewline)) {

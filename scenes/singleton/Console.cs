@@ -8,6 +8,7 @@ using System.IO;
 using CommandLine.Text;
 using System.Reflection;
 using CsvHelper;
+using DamselsGambit.Util;
 
 namespace DamselsGambit;
 
@@ -26,10 +27,10 @@ public partial class Console : Node
 
         var commandTypes = Assembly.GetAssembly(GetType()).GetTypes().Where(type => typeof(Command).IsAssignableFrom(type) && !type.IsAbstract);
         foreach (var commandType in commandTypes) {
-            var name = commandType.Name.ToLower();
+            var commandAttribute = commandType.GetCustomAttribute<CommandAttribute>();
+            string name = commandAttribute?.Name ?? commandType.Name.PascalToKebabCase();
             var commandInstance = Activator.CreateInstance(commandType) as Command;
             _commands.Add(name, commandInstance);
-            GD.Print(name);
         }
     }
 
@@ -37,6 +38,12 @@ public partial class Console : Node
     {
         public abstract void Parse(Parser parser, IEnumerable<string> args);
         public virtual IEnumerable<string> GetAutofill(string[] args) => [];
+    }
+
+    [AttributeUsage(AttributeTargets.Class)]
+    public class CommandAttribute(string name) : Attribute
+    {
+        public string Name { get; set; } = name;
     }
 
     public static IEnumerable<string> CommandNames => Instance?._commands.Keys;
@@ -55,10 +62,10 @@ public partial class Console : Node
         canvasLayer.AddChild(_window); _window.Owner = canvasLayer;
         _window.Hide();
 
-        Print($"Damsel's Gambit v{ProjectSettings.GetSetting("application/config/version").AsString()}");
+        Print($"{ProjectSettings.GetSetting("application/config/name").AsString()} v{ProjectSettings.GetSetting("application/config/version").AsString()}");
     }
     
-    private StringName ToggleActionName = "console_toggle";
+    private static readonly StringName ToggleActionName = "console_toggle";
 
     public override void _Input(InputEvent @event) {
         if (_window is null) return;
