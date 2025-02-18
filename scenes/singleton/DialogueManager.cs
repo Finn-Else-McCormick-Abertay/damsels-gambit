@@ -16,13 +16,16 @@ public partial class DialogueManager : Node
 
     public override void _EnterTree() {
         Instance = this;
+        AddChild(_environmentRoot); _environmentRoot.Owner = this;
+
         InitRunner();
-        LoadEnvironments();
+        ReloadEnvironments();
     }
 
     public void Reset() {
         if (Runner is not null) { RemoveChild(Runner); Runner.QueueFree(); }
         InitRunner();
+        ReloadEnvironments();
     }
 
     private void InitRunner() {
@@ -33,19 +36,26 @@ public partial class DialogueManager : Node
         Runner.Ready += () => { Runner.SetDialogueViews(_dialogueViews); };
     }
 
-    private void LoadEnvironments() {
+    private void ReloadEnvironments() {
+        // Clear any existing environments
+        // (animations can change the state of them, so we need to hard reset)
+        _environments.Clear();
+        foreach (var node in _environmentRoot.GetChildren()) { _environmentRoot.RemoveChild(node); node.QueueFree(); }
         foreach (var file in DirAccess.GetFilesAt("res://scenes/environment/")) {
             if (Path.GetExtension(file) != ".tscn") continue;
             var scene = ResourceLoader.Load<PackedScene>($"res://scenes/environment/{file}");
-            var node = scene.Instantiate(); AddChild(node);
-            var environmentName = Path.GetFileNameWithoutExtension(file);
-            _environments.Add(environmentName, node);
-            foreach (var item in GetEnvironmentItems(environmentName)) {
-                item?.Set(CanvasItem.PropertyName.Visible, false);
+            if (scene is not null) {
+                var node = scene.Instantiate();
+                _environmentRoot.AddChild(node); node.Owner = _environmentRoot;
+
+                var environmentName = Path.GetFileNameWithoutExtension(file);
+                _environments.Add(environmentName, node);
+                foreach (var item in GetEnvironmentItems(environmentName)) { item?.Set(CanvasItem.PropertyName.Visible, false); }
             }
         }
     }
 
+    private readonly Node _environmentRoot = new() { Name = "EnvironmentRoot" };
     private readonly Dictionary<string, Node> _environments = [];
     private readonly Dictionary<string, CharacterDisplay> _characterDisplays = [];
     private readonly HashSet<DialogueView> _dialogueViews = [];
