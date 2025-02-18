@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b85kbbob2a0hh"
-path="res://.godot/imported/Neutral.png-d6534df36d705b7edf9ea8a3f49150e4.ctex"
+uid="uid://cjlvo07817ox3"
+path="res://.godot/imported/exit_pressed.png-baf92a942692396304c69d640111c41c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/Suitor/Neutral.png"
-dest_files=["res://.godot/imported/Neutral.png-d6534df36d705b7edf9ea8a3f49150e4.ctex"]
+source_file="res://assets/ui/buttons/exit_pressed.png"
+dest_files=["res://.godot/imported/exit_pressed.png-baf92a942692396304c69d640111c41c.ctex"]
 
 [params]
 

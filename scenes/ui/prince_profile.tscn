@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://q1kh0whg1g0g"]
+[gd_scene load_steps=6 format=3 uid="uid://q1kh0whg1g0g"]
 
 [ext_resource type="Texture2D" uid="uid://b3uynpkv1oxnh" path="res://assets/ui/panels/papertexturehole.png" id="1_wfhrk"]
 [ext_resource type="FontFile" uid="uid://c27txckdp7a4a" path="res://assets/fonts/vinque/Vinque Rg.otf" id="2_knaur"]
-[ext_resource type="Texture2D" uid="uid://bfoqt200g8dkj" path="res://assets/characters/suitor/Suitor Card.png" id="3_egqja"]
+[ext_resource type="Texture2D" uid="uid://bfoqt200g8dkj" path="res://assets/characters/Suitor/Suitor Card.png" id="3_egqja"]
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/default_theme.tres" id="4_7j741"]
+[ext_resource type="FontFile" uid="uid://etfvluh4ie85" path="res://assets/fonts/argos-george/ArgosGeorge.ttf" id="5_rxc53"]
 
 [node name="Princeprofile" type="Control"]
 layout_mode = 3
@@ -85,4 +86,6 @@ offset_right = 0.536011
 offset_bottom = -0.22403
 theme = ExtResource("4_7j741")
 theme_override_colors/default_color = Color(0.192157, 0.0784314, 0.0235294, 1)
+theme_override_fonts/normal_font = ExtResource("5_rxc53")
+theme_override_font_sizes/normal_font_size = 18
 text = "Frostholm is a freezing, harsh kingdom in the far north, where survival requires resilience and sensibleness. Its citizens value hard work, loyalty, and community. The kingdom is known for it's ice carving traditions, and hardy crops."

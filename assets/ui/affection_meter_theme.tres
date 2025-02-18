@@ -1,0 +1,35 @@
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://dhax3sfwm6isl"]
+
+[ext_resource type="Texture2D" uid="uid://p6jntunjpfs5" path="res://assets/ui/panels/affection bar stand alone.png" id="1_lcnq2"]
+[ext_resource type="Script" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="2_vjwo0"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_k8jvk"]
+size = Vector2(40, 5)
+
+[sub_resource type="StyleBox" id="StyleBox_qyobw"]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = -1.0
+content_margin_top = -1.0
+content_margin_right = -1.0
+content_margin_bottom = -1.0
+script = ExtResource("2_vjwo0")
+Texture = ExtResource("1_lcnq2")
+Scale = 0.0
+DrawCenter = true
+TextureMarginLeft = 7
+TextureMarginTop = 7
+TextureMarginRight = 7
+TextureMarginBottom = 7
+ExpandMarginLeft = 0.0
+ExpandMarginTop = 0.0
+ExpandMarginRight = 0.0
+ExpandMarginBottom = 0.0
+AxisStretchHorizontal = 1
+AxisStretchVertical = 1
+ModulateColor = Color(1, 1, 1, 1)
+
+[resource]
+AffectionMeter/icons/marker = SubResource("PlaceholderTexture2D_k8jvk")
+AffectionMeter/styles/over = SubResource("StyleBox_qyobw")
+VSlider/icons/grabber_disabled = null

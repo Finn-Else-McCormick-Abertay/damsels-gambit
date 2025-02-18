@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b85kbbob2a0hh"
-path="res://.godot/imported/Neutral.png-d6534df36d705b7edf9ea8a3f49150e4.ctex"
+uid="uid://4iq8whdq2gd7"
+path="res://.godot/imported/crossed swords icon.png-e05e2a58f8b049eb3d823e6db2f9a186.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/Suitor/Neutral.png"
-dest_files=["res://.godot/imported/Neutral.png-d6534df36d705b7edf9ea8a3f49150e4.ctex"]
+source_file="res://assets/ui/panels/crossed swords icon.png"
+dest_files=["res://.godot/imported/crossed swords icon.png-e05e2a58f8b049eb3d823e6db2f9a186.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b85kbbob2a0hh"
-path="res://.godot/imported/Neutral.png-d6534df36d705b7edf9ea8a3f49150e4.ctex"
+uid="uid://csep3fm0vd8ku"
+path="res://.godot/imported/linked rings icon.png-3743500a4198a995f4618ce2d73dedd5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/Suitor/Neutral.png"
-dest_files=["res://.godot/imported/Neutral.png-d6534df36d705b7edf9ea8a3f49150e4.ctex"]
+source_file="res://assets/ui/panels/linked rings icon.png"
+dest_files=["res://.godot/imported/linked rings icon.png-3743500a4198a995f4618ce2d73dedd5.ctex"]
 
 [params]
 
