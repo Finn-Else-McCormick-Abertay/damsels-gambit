@@ -111,8 +111,8 @@ public partial class Console : Node
         }
     }
 
-    public static string GetAutofillSuggestion(string inputString) {
-        if (inputString == "") return "";
+    public static IEnumerable<string> GetAutofillSuggestions(string inputString) {
+        if (inputString == "") return [""];
 
         var args = inputString.Split();
         var inProgressArg = args.Last();
@@ -132,7 +132,8 @@ public partial class Console : Node
         }
         validArgs.Sort();
 
-        foreach (var validArg in validArgs) { if (Matches(validArg)) return validArg; }
-        return "";
+        List<string> suggestions = [];
+        foreach (var validArg in validArgs) { if (Matches(validArg)) { suggestions.Add(validArg); } }
+        return suggestions;
     }
 }

@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace DamselsGambit;
@@ -11,6 +12,7 @@ public partial class ConsoleWindow : Control
 	[Export] public TextEdit TextEdit { get; private set; }
 	[Export] public TextEdit Autofill { get; private set; }
 
+	private IEnumerable<string> _autofillSuggestions;
 	private string _autofillSuggestion = "";
 
 	private List<string> _history = [ "" ];
@@ -74,9 +76,10 @@ public partial class ConsoleWindow : Control
 		}
 		else { priorSb.Append(lineString); }
 		
-		_autofillSuggestion = Console.GetAutofillSuggestion(priorSb.ToString());
+		_autofillSuggestions = Console.GetAutofillSuggestions(priorSb.ToString());
+		if (_autofillSuggestion != "<<null>>" && (_autofillSuggestion == "" || !_autofillSuggestions.Contains(_autofillSuggestion))) { _autofillSuggestion = _autofillSuggestions.Any() ? _autofillSuggestions.First() : ""; }
 		if (wordUnderCaret == _autofillSuggestion) { _autofillSuggestion = ""; }
-		if (_autofillSuggestion == "") { Autofill.Text = ""; return; }
+		if (_autofillSuggestion == "" || _autofillSuggestion == "<<null>>") { Autofill.Text = ""; return; }
 		
 		var fillSb = new StringBuilder();
 		fillSb.Append('\n', caretLine);
@@ -106,34 +109,39 @@ public partial class ConsoleWindow : Control
 		Callable.From(() => {
 		}).CallDeferred();
 
+		_autofillSuggestions = [];
+		_autofillSuggestion = "";
 		UpdateAutofillSuggestion();
 	}
 
-	private StringName ConsoleNewlineName = "console_newline";
-	private StringName UiTextNewlineName = "ui_text_newline";
-	private StringName UiTextCompletionReplaceName = "ui_text_completion_replace";
+	private StringName ConsoleNewline = "console_newline";
+	private StringName UiTextNewline = "ui_text_newline";
+	private StringName UiTextCompletionReplace = "ui_text_completion_replace";
+	private StringName UiTextCompletionEscape = "console_text_completion_escape";
 	private StringName UiTextCaretLeft = "ui_text_caret_left";
 	private StringName UiTextCaretRight = "ui_text_caret_right";
 	private StringName UiTextCaretUp = "ui_text_caret_up";
 	private StringName UiTextCaretDown = "ui_text_caret_down";
 
 	private void OnTextEditGuiInput(InputEvent @event) {
-		if (@event.IsActionPressed(ConsoleNewlineName)) {
+		if (@event.IsActionPressed(ConsoleNewline)) {
 			TextEdit.InsertTextAtCaret("\n");
 			TextEdit.AcceptEvent();
 		}
-		else if (@event.IsActionPressed(UiTextNewlineName)) {
+		else if (@event.IsActionPressed(UiTextNewline)) {
 			if (TextEdit.Text != "") {
 				_history[_historyIndex] = TextEdit.Text;
 				_history.Insert(_historyIndex, "");
 			}
 			Console.ParseCommand(TextEdit.Text);
 			TextEdit.Text = "";
+			_autofillSuggestions = [];
+			_autofillSuggestion = "";
 			OutputLabel.GetVScrollBar().Value = OutputLabel.GetContentHeight();
 			TextEdit.AcceptEvent();
 		}
 
-		if (@event.IsActionPressed(UiTextCompletionReplaceName)) {
+		if (@event.IsActionPressed(UiTextCompletionReplace)) {
 			if (_autofillSuggestion != "") {
 				AcceptAutofill();
 				TextEdit.AcceptEvent();
@@ -153,6 +161,33 @@ public partial class ConsoleWindow : Control
 				_history[_historyIndex] = TextEdit.Text;
 				_historyIndex--;
 				TextEdit.Text = _history[_historyIndex];
+				TextEdit.AcceptEvent();
+			}
+		}
+
+		if (@event.IsActionPressed(UiTextCompletionEscape) && _autofillSuggestions.Any()) {
+			if (_autofillSuggestion != "<<null>>") { _autofillSuggestion = "<<null>>"; } else { _autofillSuggestion = ""; }
+			UpdateAutofillSuggestion();
+			TextEdit.AcceptEvent();
+		}
+
+		if (@event.IsActionPressed(UiTextCaretLeft) && _autofillSuggestions.Any() && _autofillSuggestion != "" && _autofillSuggestion != "<<null>>") {
+			if (_autofillSuggestions.Contains(_autofillSuggestion)) {
+				var index = _autofillSuggestions.ToList().IndexOf(_autofillSuggestion) - 1;
+				if (index < 0) index += _autofillSuggestions.Count();
+				if (index >= _autofillSuggestions.Count()) index -= _autofillSuggestions.Count();
+				_autofillSuggestion = _autofillSuggestions.ElementAt(index);
+				UpdateAutofillSuggestion();
+				TextEdit.AcceptEvent();
+			}
+		}
+		if (@event.IsActionPressed(UiTextCaretRight) && _autofillSuggestions.Any() && _autofillSuggestion != "" && _autofillSuggestion != "<<null>>") {
+			if (_autofillSuggestions.Contains(_autofillSuggestion)) {
+				var index = _autofillSuggestions.ToList().IndexOf(_autofillSuggestion) + 1;
+				if (index < 0) index += _autofillSuggestions.Count();
+				if (index >= _autofillSuggestions.Count()) index -= _autofillSuggestions.Count();
+				_autofillSuggestion = _autofillSuggestions.ElementAt(index);
+				UpdateAutofillSuggestion();
 				TextEdit.AcceptEvent();
 			}
 		}
