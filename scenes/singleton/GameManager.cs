@@ -14,12 +14,18 @@ public partial class GameManager : Node
 {
     public static GameManager Instance { get; private set; }
 
-    public static CardGameController CardGameController { get; private set; }
+    public static CardGameController CardGameController { 
+        get {
+            if (field is not null && IsInstanceValid(field)) return field;
+            CardGameController = Instance?.GetTree()?.Root?.FindChildOfType<CardGameController>();
+            return field;
+        } 
+        private set;
+    }
 
     public override void _EnterTree() { Instance = this; }
     public override void _Ready() {
         //if (GUIDE.Initialise(GetTree().Root.GetNode("GUIDE"))) { GUIDE.EnableMappingContext(GUIDE.MappingContextDefault); }
-        CardGameController = GetTree().Root.FindChildOfType<CardGameController>();
     }
 
     public void QuitToTitle() {
