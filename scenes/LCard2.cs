@@ -10,7 +10,6 @@ public partial class LCard2 : Sprite2D
 		Position = new Vector2(
    		 	x: (310),
 			y: (550)); 
-		select = false;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
