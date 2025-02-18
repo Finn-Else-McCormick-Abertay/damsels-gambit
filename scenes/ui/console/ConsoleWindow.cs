@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace DamselsGambit;
@@ -11,6 +12,9 @@ public partial class ConsoleWindow : Control
 	[Export] public TextEdit Autofill { get; private set; }
 
 	private string _autofillSuggestion = "";
+
+	private List<string> _history = [ "" ];
+	private int _historyIndex = 0;
 
 	public override void _EnterTree() {
 		Console.OnPrint += OnPrint;
@@ -105,24 +109,51 @@ public partial class ConsoleWindow : Control
 		UpdateAutofillSuggestion();
 	}
 
+	private StringName ConsoleNewlineName = "console_newline";
+	private StringName UiTextNewlineName = "ui_text_newline";
+	private StringName UiTextCompletionReplaceName = "ui_text_completion_replace";
+	private StringName UiTextCaretLeft = "ui_text_caret_left";
+	private StringName UiTextCaretRight = "ui_text_caret_right";
+	private StringName UiTextCaretUp = "ui_text_caret_up";
+	private StringName UiTextCaretDown = "ui_text_caret_down";
+
 	private void OnTextEditGuiInput(InputEvent @event) {
-		if (@event is InputEventKey keyEvent) {
-			if (@event.IsPressed() && keyEvent.Keycode == Key.Enter) {
-				if (keyEvent.ShiftPressed) {
-				TextEdit.InsertTextAtCaret("\n");
-				}
-				else {
-					Console.RunCommand(TextEdit.Text);
-					TextEdit.Text = "";
-					OutputLabel.GetVScrollBar().Value = OutputLabel.GetContentHeight();
-				}
+		if (@event.IsActionPressed(ConsoleNewlineName)) {
+			TextEdit.InsertTextAtCaret("\n");
+			TextEdit.AcceptEvent();
+		}
+		else if (@event.IsActionPressed(UiTextNewlineName)) {
+			if (TextEdit.Text != "") {
+				_history[_historyIndex] = TextEdit.Text;
+				_history.Insert(_historyIndex, "");
+			}
+			Console.ParseCommand(TextEdit.Text);
+			TextEdit.Text = "";
+			OutputLabel.GetVScrollBar().Value = OutputLabel.GetContentHeight();
+			TextEdit.AcceptEvent();
+		}
+
+		if (@event.IsActionPressed(UiTextCompletionReplaceName)) {
+			if (_autofillSuggestion != "") {
+				AcceptAutofill();
 				TextEdit.AcceptEvent();
 			}
-			else if (@event.IsPressed() && keyEvent.Keycode == Key.Tab) {
-				if (_autofillSuggestion != "") {
-					AcceptAutofill();
-					TextEdit.AcceptEvent();
-				}
+		}
+
+		if (@event.IsActionPressed(UiTextCaretUp)) {
+			if (TextEdit.GetCaretLine() == 0 && _historyIndex < _history.Count - 1) {
+				_history[_historyIndex] = TextEdit.Text;
+				_historyIndex++;
+				TextEdit.Text = _history[_historyIndex];
+				TextEdit.AcceptEvent();
+			}
+		}
+		if (@event.IsActionPressed(UiTextCaretDown)) {
+			if (TextEdit.GetCaretLine() == TextEdit.GetVisibleLineCount() - 1 && _historyIndex > 0) {
+				_history[_historyIndex] = TextEdit.Text;
+				_historyIndex--;
+				TextEdit.Text = _history[_historyIndex];
+				TextEdit.AcceptEvent();
 			}
 		}
 	}

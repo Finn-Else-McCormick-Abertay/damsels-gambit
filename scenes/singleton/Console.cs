@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Godot;
+using CommandLine;
+using System.IO;
+using CommandLine.Text;
+using System.Reflection;
+using CsvHelper;
 
 namespace DamselsGambit;
 
@@ -12,9 +17,34 @@ public partial class Console : Node
     private static Console Instance { get; set; }
 
     private ConsoleWindow _window;
-    private StringBuilder _logBuilder = new();
+    private readonly Parser _parser;
+    private readonly StringBuilder _logBuilder = new();
 
-    public static string LogText => Instance?._logBuilder.ToString();
+    private readonly Dictionary<string, Command> _commands = [];
+    public Console() {
+        _parser = new(with => { with.AutoHelp = false; with.AutoVersion = false; with.HelpWriter = null; });
+
+        var commandTypes = Assembly.GetAssembly(GetType()).GetTypes().Where(type => typeof(Command).IsAssignableFrom(type) && !type.IsAbstract);
+        foreach (var commandType in commandTypes) {
+            var name = commandType.Name.ToLower();
+            var commandInstance = Activator.CreateInstance(commandType) as Command;
+            _commands.Add(name, commandInstance);
+            GD.Print(name);
+        }
+    }
+
+    public abstract class Command
+    {
+        public abstract void Parse(Parser parser, IEnumerable<string> args);
+        public virtual IEnumerable<string> GetAutofill(string[] args) => [];
+    }
+
+    public static IEnumerable<string> CommandNames => Instance?._commands.Keys;
+    public static Command GetCommand(string name) {
+        if (Instance is null || Instance?._commands is null) return null;
+        Instance._commands.TryGetValue(name, out Command command);
+        return command;
+    }
 
     public override void _EnterTree() {
         Instance = this;
@@ -24,6 +54,8 @@ public partial class Console : Node
         AddChild(canvasLayer); canvasLayer.Owner = this;
         canvasLayer.AddChild(_window); _window.Owner = canvasLayer;
         _window.Hide();
+
+        Print($"Damsel's Gambit v{ProjectSettings.GetSetting("application/config/version").AsString()}");
     }
     
     private StringName ToggleActionName = "console_toggle";
@@ -36,6 +68,8 @@ public partial class Console : Node
             if (_window.Visible) { _window.TextEdit.CallDeferred(Control.MethodName.GrabFocus); }
         }
     }
+    
+    public static string LogText => Instance?._logBuilder.ToString();
 
     public static event Action<string> OnPrint;
     public static event Action OnClear;
@@ -59,34 +93,46 @@ public partial class Console : Node
         if (pushToStdOut) { GD.Print(msg); }
     }
     public static void Warning(string msg, bool pushToStdOut = true) {
-        PrintRaw($"[color=yellow]Warning: {msg}[/color]\n");
+        PrintRaw($"[color=yellow]{msg}[/color]\n");
         if (pushToStdOut) { GD.PushWarning(msg); }
     }
     public static void Error(string msg, bool pushToStdOut = true) {
-        PrintRaw($"[color=red]Error: {msg}[/color]\n");
+        PrintRaw($"[color=red]{msg}[/color]\n");
         if (pushToStdOut) { GD.PushError(msg); }
     }
 
-    public static void RunCommand(string command) {
-        Warning($"No such command '{command}'");
+    public static void ParseCommand(string inputString) {
+        if (Instance is null) return;
+
+        var args = inputString.Split();
+        if (args.IsEmpty()) return;
+        if (Instance._commands.TryGetValue(args.First().ToLower(), out Command command)) {
+            command.Parse(Instance._parser, args.Length == 1 ? [] : args[1..]);
+        }
     }
 
-    public static string GetAutofillSuggestion(string command) {
-        var args = command.Split();
+    public static string GetAutofillSuggestion(string inputString) {
+        if (inputString == "") return "";
 
+        var args = inputString.Split();
         var inProgressArg = args.Last();
-        if (inProgressArg == "") return "";
 
         bool Matches(string validArg) {
             if (validArg.Length < inProgressArg.Length) return false;
             return validArg[..inProgressArg.Length] == inProgressArg;
         }
 
-        List<string> validArgs = ["switch", "scene"];
+        int argIndex = args.Length - 1;
+        List<string> validArgs = [];
+        if (argIndex == 0) { validArgs.AddRange(Instance._commands.Keys); }
+        else {
+            if (Instance._commands.TryGetValue(args.First().ToLower(), out Command command)) {
+                validArgs.AddRange(command.GetAutofill(args.Length == 1 ? [] : args[1..]));
+            }
+        }
         validArgs.Sort();
 
         foreach (var validArg in validArgs) { if (Matches(validArg)) return validArg; }
-
         return "";
     }
 }
