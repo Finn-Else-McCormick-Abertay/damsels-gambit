@@ -1,4 +1,6 @@
 {
 	"UsePascalCase": true,
-	"GenerateOnlyForMatchingBridgeClass": false
+	"GenerateOnlyForMatchingBridgeClass": false,
+	"DefaultBridgeNamespace": "Bridge",
+	"AppendBridgeToClassNames": false
 }

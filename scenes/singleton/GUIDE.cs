@@ -3,6 +3,7 @@ using System;
 using DamselsGambit.Util;
 using System.Linq;
 using System.Collections.Generic;
+using Bridge;
 
 namespace DamselsGambit;
 
@@ -20,7 +21,7 @@ public sealed class GUIDE
         return Instance._guide is not null;
     }
     
-    //public static readonly GUIDEMappingContextBridge MappingContextDefault = GDScriptBridge.As<GUIDEMappingContextBridge>(ResourceLoader.Load("res://assets/input/context_default.tres", "GUIDEMappingContext"));
+    public static readonly GUIDEMappingContext MappingContextDefault = GDScriptBridge.As<GUIDEMappingContext>(ResourceLoader.Load("res://assets/input/context_default.tres", "GUIDEMappingContext"));
 
     private static Variant Call(StringName method, params Variant[] args) {
         if (Instance._guide is null) return new Variant();
