@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://cjowvyidrqbe6"]
+[gd_scene load_steps=3 format=3 uid="uid://cjowvyidrqbe6"]
 
 [ext_resource type="Script" path="res://scenes/ui/menu/settings_menu/resolution_drop_down_options.gd" id="1_7ofq2"]
+[ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/default_theme.tres" id="2_n6d21"]
 
 [node name="ResolutionDropDownOptions" type="Control"]
 layout_mode = 3
@@ -12,6 +13,7 @@ grow_vertical = 2
 script = ExtResource("1_7ofq2")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 theme_override_constants/separation = 160
@@ -19,6 +21,8 @@ theme_override_constants/separation = 160
 [node name="Label" type="Label" parent="HBoxContainer"]
 custom_minimum_size = Vector2(264, 0)
 layout_mode = 2
+theme = ExtResource("2_n6d21")
+theme_override_colors/font_color = Color(0.2, 0.0941176, 0.0117647, 1)
 theme_override_font_sizes/font_size = 32
 text = "Resolution"
 
