@@ -4,7 +4,7 @@ extends Control
 @onready var start_button: TextureButton = $MarginContainer/VBoxContainer/HBoxContainer/start_button as TextureButton
 @onready var settings_button: TextureButton = $MarginContainer/VBoxContainer/HBoxContainer/settings_button as TextureButton
 @onready var exit_button: TextureButton = $MarginContainer/VBoxContainer/HBoxContainer/exit_button as TextureButton
-@onready var settings_menu_acessibility: = $SettingsMenuAcessibility as SettingsMenu 
+@onready var settings_menu_acessibility: SettingsMenu = $SettingsMenuAcessibility as SettingsMenu 
 @onready var margin_container: MarginContainer = $MarginContainer
 @onready var start_level: = preload("res://scenes/main.tscn") as PackedScene
 
