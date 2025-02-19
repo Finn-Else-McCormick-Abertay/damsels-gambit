@@ -8,8 +8,7 @@
   <Import Project="addons\YarnSpinner-Godot\YarnSpinner-Godot.props" />
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
-    <PackageReference Include="GDBridge" Version="0.13.0" />
-    <PackageReference Include="GDBridge.Generator" Version="0.13.0" />
+    <PackageReference Include="GDBridge.Generator" Version="0.13.1" />
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="**/*.gd" />
