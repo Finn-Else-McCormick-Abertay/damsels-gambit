@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://b56gjp8w7826a"]
+[gd_scene load_steps=6 format=3 uid="uid://b56gjp8w7826a"]
 
 [ext_resource type="Texture2D" uid="uid://4iq8whdq2gd7" path="res://assets/ui/panels/crossed swords icon.png" id="1_im13s"]
 
@@ -6,10 +6,10 @@
 particle_flag_disable_z = true
 angle_min = -716.1
 angle_max = 720.0
-inherit_velocity_ratio = 0.133
+inherit_velocity_ratio = 1.0
 velocity_pivot = Vector3(15, 10, 100)
 spread = 180.0
-initial_velocity_min = 453.02
+initial_velocity_min = 790.37
 initial_velocity_max = 879.52
 angular_velocity_min = 111.04
 angular_velocity_max = 111.04
@@ -21,7 +21,7 @@ radial_accel_max = 35.18
 tangential_accel_min = -2.23517e-06
 tangential_accel_max = 31.33
 scale_min = 0.3
-scale_max = 0.6
+scale_max = 0.3
 scale_over_velocity_min = 7.23
 scale_over_velocity_max = 33.74
 anim_speed_min = 3.28
@@ -37,6 +37,90 @@ collision_friction = 0.0
 collision_bounce = 0.0
 collision_use_scale = true
 
+[sub_resource type="Animation" id="Animation_fr5s8"]
+resource_name = "neg effects"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("GPUParticles2D2:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(0.482968, 2.92817),
+"update": 0,
+"values": [Vector2(551, 200), Vector2(106, 544)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("GPUParticles2D2:amount")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [8, 4, 1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("GPUParticles2D2:one_shot")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, false]
+}
+
+[sub_resource type="Animation" id="Animation_rdxcp"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("GPUParticles2D2:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(106, 544)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("GPUParticles2D2:amount")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [8]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("GPUParticles2D2:one_shot")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_kxbjk"]
+_data = {
+"RESET": SubResource("Animation_rdxcp"),
+"neg effects": SubResource("Animation_fr5s8")
+}
+
 [node name="PositiveInteractionEffect" type="Node2D"]
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]
@@ -49,9 +133,15 @@ trail_sections = 128
 trail_section_subdivisions = 649
 
 [node name="GPUParticles2D2" type="GPUParticles2D" parent="."]
-position = Vector2(567, 360)
+position = Vector2(106, 544)
 process_material = SubResource("ParticleProcessMaterial_7okid")
 texture = ExtResource("1_im13s")
 trail_lifetime = 0.01
 trail_sections = 128
 trail_section_subdivisions = 649
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="GPUParticles2D2"]
+root_node = NodePath("../..")
+libraries = {
+"": SubResource("AnimationLibrary_kxbjk")
+}
