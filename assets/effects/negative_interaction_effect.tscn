@@ -1,30 +1,57 @@
-[gd_scene load_steps=2 format=3 uid="uid://b56gjp8w7826a"]
+[gd_scene load_steps=3 format=3 uid="uid://b56gjp8w7826a"]
 
 [ext_resource type="Texture2D" uid="uid://4iq8whdq2gd7" path="res://assets/ui/panels/crossed swords icon.png" id="1_im13s"]
 
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_7okid"]
+particle_flag_disable_z = true
+angle_min = -716.1
+angle_max = 720.0
+inherit_velocity_ratio = 0.133
+velocity_pivot = Vector3(15, 10, 100)
+spread = 180.0
+initial_velocity_min = 453.02
+initial_velocity_max = 879.52
+angular_velocity_min = 111.04
+angular_velocity_max = 111.04
+radial_velocity_min = 192.78
+radial_velocity_max = 479.52
+gravity = Vector3(50, 0, 0)
+radial_accel_min = 1.93
+radial_accel_max = 35.18
+tangential_accel_min = -2.23517e-06
+tangential_accel_max = 31.33
+scale_min = 0.3
+scale_max = 0.6
+scale_over_velocity_min = 7.23
+scale_over_velocity_max = 33.74
+anim_speed_min = 3.28
+anim_speed_max = 5.44
+anim_offset_min = 0.1132
+anim_offset_max = 0.1638
+turbulence_enabled = true
+turbulence_noise_strength = 11.63
+turbulence_noise_scale = 7.565
+turbulence_influence_max = 0.203
+collision_mode = 1
+collision_friction = 0.0
+collision_bounce = 0.0
+collision_use_scale = true
+
 [node name="PositiveInteractionEffect" type="Node2D"]
 
-[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
-position = Vector2(552, 145)
-amount = 3
-preprocess = 24.0
-speed_scale = 0.9
-explosiveness = 1.0
-randomness = 0.75
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+visible = false
+position = Vector2(567, 360)
+process_material = SubResource("ParticleProcessMaterial_7okid")
 texture = ExtResource("1_im13s")
-spread = 180.0
-gravity = Vector2(0, 600)
-initial_velocity_min = 51.77
-initial_velocity_max = 51.77
-angular_velocity_min = 239.35
-angular_velocity_max = 243.27
-linear_accel_min = 34.18
-linear_accel_max = 34.18
-radial_accel_min = 42.91
-radial_accel_max = 42.91
-tangential_accel_min = 64.0
-tangential_accel_max = 64.0
-angle_min = 439.9
-angle_max = 439.9
-scale_amount_min = 0.2
-scale_amount_max = 0.2
+trail_lifetime = 0.01
+trail_sections = 128
+trail_section_subdivisions = 649
+
+[node name="GPUParticles2D2" type="GPUParticles2D" parent="."]
+position = Vector2(567, 360)
+process_material = SubResource("ParticleProcessMaterial_7okid")
+texture = ExtResource("1_im13s")
+trail_lifetime = 0.01
+trail_sections = 128
+trail_section_subdivisions = 649
