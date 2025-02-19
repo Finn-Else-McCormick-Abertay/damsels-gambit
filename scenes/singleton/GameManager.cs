@@ -26,9 +26,9 @@ public partial class GameManager : Node
     public override void _EnterTree() { Instance = this; }
     public override void _Ready() {
         var mainMenu = Bridge.MainMenu.From(GetTree().Root.GetNode<Control>("Main_menu"));
-        mainMenu.Ready += () => {
+        /*mainMenu.Ready += () => {
             mainMenu.StartButton.QueueFree();
-        };
+        };*/
         //mainMenu.QueueFree();
         //if (GUIDE.Initialise(GetTree().Root.GetNode("GUIDE"))) { GUIDE.EnableMappingContext(GUIDE.MappingContextDefault); }
     }
