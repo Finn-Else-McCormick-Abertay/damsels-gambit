@@ -11,8 +11,6 @@ const RESOLUTION_DICTIONARY : Dictionary = {
 func _ready():
 	option_button.item_selected.connect(on_resolution_selected)
 	add_resoltion_items()
-	
-	
 
 func add_resoltion_items() -> void:
 	for resolution_size_text in RESOLUTION_DICTIONARY:
