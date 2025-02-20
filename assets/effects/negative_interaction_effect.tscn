@@ -1,6 +1,28 @@
-[gd_scene load_steps=6 format=3 uid="uid://b56gjp8w7826a"]
+[gd_scene load_steps=8 format=3 uid="uid://b56gjp8w7826a"]
 
+[ext_resource type="Texture2D" uid="uid://bcibrgr3cbblr" path="res://assets/effects/particle.png" id="1_5oa02"]
 [ext_resource type="Texture2D" uid="uid://4iq8whdq2gd7" path="res://assets/ui/panels/crossed swords icon.png" id="1_im13s"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ko0xs"]
+particle_flag_disable_z = true
+emission_shape_offset = Vector3(1.845, 1.855, 0.75)
+emission_shape_scale = Vector3(1.925, 3.34, 1)
+angle_min = 1.07288e-05
+angle_max = 409.4
+angular_velocity_min = -586.4
+angular_velocity_max = -464.96
+orbit_velocity_min = -2.0
+orbit_velocity_max = 2.0
+radial_velocity_min = -448.19
+radial_velocity_max = 221.69
+gravity = Vector3(0, 0, 0)
+radial_accel_min = -2.23517e-06
+radial_accel_max = 80.0
+scale_min = 0.0
+scale_max = 0.1
+hue_variation_min = -0.07
+hue_variation_max = 0.23
+turbulence_enabled = true
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_7okid"]
 particle_flag_disable_z = true
@@ -37,51 +59,12 @@ collision_friction = 0.0
 collision_bounce = 0.0
 collision_use_scale = true
 
-[sub_resource type="Animation" id="Animation_fr5s8"]
-resource_name = "neg effects"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("GPUParticles2D2:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 1),
-"transitions": PackedFloat32Array(0.482968, 2.92817),
-"update": 0,
-"values": [Vector2(551, 200), Vector2(106, 544)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("GPUParticles2D2:amount")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.5, 1),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
-"values": [8, 4, 1]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("GPUParticles2D2:one_shot")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [false, false]
-}
-
 [sub_resource type="Animation" id="Animation_rdxcp"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("GPUParticles2D2:position")
+tracks/0/path = NodePath("Icon emitter:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -93,7 +76,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("GPUParticles2D2:amount")
+tracks/1/path = NodePath("Icon emitter:amount")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -105,7 +88,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("GPUParticles2D2:one_shot")
+tracks/2/path = NodePath("Icon emitter:one_shot")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -114,6 +97,117 @@ tracks/2/keys = {
 "update": 1,
 "values": [false]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("GPUParticles2D2:emitting")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("GPUParticles2D2:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(553, 278)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Icon emitter:emitting")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_fr5s8"]
+resource_name = "neg effects"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Icon emitter:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(0.482968, 2.92817),
+"update": 0,
+"values": [Vector2(551, 200), Vector2(103.98, 544)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Icon emitter:amount")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [8, 4, 1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Icon emitter:one_shot")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, false]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("GPUParticles2D2:emitting")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("GPUParticles2D2:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(553, 278), Vector2(99, 545)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Icon emitter:emitting")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0.0333333, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_kxbjk"]
 _data = {
@@ -121,18 +215,15 @@ _data = {
 "neg effects": SubResource("Animation_fr5s8")
 }
 
-[node name="PositiveInteractionEffect" type="Node2D"]
-
-[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
-visible = false
-position = Vector2(567, 360)
-process_material = SubResource("ParticleProcessMaterial_7okid")
-texture = ExtResource("1_im13s")
-trail_lifetime = 0.01
-trail_sections = 128
-trail_section_subdivisions = 649
+[node name="NegaitiveInteractionEffect" type="Node2D"]
 
 [node name="GPUParticles2D2" type="GPUParticles2D" parent="."]
+position = Vector2(553, 278)
+amount = 152
+process_material = SubResource("ParticleProcessMaterial_ko0xs")
+texture = ExtResource("1_5oa02")
+
+[node name="Icon emitter" type="GPUParticles2D" parent="."]
 position = Vector2(106, 544)
 process_material = SubResource("ParticleProcessMaterial_7okid")
 texture = ExtResource("1_im13s")
@@ -140,7 +231,7 @@ trail_lifetime = 0.01
 trail_sections = 128
 trail_section_subdivisions = 649
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="GPUParticles2D2"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Icon emitter"]
 root_node = NodePath("../..")
 libraries = {
 "": SubResource("AnimationLibrary_kxbjk")
