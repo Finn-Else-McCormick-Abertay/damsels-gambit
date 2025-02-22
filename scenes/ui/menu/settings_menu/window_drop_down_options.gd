@@ -13,6 +13,7 @@ const WINDOW_MODE_ARRAY :Array[String] = [
 
 func _ready():
 	add_window_mode_items()
+	option_button.select(1)
 	option_button.item_selected.connect(on_window_mode_selected)
 
 func add_window_mode_items() -> void:
