@@ -23,6 +23,13 @@ public partial class GameManager : Node
         private set;
     }
 
+    public static readonly Font s_ArgosGeorge = ResourceLoader.Load<Font>("res://assets/fonts/argos-george/ArgosGeorge.ttf");
+    public static readonly Font s_Vinque = ResourceLoader.Load<Font>("res://assets/fonts/vinque/Vinque Rg.otf");
+    public static readonly Font s_OpenDyslexic = ResourceLoader.Load<Font>("res://assets/fonts/open-dyslexic/OpenDyslexic3-Regular.ttf");
+
+    private readonly FontVariation _mainDynamicFont = ResourceLoader.Load<FontVariation>("res://assets/fonts/main_ui_dynamic_font.tres");
+    public Font DefaultFont { get => _mainDynamicFont?.BaseFont; set => _mainDynamicFont.BaseFont = value; }
+
     public override void _EnterTree() { Instance = this; }
     public override void _Ready() {
         //if (GUIDE.Initialise(GetTree().Root.GetNode("GUIDE"))) { GUIDE.EnableMappingContext(GUIDE.MappingContextDefault); }

@@ -196,7 +196,8 @@ public partial class CardDisplay : Control, IReloadableToolScript
 		DrawMesh(_cardMesh, Texture, trans);
 
 		if (_renderName) {
-			DrawString(ThemeDB.GetDefaultTheme().DefaultFont, Size / 2f - new Vector2(_textureAspectRatio * Size.Y / 2f, 0f), DisplayName, HorizontalAlignment.Center, _textureAspectRatio * Size.Y, 18, Colors.Black);
+			var font = Theme?.DefaultFont ?? ThemeDB.GetDefaultTheme().DefaultFont;
+			DrawString(font, Size / 2f - new Vector2(_textureAspectRatio * Size.Y / 2f, 0f), DisplayName, HorizontalAlignment.Center, _textureAspectRatio * Size.Y, 18, Colors.Black);
 		}
 	}
 }

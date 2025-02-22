@@ -48,10 +48,6 @@ folder_colors={
 "res://util/": "blue"
 }
 
-[gui]
-
-theme/custom_font="res://assets/fonts/vinque/Vinque Rg.otf"
-
 [importer_defaults]
 
 font_data_dynamic={

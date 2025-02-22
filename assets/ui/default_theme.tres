@@ -1,10 +1,11 @@
-[gd_resource type="Theme" load_steps=10 format=3 uid="uid://bf1esp424fk84"]
+[gd_resource type="Theme" load_steps=11 format=3 uid="uid://bf1esp424fk84"]
 
 [ext_resource type="Texture2D" uid="uid://dgr53q4axrft6" path="res://assets/ui/buttons/button disabled.png" id="1_anoa5"]
 [ext_resource type="Texture2D" uid="uid://dn3tf17kvvgr4" path="res://assets/ui/buttons/button normal.png" id="1_yvyp5"]
 [ext_resource type="Script" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="2_0sphh"]
 [ext_resource type="Texture2D" uid="uid://36qx2wgud0id" path="res://assets/ui/buttons/button focused.png" id="3_5sm8g"]
 [ext_resource type="Texture2D" uid="uid://emppqs6pw0ah" path="res://assets/ui/buttons/button hovered.png" id="4_nlges"]
+[ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_ui_dynamic_font.tres" id="6_gfc0t"]
 
 [sub_resource type="StyleBox" id="StyleBox_l55ek"]
 resource_local_to_scene = false
@@ -99,6 +100,7 @@ AxisStretchVertical = 0
 ModulateColor = Color(1, 1, 1, 1)
 
 [resource]
+default_font = ExtResource("6_gfc0t")
 Button/colors/font_color = Color(0.201849, 0.0939963, 0.0132285, 1)
 Button/colors/font_disabled_color = Color(0.276455, 0.147213, 0.0252365, 0.5)
 Button/colors/font_focus_color = Color(0.2, 0.0941176, 0.0117647, 1)
