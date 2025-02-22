@@ -1,30 +1,201 @@
-[gd_scene load_steps=2 format=3 uid="uid://da1rpo1wiovv6"]
+[gd_scene load_steps=9 format=3 uid="uid://bcuji5wclf0mb"]
 
 [ext_resource type="Texture2D" uid="uid://csep3fm0vd8ku" path="res://assets/ui/panels/linked rings icon.png" id="1_2yp8l"]
+[ext_resource type="Texture2D" uid="uid://4iq8whdq2gd7" path="res://assets/ui/panels/crossed swords icon.png" id="1_jnqxx"]
+[ext_resource type="Texture2D" uid="uid://ckwm6kxt7sxhr" path="res://assets/effects/particle2.png" id="2_dtpqa"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_7okid"]
+particle_flag_disable_z = true
+angle_min = -716.1
+angle_max = 720.0
+inherit_velocity_ratio = 1.0
+velocity_pivot = Vector3(15, 10, 100)
+spread = 180.0
+initial_velocity_min = 790.37
+initial_velocity_max = 879.52
+angular_velocity_min = 111.04
+angular_velocity_max = 111.04
+radial_velocity_min = 192.78
+radial_velocity_max = 479.52
+gravity = Vector3(50, 0, 0)
+radial_accel_min = 1.93
+radial_accel_max = 35.18
+tangential_accel_min = -2.23517e-06
+tangential_accel_max = 31.33
+scale_min = 0.3
+scale_max = 0.3
+scale_over_velocity_min = 7.23
+scale_over_velocity_max = 33.74
+anim_speed_min = 3.28
+anim_speed_max = 5.44
+anim_offset_min = 0.1132
+anim_offset_max = 0.1638
+turbulence_enabled = true
+turbulence_noise_strength = 11.63
+turbulence_noise_scale = 7.565
+turbulence_influence_max = 0.203
+collision_mode = 1
+collision_friction = 0.0
+collision_bounce = 0.0
+collision_use_scale = true
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ko0xs"]
+particle_flag_disable_z = true
+emission_shape_offset = Vector3(1.845, 1.855, 0.75)
+emission_shape_scale = Vector3(1.925, 3.34, 1)
+angle_min = 1.07288e-05
+angle_max = 409.4
+angular_velocity_min = -586.4
+angular_velocity_max = -464.96
+orbit_velocity_min = -2.0
+orbit_velocity_max = 2.0
+radial_velocity_min = -448.19
+radial_velocity_max = 221.69
+gravity = Vector3(0, 0, 0)
+radial_accel_min = -2.23517e-06
+radial_accel_max = 80.0
+scale_min = 0.0
+scale_max = 0.1
+hue_variation_min = -0.29
+hue_variation_max = 0.00999998
+turbulence_enabled = true
+
+[sub_resource type="Animation" id="Animation_rdxcp"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Icon emitter:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(106, 544)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("GPUParticles2D2:emitting")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("GPUParticles2D2:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(553, 278)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Icon emitter:emitting")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_fr5s8"]
+resource_name = "neg effects"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Icon emitter:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(0.482968, 1),
+"update": 0,
+"values": [Vector2(551, 200), Vector2(100, 100)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("GPUParticles2D2:emitting")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("GPUParticles2D2:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(553, 278), Vector2(95, 96)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Icon emitter:emitting")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.0333333, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_kxbjk"]
+_data = {
+"RESET": SubResource("Animation_rdxcp"),
+"neg effects": SubResource("Animation_fr5s8")
+}
 
 [node name="PositiveInteractionEffect" type="Node2D"]
 
-[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
-position = Vector2(552, 145)
-amount = 3
-preprocess = 24.0
-speed_scale = 0.9
-explosiveness = 1.0
-randomness = 0.75
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+visible = false
+position = Vector2(567, 360)
+process_material = SubResource("ParticleProcessMaterial_7okid")
+texture = ExtResource("1_jnqxx")
+trail_lifetime = 0.01
+trail_sections = 128
+trail_section_subdivisions = 649
+
+[node name="GPUParticles2D2" type="GPUParticles2D" parent="."]
+position = Vector2(553, 278)
+amount = 892
+process_material = SubResource("ParticleProcessMaterial_ko0xs")
+texture = ExtResource("2_dtpqa")
+
+[node name="Icon emitter" type="GPUParticles2D" parent="."]
+position = Vector2(106, 544)
+amount = 9
+process_material = SubResource("ParticleProcessMaterial_7okid")
 texture = ExtResource("1_2yp8l")
-spread = 180.0
-gravity = Vector2(0, 600)
-initial_velocity_min = 51.77
-initial_velocity_max = 51.77
-angular_velocity_min = 239.35
-angular_velocity_max = 243.27
-linear_accel_min = 34.18
-linear_accel_max = 34.18
-radial_accel_min = 42.91
-radial_accel_max = 42.91
-tangential_accel_min = 64.0
-tangential_accel_max = 64.0
-angle_min = 439.9
-angle_max = 439.9
-scale_amount_min = 0.2
-scale_amount_max = 0.2
+trail_lifetime = 0.01
+trail_sections = 128
+trail_section_subdivisions = 649
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Icon emitter"]
+root_node = NodePath("../..")
+libraries = {
+"": SubResource("AnimationLibrary_kxbjk")
+}

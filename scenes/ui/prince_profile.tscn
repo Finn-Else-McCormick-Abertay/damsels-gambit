@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://q1kh0whg1g0g"]
 
-[ext_resource type="Texture2D" uid="uid://b3uynpkv1oxnh" path="res://assets/ui/panels/papertexturehole.png" id="1_wfhrk"]
+[ext_resource type="Texture2D" uid="uid://jukd3377womm" path="res://assets/ui/panels/papertexturesmall.png" id="1_82kt6"]
 [ext_resource type="FontFile" uid="uid://c27txckdp7a4a" path="res://assets/fonts/vinque/Vinque Rg.otf" id="2_knaur"]
 [ext_resource type="Texture2D" uid="uid://bfoqt200g8dkj" path="res://assets/characters/suitor/Suitor Card.png" id="3_egqja"]
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/default_theme.tres" id="4_7j741"]
@@ -14,83 +14,104 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="background" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.032
-anchor_top = 0.032
-anchor_right = 0.478
+anchor_left = 0.528
+anchor_top = 0.031
+anchor_right = 0.974
 anchor_bottom = 0.965
-offset_left = 571.136
-offset_top = -0.736
-offset_right = 571.344
+offset_left = -0.255981
+offset_top = -0.0880013
+offset_right = -0.0480957
 offset_bottom = -1.32001
-texture = ExtResource("1_wfhrk")
+texture = ExtResource("1_82kt6")
 expand_mode = 4
 
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
+[node name="title" type="RichTextLabel" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.216
-anchor_top = 0.091
-anchor_right = 0.455
+anchor_left = 0.712
+anchor_top = 0.085
+anchor_right = 0.959
 anchor_bottom = 0.145
-offset_left = 571.168
-offset_top = -3.968
-offset_right = 580.84
+offset_left = -0.223999
+offset_top = -0.0800018
+offset_right = 0.231934
 offset_bottom = -0.960007
 theme_override_colors/default_color = Color(0.194108, 0.0772505, 0.0219393, 1)
 theme_override_fonts/normal_font = ExtResource("2_knaur")
 theme_override_font_sizes/normal_font_size = 28
 text = "King Bófi of Frostholm"
 
-[node name="TextureRect2" type="TextureRect" parent="."]
+[node name="portrait" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.048
-anchor_top = 0.063
-anchor_right = 0.237
+anchor_left = 0.537
+anchor_top = 0.052
+anchor_right = 0.733
 anchor_bottom = 0.573
-offset_left = 563.704
-offset_top = -6.824
-offset_right = 570.976
+offset_left = 0.375977
+offset_top = 0.304001
+offset_right = -0.416016
 offset_bottom = -1.30402
 texture = ExtResource("3_egqja")
 expand_mode = 1
 
-[node name="Button" type="Button" parent="."]
+[node name="close" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.308
-anchor_top = 0.9
-anchor_right = 0.471
-anchor_bottom = 0.92
-offset_left = 571.184
-offset_top = -13.2
-offset_right = 541.408
-offset_bottom = -1.16003
+anchor_left = 0.804
+anchor_top = 0.88
+anchor_right = 0.941
+anchor_bottom = 0.918
+offset_left = -0.208008
+offset_top = -0.240051
+offset_right = -0.0321045
+offset_bottom = 0.135986
 theme = ExtResource("4_7j741")
 theme_override_font_sizes/font_size = 20
 text = "Close"
 
-[node name="RichTextLabel2" type="RichTextLabel" parent="."]
+[node name="kingdom info" type="RichTextLabel" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.258
-anchor_top = 0.227
-anchor_right = 0.457
+anchor_left = 0.753
+anchor_top = 0.225
+anchor_right = 0.953
 anchor_bottom = 0.488
-offset_left = 570.784
-offset_top = -1.09601
-offset_right = 571.536
+offset_left = 0.543945
+offset_top = 0.199982
+offset_right = 0.143921
 offset_bottom = -1.22403
 theme = ExtResource("4_7j741")
 theme_override_colors/default_color = Color(0.192157, 0.0784314, 0.0235294, 1)
 theme_override_fonts/normal_font = ExtResource("5_rxc53")
-theme_override_font_sizes/normal_font_size = 18
+theme_override_font_sizes/normal_font_size = 19
 text = "Frostholm is a freezing, harsh kingdom in the far north, where survival requires resilience and sensibleness. Its citizens value hard work, loyalty, and community. The kingdom is known for it's ice carving traditions, and hardy crops."
+tab_size = 12
 
-[node name="HFlowContainer" type="HFlowContainer" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.56
+anchor_top = 0.591
+anchor_right = 0.747
+anchor_bottom = 0.923
+offset_left = -0.119995
+offset_top = 0.0319824
+offset_right = 0.455933
+offset_bottom = -0.104004
+theme_override_colors/default_color = Color(0.192157, 0.0784314, 0.0235294, 1)
+theme_override_fonts/normal_font = ExtResource("5_rxc53")
+theme_override_font_sizes/normal_font_size = 19
+text = "He likes his parents
+He likes savoury things
+He loves wolves
+He loves art
+He loves loyalty
+He hates witchcraft
+He likes religion
+He likes having children
+He hates warm weather
+He likes sword practice"

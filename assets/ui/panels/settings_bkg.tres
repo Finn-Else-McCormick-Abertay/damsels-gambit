@@ -1,0 +1,27 @@
+[gd_resource type="StyleBox" script_class="StyleBoxScaledTexture" load_steps=3 format=3 uid="uid://bl211cx2n64ww"]
+
+[ext_resource type="Script" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="1_41y7h"]
+[ext_resource type="Texture2D" uid="uid://dekqq3msnexr3" path="res://assets/ui/panels/setting_tab_bkg.png" id="1_cjcv4"]
+
+[resource]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = 0.0
+content_margin_top = -1.0
+content_margin_right = -1.0
+content_margin_bottom = -1.0
+script = ExtResource("1_41y7h")
+Texture = ExtResource("1_cjcv4")
+Scale = 1.0
+DrawCenter = true
+TextureMarginLeft = 0
+TextureMarginTop = 0
+TextureMarginRight = 0
+TextureMarginBottom = 0
+ExpandMarginLeft = 83.595
+ExpandMarginTop = 92.59
+ExpandMarginRight = 82.74
+ExpandMarginBottom = 70.055
+AxisStretchHorizontal = 0
+AxisStretchVertical = 0
+ModulateColor = Color(1, 1, 1, 1)
