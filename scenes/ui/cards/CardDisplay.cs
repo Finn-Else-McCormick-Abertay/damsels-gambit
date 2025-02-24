@@ -10,17 +10,25 @@ namespace DamselsGambit;
 [Tool, GlobalClass, Icon("res://assets/editor/icons/card.svg")]
 public partial class CardDisplay : Control, IReloadableToolScript
 {
+	private static CardSharedParams SharedParams { get { if (!IsInstanceValid(field)) field = ResourceLoader.Load<CardSharedParams>("res://assets/cards/card_shared.tres", "CardSharedParams"); return field; } }
+
 	[Export] public StringName CardId {
 		get; set {
 			field = value;
 			var id = CardId.ToString();
 			var separator = id.Find('/');
-			var type = separator >= 0 ? id[..(separator)] : "unknown";
+			var type = separator >= 0 ? id[..separator] : "unknown";
 			var name = separator >= 0 ? id[(separator + 1)..] : id;
 
 			DisplayName = name.Capitalize();
-
 			string textureRoot = $"res://assets/cards/{type}";
+
+			if (ResourceLoader.Exists($"{textureRoot}/{name}.tres")) {
+				var cardInfo = ResourceLoader.Load<CardInfo>($"{textureRoot}/{name}.tres", "CardInfo");
+				if (!string.IsNullOrEmpty(cardInfo.DisplayName)) DisplayName = cardInfo.DisplayName;
+				Score = string.IsNullOrEmpty(cardInfo.Score) ? null : cardInfo.Score;
+			}
+
 			if (ResourceLoader.Exists($"{textureRoot}/{name}.png")) {
 				Texture = ResourceLoader.Load<Texture2D>($"{textureRoot}/{name}.png");
 				_renderName = false;
@@ -35,8 +43,7 @@ public partial class CardDisplay : Control, IReloadableToolScript
 	public string DisplayName { get; private set; }
 	private bool _renderName = false;
 
-	[Export(PropertyHint.Range, "0,0.5,")] public float CornerRadius { get; set { field = value; RebuildMeshes(); } } = 0.15f;
-	[Export] public int CornerResolution { get; set { field = Math.Max(value, 1); RebuildMeshes(); } } = 10;
+	public string Score { get; private set; } = null;
 
 	[Export] public float ShadowFalloff { get; set { field = MathF.Min(MathF.Max(value, 0f), 0.5f); RebuildMeshes(); } } = 0.1f;
 
@@ -52,9 +59,7 @@ public partial class CardDisplay : Control, IReloadableToolScript
 		s_shadowGradientTexture = new GradientTexture1D { Gradient = gradient };
 	}
 
-	public CardDisplay() {
-		MouseFilter = MouseFilterEnum.Pass;
-	}
+	public CardDisplay() { MouseFilter = MouseFilterEnum.Pass; }
 
 	public bool IsMousedOver { get; private set; } = false;
 	private void OnMouseEntered() { IsMousedOver = true; QueueRedraw(); }
@@ -64,17 +69,68 @@ public partial class CardDisplay : Control, IReloadableToolScript
 
 	public override void _EnterTree() {
 		RebuildMeshes(); UpdatePivot();
-		this.TryConnect(SignalName.ItemRectChanged, new Callable(this, MethodName.UpdatePivot));
-		this.TryConnect(SignalName.MouseEntered, new Callable(this, MethodName.OnMouseEntered));
-		this.TryConnect(SignalName.MouseExited, new Callable(this, MethodName.OnMouseExited));
+		SharedParams?.TryConnect(Resource.SignalName.Changed, new Callable(this, MethodName.RebuildMeshes));
+		this.TryConnect(CanvasItem.SignalName.ItemRectChanged, new Callable(this, MethodName.UpdatePivot));
+		this.TryConnect(Control.SignalName.MouseEntered, new Callable(this, MethodName.OnMouseEntered));
+		this.TryConnect(Control.SignalName.MouseExited, new Callable(this, MethodName.OnMouseExited));
 	}
 	public override void _ExitTree() {
-		this.TryDisconnect(SignalName.ItemRectChanged, new Callable(this, MethodName.UpdatePivot));
-		this.TryDisconnect(SignalName.MouseEntered, new Callable(this, MethodName.OnMouseEntered));
-		this.TryDisconnect(SignalName.MouseExited, new Callable(this, MethodName.OnMouseExited));
+		SharedParams?.TryDisconnect(Resource.SignalName.Changed, new Callable(this, MethodName.RebuildMeshes));
+		this.TryDisconnect(CanvasItem.SignalName.ItemRectChanged, new Callable(this, MethodName.UpdatePivot));
+		this.TryDisconnect(Control.SignalName.MouseEntered, new Callable(this, MethodName.OnMouseEntered));
+		this.TryDisconnect(Control.SignalName.MouseExited, new Callable(this, MethodName.OnMouseExited));
 	}
 
 	public void UpdatePivot() { PivotOffset = Size / 2f; }
+
+	private static readonly StringName ThemeClassName = nameof(CardDisplay);
+	public static class ThemeProperties
+	{
+		public static class Font {
+			public static readonly StringName Name = "name_font";
+			public static readonly StringName Score = "score_font";
+			public static class Size {
+				public static readonly StringName Name = "name_font_size";
+				public static readonly StringName Score = "score_font_size";
+			}
+		}
+		public static class Color {
+			public static readonly StringName NameFont = "name_font_color";
+			public static readonly StringName ScoreFont = "score_font_color";
+		}
+	}
+	
+	public override void _Draw() {
+		if (Texture is null) { return; }
+		var trans = Transform2D.Identity.Scaled(new Vector2(Size.Y, Size.Y)).Translated(new Vector2((Size.X - _textureAspectRatio * Size.Y) / 2f, 0f));
+		
+		if (ShadowOpacity > 0) { DrawMesh(_shadowMesh, s_shadowGradientTexture, trans.Translated(ShadowOffset.Rotated(-Rotation)), new Color(Colors.White, ShadowOpacity)); }
+		DrawMesh(_cardMesh, Texture, trans);
+
+		if (DisplayName is not null) {
+			var font = GetThemeFont(ThemeProperties.Font.Name, ThemeClassName); var fontSize = GetThemeFontSize(ThemeProperties.Font.Size.Name, ThemeClassName); var fontColor = GetThemeColor(ThemeProperties.Color.NameFont, ThemeClassName);
+			
+			var stringSize = font.GetStringSize(DisplayName, HorizontalAlignment.Left, -1, fontSize);
+			var origin = new Vector2(Size.X / 2f - _textureAspectRatio * Size.Y / 2f * SharedParams.NamePosition.X - stringSize.X / 2f, Size.Y  * SharedParams.NamePosition.Y);
+
+			for (int i = 0; i < DisplayName.Length; ++i) {
+				var usedSpace = i == 0 ? new() : font.GetStringSize(DisplayName[..i], HorizontalAlignment.Center, -1, fontSize);
+				var drawPosition = new Vector2(origin.X + usedSpace.X, origin.Y);
+
+				if (SharedParams.NameCurve is not null) {
+					var curveOffset = SharedParams.NameCurve.Sample((drawPosition.X + font.GetCharSize(DisplayName[i], fontSize).X / 2f) / (_textureAspectRatio * Size.Y));
+					drawPosition.Y -= curveOffset;
+				}
+
+				font.DrawChar(GetCanvasItem(), drawPosition, DisplayName[i], fontSize, fontColor);
+			}
+		}
+
+		if (Score is not null) {
+			var font = GetThemeFont(ThemeProperties.Font.Score, ThemeClassName); var fontSize = GetThemeFontSize(ThemeProperties.Font.Size.Score, ThemeClassName); var fontColor = GetThemeColor(ThemeProperties.Color.ScoreFont, ThemeClassName);
+			DrawString(font, new Vector2(_textureAspectRatio * Size.Y / 2f * SharedParams.ScorePosition.X, Size.Y  * SharedParams.ScorePosition.Y), Score, HorizontalAlignment.Center, _textureAspectRatio * Size.Y, fontSize, fontColor);
+		}
+	}
 
 	private float _textureAspectRatio = 0f;
 	private Mesh _cardMesh, _shadowMesh;
@@ -94,7 +150,7 @@ public partial class CardDisplay : Control, IReloadableToolScript
 			st.AddQuad2D(a, b, c, d, aUV, bUV, cUV, dUV);
 		}
 		void AddCorner(SurfaceTool st, Vector2 origin, float startAngle, float? innerRadius = null, float? uStart = null, float? uEnd = null) {
-			float wedgeRadius = innerRadius ?? CornerRadius;
+			float wedgeRadius = innerRadius ?? SharedParams.CornerRadius;
 			
 			Vector2? gradUvStart = uStart is not null ? new((float)uStart, 0f) : null;
 			Vector2? gradUvEnd = uEnd is not null ? new((float)uEnd, 0f) : null;
@@ -102,8 +158,8 @@ public partial class CardDisplay : Control, IReloadableToolScript
 			Vector2 a = new(origin.X * _textureAspectRatio, origin.Y);
 			Vector2 aUV = gradUvStart ?? origin;
 
-			float angleIncrement = MathF.PI / 2 / CornerResolution;
-			for (int i = 0; i < CornerResolution; ++i) {
+			float angleIncrement = MathF.PI / 2 / SharedParams.CornerResolution;
+			for (int i = 0; i < SharedParams.CornerResolution; ++i) {
 				var angle = i * angleIncrement + startAngle;
 				var angleNext = (i + 1) * angleIncrement + startAngle;
 
@@ -121,11 +177,11 @@ public partial class CardDisplay : Control, IReloadableToolScript
 				st.AddTri2D(a, b, c, aUV, bUV, cUV);
 
 				if (innerRadius is not null) {
-					Vector2 d = new Vector2(CornerRadius / _textureAspectRatio * cosine, CornerRadius * sine) + origin;
+					Vector2 d = new Vector2(SharedParams.CornerRadius / _textureAspectRatio * cosine, SharedParams.CornerRadius * sine) + origin;
 					Vector2 dUV = gradUvEnd ?? d;
 					d.X *= _textureAspectRatio;
 
-					Vector2 e = new Vector2(CornerRadius / _textureAspectRatio * cosineNext, CornerRadius * sineNext) + origin;
+					Vector2 e = new Vector2(SharedParams.CornerRadius / _textureAspectRatio * cosineNext, SharedParams.CornerRadius * sineNext) + origin;
 					Vector2 eUV = gradUvEnd ?? e;
 					e.X *= _textureAspectRatio;
 
@@ -135,69 +191,56 @@ public partial class CardDisplay : Control, IReloadableToolScript
 		}
 
 		// Create Card
-		AddRect(cardSt, 0, CornerRadius, 1, 1 - CornerRadius * 2); 																			// Centre quad
-		AddRect(cardSt, CornerRadius / _textureAspectRatio, 0f, 1 - CornerRadius / _textureAspectRatio * 2, CornerRadius); 				 	// Top quad
-		AddRect(cardSt, CornerRadius / _textureAspectRatio, 1 - CornerRadius, 1 - CornerRadius / _textureAspectRatio * 2, CornerRadius); 	// Bottom quad
+		AddRect(cardSt, 0, SharedParams.CornerRadius, 1, 1 - SharedParams.CornerRadius * 2); 																			// Centre quad
+		AddRect(cardSt, SharedParams.CornerRadius / _textureAspectRatio, 0f, 1 - SharedParams.CornerRadius / _textureAspectRatio * 2, SharedParams.CornerRadius); 				 	// Top quad
+		AddRect(cardSt, SharedParams.CornerRadius / _textureAspectRatio, 1 - SharedParams.CornerRadius, 1 - SharedParams.CornerRadius / _textureAspectRatio * 2, SharedParams.CornerRadius); 	// Bottom quad
 
-		AddCorner(cardSt, new(CornerRadius / _textureAspectRatio, CornerRadius), MathF.PI); 												// Top left corner
-		AddCorner(cardSt, new(1 - CornerRadius / _textureAspectRatio, CornerRadius), MathF.PI * 1.5f); 										// Top right corner
-		AddCorner(cardSt, new(CornerRadius / _textureAspectRatio, 1 - CornerRadius), MathF.PI * 0.5f); 										// Bottom left corner
-		AddCorner(cardSt, new(1 - CornerRadius / _textureAspectRatio, 1 - CornerRadius), 0f); 												// Bottom right corner
+		AddCorner(cardSt, new(SharedParams.CornerRadius / _textureAspectRatio, SharedParams.CornerRadius), MathF.PI); 												// Top left corner
+		AddCorner(cardSt, new(1 - SharedParams.CornerRadius / _textureAspectRatio, SharedParams.CornerRadius), MathF.PI * 1.5f); 										// Top right corner
+		AddCorner(cardSt, new(SharedParams.CornerRadius / _textureAspectRatio, 1 - SharedParams.CornerRadius), MathF.PI * 0.5f); 										// Bottom left corner
+		AddCorner(cardSt, new(1 - SharedParams.CornerRadius / _textureAspectRatio, 1 - SharedParams.CornerRadius), 0f); 												// Bottom right corner
 
 		// Create Shadow
-		float? innerRadius = CornerRadius > ShadowFalloff ? CornerRadius - ShadowFalloff : null;
-		float gradCornerStart = CornerRadius > ShadowFalloff ? 0f : (ShadowFalloff - CornerRadius) / ShadowFalloff;
+		float? innerRadius = SharedParams.CornerRadius > ShadowFalloff ? SharedParams.CornerRadius - ShadowFalloff : null;
+		float gradCornerStart = SharedParams.CornerRadius > ShadowFalloff ? 0f : (ShadowFalloff - SharedParams.CornerRadius) / ShadowFalloff;
 		
 		// Centre quad
-		if (CornerRadius > ShadowFalloff) {
-			AddRect(shadowSt, CornerRadius / _textureAspectRatio, ShadowFalloff, 1 - CornerRadius / _textureAspectRatio * 2, 1 - ShadowFalloff * 2, 0f, 0f, 0f, 0f);
+		if (SharedParams.CornerRadius > ShadowFalloff) {
+			AddRect(shadowSt, SharedParams.CornerRadius / _textureAspectRatio, ShadowFalloff, 1 - SharedParams.CornerRadius / _textureAspectRatio * 2, 1 - ShadowFalloff * 2, 0f, 0f, 0f, 0f);
 		}
 		else {
 			Vector2 startUV = new(gradCornerStart, 0f), endUV = new(0f, 0f);
 
-			shadowSt.AddTri2D(new(CornerRadius, CornerRadius), new(0.5f * _textureAspectRatio, CornerRadius), new(0.5f * _textureAspectRatio, 0.5f), startUV, startUV, endUV);
-			shadowSt.AddTri2D(new(CornerRadius, CornerRadius), new(0.5f * _textureAspectRatio, 0.5f), new(CornerRadius, 0.5f), startUV, endUV, startUV);
+			shadowSt.AddTri2D(new(SharedParams.CornerRadius, SharedParams.CornerRadius), new(0.5f * _textureAspectRatio, SharedParams.CornerRadius), new(0.5f * _textureAspectRatio, 0.5f), startUV, startUV, endUV);
+			shadowSt.AddTri2D(new(SharedParams.CornerRadius, SharedParams.CornerRadius), new(0.5f * _textureAspectRatio, 0.5f), new(SharedParams.CornerRadius, 0.5f), startUV, endUV, startUV);
 
-			shadowSt.AddTri2D(new(0.5f * _textureAspectRatio, 0.5f), new(_textureAspectRatio - CornerRadius, 0.5f), new(_textureAspectRatio - CornerRadius, CornerRadius), endUV, startUV, startUV);
-			shadowSt.AddTri2D(new(0.5f * _textureAspectRatio, 0.5f), new(0.5f * _textureAspectRatio, CornerRadius), new(_textureAspectRatio - CornerRadius, CornerRadius), endUV, startUV, startUV);
+			shadowSt.AddTri2D(new(0.5f * _textureAspectRatio, 0.5f), new(_textureAspectRatio - SharedParams.CornerRadius, 0.5f), new(_textureAspectRatio - SharedParams.CornerRadius, SharedParams.CornerRadius), endUV, startUV, startUV);
+			shadowSt.AddTri2D(new(0.5f * _textureAspectRatio, 0.5f), new(0.5f * _textureAspectRatio, SharedParams.CornerRadius), new(_textureAspectRatio - SharedParams.CornerRadius, SharedParams.CornerRadius), endUV, startUV, startUV);
 			
-			shadowSt.AddTri2D(new(0.5f * _textureAspectRatio, 0.5f), new(_textureAspectRatio - CornerRadius, 0.5f), new(_textureAspectRatio - CornerRadius, 1 - CornerRadius), endUV, startUV, startUV);
-			shadowSt.AddTri2D(new(0.5f * _textureAspectRatio, 0.5f), new(_textureAspectRatio - CornerRadius, 1 - CornerRadius), new(0.5f * _textureAspectRatio, 1 - CornerRadius), endUV, startUV, startUV);
+			shadowSt.AddTri2D(new(0.5f * _textureAspectRatio, 0.5f), new(_textureAspectRatio - SharedParams.CornerRadius, 0.5f), new(_textureAspectRatio - SharedParams.CornerRadius, 1 - SharedParams.CornerRadius), endUV, startUV, startUV);
+			shadowSt.AddTri2D(new(0.5f * _textureAspectRatio, 0.5f), new(_textureAspectRatio - SharedParams.CornerRadius, 1 - SharedParams.CornerRadius), new(0.5f * _textureAspectRatio, 1 - SharedParams.CornerRadius), endUV, startUV, startUV);
 			
-			shadowSt.AddTri2D(new(0.5f * _textureAspectRatio, 0.5f), new(0.5f * _textureAspectRatio, 1 - CornerRadius), new(CornerRadius, 1 - CornerRadius), endUV, startUV, startUV);
-			shadowSt.AddTri2D(new(0.5f * _textureAspectRatio, 0.5f), new(CornerRadius, 1 - CornerRadius), new(CornerRadius, 0.5f), endUV, startUV, startUV);
+			shadowSt.AddTri2D(new(0.5f * _textureAspectRatio, 0.5f), new(0.5f * _textureAspectRatio, 1 - SharedParams.CornerRadius), new(SharedParams.CornerRadius, 1 - SharedParams.CornerRadius), endUV, startUV, startUV);
+			shadowSt.AddTri2D(new(0.5f * _textureAspectRatio, 0.5f), new(SharedParams.CornerRadius, 1 - SharedParams.CornerRadius), new(SharedParams.CornerRadius, 0.5f), endUV, startUV, startUV);
 		}
-		AddRect(shadowSt, CornerRadius / _textureAspectRatio, 0f, 1 - CornerRadius / _textureAspectRatio * 2, MathF.Min(CornerRadius, ShadowFalloff), 1f, 1f, gradCornerStart, gradCornerStart);
-		AddRect(shadowSt, CornerRadius / _textureAspectRatio, 1 - MathF.Min(CornerRadius, ShadowFalloff), 1 - CornerRadius / _textureAspectRatio * 2, MathF.Min(CornerRadius, ShadowFalloff), gradCornerStart, gradCornerStart, 1f, 1f);
-		AddRect(shadowSt, 0f, CornerRadius, MathF.Min(CornerRadius, ShadowFalloff) / _textureAspectRatio, 1 - CornerRadius * 2, 1f, gradCornerStart, gradCornerStart, 1f);
-		AddRect(shadowSt, 1 - MathF.Min(CornerRadius, ShadowFalloff) / _textureAspectRatio, CornerRadius, MathF.Min(CornerRadius, ShadowFalloff) / _textureAspectRatio, 1 - CornerRadius * 2, gradCornerStart, 1f, 1f, gradCornerStart);
+		AddRect(shadowSt, SharedParams.CornerRadius / _textureAspectRatio, 0f, 1 - SharedParams.CornerRadius / _textureAspectRatio * 2, MathF.Min(SharedParams.CornerRadius, ShadowFalloff), 1f, 1f, gradCornerStart, gradCornerStart);
+		AddRect(shadowSt, SharedParams.CornerRadius / _textureAspectRatio, 1 - MathF.Min(SharedParams.CornerRadius, ShadowFalloff), 1 - SharedParams.CornerRadius / _textureAspectRatio * 2, MathF.Min(SharedParams.CornerRadius, ShadowFalloff), gradCornerStart, gradCornerStart, 1f, 1f);
+		AddRect(shadowSt, 0f, SharedParams.CornerRadius, MathF.Min(SharedParams.CornerRadius, ShadowFalloff) / _textureAspectRatio, 1 - SharedParams.CornerRadius * 2, 1f, gradCornerStart, gradCornerStart, 1f);
+		AddRect(shadowSt, 1 - MathF.Min(SharedParams.CornerRadius, ShadowFalloff) / _textureAspectRatio, SharedParams.CornerRadius, MathF.Min(SharedParams.CornerRadius, ShadowFalloff) / _textureAspectRatio, 1 - SharedParams.CornerRadius * 2, gradCornerStart, 1f, 1f, gradCornerStart);
 		
 		if (innerRadius is not null) {
-			AddRect(shadowSt, ShadowFalloff / _textureAspectRatio, CornerRadius, (CornerRadius - ShadowFalloff) / _textureAspectRatio, 1 - CornerRadius * 2, 0f, 0f, 0f, 0f);
-			AddRect(shadowSt, 1 - CornerRadius / _textureAspectRatio, CornerRadius, (CornerRadius - ShadowFalloff) / _textureAspectRatio, 1 - CornerRadius * 2, 0f, 0f, 0f, 0f);
+			AddRect(shadowSt, ShadowFalloff / _textureAspectRatio, SharedParams.CornerRadius, (SharedParams.CornerRadius - ShadowFalloff) / _textureAspectRatio, 1 - SharedParams.CornerRadius * 2, 0f, 0f, 0f, 0f);
+			AddRect(shadowSt, 1 - SharedParams.CornerRadius / _textureAspectRatio, SharedParams.CornerRadius, (SharedParams.CornerRadius - ShadowFalloff) / _textureAspectRatio, 1 - SharedParams.CornerRadius * 2, 0f, 0f, 0f, 0f);
 		}
 		
-		AddCorner(shadowSt, new(CornerRadius / _textureAspectRatio, CornerRadius), MathF.PI, innerRadius, gradCornerStart, 1f);				// Top left corner
-		AddCorner(shadowSt, new(1 - CornerRadius / _textureAspectRatio, CornerRadius), MathF.PI * 1.5f, innerRadius, gradCornerStart, 1f); 	// Top right corner
-		AddCorner(shadowSt, new(CornerRadius / _textureAspectRatio, 1 - CornerRadius), MathF.PI * 0.5f, innerRadius, gradCornerStart, 1f);	// Bottom left corner
-		AddCorner(shadowSt, new(1 - CornerRadius / _textureAspectRatio, 1 - CornerRadius), 0f, innerRadius, gradCornerStart, 1f);			// Bottom right corner
+		AddCorner(shadowSt, new(SharedParams.CornerRadius / _textureAspectRatio, SharedParams.CornerRadius), MathF.PI, innerRadius, gradCornerStart, 1f);				// Top left corner
+		AddCorner(shadowSt, new(1 - SharedParams.CornerRadius / _textureAspectRatio, SharedParams.CornerRadius), MathF.PI * 1.5f, innerRadius, gradCornerStart, 1f); 	// Top right corner
+		AddCorner(shadowSt, new(SharedParams.CornerRadius / _textureAspectRatio, 1 - SharedParams.CornerRadius), MathF.PI * 0.5f, innerRadius, gradCornerStart, 1f);	// Bottom left corner
+		AddCorner(shadowSt, new(1 - SharedParams.CornerRadius / _textureAspectRatio, 1 - SharedParams.CornerRadius), 0f, innerRadius, gradCornerStart, 1f);			// Bottom right corner
 
 		_cardMesh = cardSt.Commit();
 		_shadowMesh = shadowSt.Commit();
 
 		QueueRedraw();
-	}
-
-	public override void _Draw() {
-		if (Texture is null) { return; }
-		var trans = Transform2D.Identity.Scaled(new Vector2(Size.Y, Size.Y)).Translated(new Vector2((Size.X - _textureAspectRatio * Size.Y) / 2f, 0f));
-		
-		if (ShadowOpacity > 0) { DrawMesh(_shadowMesh, s_shadowGradientTexture, trans.Translated(ShadowOffset.Rotated(-Rotation)), new Color(Colors.White, ShadowOpacity)); }
-		DrawMesh(_cardMesh, Texture, trans);
-
-		if (_renderName) {
-			var font = Theme?.DefaultFont ?? ThemeDB.GetDefaultTheme().DefaultFont;
-			DrawString(font, Size / 2f - new Vector2(_textureAspectRatio * Size.Y / 2f, 0f), DisplayName, HorizontalAlignment.Center, _textureAspectRatio * Size.Y, 18, Colors.Black);
-		}
 	}
 }
