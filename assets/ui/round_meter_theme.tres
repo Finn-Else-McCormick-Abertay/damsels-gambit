@@ -1,0 +1,61 @@
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://6wenayvf0auw"]
+
+[ext_resource type="Texture2D" uid="uid://kmydlkxq26qu" path="res://assets/ui/panels/round_bar/round_bar_empty.png" id="1_if138"]
+[ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_ui_dynamic_font.tres" id="1_iytsk"]
+[ext_resource type="Script" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="2_8fo7t"]
+[ext_resource type="Texture2D" uid="uid://cs7ppvsth02ji" path="res://assets/ui/panels/round_bar/round_bar_pink.png" id="3_yvt7a"]
+
+[sub_resource type="StyleBox" id="StyleBox_8iehy"]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = -1.0
+content_margin_top = -1.0
+content_margin_right = -1.0
+content_margin_bottom = -1.0
+script = ExtResource("2_8fo7t")
+Texture = ExtResource("1_if138")
+Scale = 0.061
+DrawCenter = true
+TextureMarginLeft = 170
+TextureMarginTop = 155
+TextureMarginRight = 170
+TextureMarginBottom = 155
+ExpandMarginLeft = 0.0
+ExpandMarginTop = 0.0
+ExpandMarginRight = 0.0
+ExpandMarginBottom = 0.0
+AxisStretchHorizontal = 0
+AxisStretchVertical = 0
+ModulateColor = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBox" id="StyleBox_r408o"]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = -1.0
+content_margin_top = -1.0
+content_margin_right = -1.0
+content_margin_bottom = -1.0
+script = ExtResource("2_8fo7t")
+Texture = ExtResource("3_yvt7a")
+Scale = 0.061
+DrawCenter = true
+TextureMarginLeft = 170
+TextureMarginTop = 155
+TextureMarginRight = 170
+TextureMarginBottom = 155
+ExpandMarginLeft = 0.0
+ExpandMarginTop = 0.0
+ExpandMarginRight = 0.0
+ExpandMarginBottom = 0.0
+AxisStretchHorizontal = 0
+AxisStretchVertical = 0
+ModulateColor = Color(1, 1, 1, 1)
+
+[resource]
+Label/colors/font_color = Color(0.4, 0.0823529, 0.196078, 1)
+Label/colors/font_outline_color = Color(1, 0.94902, 0.780392, 1)
+Label/constants/outline_size = 15
+Label/font_sizes/font_size = 60
+Label/fonts/font = ExtResource("1_iytsk")
+ProgressBar/styles/background = SubResource("StyleBox_8iehy")
+ProgressBar/styles/fill = SubResource("StyleBox_r408o")

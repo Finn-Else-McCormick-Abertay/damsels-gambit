@@ -1,0 +1,84 @@
+[gd_scene load_steps=4 format=3 uid="uid://dvluhda7ny7a8"]
+
+[ext_resource type="Texture2D" uid="uid://b4voy8473jkda" path="res://assets/ui/panels/round_bar/round_bar_clear_circle.png" id="1_i4hxb"]
+[ext_resource type="Texture2D" uid="uid://p5b3yneb20ct" path="res://assets/ui/panels/round_bar/completed_round_circle.png" id="1_s656a"]
+[ext_resource type="Texture2D" uid="uid://bxw8v736qxtda" path="res://assets/ui/panels/round_bar/round_circle.png" id="2_bgw1a"]
+
+[node name="RoundMeterNode" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Completed" type="TextureRect" parent="."]
+visible = false
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -25.0
+offset_top = -25.0
+offset_right = 25.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+texture = ExtResource("1_s656a")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Upcoming" type="TextureRect" parent="."]
+visible = false
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -25.0
+offset_top = -25.0
+offset_right = 25.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+texture = ExtResource("1_i4hxb")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Current" type="TextureRect" parent="."]
+visible = false
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_bgw1a")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Current"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "2"
+horizontal_alignment = 1
+vertical_alignment = 1

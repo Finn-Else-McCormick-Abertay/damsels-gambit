@@ -11,8 +11,8 @@ using YarnSpinnerGodot;
 
 public partial class CardGameController : Control
 {
-	public readonly int MaxRound = 5;
-	private int Round { get; set { field = value; if (RoundLabel is not null) { RoundLabel.Text = $"Round {Round}/{MaxRound}"; } } }
+	public readonly int MaxRound = 8;
+	private int Round { get; set { field = value; if (RoundMeter is not null) { RoundMeter.CurrentRound = Round; } } }
 
 	[Export] public string[] SubjectDeck { get; set; } = [];
 	[Export] public string[] ModifierDeck { get; set; } = [];
@@ -26,7 +26,7 @@ public partial class CardGameController : Control
 	[Export] HandContainer SubjectHand { get; set; }
 	[Export] HandContainer ModifierHand { get; set; }
 	[Export] Button PlayButton { get; set; }
-	[Export] Label RoundLabel { get; set; }
+	[Export] RoundMeter RoundMeter { get; set; }
 
 	private readonly int _scoreMax = 10, _scoreMin = -10;
 	private readonly int _loveThreshold = 4, _hateThreshold = -4;
@@ -58,6 +58,7 @@ public partial class CardGameController : Control
 
 		Hide();
 		Round = 1;
+		RoundMeter.NumRounds = MaxRound;
 		
 		void onTutorialComplete() {
 			DialogueManager.Runner.TryDisconnect(DialogueRunner.SignalName.onDialogueComplete, onTutorialComplete);
@@ -97,7 +98,7 @@ public partial class CardGameController : Control
 	}
 
 	private void OnGameEnd() {
-		RoundLabel.Hide();
+		RoundMeter.Hide();
 		SubjectHand.Hide();
 		ModifierHand.Hide();
 		PlayButton.Hide();
