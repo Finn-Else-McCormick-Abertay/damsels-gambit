@@ -1,15 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://dmi01ml60nrj6"]
+[gd_scene load_steps=2 format=3 uid="uid://dmi01ml60nrj6"]
 
-[ext_resource type="PackedScene" uid="uid://dipd7bv4d85ws" path="res://scenes/card_game.tscn" id="1_nxi0a"]
 [ext_resource type="PackedScene" uid="uid://gqmapmoqb22o" path="res://scenes/ui/dialogue/dialogue_system.tscn" id="2_mb4hw"]
-[ext_resource type="PackedScene" uid="uid://ty2out148w5i" path="res://scenes/ui/menu/pause_menu.tscn" id="5_oom2a"]
 
 [node name="Main" type="Node"]
 
 [node name="Interface" type="CanvasLayer" parent="."]
-layer = 20
-
-[node name="CardGame" parent="Interface" instance=ExtResource("1_nxi0a")]
+layer = 25
 
 [node name="DialogueSystem" parent="Interface" instance=ExtResource("2_mb4hw")]
 anchors_preset = -1
@@ -19,9 +15,6 @@ offset_top = 95.032
 offset_right = -51.0
 offset_bottom = -23.0
 mouse_filter = 2
-
-[node name="PauseMenu" parent="Interface" instance=ExtResource("5_oom2a")]
-visible = false
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(576, 324)

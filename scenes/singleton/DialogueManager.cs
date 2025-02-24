@@ -17,21 +17,19 @@ public partial class DialogueManager : Node
     public override void _EnterTree() {
         Instance = this;
         AddChild(_environmentRoot); _environmentRoot.Owner = this;
-
-        InitRunner();
-        ReloadEnvironments();
+        Reset();
     }
 
     public void Reset() {
-        if (Runner is not null) { RemoveChild(Runner); Runner.QueueFree(); }
+        if (Runner is not null) { RemoveChild(Runner); Runner.QueueFree(); Runner = null; }
         InitRunner();
         ReloadEnvironments();
     }
 
     private void InitRunner() {
         if (Runner is not null) return;
-        Runner = new DialogueRunner { yarnProject = ResourceLoader.Load<YarnProject>("res://assets/dialogue/DamselsGambit.yarnproject"), startAutomatically = false };
-        AddChild(Runner);
+        Runner = new DialogueRunner { Name = "DialogueRunner", yarnProject = ResourceLoader.Load<YarnProject>("res://assets/dialogue/DamselsGambit.yarnproject"), startAutomatically = false };
+        AddChild(Runner); Runner.Owner = this;
         Runner.SetDialogueViews(_dialogueViews);
         Runner.Ready += () => { Runner.SetDialogueViews(_dialogueViews); };
     }
@@ -66,11 +64,15 @@ public partial class DialogueManager : Node
     public static void Register(DialogueView view) { Instance?._dialogueViews?.Add(view); if (Runner?.IsNodeReady() ?? false) { Runner.dialogueViews.Add(view); } }
     public static void Deregister(DialogueView view) { Instance?._dialogueViews?.Remove(view); if (Runner?.IsNodeReady() ?? false) { Runner.dialogueViews.Remove(view); } }
 
+    public static IEnumerable<string> GetCharacterNames() => Instance?._characterDisplays?.Keys;
+
     public static CharacterDisplay GetCharacterDisplay(string characterName) {
         if (Instance is null) return null;
         Instance._characterDisplays.TryGetValue(characterName, out var display);
         return display;
     }
+
+    public static IEnumerable<string> GetEnvironmentNames() => Instance?._environments?.Keys;
 
     // These are either CanvasLayers or CanvasItems - have to do it this way as they both have 'Visible' fields but are not derived from a shared interface
     public static IEnumerable<Node> GetEnvironmentItems(string environmentName) {

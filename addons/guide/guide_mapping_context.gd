@@ -27,8 +27,11 @@ func get_display_categories() -> Array[String]:
 	var result:GUIDESet = GUIDESet.new()
 	for mapping in mappings:
 		result.add(mapping.action.display_category)
-		
-	return result.values()
+	
+	var return_array: Array[String]
+	return_array.assign(result.values())
+
+	return return_array
 	
 	
 ## Gets the list of remappable actions for the this context and display category.
@@ -38,8 +41,11 @@ func get_remappable_actions(display_category:String) -> Array[GUIDEAction]:
 		var action:GUIDEAction = mapping.action
 		if action.is_remappable and action.display_category == display_category:
 			result.add(action)
+			
+	var return_array: Array[GUIDEAction]
+	return_array.assign(result.values())
 
-	return result.values()	
+	return return_array
 
 
 func _editor_name() -> String:
