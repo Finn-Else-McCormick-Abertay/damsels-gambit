@@ -35,26 +35,26 @@ anchor_left = 0.746
 anchor_top = 0.085
 anchor_right = 0.959
 anchor_bottom = 0.196
-offset_left = -0.39209
+offset_left = 2.60791
 offset_top = -0.0800018
-offset_right = 0.231934
+offset_right = 3.23193
 offset_bottom = -0.00800323
 theme_override_colors/default_color = Color(0.194108, 0.0772505, 0.0219393, 1)
 theme_override_fonts/normal_font = ExtResource("2_knaur")
 theme_override_font_sizes/normal_font_size = 28
-text = "King Radúlfr of Frostholm"
+text = "King Ráðúlfr of Frostholm"
 
 [node name="portrait" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.537
+anchor_left = 0.547
 anchor_top = 0.052
-anchor_right = 0.733
-anchor_bottom = 0.573
-offset_left = 0.375977
+anchor_right = 0.742
+anchor_bottom = 0.571
+offset_left = -0.144043
 offset_top = 0.304001
-offset_right = -0.416016
-offset_bottom = -1.30402
+offset_right = 0.215881
+offset_bottom = -0.00802612
 texture = ExtResource("3_egqja")
 expand_mode = 1
 
@@ -73,35 +73,53 @@ theme = ExtResource("4_7j741")
 theme_override_font_sizes/font_size = 20
 text = "Close"
 
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.752
+anchor_top = 0.205
+anchor_right = 0.882
+anchor_bottom = 0.233
+offset_left = -0.304016
+offset_top = 0.159973
+offset_right = -0.0640259
+offset_bottom = 0.015976
+theme = ExtResource("4_7j741")
+theme_override_colors/font_color = Color(0.192157, 0.0784314, 0.0235294, 1)
+theme_override_fonts/font = ExtResource("5_rxc53")
+theme_override_font_sizes/font_size = 16
+text = "Ra-thool-fer of Fro-st-holm
+"
+
 [node name="kingdom info" type="RichTextLabel" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.753
-anchor_top = 0.225
+anchor_top = 0.262
 anchor_right = 0.953
-anchor_bottom = 0.488
+anchor_bottom = 0.523
 offset_left = 0.543945
-offset_top = 0.199982
+offset_top = 0.223984
 offset_right = 0.143921
-offset_bottom = -1.22403
+offset_bottom = 0.0960083
 theme = ExtResource("4_7j741")
 theme_override_colors/default_color = Color(0.192157, 0.0784314, 0.0235294, 1)
 theme_override_fonts/normal_font = ExtResource("5_rxc53")
 theme_override_font_sizes/normal_font_size = 19
-text = "Frostholm is a freezing, harsh kingdom in the far north, where survival requires resilience and sensibleness. Its citizens value hard work, loyalty, and community. The kingdom is known for it's ice carving traditions, and hardy crops."
+text = "Frostholm is a freezing, harsh kingdom in the far north, where survival requires resilience and sensibleness. Its citizens value hard work, loyalty, and community. The kingdom is known for it's ice carving traditions and hardy crops."
 tab_size = 12
 
 [node name="RichTextLabel2" type="RichTextLabel" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.781
-anchor_top = 0.582
+anchor_left = 0.779
+anchor_top = 0.591
 anchor_right = 0.969
 anchor_bottom = 0.914
-offset_left = 0.287964
-offset_top = -0.136017
-offset_right = -0.288208
-offset_bottom = -0.272034
+offset_left = -0.408081
+offset_top = 0.0319824
+offset_right = -3.28821
+offset_bottom = 5.72797
 theme_override_colors/default_color = Color(0.192157, 0.0784314, 0.0235294, 1)
 theme_override_fonts/normal_font = ExtResource("5_rxc53")
 theme_override_font_sizes/normal_font_size = 19
@@ -112,13 +130,13 @@ He hates warm weather
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.56
+anchor_left = 0.572
 anchor_top = 0.591
-anchor_right = 0.747
+anchor_right = 0.76
 anchor_bottom = 0.923
-offset_left = -0.119995
+offset_left = 0.0559692
 offset_top = 0.0319824
-offset_right = 0.455933
+offset_right = -0.520203
 offset_bottom = -0.104004
 theme_override_colors/default_color = Color(0.192157, 0.0784314, 0.0235294, 1)
 theme_override_fonts/normal_font = ExtResource("5_rxc53")
@@ -131,3 +149,58 @@ He likes having children
 He likes sword practice
 He likes his parents
 He likes savoury things"
+
+[node name="HSeparator" type="HSeparator" parent="."]
+layout_mode = 0
+offset_left = 636.0
+offset_top = 332.0
+offset_right = 1074.0
+offset_bottom = 477.0
+
+[node name="HSeparator" type="HSeparator" parent="HSeparator"]
+offset_top = 19.0
+offset_right = 438.0
+offset_bottom = 164.0
+
+[node name="HSeparator2" type="HSeparator" parent="HSeparator"]
+offset_left = 2.0
+offset_top = 121.0
+offset_right = 440.0
+offset_bottom = 266.0
+
+[node name="HSeparator3" type="HSeparator" parent="HSeparator"]
+offset_left = 4.0
+offset_top = 99.0
+offset_right = 442.0
+offset_bottom = 244.0
+
+[node name="HSeparator4" type="HSeparator" parent="HSeparator"]
+offset_left = 3.0
+offset_top = 80.0
+offset_right = 441.0
+offset_bottom = 225.0
+
+[node name="HSeparator5" type="HSeparator" parent="HSeparator"]
+offset_left = -1.0
+offset_top = 60.0
+offset_right = 437.0
+offset_bottom = 205.0
+
+[node name="HSeparator6" type="HSeparator" parent="HSeparator"]
+offset_left = -1.0
+offset_top = 39.0
+offset_right = 437.0
+offset_bottom = 184.0
+
+[node name="HSeparator7" type="HSeparator" parent="HSeparator"]
+offset_left = 4.0
+offset_top = 140.0
+offset_right = 442.0
+offset_bottom = 285.0
+
+[node name="VSeparator" type="VSeparator" parent="HSeparator"]
+layout_mode = 0
+offset_left = 209.0
+offset_top = 51.0
+offset_right = 213.0
+offset_bottom = 226.0

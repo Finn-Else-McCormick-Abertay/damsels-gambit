@@ -121,7 +121,7 @@ layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"subject/animals"
-CornerRadius = 0.08
+CornerRadius = 0.02
 ShadowOffset = Vector2(-10.175, 1)
 ShadowOpacity = 0.4
 
@@ -130,7 +130,7 @@ layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"subject/witchcraft"
-CornerRadius = 0.08
+CornerRadius = 0.02
 ShadowOffset = Vector2(-10.175, 1)
 ShadowOpacity = 0.4
 
@@ -139,7 +139,7 @@ layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"subject/Parents"
-CornerRadius = 0.08
+CornerRadius = 0.02
 ShadowOffset = Vector2(-10.175, 1)
 ShadowOpacity = 0.4
 
@@ -174,7 +174,7 @@ layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"action/want"
-CornerRadius = 0.08
+CornerRadius = 0.02
 ShadowOffset = Vector2(-10.175, 1)
 ShadowOpacity = 0.4
 
@@ -183,7 +183,7 @@ layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"action/secret"
-CornerRadius = 0.08
+CornerRadius = 0.02
 ShadowOffset = Vector2(-10.175, 1)
 ShadowOpacity = 0.4
 
@@ -192,7 +192,7 @@ layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"question/thoughts"
-CornerRadius = 0.08
+CornerRadius = 0.02
 ShadowOffset = Vector2(-10.175, 1)
 ShadowOpacity = 0.4
 
