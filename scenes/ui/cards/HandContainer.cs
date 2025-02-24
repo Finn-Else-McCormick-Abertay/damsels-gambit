@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Bridge;
 
 namespace DamselsGambit;
 
@@ -17,17 +18,6 @@ public partial class HandContainer : Container, IReloadableToolScript
 
     [ExportGroup("Input")]
     [Export] public int MaxSelected { get; set; } = 1;
-    /*[Export(PropertyHint.ResourceType, "GUIDEAction")] private Resource _selectAction { get; set { field = value; SelectAction = GDScriptBridge.As<GUIDEActionBridge>(_selectAction); } }
-    [Export(PropertyHint.ResourceType, "GUIDEAction")] private Resource _pointerAction { get; set { field = value; PointerAction = GDScriptBridge.As<GUIDEActionBridge>(_pointerAction); } }
-    
-    public GUIDEActionBridge SelectAction { get; set {
-            var onSelectCallable = new Callable(this, MethodName.OnSelectCompleted);
-            if (SelectAction is not null && SelectAction.IsConnected(GUIDEActionBridge.SignalName.Completed, onSelectCallable)) SelectAction.Disconnect(GUIDEActionBridge.SignalName.Completed, onSelectCallable);
-            field = value;
-            if (SelectAction is not null && !SelectAction.IsConnected(GUIDEActionBridge.SignalName.Completed, onSelectCallable)) SelectAction.Connect(GUIDEActionBridge.SignalName.Completed, onSelectCallable);
-        }
-    }
-    public GUIDEActionBridge PointerAction { get; set; }*/
 
     [ExportGroup("Animation", "Animation")]
     [Export] public double AnimationTimeAdd { get; set; } = 0.0;
@@ -65,6 +55,10 @@ public partial class HandContainer : Container, IReloadableToolScript
         return base._PropertyGetRevert(property);
     }
 
+    public override void _Ready() {
+        GUIDE.Actions.SelectAt.Connect(GUIDEAction.SignalName.Triggered, new Callable(this, MethodName.OnSelectAt), 0);
+    }
+
     public override void _EnterTree() {
         this.TryConnect(SignalName.ChildEnteredTree, new Callable(this, MethodName.OnChildEnteredTree));
         this.TryConnect(SignalName.ChildExitingTree, new Callable(this, MethodName.OnChildExitingTree));
@@ -88,10 +82,29 @@ public partial class HandContainer : Container, IReloadableToolScript
         }
     }
 
-    /*private void OnSelectCompleted() {
+    private void OnSelectAt() {
         if (Engine.IsEditorHint()) return;
 
-        CardDisplay cardToSelect = null;
+        var position = GUIDE.Actions.SelectAt.ValueAxis2d;
+        
+        Console.Info($"Select At { position }");
+
+        CardDisplay selectedCard = null;
+        foreach (Control child in GetChildren().Cast<Control>()) {
+            if (child is not CardDisplay card) continue;
+            
+            var positionLocal = child.GetGlobalTransform().AffineInverse() * position;
+            if (card.CardRect.HasPoint(positionLocal)) { selectedCard = card; }
+        }
+        if (selectedCard is not null) {
+            bool isSelected = _selectedCards.Contains(selectedCard);
+            _prevSelectedState[selectedCard] = isSelected;
+            if (isSelected) { _selectedCards.Remove(selectedCard); }
+            else if (MaxSelected == -1 || _selectedCards.Count < MaxSelected) { _selectedCards.Add(selectedCard); }
+            QueueSort();
+        }
+
+        /*CardDisplay cardToSelect = null;
         foreach (var child in GetChildren()) {
             if (child is not CardDisplay card) continue;
             if (card.IsMousedOver) { cardToSelect = card; }
@@ -101,11 +114,11 @@ public partial class HandContainer : Container, IReloadableToolScript
             if (_selectedCards.Contains(cardToSelect)) { _selectedCards.Remove(cardToSelect); }
             else { _selectedCards.Add(cardToSelect); }
             QueueSort();
-        }
-    }*/
+        }*/
+    }
 
     public override void _GuiInput(InputEvent @event) {
-        if (@event is InputEventMouseButton buttonEvent) {
+        /*if (@event is InputEventMouseButton buttonEvent) {
             if (buttonEvent.ButtonIndex == MouseButton.Left && !buttonEvent.Pressed) {
                 CardDisplay selectedCard = null;
                 foreach (Control child in GetChildren().Cast<Control>()) {
@@ -121,7 +134,7 @@ public partial class HandContainer : Container, IReloadableToolScript
                     QueueSort();
                 }
             }
-        }
+        }*/
     }
 
     public IEnumerable<CardDisplay> GetSelected() => _selectedCards.Select(x => x as CardDisplay);

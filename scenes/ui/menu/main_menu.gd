@@ -10,9 +10,10 @@ extends Control
 
 func _ready():
 	handle_connecting_signals()
+	start_button.grab_focus()
 
 func on_start_pressed()-> void:
-	get_tree().change_scene_to_packed(start_level)
+	GameManager.InitialiseCardGame(true)
 
 func on_settings_pressed()-> void:
 	margin_container.visible = false

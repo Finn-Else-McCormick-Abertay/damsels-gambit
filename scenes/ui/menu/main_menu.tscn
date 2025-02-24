@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://c82q6rdj5f5ix"]
+[gd_scene load_steps=11 format=3 uid="uid://c82q6rdj5f5ix"]
 
 [ext_resource type="Texture2D" uid="uid://2cbl24t405i5" path="res://assets/ui/panels/Paper texture.png" id="1_mhvoi"]
 [ext_resource type="Script" path="res://scenes/ui/menu/main_menu.gd" id="1_v8cfc"]
@@ -9,6 +9,9 @@
 [ext_resource type="PackedScene" uid="uid://cl108jysyilp" path="res://scenes/ui/menu/settings_menu/settings_menu.tscn" id="6_f1uj7"]
 [ext_resource type="Texture2D" uid="uid://b83o2057ill7e" path="res://assets/ui/buttons/settings_pressed.png" id="6_qkac4"]
 [ext_resource type="Texture2D" uid="uid://dtjs726pojqdl" path="res://assets/ui/buttons/play_pressed.png" id="8_yfjgo"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_h08g0"]
+size = Vector2(5, 5)
 
 [node name="Main_menu" type="Control"]
 layout_mode = 3
@@ -70,6 +73,7 @@ layout_mode = 2
 texture_normal = ExtResource("4_a4f63")
 texture_pressed = ExtResource("4_y4yid")
 texture_hover = ExtResource("4_y4yid")
+texture_focused = SubResource("PlaceholderTexture2D_h08g0")
 metadata/_edit_use_anchors_ = true
 
 [node name="settings_button" type="TextureButton" parent="MarginContainer/VBoxContainer/HBoxContainer"]
@@ -77,6 +81,7 @@ layout_mode = 2
 texture_normal = ExtResource("3_ovivv")
 texture_pressed = ExtResource("6_qkac4")
 texture_hover = ExtResource("6_qkac4")
+texture_focused = SubResource("PlaceholderTexture2D_h08g0")
 metadata/_edit_use_anchors_ = true
 
 [node name="start_button" type="TextureButton" parent="MarginContainer/VBoxContainer/HBoxContainer"]
@@ -84,6 +89,7 @@ layout_mode = 2
 texture_normal = ExtResource("2_pyk42")
 texture_pressed = ExtResource("8_yfjgo")
 texture_hover = ExtResource("8_yfjgo")
+texture_focused = SubResource("PlaceholderTexture2D_h08g0")
 metadata/_edit_use_anchors_ = true
 
 [node name="SettingsMenuAcessibility" parent="." instance=ExtResource("6_f1uj7")]
