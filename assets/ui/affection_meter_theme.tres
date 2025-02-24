@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=12 format=3 uid="uid://dhax3sfwm6isl"]
+[gd_resource type="Theme" load_steps=13 format=3 uid="uid://dhax3sfwm6isl"]
 
 [ext_resource type="Texture2D" uid="uid://167ba70o2tv0" path="res://assets/ui/panels/affection_bar/affection_bar_war.png" id="1_784mg"]
 [ext_resource type="Texture2D" uid="uid://bc1ltww84lc34" path="res://assets/ui/panels/affection_bar/crossed_swords_mini.png" id="1_g08ar"]
@@ -77,6 +77,29 @@ AxisStretchHorizontal = 0
 AxisStretchVertical = 0
 ModulateColor = Color(1, 1, 1, 1)
 
+[sub_resource type="StyleBox" id="StyleBox_p41b4"]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = -1.0
+content_margin_top = -1.0
+content_margin_right = -1.0
+content_margin_bottom = -1.0
+script = ExtResource("2_vjwo0")
+Texture = ExtResource("6_3tmxm")
+Scale = 1.0
+DrawCenter = true
+TextureMarginLeft = 0
+TextureMarginTop = 0
+TextureMarginRight = 0
+TextureMarginBottom = 0
+ExpandMarginLeft = 0.0
+ExpandMarginTop = 0.0
+ExpandMarginRight = 0.0
+ExpandMarginBottom = 0.0
+AxisStretchHorizontal = 0
+AxisStretchVertical = 0
+ModulateColor = Color(1, 1, 1, 1)
+
 [sub_resource type="StyleBox" id="StyleBox_be0vx"]
 resource_local_to_scene = false
 resource_name = ""
@@ -101,6 +124,8 @@ AxisStretchVertical = 0
 ModulateColor = Color(1, 1, 1, 1)
 
 [resource]
+AffectionMeter/constants/hate_icon_size = 35
+AffectionMeter/constants/love_icon_size = 35
 AffectionMeter/icons/hate = ExtResource("1_g08ar")
 AffectionMeter/icons/love = ExtResource("2_k46av")
 AffectionMeter/icons/marker = null
@@ -109,7 +134,7 @@ AffectionMeter/styles/hate_boundary = SubResource("StyleBox_xuvmn")
 AffectionMeter/styles/love_area = SubResource("StyleBox_j7plb")
 AffectionMeter/styles/love_boundary = null
 AffectionMeter/styles/middle_boundary = null
-AffectionMeter/styles/over = null
+AffectionMeter/styles/over = SubResource("StyleBox_p41b4")
 AffectionMeter/styles/under = SubResource("StyleBox_be0vx")
 AffectionMeter/styles/value_boundary = null
 VSlider/icons/grabber_disabled = null

@@ -31,22 +31,43 @@ public partial class AffectionMeter : Control, IReloadableToolScript
 			public static readonly StringName Love = "love";
 			public static readonly StringName Hate = "hate";
 		}
+		public static class Constant {
+			public static readonly StringName LoveIconSize = "love_icon_size";
+			public static readonly StringName HateIconSize = "hate_icon_size";
+			public static readonly StringName MarkerIconSize = "marker_icon_size";
+		}
 	}
 
 	public override void _Draw() {
-		var under = Theme?.TryGetStylebox(ThemeProperties.Stylebox.Under, TypeName) ?? ThemeDB.FallbackStylebox;
-		var over = Theme?.TryGetStylebox(ThemeProperties.Stylebox.Over, TypeName) ?? new StyleBoxEmpty();
-		var love = Theme?.TryGetStylebox(ThemeProperties.Stylebox.LoveArea, TypeName) ?? new StyleBoxFlat{ BgColor = Colors.Red };
-		var hate = Theme?.TryGetStylebox(ThemeProperties.Stylebox.HateArea, TypeName) ?? new StyleBoxFlat{ BgColor = Colors.Black };
+		Theme theme = Theme;
+		Control node = this;
+		while (theme is null && node is not null) {
+			node = node.GetParent() as Control;
+			theme = node.Theme;
+		}
+		theme ??= ThemeDB.GetDefaultTheme();
 
-		var loveBound = Theme?.TryGetStylebox(ThemeProperties.Stylebox.LoveBoundary, TypeName) ?? new StyleBoxEmpty();
-		var hateBound = Theme?.TryGetStylebox(ThemeProperties.Stylebox.HateBoundary, TypeName) ?? new StyleBoxEmpty();
-		var middleBound = Theme?.TryGetStylebox(ThemeProperties.Stylebox.MiddleBoundary, TypeName) ?? new StyleBoxEmpty();
-		var valueBound = Theme?.TryGetStylebox(ThemeProperties.Stylebox.ValueBoundary, TypeName) ?? new StyleBoxLine();
+		var under = theme?.TryGetStylebox(ThemeProperties.Stylebox.Under, TypeName) ?? ThemeDB.FallbackStylebox;
+		var over = theme?.TryGetStylebox(ThemeProperties.Stylebox.Over, TypeName) ?? new StyleBoxEmpty();
+		var love = theme?.TryGetStylebox(ThemeProperties.Stylebox.LoveArea, TypeName) ?? new StyleBoxFlat{ BgColor = Colors.Red };
+		var hate = theme?.TryGetStylebox(ThemeProperties.Stylebox.HateArea, TypeName) ?? new StyleBoxFlat{ BgColor = Colors.Black };
 
-		var marker = Theme?.TryGetIcon(ThemeProperties.Icon.Marker, TypeName);
-		var loveIcon = Theme?.TryGetIcon(ThemeProperties.Icon.Love, TypeName);
-		var hateIcon = Theme?.TryGetIcon(ThemeProperties.Icon.Hate, TypeName);
+		var loveBound = theme?.TryGetStylebox(ThemeProperties.Stylebox.LoveBoundary, TypeName) ?? new StyleBoxEmpty();
+		var hateBound = theme?.TryGetStylebox(ThemeProperties.Stylebox.HateBoundary, TypeName) ?? new StyleBoxEmpty();
+		var middleBound = theme?.TryGetStylebox(ThemeProperties.Stylebox.MiddleBoundary, TypeName) ?? new StyleBoxEmpty();
+		var valueBound = theme?.TryGetStylebox(ThemeProperties.Stylebox.ValueBoundary, TypeName) ?? new StyleBoxLine();
+
+		var marker = theme?.TryGetIcon(ThemeProperties.Icon.Marker, TypeName);
+		var markerScale = theme?.TryGetConstant(ThemeProperties.Constant.MarkerIconSize, TypeName) ?? marker?.GetHeight() ?? 0; if (markerScale < 0) { markerScale = marker?.GetHeight() ?? 0; }
+		Vector2 markerSize = marker is not null ? marker.GetSize() / marker.GetHeight() * markerScale : new Vector2();
+
+		var loveIcon = theme?.TryGetIcon(ThemeProperties.Icon.Love, TypeName);
+		var loveScale = theme?.TryGetConstant(ThemeProperties.Constant.LoveIconSize, TypeName) ?? loveIcon?.GetHeight() ?? 0; if (loveScale < 0) { loveScale = loveIcon?.GetHeight() ?? 0; }
+		Vector2 loveSize = loveIcon is not null ? loveIcon.GetSize() / loveIcon.GetHeight() * loveScale : new();
+
+		var hateIcon = theme?.TryGetIcon(ThemeProperties.Icon.Hate, TypeName);
+		var hateScale = theme?.TryGetConstant(ThemeProperties.Constant.HateIconSize, TypeName) ?? hateIcon?.GetHeight() ?? 0; if (hateScale < 0) { hateScale = hateIcon?.GetHeight() ?? 0; }
+		Vector2 hateSize = hateIcon is not null ? hateIcon.GetSize() / hateIcon.GetHeight() * hateScale : new();
 
 		DrawStyleBox(under, new Rect2(0f, 0f, Size));
 
@@ -58,10 +79,12 @@ public partial class AffectionMeter : Control, IReloadableToolScript
 		DrawStyleBox(middleBound, new Rect2(0f, Size.Y * 0.5f, Size.X, 0f));
 
 		DrawStyleBox(valueBound, new Rect2(0f, Size.Y * ValuePercent, Size.X, 0f));
-		if (marker is not null)	  DrawTexture(marker, new(Size.X / 2f - marker.GetWidth() / 2f, Size.Y * ValuePercent - marker.GetHeight() / 2f));
-		if (loveIcon is not null) DrawTexture(loveIcon, new(Size.X / 2f - loveIcon.GetWidth() / 2f, 0f - loveIcon.GetHeight() / 2f));
-		if (hateIcon is not null) DrawTexture(hateIcon, new(Size.X / 2f - hateIcon.GetWidth() / 2f, Size.Y - hateIcon.GetHeight() / 2f));
-
+		
 		DrawStyleBox(over, new Rect2(0f, 0f, Size));
+
+
+		if (marker is not null)	  DrawTextureRect(marker, new(Size.X / 2f - markerSize.X / 2f, Size.Y * ValuePercent - markerSize.Y / 2f, markerSize), false);
+		if (loveIcon is not null) DrawTextureRect(loveIcon, new(Size.X / 2f - loveSize.X / 2f, 0f - loveSize.Y / 2f, loveSize), false);
+		if (hateIcon is not null) DrawTextureRect(hateIcon, new(Size.X / 2f - hateSize.X / 2f, Size.Y - hateSize.Y / 2f, hateSize), false);
 	}
 }
