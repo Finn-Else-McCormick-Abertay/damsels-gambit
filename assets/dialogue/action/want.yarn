@@ -1,4 +1,4 @@
-title: action/want+subject/parents
+title: action/want+topic/parents
 ---
 Princess Penelope: I want... #withnext
 	-> Different parents.
@@ -7,7 +7,7 @@ Princess Penelope: I want... #withnext
 		<<score 3>>
 ===
 
-title: action/want+subject/food
+title: action/want+topic/food
 ---
 Princess Penelope: I want... #withnext
 	-> To have wolf-shaped jelly!
@@ -16,7 +16,7 @@ Princess Penelope: I want... #withnext
 		<<score 3>>
 ===
 
-title: action/want+subject/animals
+title: action/want+topic/animals
 ---
 Princess Penelope: I want... #withnext
 	-> A pet cat, they're so elegant!
@@ -25,7 +25,7 @@ Princess Penelope: I want... #withnext
 		<<score 3>>
 ===
 
-title: action/want+subject/art
+title: action/want+topic/art
 ---
 Princess Penelope: I want... #withnext
 	-> To learn how to paint one day...
@@ -34,7 +34,7 @@ Princess Penelope: I want... #withnext
 		<<score -3>>
 ===
 
-title: action/want+subject/loyalty
+title: action/want+topic/loyalty
 ---
 Princess Penelope: I want... #withnext
 	-> To kiss the waiter...?!
@@ -43,7 +43,7 @@ Princess Penelope: I want... #withnext
 		<<score 3>>
 ===
 
-title: action/want+subject/witchcraft
+title: action/want+topic/witchcraft
 ---
 Princess Penelope: I want... #withnext
 	-> To go on a witch hunt!!
@@ -52,7 +52,7 @@ Princess Penelope: I want... #withnext
 		<<score -3>>
 ===
 
-title: action/want+subject/religion
+title: action/want+topic/religion
 ---
 Princess Penelope: I want... #withnext
 	-> To visit the Central Church, it's a sight.
@@ -61,7 +61,7 @@ Princess Penelope: I want... #withnext
 		<<score -3>>
 ===
 
-title: action/want+subject/children
+title: action/want+topic/children
 ---
 Princess Penelope: I want... #withnext
 	-> To have children in the future.
@@ -70,7 +70,7 @@ Princess Penelope: I want... #withnext
 		<<score -3>>
 ===
 
-title: action/want+subject/weather
+title: action/want+topic/weather
 ---
 Princess Penelope: I want... #withnext
 	-> Some warm summer weather!
@@ -79,7 +79,7 @@ Princess Penelope: I want... #withnext
 		<<score 3>>
 ===
 
-title: action/want+subject/hobbies
+title: action/want+topic/hobbies
 ---
 Princess Penelope: I want... #withnext
 	-> To learn archery.

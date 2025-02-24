@@ -1,4 +1,4 @@
-title: action/give+subject/parents
+title: action/give+topic/parents
 ---
 Princess Penelope: I got this... #withnext
 	-> Elegant fox pelt slippers for your mother.
@@ -7,7 +7,7 @@ Princess Penelope: I got this... #withnext
 		<<score -3>>
 ===
 
-title: action/give+subject/food
+title: action/give+topic/food
 ---
 Princess Penelope: Here, I got this for you... #withnext
 	-> Wolf-shaped jelly.
@@ -16,7 +16,7 @@ Princess Penelope: Here, I got this for you... #withnext
 		<<score 3>>
 ===
 
-title: action/give+subject/animals
+title: action/give+topic/animals
 ---
 Princess Penelope: Here you are... #withnext
 	-> A wolf pelt!
@@ -25,7 +25,7 @@ Princess Penelope: Here you are... #withnext
 		<<score -3>>
 ===
 
-title: action/give+subject/art
+title: action/give+topic/art
 ---
 Princess Penelope: I got this for you.. #withnext
 	-> It's a painting of the serene magical lake of Rosewood. Painted by our most renowned painter!
@@ -34,7 +34,7 @@ Princess Penelope: I got this for you.. #withnext
 		<<score -3>>
 ===
 
-title: action/give+subject/loyalty
+title: action/give+topic/loyalty
 ---
 Princess Penelope: I got this for you... #withnext
 	-> It's a necklace that lights up when you're close to mine!
@@ -43,7 +43,7 @@ Princess Penelope: I got this for you... #withnext
 		<<score -3>>
 ===
 
-title: action/give+subject/witchcraft
+title: action/give+topic/witchcraft
 ---
 Princess Penelope: Here, I got you a... #withnext
 	-> Newly made pitchfork crafted from black iron for your next witch hunt!
@@ -52,7 +52,7 @@ Princess Penelope: Here, I got you a... #withnext
 		<<score -3>>
 ===
 
-title: action/give+subject/religion
+title: action/give+topic/religion
 ---
 Princess Penelope: I got this for you... #withnext
 	-> It's an idol of our God, it will protect you.
@@ -61,7 +61,7 @@ Princess Penelope: I got this for you... #withnext
 		<<score -3>>
 ===
 
-title: action/give+subject/children
+title: action/give+topic/children
 ---
 Princess Penelope: Here, take... #withnext
 	-> This 'How to Be a Father for Dummies' book.
@@ -70,7 +70,7 @@ Princess Penelope: Here, take... #withnext
 		<<score -3>>
 ===
 
-title: action/give+subject/weather
+title: action/give+topic/weather
 ---
 Princess Penelope: Here you are... #withnext
 	-> It's a winter coat! Made of our finest leather and fur.
@@ -79,7 +79,7 @@ Princess Penelope: Here you are... #withnext
 		<<score -3>>
 ===
 
-title: action/give+subject/hobbies
+title: action/give+topic/hobbies
 ---
 Princess Penelope: *Searches around...* Here it is...! #withnext
 	-> I got you a brand new sword, made from black steel!
