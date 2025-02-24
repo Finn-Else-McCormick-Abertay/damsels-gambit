@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CardSharedParams" load_steps=3 format=3 uid="uid://mi5aeqsksuy8"]
+[gd_resource type="Resource" script_class="CardSharedParams" load_steps=3 format=3 uid="uid://dtesxogjrxx4d"]
 
 [ext_resource type="Script" path="res://scenes/ui/cards/CardSharedParams.cs" id="1_r8t73"]
 

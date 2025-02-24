@@ -1,10 +1,9 @@
-[gd_resource type="Theme" load_steps=13 format=3 uid="uid://dhax3sfwm6isl"]
+[gd_resource type="Theme" load_steps=12 format=3 uid="uid://dhax3sfwm6isl"]
 
 [ext_resource type="Texture2D" uid="uid://167ba70o2tv0" path="res://assets/ui/panels/affection_bar/affection_bar_war.png" id="1_784mg"]
-[ext_resource type="Texture2D" uid="uid://bc1ltww84lc34" path="res://assets/ui/panels/affection_bar/crossed_swords_mini.png" id="1_g08ar"]
-[ext_resource type="Texture2D" uid="uid://ckawpanmr71t8" path="res://assets/ui/panels/affection_bar/linked_rings_mini.png" id="2_k46av"]
 [ext_resource type="Script" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="2_vjwo0"]
 [ext_resource type="Texture2D" uid="uid://crry5aakrnjn8" path="res://assets/ui/panels/affection_bar/crossed_swords.png" id="3_74d2q"]
+[ext_resource type="Texture2D" uid="uid://gc0xvh8sf3sg" path="res://assets/ui/panels/affection_bar/linked_rings.png" id="4_ky10l"]
 [ext_resource type="Texture2D" uid="uid://kmxj3n8p2cjr" path="res://assets/ui/panels/affection_bar/affection_bar_marriage.png" id="5_latk2"]
 [ext_resource type="Texture2D" uid="uid://ddgbg8x5gvs5e" path="res://assets/ui/panels/affection_bar/affection_bar.png" id="6_3tmxm"]
 
@@ -126,8 +125,8 @@ ModulateColor = Color(1, 1, 1, 1)
 [resource]
 AffectionMeter/constants/hate_icon_size = 35
 AffectionMeter/constants/love_icon_size = 35
-AffectionMeter/icons/hate = ExtResource("1_g08ar")
-AffectionMeter/icons/love = ExtResource("2_k46av")
+AffectionMeter/icons/hate = ExtResource("3_74d2q")
+AffectionMeter/icons/love = ExtResource("4_ky10l")
 AffectionMeter/icons/marker = null
 AffectionMeter/styles/hate_area = SubResource("StyleBox_ew2n2")
 AffectionMeter/styles/hate_boundary = SubResource("StyleBox_xuvmn")
