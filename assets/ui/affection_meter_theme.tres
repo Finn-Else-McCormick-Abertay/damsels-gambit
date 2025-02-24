@@ -1,35 +1,53 @@
-[gd_resource type="Theme" load_steps=5 format=3 uid="uid://dhax3sfwm6isl"]
+[gd_resource type="Theme" load_steps=10 format=3 uid="uid://dhax3sfwm6isl"]
 
-[ext_resource type="Texture2D" uid="uid://p6jntunjpfs5" path="res://assets/ui/panels/affection bar stand alone.png" id="1_lcnq2"]
-[ext_resource type="Script" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="2_vjwo0"]
+[ext_resource type="Texture2D" uid="uid://cap7e0f05pj8j" path="res://addons/guide/editor/logo_editor_small.svg" id="1_wo6c1"]
+[ext_resource type="Texture2D" uid="uid://oku7f5t0ox3r" path="res://addons/guide/inputs/guide_input.svg" id="2_e8j8m"]
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_k8jvk"]
-size = Vector2(40, 5)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2m8vb"]
+bg_color = Color(0.369, 0.60795, 0.9, 0.427451)
 
-[sub_resource type="StyleBox" id="StyleBox_qyobw"]
-resource_local_to_scene = false
-resource_name = ""
-content_margin_left = -1.0
-content_margin_top = -1.0
-content_margin_right = -1.0
-content_margin_bottom = -1.0
-script = ExtResource("2_vjwo0")
-Texture = ExtResource("1_lcnq2")
-Scale = 0.0
-DrawCenter = true
-TextureMarginLeft = 7
-TextureMarginTop = 7
-TextureMarginRight = 7
-TextureMarginBottom = 7
-ExpandMarginLeft = 0.0
-ExpandMarginTop = 0.0
-ExpandMarginRight = 0.0
-ExpandMarginBottom = 0.0
-AxisStretchHorizontal = 1
-AxisStretchVertical = 1
-ModulateColor = Color(1, 1, 1, 1)
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_go23f"]
+color = Color(0.205533, 0.56856, 0.803084, 1)
+thickness = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fgo3u"]
+bg_color = Color(0.93, 0.3627, 0.636895, 0.490196)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_urvrs"]
+color = Color(0.8976, 0.0459496, 0.479074, 1)
+thickness = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ea1mr"]
+border_width_top = 2
+border_width_bottom = 2
+expand_margin_top = 4.0
+expand_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_577ki"]
+draw_center = false
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+expand_margin_left = 5.0
+expand_margin_top = 5.0
+expand_margin_right = 5.0
+expand_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_55ti4"]
+color = Color(1, 1, 1, 1)
+thickness = 5
 
 [resource]
-AffectionMeter/icons/marker = SubResource("PlaceholderTexture2D_k8jvk")
-AffectionMeter/styles/over = SubResource("StyleBox_qyobw")
+AffectionMeter/icons/hate = ExtResource("1_wo6c1")
+AffectionMeter/icons/love = ExtResource("2_e8j8m")
+AffectionMeter/icons/marker = null
+AffectionMeter/styles/hate_area = SubResource("StyleBoxFlat_2m8vb")
+AffectionMeter/styles/hate_boundary = SubResource("StyleBoxLine_go23f")
+AffectionMeter/styles/love_area = SubResource("StyleBoxFlat_fgo3u")
+AffectionMeter/styles/love_boundary = SubResource("StyleBoxLine_urvrs")
+AffectionMeter/styles/middle_boundary = SubResource("StyleBoxFlat_ea1mr")
+AffectionMeter/styles/over = null
+AffectionMeter/styles/under = SubResource("StyleBoxFlat_577ki")
+AffectionMeter/styles/value_boundary = SubResource("StyleBoxLine_55ti4")
 VSlider/icons/grabber_disabled = null
