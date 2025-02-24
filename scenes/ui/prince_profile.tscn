@@ -91,6 +91,24 @@ theme_override_font_sizes/normal_font_size = 19
 text = "Frostholm is a freezing, harsh kingdom in the far north, where survival requires resilience and sensibleness. Its citizens value hard work, loyalty, and community. The kingdom is known for it's ice carving traditions, and hardy crops."
 tab_size = 12
 
+[node name="RichTextLabel2" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.781
+anchor_top = 0.582
+anchor_right = 0.969
+anchor_bottom = 0.914
+offset_left = 0.287964
+offset_top = -0.136017
+offset_right = -0.288208
+offset_bottom = -0.272034
+theme_override_colors/default_color = Color(0.192157, 0.0784314, 0.0235294, 1)
+theme_override_fonts/normal_font = ExtResource("5_rxc53")
+theme_override_font_sizes/normal_font_size = 19
+text = "He hates witchcraft
+He hates warm weather
+"
+
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
 layout_mode = 1
 anchors_preset = -1
@@ -105,13 +123,11 @@ offset_bottom = -0.104004
 theme_override_colors/default_color = Color(0.192157, 0.0784314, 0.0235294, 1)
 theme_override_fonts/normal_font = ExtResource("5_rxc53")
 theme_override_font_sizes/normal_font_size = 19
-text = "He likes his parents
-He likes savoury things
-He loves wolves
+text = "He loves wolves
 He loves art
 He loves loyalty
-He hates witchcraft
 He likes religion
 He likes having children
-He hates warm weather
-He likes sword practice"
+He likes sword practice
+He likes his parents
+He likes savoury things"
