@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://65spobqa0gcm"
-path="res://.godot/imported/Hobbies.png-64c65fdde72b41f097df10ab8d4f171f.ctex"
+uid="uid://by7p34rbu2mvv"
+path="res://.godot/imported/food.png-0ab7ccfeb45452dcf824decd12b3fee7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/cards/topic/Hobbies.png"
-dest_files=["res://.godot/imported/Hobbies.png-64c65fdde72b41f097df10ab8d4f171f.ctex"]
+source_file="res://assets/cards/topic/food.png"
+dest_files=["res://.godot/imported/food.png-0ab7ccfeb45452dcf824decd12b3fee7.ctex"]
 
 [params]
 

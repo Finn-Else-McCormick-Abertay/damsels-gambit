@@ -45,7 +45,7 @@ point_count = 3
 [sub_resource type="Curve" id="Curve_5nabb"]
 min_value = -50.0
 max_value = 50.0
-_data = [Vector2(0, 38.6628), 0.0, 0.0, 0, 0, Vector2(0.526627, 20.5233), -102.186, -102.186, 0, 0, Vector2(1, -33.1395), -204.372, 0.0, 0, 0]
+_data = [Vector2(0, 38.6628), 0.0, 0.0, 0, 0, Vector2(0.535503, 20.5233), -41.4268, -41.4268, 0, 0, Vector2(1, -33.1395), -204.372, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="Curve" id="Curve_mupma"]
@@ -63,8 +63,8 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_ouffm")
 script = ExtResource("1_4k8rw")
-SubjectDeck = PackedStringArray("subject/parents", "subject/food", "subject/animals", "subject/art", "subject/loyalty", "subject/witchcraft", "subject/religion", "subject/children", "subject/weather", "subject/hobbies")
-ModifierDeck = PackedStringArray("action/secret", "action/secret", "action/want", "action/give", "question/likes", "question/likes", "question/likes", "question/thoughts", "question/thoughts", "question/thoughts")
+SubjectDeck = PackedStringArray("topic/parents", "topic/food", "topic/animals", "topic/art", "topic/loyalty", "topic/witchcraft", "topic/religion", "topic/children", "topic/weather", "topic/hobbies")
+ModifierDeck = PackedStringArray("action/secret", "action/secret", "action/want", "action/want", "action/give", "action/give", "action/question", "action/question", "action/question", "action/question")
 AffectionMeter = NodePath("AffectionMeter")
 SubjectHand = NodePath("SubjectHandContainer")
 ModifierHand = NodePath("ModifierHandContainer")

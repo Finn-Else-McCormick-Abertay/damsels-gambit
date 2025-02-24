@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://3wxtitskxrn5"
-path="res://.godot/imported/Religion.png-6a2742d0f47f3a82b923071b10fecc56.ctex"
+uid="uid://c1a6uadfmt6fq"
+path="res://.godot/imported/family.png-7092472d287519a51fc2911e1706c113.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/cards/topic/Religion.png"
-dest_files=["res://.godot/imported/Religion.png-6a2742d0f47f3a82b923071b10fecc56.ctex"]
+source_file="res://assets/cards/topic/family.png"
+dest_files=["res://.godot/imported/family.png-7092472d287519a51fc2911e1706c113.ctex"]
 
 [params]
 

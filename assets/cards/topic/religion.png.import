@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://det44rbean828"
-path="res://.godot/imported/Topic Card Template.png-2d901e8e3a3387c8d9dff09edb650cd9.ctex"
+uid="uid://3wxtitskxrn5"
+path="res://.godot/imported/religion.png-684d50a37dc344dfd8ac30f6ba8d8c39.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/cards/card templates/Without Transparent Background/Topic Card Template.png"
-dest_files=["res://.godot/imported/Topic Card Template.png-2d901e8e3a3387c8d9dff09edb650cd9.ctex"]
+source_file="res://assets/cards/topic/religion.png"
+dest_files=["res://.godot/imported/religion.png-684d50a37dc344dfd8ac30f6ba8d8c39.ctex"]
 
 [params]
 

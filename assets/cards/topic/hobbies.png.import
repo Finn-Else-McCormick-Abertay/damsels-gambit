@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://hiwyt0y6o1yf"
-path="res://.godot/imported/Action Card Template.png-ddaded9c1889e1b38e25818a5584907e.ctex"
+uid="uid://65spobqa0gcm"
+path="res://.godot/imported/hobbies.png-314ee630e285564dafae0e6e22d9bf73.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/cards/card templates/Without Transparent Background/Action Card Template.png"
-dest_files=["res://.godot/imported/Action Card Template.png-ddaded9c1889e1b38e25818a5584907e.ctex"]
+source_file="res://assets/cards/topic/hobbies.png"
+dest_files=["res://.godot/imported/hobbies.png-314ee630e285564dafae0e6e22d9bf73.ctex"]
 
 [params]
 

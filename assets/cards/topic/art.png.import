@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://w0rwi04kabsc"
-path="res://.godot/imported/Weather.png-08dbe511feb3380f4e4bca11dadf69e1.ctex"
+uid="uid://dmwq1f4fqggr2"
+path="res://.godot/imported/art.png-5270a4b29984eb746fda84ce0358a238.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/cards/topic/Weather.png"
-dest_files=["res://.godot/imported/Weather.png-08dbe511feb3380f4e4bca11dadf69e1.ctex"]
+source_file="res://assets/cards/topic/art.png"
+dest_files=["res://.godot/imported/art.png-5270a4b29984eb746fda84ce0358a238.ctex"]
 
 [params]
 
