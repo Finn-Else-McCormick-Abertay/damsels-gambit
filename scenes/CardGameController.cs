@@ -121,7 +121,7 @@ public partial class CardGameController : Control
 	}
 
 	private void Deal() {
-        void InternalDeal(HandContainer container, List<string> workingDeck, Vector2 startPosition, float startAngle, double waitTime = 0.2) {
+		void InternalDeal(HandContainer container, List<string> workingDeck, Vector2 startPosition, float startAngle, double waitTime = 0.2) {
 			int cardsToDeal = Math.Max(3 - container.GetChildCount(), 0);
 			for (int i = 0; i < cardsToDeal; ++i) {
 				var cardId = workingDeck.First();
