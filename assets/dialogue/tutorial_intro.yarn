@@ -4,7 +4,7 @@ title: tutorial_intro
 <<fade in queen 1>>
 Queen: My daughter, you need to be married. I have arranged a date with a suitor tonight.
 <<emote queen turn_right>>
-Queen: King Bófi is making his way from the kingdom of Frostholm as we speak. Make yourself ready, and try not to disappoint him.
+Queen: King Ráðúlfr is making his way from his kingdom of Frostholm as we speak. Make yourself ready, and try not to disappoint him.
 <<move queen 300 0 1>>
 <<fade out queen 1>>
 <<move lady_in_waiting -300 0>>
