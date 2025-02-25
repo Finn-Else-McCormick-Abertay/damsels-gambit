@@ -137,7 +137,7 @@ public partial class CardGameController : Control
 				});
 			}
 		}
-		InternalDeal(TopicHand, _topicDeckWorking, new Vector2(-200f, 100f), -30f);
-		InternalDeal(ActionHand, _actionDeckWorking, new Vector2(500f, 100f), 30f);
+		InternalDeal(ActionHand, _actionDeckWorking, new Vector2(-200f, 100f), -30f);
+		InternalDeal(TopicHand, _topicDeckWorking, new Vector2(500f, 100f), 30f);
 	}
 }
