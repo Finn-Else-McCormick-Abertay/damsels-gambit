@@ -107,7 +107,8 @@ public partial class CardDisplay : Control, IReloadableToolScript
 		if (ShadowOpacity > 0) { DrawMesh(_shadowMesh, s_shadowGradientTexture, trans.Translated(ShadowOffset.Rotated(-Rotation)), new Color(Colors.White, ShadowOpacity)); }
 		DrawMesh(_cardMesh, Texture, trans);
 
-		if (DisplayName is not null) {
+		// Stop using the _renderName thing once the card textures stop having their names on them
+		if (_renderName) {
 			var font = GetThemeFont(ThemeProperties.Font.Name, ThemeClassName); var fontSize = GetThemeFontSize(ThemeProperties.Font.Size.Name, ThemeClassName); var fontColor = GetThemeColor(ThemeProperties.Color.NameFont, ThemeClassName);
 			
 			var stringSize = font.GetStringSize(DisplayName, HorizontalAlignment.Left, -1, fontSize);
