@@ -52,7 +52,7 @@ public partial class CardGameController : Control
 
 		List<string> CreateWorkingDeck(Godot.Collections.Dictionary<string, int> deck) {
 			List<string> working = [];
-			foreach (var (card, count) in TopicDeck) { for (int i = 0; i < count; ++i) { working.Add(card); } }
+			foreach (var (card, count) in deck) { for (int i = 0; i < count; ++i) { working.Add(card); } }
 			return working;
 		}
 
