@@ -39,11 +39,10 @@ public partial class DialogueManager : Node
         // (animations can change the state of them, so we need to hard reset)
         _environments.Clear();
         foreach (var node in _environmentRoot.GetChildren()) { _environmentRoot.RemoveChild(node); node.QueueFree(); }
-        foreach (var file in DirAccess.GetFilesAt("res://scenes/environment/")) {
-            var extension = Path.GetExtension(file);
-            if (extension != ".tscn" && extension != ".import") continue;
-            var loadFile = extension == ".import" ? $"{Path.GetFileNameWithoutExtension(file)}.tscn" : file;            
-            var scene = ResourceLoader.Load<PackedScene>($"res://scenes/environment/{loadFile}");
+        foreach (var rawPath in DirAccess.GetFilesAt("res://scenes/environment/")) {
+            var file = Path.GetExtension(rawPath) == ".remap" ? Path.GetFileNameWithoutExtension(rawPath) : rawPath;
+            if (Path.GetExtension(file) != ".tscn") continue;          
+            var scene = ResourceLoader.Load<PackedScene>($"res://scenes/environment/{file}");
             if (scene is not null) {
                 var node = scene.Instantiate();
                 _environmentRoot.AddChild(node); node.Owner = _environmentRoot;
