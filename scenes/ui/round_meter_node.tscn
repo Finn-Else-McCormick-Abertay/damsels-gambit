@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://dvluhda7ny7a8"]
 
-[ext_resource type="Texture2D" uid="uid://b4voy8473jkda" path="res://assets/ui/panels/round_bar/round_bar_clear_circle.png" id="1_i4hxb"]
-[ext_resource type="Texture2D" uid="uid://p5b3yneb20ct" path="res://assets/ui/panels/round_bar/completed_round_circle.png" id="1_s656a"]
-[ext_resource type="Texture2D" uid="uid://bxw8v736qxtda" path="res://assets/ui/panels/round_bar/round_circle.png" id="2_bgw1a"]
+[ext_resource type="Texture2D" uid="uid://bgsfpjtov8n6w" path="res://assets/ui/panels/round_bar/round_bar_cicle_pink_2.png" id="1_h5jnm"]
+[ext_resource type="Texture2D" uid="uid://dfllmq0swomd5" path="res://assets/ui/panels/round_bar/round_bar_circle_yellow_2.png" id="2_48j6v"]
+[ext_resource type="Texture2D" uid="uid://dcs8fux1fincr" path="res://assets/ui/panels/round_bar/round_bar_swirl_2.png" id="3_sh7ov"]
 
 [node name="RoundMeterNode" type="Control"]
 layout_mode = 3
@@ -13,7 +13,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Completed" type="TextureRect" parent="."]
-visible = false
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 1
 anchors_preset = 8
@@ -29,7 +28,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
-texture = ExtResource("1_s656a")
+texture = ExtResource("1_h5jnm")
 expand_mode = 1
 stretch_mode = 5
 
@@ -50,7 +49,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
-texture = ExtResource("1_i4hxb")
+texture = ExtResource("2_48j6v")
 expand_mode = 1
 stretch_mode = 5
 
@@ -68,7 +67,7 @@ offset_right = 30.0
 offset_bottom = 30.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_bgw1a")
+texture = ExtResource("3_sh7ov")
 expand_mode = 1
 
 [node name="Label" type="Label" parent="Current"]
