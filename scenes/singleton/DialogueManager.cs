@@ -40,8 +40,10 @@ public partial class DialogueManager : Node
         _environments.Clear();
         foreach (var node in _environmentRoot.GetChildren()) { _environmentRoot.RemoveChild(node); node.QueueFree(); }
         foreach (var file in DirAccess.GetFilesAt("res://scenes/environment/")) {
-            if (Path.GetExtension(file) != ".tscn") continue;
-            var scene = ResourceLoader.Load<PackedScene>($"res://scenes/environment/{file}");
+            var extension = Path.GetExtension(file);
+            if (extension != ".tscn" && extension != ".import") continue;
+            var loadFile = extension == ".import" ? $"{Path.GetFileNameWithoutExtension(file)}.tscn" : file;            
+            var scene = ResourceLoader.Load<PackedScene>($"res://scenes/environment/{loadFile}");
             if (scene is not null) {
                 var node = scene.Instantiate();
                 _environmentRoot.AddChild(node); node.Owner = _environmentRoot;

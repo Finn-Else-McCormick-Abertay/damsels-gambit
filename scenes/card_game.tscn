@@ -97,6 +97,7 @@ PlayButton = NodePath("PlayHandButton")
 RoundMeter = NodePath("RoundMeter")
 
 [node name="Vignette" type="TextureRect" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -113,7 +114,7 @@ anchor_right = 0.163
 anchor_bottom = 0.667
 offset_left = -145.776
 offset_top = 28.0
-offset_right = -107.776
+offset_right = -125.776
 offset_bottom = -19.216
 grow_vertical = 2
 theme = ExtResource("2_ko4o6")
@@ -230,11 +231,11 @@ text = "Play Hand"
 [node name="RoundMeter" parent="." instance=ExtResource("8_oypvw")]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.163
-anchor_right = 0.841
+anchor_left = 0.271
+anchor_right = 0.734
 anchor_bottom = 0.137
-offset_left = 0.223999
+offset_left = -0.192017
 offset_top = 8.0
-offset_right = 0.167969
-offset_bottom = 0.223991
+offset_right = -0.568054
+offset_bottom = 0.224007
 CurrentRound = 0
