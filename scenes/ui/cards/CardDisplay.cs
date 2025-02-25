@@ -10,7 +10,7 @@ namespace DamselsGambit;
 [Tool, GlobalClass, Icon("res://assets/editor/icons/card.svg")]
 public partial class CardDisplay : Control, IReloadableToolScript
 {
-	private static CardSharedParams SharedParams { get { if (!IsInstanceValid(field)) field = ResourceLoader.Load<CardSharedParams>("res://assets/cards/card_shared.tres", "CardSharedParams"); return field; } }
+	private static readonly CardSharedParams SharedParams = ResourceLoader.Load<CardSharedParams>("res://assets/cards/card_shared.tres");
 
 	[Export] public StringName CardId {
 		get; set {
@@ -24,7 +24,7 @@ public partial class CardDisplay : Control, IReloadableToolScript
 			string textureRoot = $"res://assets/cards/{type}";
 
 			if (ResourceLoader.Exists($"{textureRoot}/{name}.tres")) {
-				var cardInfo = ResourceLoader.Load<CardInfo>($"{textureRoot}/{name}.tres", "CardInfo");
+				var cardInfo = ResourceLoader.Load<CardInfo>($"{textureRoot}/{name}.tres");
 				if (!string.IsNullOrEmpty(cardInfo.DisplayName)) DisplayName = cardInfo.DisplayName;
 				Score = string.IsNullOrEmpty(cardInfo.Score) ? null : cardInfo.Score;
 			}
