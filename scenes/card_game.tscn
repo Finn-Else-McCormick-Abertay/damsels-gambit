@@ -62,7 +62,7 @@ max_value = 90.0
 _data = [Vector2(0, 5.12277), 0.0, 0.0, 0, 0, Vector2(0.502959, 9.04018), 20.9715, 20.9715, 0, 0, Vector2(1, 15.5692), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "SubjectHand", "ModifierHand", "PlayButton")]
+[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "SubjectHand", "ModifierHand", "PlayButton", "RoundMeter")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -78,6 +78,7 @@ AffectionMeter = NodePath("AffectionMeter")
 SubjectHand = NodePath("SubjectHandContainer")
 ModifierHand = NodePath("ModifierHandContainer")
 PlayButton = NodePath("PlayHandButton")
+RoundMeter = NodePath("RoundMeter")
 
 [node name="Vignette" type="TextureRect" parent="."]
 layout_mode = 1
