@@ -69,10 +69,10 @@ public partial class AffectionMeter : Control, IReloadableToolScript
 		var hateScale = theme?.TryGetConstant(ThemeProperties.Constant.HateIconSize, TypeName) ?? hateIcon?.GetHeight() ?? 0; if (hateScale < 0) { hateScale = hateIcon?.GetHeight() ?? 0; }
 		Vector2 hateSize = hateIcon is not null ? hateIcon.GetSize() / hateIcon.GetHeight() * hateScale : new();
 
-		DrawStyleBox(under, new Rect2(0f, 0f, Size));
-
 		DrawStyleBox(love, new Rect2(0f, 0f, Size with { Y = Size.Y * LovePercent }));
 		DrawStyleBox(hate, new Rect2(0f, (1 - HatePercent) * Size.Y, Size with { Y = Size.Y * HatePercent }));
+		
+		DrawStyleBox(under, new Rect2(0f, 0f, Size));
 		
 		DrawStyleBox(loveBound, new Rect2(0f, Size.Y * LovePercent, Size.X, 0f));
 		DrawStyleBox(hateBound, new Rect2(0f, Size.Y * (1 - HatePercent), Size.X, 0f));

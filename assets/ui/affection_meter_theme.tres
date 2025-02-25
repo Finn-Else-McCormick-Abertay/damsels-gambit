@@ -1,12 +1,12 @@
-[gd_resource type="Theme" load_steps=14 format=3 uid="uid://dhax3sfwm6isl"]
+[gd_resource type="Theme" load_steps=15 format=3 uid="uid://dhax3sfwm6isl"]
 
 [ext_resource type="Texture2D" uid="uid://167ba70o2tv0" path="res://assets/ui/panels/affection_bar/affection_bar_war.png" id="1_784mg"]
 [ext_resource type="Texture2D" uid="uid://bbr57lg3tj7ia" path="res://assets/ui/panels/affection_bar/crossed_swords_thick_outline.png" id="1_gt3fw"]
 [ext_resource type="Texture2D" uid="uid://b880wr14b14cs" path="res://assets/ui/panels/affection_bar/linked_rings_thick_outline.png" id="2_tcigj"]
 [ext_resource type="Script" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="2_vjwo0"]
-[ext_resource type="Texture2D" uid="uid://crry5aakrnjn8" path="res://assets/ui/panels/affection_bar/crossed_swords.png" id="3_74d2q"]
 [ext_resource type="Texture2D" uid="uid://kmxj3n8p2cjr" path="res://assets/ui/panels/affection_bar/affection_bar_marriage.png" id="5_latk2"]
-[ext_resource type="Texture2D" uid="uid://ddgbg8x5gvs5e" path="res://assets/ui/panels/affection_bar/affection_bar.png" id="6_3tmxm"]
+[ext_resource type="Texture2D" uid="uid://dnrv3cmcvfwux" path="res://assets/ui/panels/affection_bar/affection_bar_seperator_ninerect.png" id="7_altxn"]
+[ext_resource type="Texture2D" uid="uid://dliw2ranfsodq" path="res://assets/ui/panels/affection_bar/affection_bar_base_ninerect.png" id="7_ylt25"]
 
 [sub_resource type="StyleBox" id="StyleBox_ew2n2"]
 resource_local_to_scene = false
@@ -31,7 +31,7 @@ AxisStretchHorizontal = 0
 AxisStretchVertical = 0
 ModulateColor = Color(1, 1, 1, 1)
 
-[sub_resource type="StyleBox" id="StyleBox_xuvmn"]
+[sub_resource type="StyleBox" id="StyleBox_rhkut"]
 resource_local_to_scene = false
 resource_name = ""
 content_margin_left = -1.0
@@ -39,17 +39,17 @@ content_margin_top = -1.0
 content_margin_right = -1.0
 content_margin_bottom = -1.0
 script = ExtResource("2_vjwo0")
-Texture = ExtResource("3_74d2q")
-Scale = 1.0
+Texture = ExtResource("7_altxn")
+Scale = 0.15
 DrawCenter = true
-TextureMarginLeft = 0
-TextureMarginTop = 0
-TextureMarginRight = 0
-TextureMarginBottom = 0
-ExpandMarginLeft = 0.0
-ExpandMarginTop = 0.0
-ExpandMarginRight = 0.0
-ExpandMarginBottom = 0.0
+TextureMarginLeft = 30
+TextureMarginTop = 30
+TextureMarginRight = 30
+TextureMarginBottom = 30
+ExpandMarginLeft = 3.15
+ExpandMarginTop = 7.0
+ExpandMarginRight = 3.15
+ExpandMarginBottom = 7.0
 AxisStretchHorizontal = 0
 AxisStretchVertical = 0
 ModulateColor = Color(1, 1, 1, 1)
@@ -77,7 +77,7 @@ AxisStretchHorizontal = 0
 AxisStretchVertical = 0
 ModulateColor = Color(1, 1, 1, 1)
 
-[sub_resource type="StyleBox" id="StyleBox_p41b4"]
+[sub_resource type="StyleBox" id="StyleBox_3cc77"]
 resource_local_to_scene = false
 resource_name = ""
 content_margin_left = -1.0
@@ -85,26 +85,70 @@ content_margin_top = -1.0
 content_margin_right = -1.0
 content_margin_bottom = -1.0
 script = ExtResource("2_vjwo0")
-Texture = ExtResource("6_3tmxm")
-Scale = 0.126
+Texture = ExtResource("7_altxn")
+Scale = 0.15
 DrawCenter = true
-TextureMarginLeft = 85
-TextureMarginTop = 85
-TextureMarginRight = 85
-TextureMarginBottom = 85
-ExpandMarginLeft = 7.0
+TextureMarginLeft = 30
+TextureMarginTop = 30
+TextureMarginRight = 30
+TextureMarginBottom = 30
+ExpandMarginLeft = 3.15
 ExpandMarginTop = 7.0
-ExpandMarginRight = 7.0
+ExpandMarginRight = 3.15
 ExpandMarginBottom = 7.0
 AxisStretchHorizontal = 0
 AxisStretchVertical = 0
 ModulateColor = Color(1, 1, 1, 1)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xv5n5"]
+[sub_resource type="StyleBox" id="StyleBox_mrr2j"]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = -1.0
+content_margin_top = -1.0
+content_margin_right = -1.0
+content_margin_bottom = -1.0
+script = ExtResource("2_vjwo0")
+Texture = ExtResource("7_altxn")
+Scale = 0.15
+DrawCenter = true
+TextureMarginLeft = 30
+TextureMarginTop = 30
+TextureMarginRight = 30
+TextureMarginBottom = 30
+ExpandMarginLeft = 3.15
+ExpandMarginTop = 7.0
+ExpandMarginRight = 3.15
+ExpandMarginBottom = 7.0
+AxisStretchHorizontal = 0
+AxisStretchVertical = 0
+ModulateColor = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBox" id="StyleBox_5bunv"]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = -1.0
+content_margin_top = -1.0
+content_margin_right = -1.0
+content_margin_bottom = -1.0
+script = ExtResource("2_vjwo0")
+Texture = ExtResource("7_ylt25")
+Scale = 0.15
+DrawCenter = true
+TextureMarginLeft = 75
+TextureMarginTop = 75
+TextureMarginRight = 75
+TextureMarginBottom = 75
+ExpandMarginLeft = 10.5
+ExpandMarginTop = 10.5
+ExpandMarginRight = 10.5
+ExpandMarginBottom = 10.5
+AxisStretchHorizontal = 0
+AxisStretchVertical = 0
+ModulateColor = Color(1, 1, 1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_21cba"]
 bg_color = Color(1, 1, 1, 1)
-expand_margin_top = 3.0
+expand_margin_top = 2.0
 expand_margin_bottom = 2.0
 
 [resource]
@@ -114,11 +158,11 @@ AffectionMeter/icons/hate = ExtResource("1_gt3fw")
 AffectionMeter/icons/love = ExtResource("2_tcigj")
 AffectionMeter/icons/marker = null
 AffectionMeter/styles/hate_area = SubResource("StyleBox_ew2n2")
-AffectionMeter/styles/hate_boundary = SubResource("StyleBox_xuvmn")
+AffectionMeter/styles/hate_boundary = SubResource("StyleBox_rhkut")
 AffectionMeter/styles/love_area = SubResource("StyleBox_j7plb")
-AffectionMeter/styles/love_boundary = null
-AffectionMeter/styles/middle_boundary = null
-AffectionMeter/styles/over = SubResource("StyleBox_p41b4")
-AffectionMeter/styles/under = SubResource("StyleBoxEmpty_xv5n5")
+AffectionMeter/styles/love_boundary = SubResource("StyleBox_3cc77")
+AffectionMeter/styles/middle_boundary = SubResource("StyleBox_mrr2j")
+AffectionMeter/styles/over = null
+AffectionMeter/styles/under = SubResource("StyleBox_5bunv")
 AffectionMeter/styles/value_boundary = SubResource("StyleBoxFlat_21cba")
 VSlider/icons/grabber_disabled = null
