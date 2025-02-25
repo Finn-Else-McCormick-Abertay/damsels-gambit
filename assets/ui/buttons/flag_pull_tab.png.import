@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cqyuo4io822v2"
-path="res://.godot/imported/affection bar v1.png-c1fdae90d75c1126bb7a8c88efcdf33c.ctex"
+uid="uid://dm3f3umnfllxf"
+path="res://.godot/imported/flag_pull_tab.png-61f47fb718965fdacbbc0af9d6cc930b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ui/affection bar v1.png"
-dest_files=["res://.godot/imported/affection bar v1.png-c1fdae90d75c1126bb7a8c88efcdf33c.ctex"]
+source_file="res://assets/ui/buttons/flag_pull_tab.png"
+dest_files=["res://.godot/imported/flag_pull_tab.png-61f47fb718965fdacbbc0af9d6cc930b.ctex"]
 
 [params]
 
