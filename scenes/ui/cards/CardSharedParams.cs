@@ -3,7 +3,7 @@ using Godot;
 
 namespace DamselsGambit;
 
-[GlobalClass, Tool]
+[Tool]
 public partial class CardSharedParams : Resource
 {
 	[Export(PropertyHint.Range, "0,0.5,")]

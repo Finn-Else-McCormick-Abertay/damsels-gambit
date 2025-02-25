@@ -62,7 +62,7 @@ max_value = 90.0
 _data = [Vector2(0, 5.12277), 0.0, 0.0, 0, 0, Vector2(0.502959, 9.04018), 20.9715, 20.9715, 0, 0, Vector2(1, 15.5692), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "SubjectHand", "ModifierHand", "PlayButton", "RoundMeter")]
+[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "TopicHand", "ActionHand", "PlayButton", "RoundMeter")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -72,11 +72,27 @@ grow_vertical = 2
 mouse_filter = 1
 theme = SubResource("Theme_ouffm")
 script = ExtResource("1_4k8rw")
-SubjectDeck = PackedStringArray("topic/parents", "topic/food", "topic/animals", "topic/art", "topic/loyalty", "topic/witchcraft", "topic/religion", "topic/children", "topic/weather", "topic/hobbies")
-ModifierDeck = PackedStringArray("action/secret", "action/secret", "action/want", "action/want", "action/give", "action/give", "action/question", "action/question", "action/question", "action/question")
+TopicDeck = {
+"topic/animals": 1,
+"topic/art": 1,
+"topic/children": 1,
+"topic/food": 1,
+"topic/hobbies": 1,
+"topic/loyalty": 1,
+"topic/parents": 1,
+"topic/religion": 1,
+"topic/weather": 1,
+"topic/witchcraft": 1
+}
+ActionDeck = {
+"action/give": 2,
+"action/question": 4,
+"action/secret": 2,
+"action/want": 2
+}
 AffectionMeter = NodePath("AffectionMeter")
-SubjectHand = NodePath("SubjectHandContainer")
-ModifierHand = NodePath("ModifierHandContainer")
+TopicHand = NodePath("TopicHandContainer")
+ActionHand = NodePath("ActionHandContainer")
 PlayButton = NodePath("PlayHandButton")
 RoundMeter = NodePath("RoundMeter")
 
@@ -103,7 +119,7 @@ grow_vertical = 2
 theme = ExtResource("2_ko4o6")
 script = ExtResource("4_dw2x6")
 
-[node name="SubjectHandContainer" type="Container" parent="."]
+[node name="TopicHandContainer" type="Container" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.461
@@ -128,28 +144,28 @@ CurveOffset = SubResource("Curve_2cmp0")
 CurveRotation = SubResource("Curve_kxdyk")
 metadata/_edit_group_ = true
 
-[node name="CardDisplay" type="Control" parent="SubjectHandContainer"]
+[node name="CardDisplay" type="Control" parent="TopicHandContainer"]
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"topic/animals"
 ShadowOffset = Vector2(-5.75, -7.735)
 
-[node name="CardDisplay5" type="Control" parent="SubjectHandContainer"]
+[node name="CardDisplay5" type="Control" parent="TopicHandContainer"]
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"topic/witchcraft"
 ShadowOffset = Vector2(-5.75, -7.735)
 
-[node name="CardDisplay3" type="Control" parent="SubjectHandContainer"]
+[node name="CardDisplay3" type="Control" parent="TopicHandContainer"]
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"topic/art"
 ShadowOffset = Vector2(-5.75, -7.735)
 
-[node name="ModifierHandContainer" type="Container" parent="."]
+[node name="ActionHandContainer" type="Container" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.539
@@ -174,21 +190,21 @@ CurveOffset = SubResource("Curve_5nabb")
 CurveRotation = SubResource("Curve_mupma")
 metadata/_edit_group_ = true
 
-[node name="CardDisplay" type="Control" parent="ModifierHandContainer"]
+[node name="CardDisplay" type="Control" parent="ActionHandContainer"]
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"action/question"
 ShadowOffset = Vector2(-8.12, 3.49)
 
-[node name="CardDisplay5" type="Control" parent="ModifierHandContainer"]
+[node name="CardDisplay5" type="Control" parent="ActionHandContainer"]
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"action/secret"
 ShadowOffset = Vector2(-8.12, 3.49)
 
-[node name="CardDisplay3" type="Control" parent="ModifierHandContainer"]
+[node name="CardDisplay3" type="Control" parent="ActionHandContainer"]
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")

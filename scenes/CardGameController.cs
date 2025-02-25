@@ -14,17 +14,17 @@ public partial class CardGameController : Control
 	public readonly int MaxRound = 8;
 	private int Round { get; set { field = value; if (RoundMeter is not null) { RoundMeter.CurrentRound = Round; } } }
 
-	[Export] public string[] SubjectDeck { get; set; } = [];
-	[Export] public string[] ModifierDeck { get; set; } = [];
+	[Export] public Godot.Collections.Dictionary<string, int> TopicDeck { get; set; }
+	[Export] public Godot.Collections.Dictionary<string, int> ActionDeck { get; set; }
 
-	private List<string> _subjectDeckWorking, _modifierDeckWorking;
+	private List<string> _topicDeckWorking, _actionDeckWorking;
 
-	public ReadOnlyCollection<string> RemainingSubjectDeck => _subjectDeckWorking.AsReadOnly();
-	public ReadOnlyCollection<string> RemainingModifierDeck => _modifierDeckWorking.AsReadOnly();
+	public ReadOnlyCollection<string> RemainingTopicDeck => _topicDeckWorking.AsReadOnly();
+	public ReadOnlyCollection<string> RemainingActionDeck => _actionDeckWorking.AsReadOnly();
 
 	[Export] AffectionMeter AffectionMeter { get; set; }
-	[Export] HandContainer SubjectHand { get; set; }
-	[Export] HandContainer ModifierHand { get; set; }
+	[Export] HandContainer TopicHand { get; set; }
+	[Export] HandContainer ActionHand { get; set; }
 	[Export] Button PlayButton { get; set; }
 	[Export] RoundMeter RoundMeter { get; set; }
 
@@ -41,24 +41,27 @@ public partial class CardGameController : Control
 	public override void _Ready() {
 		AffectionMeter.LovePercent = (Math.Abs(_scoreMax) - Math.Abs(_loveThreshold)) / (float)(Math.Abs(_scoreMax) + Math.Abs(_scoreMin));
 		AffectionMeter.HatePercent = (Math.Abs(_scoreMin) - Math.Abs(_hateThreshold)) / (float)(Math.Abs(_scoreMax) + Math.Abs(_scoreMin));
+		RoundMeter.NumRounds = MaxRound;
 
 		PlayButton?.TryConnect(Button.SignalName.Pressed, new Callable(this, MethodName.PlayHand));
 		var suitor = DialogueManager.GetCharacterDisplay("suitor");
 		if (suitor is not null) { suitor.SpriteName = "neutral"; }
 
-		foreach (var child in SubjectHand.GetChildren()) { SubjectHand.RemoveChild(child); child.QueueFree(); }
-		foreach (var child in ModifierHand.GetChildren()) { ModifierHand.RemoveChild(child); child.QueueFree(); }
+		foreach (var child in TopicHand.GetChildren()) { TopicHand.RemoveChild(child); child.QueueFree(); }
+		foreach (var child in ActionHand.GetChildren()) { ActionHand.RemoveChild(child); child.QueueFree(); }
 
-		_subjectDeckWorking = SubjectDeck.Select(x => x).ToList();
-		_modifierDeckWorking = ModifierDeck.Select(x => x).ToList();
+		List<string> CreateWorkingDeck(Godot.Collections.Dictionary<string, int> deck) {
+			List<string> working = [];
+			foreach (var (card, count) in TopicDeck) { for (int i = 0; i < count; ++i) { working.Add(card); } }
+			return working;
+		}
 
-		// Shuffle
-		_subjectDeckWorking = _subjectDeckWorking.OrderBy(x => Random.Shared.Next()).ToList();
-		_modifierDeckWorking = _modifierDeckWorking.OrderBy(x => Random.Shared.Next()).ToList();
+		// Create and shuffle deck
+		_topicDeckWorking = CreateWorkingDeck(TopicDeck).OrderBy(x => Random.Shared.Next()).ToList();
+		_actionDeckWorking = CreateWorkingDeck(ActionDeck).OrderBy(x => Random.Shared.Next()).ToList();
 
 		Hide();
 		Round = 1;
-		RoundMeter.NumRounds = MaxRound;
 		
 		void onTutorialComplete() {
 			DialogueManager.Runner.TryDisconnect(DialogueRunner.SignalName.onDialogueComplete, onTutorialComplete);
@@ -72,17 +75,17 @@ public partial class CardGameController : Control
 	}
 
 	public override void _Process(double delta) {
-		PlayButton.Disabled = SubjectHand.GetSelected().Count() != 1 || ModifierHand.GetSelected().Count() != 1;
+		PlayButton.Disabled = TopicHand.GetSelected().Count() != 1 || ActionHand.GetSelected().Count() != 1;
 	}
 
 	private void PlayHand() {
-		var selectedSubject = SubjectHand.GetSelected().First();
-		var selectedModifier = ModifierHand.GetSelected().First();
+		var selectedSubject = TopicHand.GetSelected().First();
+		var selectedModifier = ActionHand.GetSelected().First();
 
 		var cardId = $"{selectedModifier.CardId}+{selectedSubject.CardId}";
 
-		SubjectHand.RemoveChild(selectedSubject); selectedSubject.QueueFree();
-		ModifierHand.RemoveChild(selectedModifier); selectedModifier.QueueFree();
+		TopicHand.RemoveChild(selectedSubject); selectedSubject.QueueFree();
+		ActionHand.RemoveChild(selectedModifier); selectedModifier.QueueFree();
 		PlayButton.Hide();
 
 		DialogueManager.Run(cardId);
@@ -99,8 +102,8 @@ public partial class CardGameController : Control
 
 	private void OnGameEnd() {
 		RoundMeter.Hide();
-		SubjectHand.Hide();
-		ModifierHand.Hide();
+		TopicHand.Hide();
+		ActionHand.Hide();
 		PlayButton.Hide();
 		DialogueManager.Runner.TryDisconnect(DialogueRunner.SignalName.onDialogueComplete, new Callable(this, MethodName.OnDialogueComplete));
 		if (Score >= _loveThreshold) { DialogueManager.Run("love_ending", true); }
@@ -134,7 +137,7 @@ public partial class CardGameController : Control
 				});
 			}
 		}
-		InternalDeal(SubjectHand, _subjectDeckWorking, new Vector2(-200f, 100f), -30f);
-		InternalDeal(ModifierHand, _modifierDeckWorking, new Vector2(500f, 100f), 30f);
+		InternalDeal(TopicHand, _topicDeckWorking, new Vector2(-200f, 100f), -30f);
+		InternalDeal(ActionHand, _actionDeckWorking, new Vector2(500f, 100f), 30f);
 	}
 }
