@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CardInfo" load_steps=2 format=3 uid="uid://5258kd4qxkb3"]
+
+[ext_resource type="Script" path="res://scenes/ui/cards/CardInfo.cs" id="1_e75ja"]
+
+[resource]
+script = ExtResource("1_e75ja")
+DisplayName = ""
+Score = "6"

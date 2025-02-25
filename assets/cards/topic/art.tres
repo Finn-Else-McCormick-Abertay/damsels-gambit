@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CardInfo" load_steps=2 format=3 uid="uid://dmfcjk6pgsftb"]
+
+[ext_resource type="Script" path="res://scenes/ui/cards/CardInfo.cs" id="1_iaioh"]
+
+[resource]
+script = ExtResource("1_iaioh")
+DisplayName = ""
+Score = "2"
