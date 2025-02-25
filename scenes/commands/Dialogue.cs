@@ -25,6 +25,8 @@ public class Dialogue : Console.Command
 
     [Verb("run")]
     class RunOptions {
+        [Value(0, HelpText = "Dialogue node to trigger", MetaName = "Node")]
+        public string Node { get; set; }
     }
 
     public override void Parse(Parser parser, IEnumerable<string> args)
@@ -45,7 +47,7 @@ public class Dialogue : Console.Command
             if (options.Characters) Console.Info(string.Join(", ", DialogueManager.GetCharacterNames()), false);
         });
         result.WithParsed<RunOptions>(options => {
-            
+            DialogueManager.Run(options.Node, true);
         });
 
         result.WithNotParsed(err => {
