@@ -149,19 +149,19 @@ metadata/_edit_group_ = true
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
-CardId = &""
+CardId = &"action/question"
 
 [node name="CardDisplay6" type="Control" parent="LeftHandContainer"]
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
-CardId = &""
+CardId = &"action/secret"
 
 [node name="CardDisplay4" type="Control" parent="LeftHandContainer"]
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
-CardId = &""
+CardId = &"action/want"
 
 [node name="RightHandContainer" type="Container" parent="."]
 layout_mode = 1
@@ -192,19 +192,19 @@ metadata/_edit_group_ = true
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
-CardId = &""
+CardId = &"topic/animals"
 
 [node name="CardDisplay5" type="Control" parent="RightHandContainer"]
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
-CardId = &""
+CardId = &"topic/witchcraft"
 
 [node name="CardDisplay3" type="Control" parent="RightHandContainer"]
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
-CardId = &""
+CardId = &"topic/art"
 
 [node name="PlayHandButton" type="Button" parent="."]
 layout_mode = 1
