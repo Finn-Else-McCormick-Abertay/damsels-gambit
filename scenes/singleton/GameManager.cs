@@ -28,6 +28,10 @@ public sealed partial class GameManager : Node
     public override void _EnterTree() {
         Instance = this;
         GetTree().Root.Ready += OnTreeReady;
+
+        GetTree().Connect(SceneTree.SignalName.NodeAdded, Callable.From(
+            (Node node) => { if (node is PopupMenu popup) { popup.TransparentBg = true; } }
+        ));
     }
     public override void _Ready() {
         AddChild(_cardGameCanvasLayer); _cardGameCanvasLayer.Owner = this;

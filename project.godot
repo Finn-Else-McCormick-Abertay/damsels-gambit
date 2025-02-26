@@ -48,6 +48,10 @@ folder_colors={
 "res://util/": "blue"
 }
 
+[gui]
+
+theme/custom="res://assets/ui/default_theme.tres"
+
 [importer_defaults]
 
 font_data_dynamic={

@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=13 format=3 uid="uid://bf1esp424fk84"]
+[gd_resource type="Theme" load_steps=17 format=3 uid="uid://bf1esp424fk84"]
 
 [ext_resource type="Texture2D" uid="uid://bldlvyy7r2k20" path="res://assets/ui/buttons/button_disabled.png" id="1_cw5gu"]
 [ext_resource type="Script" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="2_0sphh"]
@@ -7,26 +7,27 @@
 [ext_resource type="Texture2D" uid="uid://d4epgui5btlvd" path="res://assets/ui/buttons/button_normal.png" id="4_xnbey"]
 [ext_resource type="Texture2D" uid="uid://cpu0tegqhpu8o" path="res://assets/ui/buttons/button_pressed.png" id="5_xefd2"]
 [ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_ui_dynamic_font.tres" id="6_gfc0t"]
+[ext_resource type="FontVariation" uid="uid://66hx5icc5cmq" path="res://assets/fonts/header_dynamic_font.tres" id="7_1vjrx"]
 
 [sub_resource type="StyleBox" id="StyleBox_l55ek"]
 resource_local_to_scene = false
 resource_name = ""
-content_margin_left = -1.0
-content_margin_top = -1.0
-content_margin_right = -1.0
-content_margin_bottom = -1.0
+content_margin_left = 24.0
+content_margin_top = 28.0
+content_margin_right = 24.0
+content_margin_bottom = 28.0
 script = ExtResource("2_0sphh")
 Texture = ExtResource("1_cw5gu")
-Scale = 0.11
+Scale = 0.06
 DrawCenter = true
 TextureMarginLeft = 700
 TextureMarginTop = 670
 TextureMarginRight = 700
 TextureMarginBottom = 670
-ExpandMarginLeft = 27.845
-ExpandMarginTop = 25.895
-ExpandMarginRight = 31.63
-ExpandMarginBottom = 25.12
+ExpandMarginLeft = 0.0
+ExpandMarginTop = 0.0
+ExpandMarginRight = 0.0
+ExpandMarginBottom = 0.0
 AxisStretchHorizontal = 0
 AxisStretchVertical = 0
 ModulateColor = Color(1, 1, 1, 1)
@@ -34,18 +35,18 @@ ModulateColor = Color(1, 1, 1, 1)
 [sub_resource type="StyleBox" id="StyleBox_d8kdv"]
 resource_local_to_scene = false
 resource_name = ""
-content_margin_left = -1.0
-content_margin_top = -1.0
-content_margin_right = -1.0
-content_margin_bottom = -1.0
+content_margin_left = 24.0
+content_margin_top = 28.0
+content_margin_right = 24.0
+content_margin_bottom = 28.0
 script = ExtResource("2_0sphh")
 Texture = ExtResource("3_htmxt")
-Scale = 1.0
-DrawCenter = true
-TextureMarginLeft = 0
-TextureMarginTop = 0
-TextureMarginRight = 0
-TextureMarginBottom = 0
+Scale = 0.06
+DrawCenter = false
+TextureMarginLeft = 750
+TextureMarginTop = 670
+TextureMarginRight = 750
+TextureMarginBottom = 670
 ExpandMarginLeft = 0.0
 ExpandMarginTop = 0.0
 ExpandMarginRight = 0.0
@@ -57,22 +58,22 @@ ModulateColor = Color(1, 1, 1, 1)
 [sub_resource type="StyleBox" id="StyleBox_juxdi"]
 resource_local_to_scene = false
 resource_name = ""
-content_margin_left = -1.0
-content_margin_top = -1.0
-content_margin_right = -1.0
-content_margin_bottom = -1.0
+content_margin_left = 24.0
+content_margin_top = 28.0
+content_margin_right = 24.0
+content_margin_bottom = 28.0
 script = ExtResource("2_0sphh")
 Texture = ExtResource("3_h1lax")
-Scale = 0.11
+Scale = 0.06
 DrawCenter = true
 TextureMarginLeft = 700
 TextureMarginTop = 670
 TextureMarginRight = 700
 TextureMarginBottom = 670
-ExpandMarginLeft = 27.845
-ExpandMarginTop = 25.895
-ExpandMarginRight = 31.63
-ExpandMarginBottom = 25.12
+ExpandMarginLeft = 0.0
+ExpandMarginTop = 0.0
+ExpandMarginRight = 0.0
+ExpandMarginBottom = 0.0
 AxisStretchHorizontal = 0
 AxisStretchVertical = 0
 ModulateColor = Color(1, 1, 1, 1)
@@ -80,22 +81,22 @@ ModulateColor = Color(1, 1, 1, 1)
 [sub_resource type="StyleBox" id="StyleBox_ebw1w"]
 resource_local_to_scene = false
 resource_name = ""
-content_margin_left = -1.0
-content_margin_top = -1.0
-content_margin_right = -1.0
-content_margin_bottom = -1.0
+content_margin_left = 24.0
+content_margin_top = 28.0
+content_margin_right = 24.0
+content_margin_bottom = 28.0
 script = ExtResource("2_0sphh")
 Texture = ExtResource("4_xnbey")
-Scale = 0.11
+Scale = 0.06
 DrawCenter = true
 TextureMarginLeft = 700
 TextureMarginTop = 670
 TextureMarginRight = 700
 TextureMarginBottom = 670
-ExpandMarginLeft = 27.845
-ExpandMarginTop = 25.895
-ExpandMarginRight = 31.63
-ExpandMarginBottom = 25.12
+ExpandMarginLeft = 0.0
+ExpandMarginTop = 0.0
+ExpandMarginRight = 0.0
+ExpandMarginBottom = 0.0
 AxisStretchHorizontal = 0
 AxisStretchVertical = 0
 ModulateColor = Color(1, 1, 1, 1)
@@ -103,25 +104,53 @@ ModulateColor = Color(1, 1, 1, 1)
 [sub_resource type="StyleBox" id="StyleBox_5ew4r"]
 resource_local_to_scene = false
 resource_name = ""
-content_margin_left = -1.0
-content_margin_top = -1.0
-content_margin_right = -1.0
-content_margin_bottom = -1.0
+content_margin_left = 24.0
+content_margin_top = 28.0
+content_margin_right = 24.0
+content_margin_bottom = 28.0
 script = ExtResource("2_0sphh")
 Texture = ExtResource("5_xefd2")
-Scale = 0.11
+Scale = 0.06
 DrawCenter = true
 TextureMarginLeft = 700
 TextureMarginTop = 670
 TextureMarginRight = 700
 TextureMarginBottom = 670
-ExpandMarginLeft = 27.845
-ExpandMarginTop = 25.895
-ExpandMarginRight = 31.63
-ExpandMarginBottom = 25.12
+ExpandMarginLeft = 0.0
+ExpandMarginTop = 0.0
+ExpandMarginRight = 0.0
+ExpandMarginBottom = 0.0
 AxisStretchHorizontal = 0
 AxisStretchVertical = 0
 ModulateColor = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_81gfx"]
+bg_color = Color(0.968627, 0.670588, 0.717647, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.945098, 0.517647, 0.596078, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4uxkm"]
+bg_color = Color(0.552941, 0.207843, 0.298039, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.411765, 0.117647, 0.2, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_rd3vs"]
+color = Color(0.411765, 0.117647, 0.2, 1)
+thickness = 2
 
 [resource]
 default_font = ExtResource("6_gfc0t")
@@ -148,3 +177,15 @@ Button/styles/focus = SubResource("StyleBox_d8kdv")
 Button/styles/hover = SubResource("StyleBox_juxdi")
 Button/styles/normal = SubResource("StyleBox_ebw1w")
 Button/styles/pressed = SubResource("StyleBox_5ew4r")
+HeaderLarge/base_type = &"Label"
+HeaderLarge/colors/font_color = Color(0.411765, 0.117647, 0.2, 1)
+HeaderLarge/font_sizes/font_size = 40
+HeaderLarge/fonts/font = ExtResource("7_1vjrx")
+HeaderMedium/base_type = &"Label"
+HeaderMedium/colors/font_color = Color(0.411765, 0.117647, 0.2, 1)
+HeaderMedium/font_sizes/font_size = 30
+PopupMenu/font_sizes/font_size = 18
+PopupMenu/fonts/font = ExtResource("6_gfc0t")
+PopupMenu/styles/hover = SubResource("StyleBoxFlat_81gfx")
+PopupMenu/styles/panel = SubResource("StyleBoxFlat_4uxkm")
+PopupMenu/styles/separator = SubResource("StyleBoxLine_rd3vs")

@@ -11,7 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://dxytanx1fosx4" path="res://assets/ui/buttons/play_blue.png" id="7_pfbq2"]
 [ext_resource type="Texture2D" uid="uid://ck4yh7nnlftlr" path="res://assets/ui/buttons/play_blue_pressed.png" id="8_rvobj"]
 
-[node name="Main_menu" type="Control"]
+[node name="MainMenu" type="Control" node_paths=PackedStringArray("start_button", "settings_button", "exit_button", "button_root")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,8 +19,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_v8cfc")
+start_button = NodePath("HBoxContainer/Start")
+settings_button = NodePath("HBoxContainer/Settings")
+exit_button = NodePath("HBoxContainer/Exit")
+button_root = NodePath("HBoxContainer")
+settings_menu_scene = ExtResource("6_f1uj7")
 
-[node name="NinePatchRect" type="NinePatchRect" parent="."]
+[node name="Background" type="NinePatchRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -33,64 +38,53 @@ patch_margin_top = 74
 patch_margin_right = 77
 patch_margin_bottom = 60
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+clip_contents = true
 layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.698
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = 85.0
-offset_top = -148.0
-offset_right = 3879.0
-offset_bottom = 519.0
+offset_left = -471.5
+offset_top = 30.696
+offset_right = 471.5
+offset_bottom = -48.0
 grow_horizontal = 2
 grow_vertical = 0
-scale = Vector2(0.2, 0.2)
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_top = 12
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 12
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
-clip_contents = true
-layout_direction = 3
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 8
 size_flags_stretch_ratio = 20.0
 alignment = 1
+metadata/_edit_group_ = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
-clip_contents = true
+[node name="Start" type="TextureButton" parent="HBoxContainer"]
 layout_mode = 2
-size_flags_stretch_ratio = 20.0
-alignment = 1
-
-[node name="exit_button" type="TextureButton" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-texture_normal = ExtResource("3_t0cfi")
-texture_pressed = ExtResource("4_wup3t")
-texture_hover = ExtResource("4_wup3t")
-texture_focused = ExtResource("5_8mdsm")
-metadata/_edit_use_anchors_ = true
-
-[node name="settings_button" type="TextureButton" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-texture_normal = ExtResource("5_vu7x7")
-texture_pressed = ExtResource("6_p1i6k")
-texture_hover = ExtResource("6_p1i6k")
-texture_focused = ExtResource("5_8mdsm")
-metadata/_edit_use_anchors_ = true
-
-[node name="start_button" type="TextureButton" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
+size_flags_horizontal = 3
 texture_normal = ExtResource("7_pfbq2")
 texture_pressed = ExtResource("8_rvobj")
 texture_hover = ExtResource("8_rvobj")
 texture_focused = ExtResource("5_8mdsm")
+ignore_texture_size = true
+stretch_mode = 4
 metadata/_edit_use_anchors_ = true
 
-[node name="SettingsMenuAcessibility" parent="." instance=ExtResource("6_f1uj7")]
-visible = false
+[node name="Settings" type="TextureButton" parent="HBoxContainer"]
 layout_mode = 2
-anchors_preset = 0
+size_flags_horizontal = 3
+texture_normal = ExtResource("5_vu7x7")
+texture_pressed = ExtResource("6_p1i6k")
+texture_hover = ExtResource("6_p1i6k")
+texture_focused = ExtResource("5_8mdsm")
+ignore_texture_size = true
+stretch_mode = 5
+metadata/_edit_use_anchors_ = true
+
+[node name="Exit" type="TextureButton" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture_normal = ExtResource("3_t0cfi")
+texture_pressed = ExtResource("4_wup3t")
+texture_hover = ExtResource("4_wup3t")
+texture_focused = ExtResource("5_8mdsm")
+ignore_texture_size = true
+stretch_mode = 4
+metadata/_edit_use_anchors_ = true

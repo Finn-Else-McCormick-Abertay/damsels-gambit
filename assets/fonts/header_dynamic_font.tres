@@ -1,0 +1,7 @@
+[gd_resource type="FontVariation" load_steps=2 format=3 uid="uid://66hx5icc5cmq"]
+
+[ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_ui_dynamic_font.tres" id="1_5xf6w"]
+
+[resource]
+base_font = ExtResource("1_5xf6w")
+variation_embolden = 0.3
