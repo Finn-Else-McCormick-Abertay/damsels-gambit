@@ -1,20 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://dmi01ml60nrj6"]
-
-[ext_resource type="PackedScene" uid="uid://gqmapmoqb22o" path="res://scenes/ui/dialogue/dialogue_system.tscn" id="2_mb4hw"]
+[gd_scene format=3 uid="uid://dmi01ml60nrj6"]
 
 [node name="Main" type="Node"]
-
-[node name="Interface" type="CanvasLayer" parent="."]
-layer = 25
-
-[node name="DialogueSystem" parent="Interface" instance=ExtResource("2_mb4hw")]
-anchors_preset = -1
-anchor_top = 0.466
-offset_left = 51.0
-offset_top = 95.032
-offset_right = -51.0
-offset_bottom = -23.0
-mouse_filter = 2
-
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(576, 324)
+editor_description = "A series of architecture decisions (which I largely stand by) left us with this load-bearing blank empty node. Don't touch it."

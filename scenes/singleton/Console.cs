@@ -105,7 +105,7 @@ public partial class Console : Node
     }
     public static void Error(string msg, bool pushToStdOut = true) {
         PrintRaw($"[color=red]{msg}[/color]\n");
-        if (pushToStdOut) { GD.PushError(msg); }
+        if (pushToStdOut) { GD.PrintErr(msg); }
     }
 
     public static void ParseCommand(string inputString) {

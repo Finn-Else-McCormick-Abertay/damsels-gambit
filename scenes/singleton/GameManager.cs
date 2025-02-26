@@ -3,6 +3,7 @@ using DamselsGambit.Dialogue;
 using DamselsGambit.Util;
 using Godot;
 using Bridge;
+using System.Linq;
 
 namespace DamselsGambit;
 
@@ -11,16 +12,18 @@ public sealed partial class GameManager : Node
 {
     public static GameManager Instance { get; private set; }
 
-    public static CardGameController CardGameController { get; private set; }
     public static Control MainMenu { get; private set; }
     public static PauseMenu PauseMenu { get; private set; }
+    public static Node DialogueInterface { get; private set; }
+    public static CardGameController CardGameController { get; private set; }
 
     private CanvasLayer _cardGameCanvasLayer = new() { Layer = 20, Name = "CardGameLayer" };
     private CanvasLayer _menuCanvasLayer = new() { Layer = 25, Name = "MenuLayer" };
     
-    private PackedScene _cardGameScene = ResourceLoader.Load<PackedScene>("res://scenes/card_game.tscn");
-    private PackedScene _mainMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/ui/menu/main_menu.tscn");
-    private PackedScene _pauseMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/ui/menu/pause_menu.tscn");
+    private static readonly PackedScene _cardGameScene = ResourceLoader.Load<PackedScene>("res://scenes/card_game.tscn");
+    private static readonly PackedScene _dialogueInterfaceScene = ResourceLoader.Load<PackedScene>("res://scenes/dialogue_interface.tscn");
+    private static readonly PackedScene _mainMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/ui/menu/main_menu.tscn");
+    private static readonly PackedScene _pauseMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/ui/menu/pause_menu.tscn");
 
     public override void _EnterTree() {
         Instance = this;
@@ -29,13 +32,31 @@ public sealed partial class GameManager : Node
     public override void _Ready() {
         AddChild(_cardGameCanvasLayer); _cardGameCanvasLayer.Owner = this;
         AddChild(_menuCanvasLayer); _menuCanvasLayer.Owner = this;
-
-        InitialiseMainMenu();
     }
     private void OnTreeReady() {
         GUIDE.Initialise(GetTree().Root.GetNode("GUIDE"));
         GUIDE.Connect(GUIDE.SignalName.InputMappingsChanged, new Callable(this, MethodName.OnInputMappingsChanged));
+
+        OnStartup();
+
         GetTree().Root.Ready -= OnTreeReady;
+    }
+
+    private void OnStartup() {
+        var potentialSceneRoots = GetTree().Root.GetChildren().Where(x => !x.Name.IsAnyOf<StringName>([ "GameManager", "DialogueManager", "GUIDE", "Console" ]));
+        var sceneRoot = potentialSceneRoots.FirstOrDefault();
+
+        MainMenu = GetTree().Root.FindChildWhere<Control>(x => x.SceneFilePath == _mainMenuScene.ResourcePath);
+        PauseMenu = GetTree().Root.FindChildWhere<PauseMenu>(x => x.SceneFilePath == _pauseMenuScene.ResourcePath);
+        DialogueInterface = GetTree().Root.FindChildWhere<DialogueView>(x => x.SceneFilePath == _dialogueInterfaceScene.ResourcePath);
+        CardGameController = GetTree().Root.FindChildWhere<CardGameController>(x => x.SceneFilePath == _cardGameScene.ResourcePath);
+
+        if (DialogueInterface is null) {
+            DialogueInterface = _dialogueInterfaceScene.Instantiate();
+            AddChild(DialogueInterface); DialogueInterface.Owner = this;
+        }
+
+        if (sceneRoot is null || sceneRoot.SceneFilePath.Equals("res://scenes/main.tscn")) { InitialiseMainMenu(); }
     }
 
     public void InitialiseMainMenu(bool force = true) {

@@ -17,7 +17,13 @@ public partial class DialogueManager : Node
     public override void _EnterTree() {
         Instance = this;
         AddChild(_environmentRoot); _environmentRoot.Owner = this;
-        Reset();
+        InitRunner();
+        GetTree().Root.Ready += OnTreeReady;
+    }
+    private void OnTreeReady() {
+        ReloadEnvironments(true);
+        
+        GetTree().Root.Ready -= OnTreeReady;
     }
 
     public void Reset() {
@@ -34,7 +40,7 @@ public partial class DialogueManager : Node
         Runner.Ready += () => { Runner.SetDialogueViews(_dialogueViews); };
     }
 
-    private void ReloadEnvironments() {
+    private void ReloadEnvironments(bool cleanupExisting = false) {
         // Clear any existing environments
         // (animations can change the state of them, so we need to hard reset)
         _environments.Clear();
@@ -42,14 +48,34 @@ public partial class DialogueManager : Node
         foreach (var rawPath in DirAccess.GetFilesAt("res://scenes/environment/")) {
             var file = Path.GetExtension(rawPath) == ".remap" ? Path.GetFileNameWithoutExtension(rawPath) : rawPath;
             if (Path.GetExtension(file) != ".tscn") continue;          
-            var scene = ResourceLoader.Load<PackedScene>($"res://scenes/environment/{file}");
-            if (scene is not null) {
-                var node = scene.Instantiate();
-                _environmentRoot.AddChild(node); node.Owner = _environmentRoot;
 
-                var environmentName = Path.GetFileNameWithoutExtension(file);
-                _environments.Add(environmentName, node);
-                foreach (var item in GetEnvironmentItems(environmentName)) { item?.Set(CanvasItem.PropertyName.Visible, false); }
+            var fullPath = $"res://scenes/environment/{file}";
+            var environmentName = Path.GetFileNameWithoutExtension(file);
+
+            bool shouldLoad = true;
+            if (cleanupExisting) {
+                var instances = GetTree().Root.FindChildrenWhere(x => x.SceneFilePath == fullPath);
+                if (instances.Count > 1) foreach (var extraInstance in instances[1..]) extraInstance.QueueFree();
+
+                var instance = instances.FirstOrDefault();
+                shouldLoad = instance is null;
+                if (instance is not null) {
+                    _environments.Add(environmentName, instance);
+                    Callable.From(() => {
+                        instance.GetParent().RemoveChild(instance);
+                        _environmentRoot.AddChild(instance); instance.Owner = _environmentRoot;
+                    }).CallDeferred();
+                }
+            }
+            if (shouldLoad) {
+                var scene = ResourceLoader.Load<PackedScene>(fullPath);
+                if (scene is not null) {
+                    var node = scene.Instantiate();
+                    _environmentRoot.AddChild(node); node.Owner = _environmentRoot;
+
+                    _environments.Add(environmentName, node);
+                    foreach (var item in GetEnvironmentItems(environmentName)) { item?.Set(CanvasItem.PropertyName.Visible, false); }
+                }
             }
         }
     }
@@ -59,8 +85,18 @@ public partial class DialogueManager : Node
     private readonly Dictionary<string, CharacterDisplay> _characterDisplays = [];
     private readonly HashSet<DialogueView> _dialogueViews = [];
 
-    public static void Register(CharacterDisplay display) => Instance?._characterDisplays?.Add(display.CharacterName, display);
-    public static void Deregister(CharacterDisplay display) => Instance?._characterDisplays?.Remove(display.CharacterName);
+    public static void Register(CharacterDisplay display) {
+        if (Instance is null) return;
+        if (Instance._characterDisplays.TryGetValue(display.CharacterName, out var existing)) {
+            Instance._characterDisplays.Remove(display.CharacterName);
+            Console.Warning($"Duplicate CharacterDisplay for '{display.CharacterName}' registered.");
+        }
+        Instance._characterDisplays.Add(display.CharacterName, display);
+    }
+    public static void Deregister(CharacterDisplay display) {
+        if (Instance is null) return;
+        if (Instance._characterDisplays.TryGetValue(display.CharacterName, out var existing) && existing == display) Instance._characterDisplays.Remove(display.CharacterName);
+    }
 
     public static void Register(DialogueView view) { Instance?._dialogueViews?.Add(view); if (Runner?.IsNodeReady() ?? false) { Runner.dialogueViews.Add(view); } }
     public static void Deregister(DialogueView view) { Instance?._dialogueViews?.Remove(view); if (Runner?.IsNodeReady() ?? false) { Runner.dialogueViews.Remove(view); } }
