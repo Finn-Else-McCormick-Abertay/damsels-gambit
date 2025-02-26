@@ -62,7 +62,7 @@ max_value = 90.0
 _data = [Vector2(0, 5.12277), 0.0, 0.0, 0, 0, Vector2(0.502959, 9.04018), 20.9715, 20.9715, 0, 0, Vector2(1, 15.5692), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "PlayButton", "RoundMeter")]
+[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "TopicHand", "ActionHand", "PlayButton", "RoundMeter")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -72,7 +72,27 @@ grow_vertical = 2
 mouse_filter = 1
 theme = SubResource("Theme_ouffm")
 script = ExtResource("1_4k8rw")
+TopicDeck = {
+"topic/animals": 1,
+"topic/art": 1,
+"topic/children": 1,
+"topic/food": 1,
+"topic/hobbies": 1,
+"topic/loyalty": 1,
+"topic/parents": 1,
+"topic/religion": 1,
+"topic/weather": 1,
+"topic/witchcraft": 1
+}
+ActionDeck = {
+"action/give": 2,
+"action/question": 4,
+"action/secret": 2,
+"action/want": 2
+}
 AffectionMeter = NodePath("AffectionMeter")
+TopicHand = NodePath("RightHandContainer")
+ActionHand = NodePath("LeftHandContainer")
 PlayButton = NodePath("PlayHandButton")
 RoundMeter = NodePath("RoundMeter")
 
