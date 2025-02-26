@@ -6,9 +6,15 @@ using System;
 public partial class EndScreen : Control
 {
 	[Export] public Label MessageLabel { get; set; }
+	[Export] Button RetryButton { get; set; }
 	[Export] Button QuitButton { get; set; }
 
 	public override void _Ready() {
-		QuitButton.TryConnect(Button.SignalName.Pressed, new Callable(GameManager.Instance, GameManager.MethodName.QuitToTitle));
+		RetryButton?.TryConnect(Button.SignalName.Pressed, new Callable(this, MethodName.OnRetry));
+		QuitButton?.TryConnect(Button.SignalName.Pressed, new Callable(this, MethodName.OnQuit));
 	}
+
+	private void OnRetry() { GameManager.Instance.InitialiseCardGame(); }
+
+	private void OnQuit() { GameManager.Instance.InitialiseMainMenu(); }
 }

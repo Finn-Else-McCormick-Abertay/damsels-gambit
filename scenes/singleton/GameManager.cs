@@ -49,7 +49,7 @@ public sealed partial class GameManager : Node
     
     public void InitialiseCardGame(bool force = true) {
         if (CardGameController is not null) { if (!force) return; CardGameController.GetParent().RemoveChild(CardGameController); CardGameController.QueueFree(); CardGameController = null; }
-        if (PauseMenu is not null) { PauseMenu.GetParent().RemoveChild(PauseMenu); PauseMenu.QueueFree(); }
+        if (PauseMenu is not null) { PauseMenu.GetParent().RemoveChild(PauseMenu); PauseMenu.QueueFree(); PauseMenu = null; }
         MainMenu?.QueueFree(); MainMenu = null;
         
         DialogueManager.Instance.Reset();
@@ -60,11 +60,6 @@ public sealed partial class GameManager : Node
         PauseMenu = _pauseMenuScene.Instantiate<PauseMenu>();
         _menuCanvasLayer.AddChild(PauseMenu); PauseMenu.Owner = _menuCanvasLayer;
         PauseMenu.Hide();
-    }
-
-    public void QuitToTitle() {
-        InitialiseCardGame();
-        GetTree().Paused = false;
     }
 
     private bool _keyboardAndMouseContextEnabled = false;

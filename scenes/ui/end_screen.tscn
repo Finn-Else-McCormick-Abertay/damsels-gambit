@@ -11,7 +11,7 @@ gradient = SubResource("Gradient_hjb8g")
 fill_from = Vector2(0.491453, 0)
 repeat = 2
 
-[node name="EndScreen" type="Control" node_paths=PackedStringArray("MessageLabel", "QuitButton")]
+[node name="EndScreen" type="Control" node_paths=PackedStringArray("MessageLabel", "RetryButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -21,7 +21,7 @@ grow_vertical = 2
 theme = ExtResource("1_vmqh1")
 script = ExtResource("2_g0krg")
 MessageLabel = NodePath("Label")
-QuitButton = NodePath("Play Again")
+RetryButton = NodePath("Play Again")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
