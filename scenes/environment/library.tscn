@@ -32,9 +32,10 @@ layer = -1
 follow_viewport_enabled = true
 
 [node name="LibraryBackground" type="Sprite2D" parent="Background"]
-position = Vector2(541, 298)
+position = Vector2(368, 0)
 scale = Vector2(0.668866, 0.668866)
 texture = ExtResource("2_lrhu2")
+offset = Vector2(270.607, 445.53)
 
 [node name="Gradient" type="Sprite2D" parent="Background"]
 modulate = Color(1, 1, 1, 0.780392)
@@ -52,7 +53,7 @@ texture = ExtResource("2_cqnjh")
 follow_viewport_enabled = true
 
 [node name="Suitor" type="Sprite2D" parent="SuitorLayer"]
-position = Vector2(569, 325)
+position = Vector2(576, 328)
 scale = Vector2(0.666757, 0.666757)
 texture = ExtResource("1_jtctn")
 script = ExtResource("2_s5131")
@@ -64,43 +65,43 @@ layer = 2
 follow_viewport_enabled = true
 
 [node name="Table" type="Sprite2D" parent="Foreground"]
-position = Vector2(584, 506)
+position = Vector2(589, 506)
 scale = Vector2(0.639558, 0.639558)
 texture = ExtResource("5_tcu6h")
 offset = Vector2(-16.5457, 105.893)
 
 [node name="Cloth" type="Sprite2D" parent="Foreground"]
-position = Vector2(575, 505)
+position = Vector2(580, 505)
 scale = Vector2(0.658545, 0.658545)
 texture = ExtResource("7_f4vx0")
 offset = Vector2(-22.8421, 97.8948)
 
 [node name="Cutlery" type="Sprite2D" parent="Foreground"]
-position = Vector2(582, 504.851)
+position = Vector2(587, 504.851)
 scale = Vector2(0.647059, 0.647059)
 texture = ExtResource("9_cmbj8")
 offset = Vector2(-242.636, 23.1818)
 
 [node name="Plates" type="Sprite2D" parent="Foreground"]
-position = Vector2(582, 504.851)
+position = Vector2(587, 504.851)
 scale = Vector2(0.611386, 0.611386)
 texture = ExtResource("10_qv071")
 offset = Vector2(-17.9919, 26.17)
 
 [node name="CandleHolderThing" type="Sprite2D" parent="Foreground"]
-position = Vector2(582, 504.851)
+position = Vector2(587, 504.851)
 scale = Vector2(0.613807, 0.613807)
 texture = ExtResource("11_vf4ml")
 offset = Vector2(-526.224, -35.8419)
 
 [node name="Candle1" type="Sprite2D" parent="Foreground"]
-position = Vector2(582, 504.851)
+position = Vector2(587, 504.851)
 scale = Vector2(0.5875, 0.5875)
 texture = ExtResource("12_fh3wo")
 offset = Vector2(-495.319, 112.34)
 
 [node name="Candle2" type="Sprite2D" parent="Foreground"]
-position = Vector2(582, 504.851)
+position = Vector2(587, 504.851)
 scale = Vector2(0.554795, 0.554795)
 texture = ExtResource("13_ds0vu")
 offset = Vector2(-627.259, 156.815)
