@@ -4,6 +4,7 @@
 
 [node name="Marriage" type="CanvasLayer"]
 layer = 5
+follow_viewport_enabled = true
 
 [node name="MarriageEnding" type="Sprite2D" parent="."]
 position = Vector2(536, 320)

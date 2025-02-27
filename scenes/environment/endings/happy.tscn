@@ -8,5 +8,5 @@ follow_viewport_enabled = true
 
 [node name="GoodEndingRough" type="Sprite2D" parent="."]
 position = Vector2(574.111, 328.25)
-scale = Vector2(0.305324, 0.305324)
+scale = Vector2(0.31875, 0.31875)
 texture = ExtResource("3_anero")

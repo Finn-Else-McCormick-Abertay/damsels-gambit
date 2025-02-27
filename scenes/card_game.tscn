@@ -149,22 +149,16 @@ metadata/_edit_group_ = true
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
-CardId = &"action/question"
-ShadowOffset = Vector2(-6, 2.465)
 
 [node name="CardDisplay6" type="Control" parent="LeftHandContainer"]
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
-CardId = &"action/secret"
-ShadowOffset = Vector2(-6, 2.465)
 
 [node name="CardDisplay4" type="Control" parent="LeftHandContainer"]
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
-CardId = &"action/want"
-ShadowOffset = Vector2(-6, 2.465)
 
 [node name="RightHandContainer" type="Container" parent="."]
 layout_mode = 1
@@ -195,22 +189,16 @@ metadata/_edit_group_ = true
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
-CardId = &"topic/animals"
-ShadowOffset = Vector2(-6, 2.465)
 
 [node name="CardDisplay5" type="Control" parent="RightHandContainer"]
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
-CardId = &"topic/witchcraft"
-ShadowOffset = Vector2(-6, 2.465)
 
 [node name="CardDisplay3" type="Control" parent="RightHandContainer"]
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
-CardId = &"topic/art"
-ShadowOffset = Vector2(-6, 2.465)
 
 [node name="PlayHandButton" type="Button" parent="."]
 layout_mode = 1

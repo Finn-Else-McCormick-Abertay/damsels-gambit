@@ -4,6 +4,7 @@
 
 [node name="War" type="CanvasLayer"]
 layer = 5
+follow_viewport_enabled = true
 
 [node name="WarEnding" type="Sprite2D" parent="."]
 position = Vector2(536, 320)
