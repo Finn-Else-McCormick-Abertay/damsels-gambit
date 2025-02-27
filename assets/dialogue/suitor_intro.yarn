@@ -3,4 +3,8 @@ title: suitor_intro
 <<scene library>>
 <<fade in suitor 1>>
 <<emote suitor neutral>>
+<<after 1>>
+<<emote suitor sad_2>>
+<<after 3>>
+<<emote suitor neutral>>
 ===

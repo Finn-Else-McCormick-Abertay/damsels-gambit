@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DamselsGambit.Util;
+using Eltons.ReflectionKit;
 using Godot;
 using YarnSpinnerGodot;
 
@@ -140,41 +142,92 @@ public partial class DialogueManager : Node
         if (orErrorDialogue) { Runner.StartDialogue("error"); }
         return false;
     }
-
+    
     // Dialogue commands
-    static class Commands
+
+    private class CommandState
     {
-        [YarnCommand("scene")]
-        public static void Scene(string sceneName) {
-            if (Instance is null) return;
-            foreach (var (name, root) in Instance._environments) {
+        public readonly Queue<Timer> Timers = new();
+    }
+    private readonly CommandState _commandState = new();
+
+    private static void RunCommandDeferred(Action action) {
+        if (Instance is null) return;
+        var actionSignature = action.Method.GetSignature(false);
+        var timer = Instance._commandState.Timers.LastOrDefault();
+        if (timer is not null) {
+            //Console.Info($"Waiting on deferral timer {timer} before running dialogue command: {actionSignature}");
+            var awaiter = timer.ToSignal(timer, Timer.SignalName.Timeout);
+            Task.Factory.StartNew(async () => {
+                await awaiter;
+                //Console.Info($"Running dialogue command: {actionSignature}");
+                Callable.From(action).CallDeferred();
+            });
+        }
+        else action?.Invoke();
+    }
+
+    // Non-blocking wait
+    [YarnCommand("after")]
+    public static void After(float time) {
+        if (Instance is null) return;
+        var timer = new Timer() { OneShot = true, WaitTime = time };
+        Instance.AddChild(timer);
+        Instance._commandState.Timers.Enqueue(timer);
+        timer.Timeout += OnDeferralTimerTimeout;
+        //Console.Info($"Timer {timer} queued. {string.Join(", ", Instance._commandState.Timers.Index().Select(x => $"{x.Index}: {x.Item}"))}");
+        if (Instance._commandState.Timers.Count <= 1) { timer.Start(); /*Console.Info($"Timer {timer} started.");*/  }
+    }
+    private static void OnDeferralTimerTimeout() {
+        if (Instance is null) return;
+        if (Instance._commandState.Timers.TryDequeue(out var oldTimer)) {
+            //Console.Info($"Timer {oldTimer} timeout.");
+            oldTimer.Timeout -= OnDeferralTimerTimeout;
+            Instance.RemoveChild(oldTimer);
+            oldTimer.QueueFree();
+        }
+        if (Instance._commandState.Timers.TryPeek(out var nextTimer)) { nextTimer.Start(); /*Console.Info($"Timer {nextTimer} started.");*/ }
+    }
+
+    [YarnCommand("scene")]
+    public static void Scene(string sceneName) {
+        RunCommandDeferred(() => {
+            foreach (var (name, root) in Instance?._environments) {
                 bool visible = name == sceneName;
                 foreach (var node in root.GetSelfAndChildren()) { if (node is CanvasLayer || node is CanvasItem) { node?.Set(CanvasItem.PropertyName.Visible, visible); } }
             }
-        }
+        });
+    }
 
-        [YarnCommand("show")]
-        public static void Show(string itemName) {
+    [YarnCommand("show")]
+    public static void Show(string itemName) {
+        RunCommandDeferred(() => {
             GetCharacterDisplay(itemName)?.Show();
             foreach (var item in GetEnvironmentItems(itemName)) { item?.Set(CanvasItem.PropertyName.Visible, true); }
-        }
+        });
+    }
 
-        [YarnCommand("hide")]
-        public static void Hide(string itemName) {
+    [YarnCommand("hide")]
+    public static void Hide(string itemName) {
+        RunCommandDeferred(() => {
             GetCharacterDisplay(itemName)?.Hide();
             foreach (var item in GetEnvironmentItems(itemName)) { item?.Set(CanvasItem.PropertyName.Visible, false); }
-        }
+        });
+    }
 
-        [YarnCommand("emote")]
-        public static void Emote(string characterName, string emotionName) {
+    [YarnCommand("emote")]
+    public static void Emote(string characterName, string emotionName) {
+        RunCommandDeferred(() => {
             var display = GetCharacterDisplay(characterName);
             if (display is null) return;
             if (display.Visible == false) { display.Show(); }
             display.SpriteName = emotionName;
-        }
+        });
+    }
 
-        [YarnCommand("move")]
-        public static void Move(string characterName, float x, float y, float time = 0f) {
+    [YarnCommand("move")]
+    public static void Move(string characterName, float x, float y, float time = 0f) {
+        RunCommandDeferred(() => {
             var display = GetCharacterDisplay(characterName);
             if (display is null) return;
             if (time <= 0f) {
@@ -183,10 +236,12 @@ public partial class DialogueManager : Node
             }
             var tween = display.CreateTween();
             tween.TweenProperty(display, Node2D.PropertyName.Position.ToString(), new Vector2(x, y), time).AsRelative();
-        }
+        });
+    }
 
-        [YarnCommand("fade")]
-        public static void Fade(string inOut, string itemName, float time) {
+    [YarnCommand("fade")]
+    public static void Fade(string inOut, string itemName, float time) {
+        RunCommandDeferred(() => {
             List<CanvasItem> affectedItems = [];
             List<CanvasLayer> affectedLayers = [];
 
@@ -228,11 +283,11 @@ public partial class DialogueManager : Node
                     tween.TweenCallback(Callable.From(layer.Hide));
                 }
             }
-        }
+        });
+    }
 
-        [YarnCommand("score")]
-        public static void Score(int val) {
-            GameManager.CardGameController.Score += val;
-        }
+    [YarnCommand("score")]
+    public static void Score(int val) {
+        GameManager.CardGameController.Score += val;
     }
 }

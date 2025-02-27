@@ -87,7 +87,7 @@ public partial class HandContainer : Container, IReloadableToolScript
 
         var position = GUIDE.Actions.SelectAt.ValueAxis2d;
         
-        Console.Info($"Select At { position }");
+        //Console.Info($"Select At { position }");
 
         CardDisplay selectedCard = null;
         foreach (Control child in GetChildren().Cast<Control>()) {
