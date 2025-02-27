@@ -1,12 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://cl108jysyilp"]
+[gd_scene load_steps=7 format=3 uid="uid://cl108jysyilp"]
 
 [ext_resource type="Script" path="res://scenes/ui/menu/settings_menu/settings_menu.gd" id="1_kwkr7"]
 [ext_resource type="Texture2D" uid="uid://2cbl24t405i5" path="res://assets/ui/panels/Paper texture.png" id="1_tfbc3"]
-[ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/default_theme.tres" id="2_k810m"]
-[ext_resource type="FontFile" uid="uid://bhgm14ci7wv3k" path="res://assets/fonts/maturasc/MATURASC.TTF" id="4_qbibt"]
-[ext_resource type="PackedScene" uid="uid://ru0qrqwd6ft" path="res://scenes/ui/menu/settings_menu/settings_tab_container.tscn" id="5_coy5h"]
+[ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/theme/default_theme.tres" id="2_k810m"]
+[ext_resource type="Theme" uid="uid://td8u5lubicg8" path="res://assets/ui/theme/menu_theme.tres" id="5_ww2uk"]
+[ext_resource type="Script" path="res://scenes/ui/menu/settings_menu/window_drop_down_options.gd" id="6_fkvev"]
+[ext_resource type="Script" path="res://scenes/ui/menu/settings_menu/resolution_drop_down_options.gd" id="7_d6ec4"]
 
-[node name="SettingsMenuAcessibility" type="Control"]
+[node name="SettingsMenu" type="Control" node_paths=PackedStringArray("exit_button")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,8 +16,9 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_k810m")
 script = ExtResource("1_kwkr7")
+exit_button = NodePath("ExitButton")
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -26,15 +28,7 @@ grow_vertical = 2
 texture = ExtResource("1_tfbc3")
 expand_mode = 1
 
-[node name="SettingsTabContainer" parent="." instance=ExtResource("5_coy5h")]
-layout_mode = 1
-offset_left = 165.0
-offset_top = 108.0
-offset_right = -165.0
-offset_bottom = -108.0
-size_flags_vertical = 3
-
-[node name="Label" type="Label" parent="."]
+[node name="Title" type="Label" parent="."]
 layout_mode = 2
 anchor_right = 1.0
 anchor_bottom = 0.192
@@ -44,12 +38,121 @@ offset_right = -59.0
 offset_bottom = -43.416
 theme = ExtResource("2_k810m")
 theme_type_variation = &"HeaderLarge"
-theme_override_colors/font_color = Color(0.231137, 0.113776, 0.0083441, 1)
-theme_override_fonts/font = ExtResource("4_qbibt")
-theme_override_font_sizes/font_size = 32
 text = "Settings"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="TabContainer" type="TabContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 165.0
+offset_top = 108.0
+offset_right = -165.0
+offset_bottom = -120.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+theme = ExtResource("5_ww2uk")
+current_tab = 1
+
+[node name="Audio" type="Control" parent="TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Audio"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 64
+
+[node name="TK" type="Label" parent="TabContainer/Audio/VBoxContainer"]
+layout_mode = 2
+text = "Options Unfinished"
+
+[node name="Graphics" type="Control" parent="TabContainer"]
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Graphics"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+
+[node name="WindowDropdown" type="HBoxContainer" parent="TabContainer/Graphics/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("6_fkvev")
+
+[node name="Label" type="Label" parent="TabContainer/Graphics/VBoxContainer/WindowDropdown"]
+custom_minimum_size = Vector2(264, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HeaderMedium"
+text = "Window Mode"
+
+[node name="OptionButton" type="OptionButton" parent="TabContainer/Graphics/VBoxContainer/WindowDropdown"]
+custom_minimum_size = Vector2(256, 64)
+layout_mode = 2
+
+[node name="ResolutionDropdown" type="HBoxContainer" parent="TabContainer/Graphics/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("7_d6ec4")
+
+[node name="Label" type="Label" parent="TabContainer/Graphics/VBoxContainer/ResolutionDropdown"]
+custom_minimum_size = Vector2(264, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HeaderMedium"
+text = "Resolution"
+
+[node name="OptionButton" type="OptionButton" parent="TabContainer/Graphics/VBoxContainer/ResolutionDropdown"]
+custom_minimum_size = Vector2(256, 64)
+layout_mode = 2
+
+[node name="Controls" type="Control" parent="TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Controls"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 64
+
+[node name="TK" type="Label" parent="TabContainer/Controls/VBoxContainer"]
+layout_mode = 2
+text = "Options Unfinished"
+
+[node name="Accessibility" type="Control" parent="TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Accessibility"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 64
+
+[node name="TK" type="Label" parent="TabContainer/Accessibility/VBoxContainer"]
+layout_mode = 2
+text = "Options Unfinished"
 
 [node name="ExitButton" type="Button" parent="."]
 custom_minimum_size = Vector2(120, 20)
@@ -57,10 +160,10 @@ layout_mode = 2
 anchor_top = 0.833
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 856.0
-offset_top = 53.2159
-offset_right = -176.0
-offset_bottom = -30.0
+offset_left = 855.0
+offset_top = 3.216
+offset_right = -177.0
+offset_bottom = -24.0
 size_flags_horizontal = 8
 size_flags_vertical = 4
 theme = ExtResource("2_k810m")

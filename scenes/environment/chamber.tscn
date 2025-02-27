@@ -77,9 +77,10 @@ follow_viewport_enabled = true
 
 [node name="LadyInWaiting" type="Sprite2D" parent="CharacterLayer"]
 clip_children = 2
-position = Vector2(597, 382)
+position = Vector2(676, 152)
 scale = Vector2(0.59188, 0.59188)
 texture = ExtResource("2_4vov1")
+offset = Vector2(-113.199, 388.592)
 script = ExtResource("3_fascp")
 CharacterName = &"lady_in_waiting"
 SpriteName = "neutral"
@@ -104,9 +105,10 @@ SpriteName = "neutral"
 [node name="LightGradient2" type="Sprite2D" parent="CharacterLayer/Queen"]
 modulate = Color(1, 1, 1, 0.682353)
 material = SubResource("CanvasItemMaterial_u4yao")
-position = Vector2(-9.38077, -18.7616)
+position = Vector2(-1144.46, -168.855)
 scale = Vector2(27.358, 32.418)
 texture = SubResource("GradientTexture2D_bbqmg")
+offset = Vector2(41.4898, 4.62993)
 
 [node name="CanvasModulate" type="CanvasModulate" parent="CharacterLayer"]
 color = Color(0.84983, 0.692038, 0.790925, 1)

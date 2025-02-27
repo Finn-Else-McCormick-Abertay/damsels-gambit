@@ -37,7 +37,7 @@ project/assembly_name="Damsels Gambit"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/AnchorsOnlyPreset/plugin.cfg", "res://addons/YarnSpinner-Godot/plugin.cfg", "res://addons/guide/plugin.cfg")
+enabled=PackedStringArray("res://addons/AnchorsOnlyPreset/plugin.cfg", "res://addons/guide/plugin.cfg")
 
 [file_customization]
 
@@ -47,6 +47,10 @@ folder_colors={
 "res://scenes/": "pink",
 "res://util/": "blue"
 }
+
+[gui]
+
+theme/custom="res://assets/ui/theme/default_theme.tres"
 
 [importer_defaults]
 

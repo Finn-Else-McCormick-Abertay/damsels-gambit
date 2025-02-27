@@ -1,6 +1,6 @@
 title: action/give+topic/parents
 ---
-Princess Penelope: I got this... #withnext
+Princess Penelope: I got this... #withnext #theme=princess
 	-> Elegant fox pelt slippers for your mother.
 		<<score 3>>
 	-> Occult dreamwatcher for your father, so he may see visions in his dreams.
@@ -9,7 +9,7 @@ Princess Penelope: I got this... #withnext
 
 title: action/give+topic/food
 ---
-Princess Penelope: Here, I got this for you... #withnext
+Princess Penelope: Here, I got this for you... #withnext #theme=princess
 	-> Wolf-shaped jelly.
 		<<score -3>>
 	-> Tear pasta..? (Mmm a delicious mix of cheese, pasta, and salt from tears).
@@ -18,7 +18,7 @@ Princess Penelope: Here, I got this for you... #withnext
 
 title: action/give+topic/animals
 ---
-Princess Penelope: Here you are... #withnext
+Princess Penelope: Here you are... #withnext #theme=princess
 	-> A wolf pelt!
 		<<score 3>>
 	-> A leopard pelt.
@@ -27,7 +27,7 @@ Princess Penelope: Here you are... #withnext
 
 title: action/give+topic/art
 ---
-Princess Penelope: I got this for you.. #withnext
+Princess Penelope: I got this for you.. #withnext #theme=princess
 	-> It's a painting of the serene magical lake of Rosewood. Painted by our most renowned painter!
 		<<score 3>>
 	-> It's a broken vase, but I promise you it was expensive when it was intact!
@@ -36,7 +36,7 @@ Princess Penelope: I got this for you.. #withnext
 
 title: action/give+topic/loyalty
 ---
-Princess Penelope: I got this for you... #withnext
+Princess Penelope: I got this for you... #withnext #theme=princess
 	-> It's a necklace that lights up when you're close to mine!
 		<<score 3>>
 	-> It's an... upside-down pineapple ornament...
@@ -45,7 +45,7 @@ Princess Penelope: I got this for you... #withnext
 
 title: action/give+topic/witchcraft
 ---
-Princess Penelope: Here, I got you a... #withnext
+Princess Penelope: Here, I got you a... #withnext #theme=princess
 	-> Newly made pitchfork crafted from black iron for your next witch hunt!
 		<<score 3>>
 	-> Sacrificial doll...
@@ -54,7 +54,7 @@ Princess Penelope: Here, I got you a... #withnext
 
 title: action/give+topic/religion
 ---
-Princess Penelope: I got this for you... #withnext
+Princess Penelope: I got this for you... #withnext #theme=princess
 	-> It's an idol of our God, it will protect you.
 		<<score 3>>
 	-> It's a broken necklace from the church... might not have the connection to God, but it's still pretty!
@@ -63,7 +63,7 @@ Princess Penelope: I got this for you... #withnext
 
 title: action/give+topic/children
 ---
-Princess Penelope: Here, take... #withnext
+Princess Penelope: Here, take... #withnext #theme=princess
 	-> This 'How to Be a Father for Dummies' book.
 		<<score 3>>
 	-> This 'Top 1000 Reasons to Never Start a Family' wiki.
@@ -72,7 +72,7 @@ Princess Penelope: Here, take... #withnext
 
 title: action/give+topic/weather
 ---
-Princess Penelope: Here you are... #withnext
+Princess Penelope: Here you are... #withnext #theme=princess
 	-> It's a winter coat! Made of our finest leather and fur.
 		<<score 3>>
 	-> It's a pair of sunglasses! (Designer too!)
@@ -81,7 +81,7 @@ Princess Penelope: Here you are... #withnext
 
 title: action/give+topic/hobbies
 ---
-Princess Penelope: *Searches around...* Here it is...! #withnext
+Princess Penelope: *Searches around...* Here it is...! #withnext #theme=princess
 	-> I got you a brand new sword, made from black steel!
 		<<score 3>>
 	-> I got you a bow made of the finest willow wood!

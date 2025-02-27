@@ -3,10 +3,10 @@
 [ext_resource type="Script" path="res://scenes/CardGameController.cs" id="1_4k8rw"]
 [ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_ui_dynamic_font.tres" id="1_b7goe"]
 [ext_resource type="Script" path="res://scenes/ui/cards/CardDisplay.cs" id="2_kdxpq"]
-[ext_resource type="Theme" uid="uid://dhax3sfwm6isl" path="res://assets/ui/affection_meter_theme.tres" id="2_ko4o6"]
+[ext_resource type="Theme" uid="uid://dhax3sfwm6isl" path="res://assets/ui/theme/affection_meter_theme.tres" id="2_ko4o6"]
 [ext_resource type="Script" path="res://scenes/ui/AffectionMeter.cs" id="4_dw2x6"]
 [ext_resource type="Script" path="res://scenes/ui/cards/HandContainer.cs" id="4_xg83y"]
-[ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/default_theme.tres" id="6_7wss3"]
+[ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/theme/default_theme.tres" id="6_7wss3"]
 [ext_resource type="PackedScene" uid="uid://c8warv5k2winh" path="res://scenes/ui/round_meter.tscn" id="8_oypvw"]
 
 [sub_resource type="Theme" id="Theme_ouffm"]
@@ -62,7 +62,7 @@ max_value = 90.0
 _data = [Vector2(0, 5.12277), 0.0, 0.0, 0, 0, Vector2(0.502959, 9.04018), 20.9715, 20.9715, 0, 0, Vector2(1, 15.5692), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "PlayButton", "RoundMeter")]
+[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "TopicHand", "ActionHand", "PlayButton", "RoundMeter")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -72,7 +72,27 @@ grow_vertical = 2
 mouse_filter = 1
 theme = SubResource("Theme_ouffm")
 script = ExtResource("1_4k8rw")
+TopicDeck = {
+"topic/animals": 1,
+"topic/art": 1,
+"topic/children": 1,
+"topic/food": 1,
+"topic/hobbies": 1,
+"topic/loyalty": 1,
+"topic/parents": 1,
+"topic/religion": 1,
+"topic/weather": 1,
+"topic/witchcraft": 1
+}
+ActionDeck = {
+"action/give": 2,
+"action/question": 4,
+"action/secret": 2,
+"action/want": 2
+}
 AffectionMeter = NodePath("AffectionMeter")
+TopicHand = NodePath("RightHandContainer")
+ActionHand = NodePath("LeftHandContainer")
 PlayButton = NodePath("PlayHandButton")
 RoundMeter = NodePath("RoundMeter")
 
@@ -129,16 +149,19 @@ metadata/_edit_group_ = true
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
+CardId = &"action/question"
 
 [node name="CardDisplay6" type="Control" parent="LeftHandContainer"]
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
+CardId = &"action/secret"
 
 [node name="CardDisplay4" type="Control" parent="LeftHandContainer"]
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
+CardId = &"action/want"
 
 [node name="RightHandContainer" type="Container" parent="."]
 layout_mode = 1
@@ -169,16 +192,19 @@ metadata/_edit_group_ = true
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
+CardId = &"topic/animals"
 
 [node name="CardDisplay5" type="Control" parent="RightHandContainer"]
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
+CardId = &"topic/witchcraft"
 
 [node name="CardDisplay3" type="Control" parent="RightHandContainer"]
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
+CardId = &"topic/art"
 
 [node name="PlayHandButton" type="Button" parent="."]
 layout_mode = 1
@@ -199,11 +225,13 @@ text = "Play Hand"
 [node name="RoundMeter" parent="." instance=ExtResource("8_oypvw")]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.271
-anchor_right = 0.734
-anchor_bottom = 0.137
-offset_left = -0.192017
-offset_top = 8.0
-offset_right = -0.568054
-offset_bottom = 0.224007
-CurrentRound = 0
+anchor_left = 0.5
+anchor_top = 0.077
+anchor_right = 0.5
+anchor_bottom = 0.077
+offset_left = -292.0
+offset_top = 0.103996
+offset_right = 293.0
+offset_bottom = 0.103996
+grow_vertical = 1
+CurrentRound = 2

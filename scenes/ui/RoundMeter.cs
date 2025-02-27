@@ -15,8 +15,16 @@ public partial class RoundMeter : Control, IReloadableToolScript
 	[Export] private HBoxContainer Container { get; set; }
 	[Export] private PackedScene NodeScene { get; set; }
 
-	public override void _EnterTree() { Update(); }
-	public override void _ExitTree() { Clear(); }
+	public override void _EnterTree() {
+		Update();
+		ProgressBar?.TryConnect(Control.SignalName.Resized, new Callable(this, MethodName.Update));
+		Container?.TryConnect(Control.SignalName.Resized, new Callable(this, MethodName.Update));
+	}
+	public override void _ExitTree() {
+		Clear();
+		ProgressBar?.TryDisconnect(Control.SignalName.Resized, new Callable(this, MethodName.Update));
+		Container?.TryDisconnect(Control.SignalName.Resized, new Callable(this, MethodName.Update));
+	}
 	public override void _Ready() { Update(); }
 
 	private void Update() {

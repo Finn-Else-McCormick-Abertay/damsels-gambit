@@ -101,6 +101,7 @@ public partial class CardGameController : Control
 	}
 
 	private void OnGameEnd() {
+		AffectionMeter.Hide();
 		RoundMeter.Hide();
 		TopicHand.Hide();
 		ActionHand.Hide();

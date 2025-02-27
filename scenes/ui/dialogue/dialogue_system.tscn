@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://gqmapmoqb22o"]
 
-[ext_resource type="Theme" uid="uid://cj01ghso8eli6" path="res://assets/dialogue/dialogue_theme.tres" id="1_gxacw"]
+[ext_resource type="Theme" uid="uid://cj01ghso8eli6" path="res://assets/ui/theme/dialogue/default.tres" id="1_gxacw"]
 [ext_resource type="Script" path="res://scenes/ui/dialogue/DialogueView.cs" id="5_o0l0u"]
 
 [node name="DialogueSystem" type="Control"]
@@ -14,14 +14,22 @@ theme = ExtResource("1_gxacw")
 
 [node name="DialogueView" type="Node" parent="." node_paths=PackedStringArray("Root", "TitleRoot", "LineRoot", "OptionRoot", "OptionArchetype", "ContinueButton")]
 script = ExtResource("5_o0l0u")
-Root = NodePath("..")
-TitleRoot = NodePath("../TitlePanel")
-LineRoot = NodePath("../VBoxContainer/LinePanel")
-OptionRoot = NodePath("../VBoxContainer/OptionContainer")
-OptionArchetype = NodePath("../VBoxContainer/OptionContainer/OptionArchetype")
-ContinueButton = NodePath("../Continue")
+Root = NodePath("../Root")
+TitleRoot = NodePath("../Root/TitlePanel")
+LineRoot = NodePath("../Root/VBoxContainer/LinePanel")
+OptionRoot = NodePath("../Root/VBoxContainer/OptionContainer")
+OptionArchetype = NodePath("../Root/VBoxContainer/OptionContainer/OptionArchetype")
+ContinueButton = NodePath("../Root/Continue")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="Root" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Root"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.085
@@ -33,75 +41,75 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"DialogueVBoxContainer"
 
-[node name="LinePanel" type="PanelContainer" parent="VBoxContainer"]
+[node name="LinePanel" type="PanelContainer" parent="Root/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_type_variation = &"LinePanel"
 
-[node name="LineLabel" type="RichTextLabel" parent="VBoxContainer/LinePanel"]
+[node name="LineLabel" type="RichTextLabel" parent="Root/VBoxContainer/LinePanel"]
 layout_mode = 2
 text = "Dialogue text"
 
-[node name="OptionContainer" type="VBoxContainer" parent="VBoxContainer"]
+[node name="OptionContainer" type="VBoxContainer" parent="Root/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"OptionContainer"
 
-[node name="OptionArchetype" type="HBoxContainer" parent="VBoxContainer/OptionContainer"]
+[node name="OptionArchetype" type="HBoxContainer" parent="Root/VBoxContainer/OptionContainer"]
 layout_mode = 2
 
-[node name="Control" type="Control" parent="VBoxContainer/OptionContainer/OptionArchetype"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Button" type="Button" parent="VBoxContainer/OptionContainer/OptionArchetype"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 5.0
-theme_type_variation = &"DialogueOptionButton"
-text = "Option Text"
-
-[node name="Control2" type="Control" parent="VBoxContainer/OptionContainer/OptionArchetype"]
+[node name="Control" type="Control" parent="Root/VBoxContainer/OptionContainer/OptionArchetype"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Option2" type="HBoxContainer" parent="VBoxContainer/OptionContainer"]
-layout_mode = 2
-
-[node name="Control" type="Control" parent="VBoxContainer/OptionContainer/Option2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Button" type="Button" parent="VBoxContainer/OptionContainer/Option2"]
+[node name="Button" type="Button" parent="Root/VBoxContainer/OptionContainer/OptionArchetype"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 5.0
 theme_type_variation = &"DialogueOptionButton"
 text = "Option Text"
 
-[node name="Control2" type="Control" parent="VBoxContainer/OptionContainer/Option2"]
+[node name="Control2" type="Control" parent="Root/VBoxContainer/OptionContainer/OptionArchetype"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Option3" type="HBoxContainer" parent="VBoxContainer/OptionContainer"]
+[node name="Option2" type="HBoxContainer" parent="Root/VBoxContainer/OptionContainer"]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="Root/VBoxContainer/OptionContainer/Option2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="Root/VBoxContainer/OptionContainer/Option2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 5.0
+theme_type_variation = &"DialogueOptionButton"
+text = "Option Text"
+
+[node name="Control2" type="Control" parent="Root/VBoxContainer/OptionContainer/Option2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Option3" type="HBoxContainer" parent="Root/VBoxContainer/OptionContainer"]
 visible = false
 layout_mode = 2
 
-[node name="Control" type="Control" parent="VBoxContainer/OptionContainer/Option3"]
+[node name="Control" type="Control" parent="Root/VBoxContainer/OptionContainer/Option3"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Button" type="Button" parent="VBoxContainer/OptionContainer/Option3"]
+[node name="Button" type="Button" parent="Root/VBoxContainer/OptionContainer/Option3"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 5.0
 theme_type_variation = &"DialogueOptionButton"
 text = "Option Text"
 
-[node name="Control2" type="Control" parent="VBoxContainer/OptionContainer/Option3"]
+[node name="Control2" type="Control" parent="Root/VBoxContainer/OptionContainer/Option3"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TitlePanel" type="PanelContainer" parent="."]
+[node name="TitlePanel" type="PanelContainer" parent="Root"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 anchor_top = 0.081
@@ -115,13 +123,13 @@ size_flags_horizontal = 3
 theme_type_variation = &"TitlePanel"
 metadata/_edit_group_ = true
 
-[node name="Label" type="Label" parent="TitlePanel"]
+[node name="Label" type="Label" parent="Root/TitlePanel"]
 layout_mode = 2
 theme_type_variation = &"TitleLabel"
 text = "CharacterName"
 vertical_alignment = 1
 
-[node name="Continue" type="Button" parent="."]
+[node name="Continue" type="Button" parent="Root"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.385

@@ -20,7 +20,7 @@ Lady in Waiting: Choose your cards carefully. You'll need to combine a Subject c
 Lady in Waiting: Mind the Affection Bar - you want to stay neutral. If, at the end of the date, you are in the region marked in red, you will be wed. If in the region marked in black, you may cause a war.
 <<emote lady_in_waiting sad_1>>
 Lady in Waiting: I'd show you how it works myself, but they haven't finished making the tutorial sequence yet.
-Princess Penelope: Finished what?
+Princess Penelope: Finished what? #theme=princess
 <<emote lady_in_waiting neutral>>
 Lady in Waiting: Oh, never you mind all that.
 <<emote lady_in_waiting happy>>

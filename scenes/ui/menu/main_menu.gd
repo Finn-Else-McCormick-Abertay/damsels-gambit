@@ -1,34 +1,41 @@
-class_name MainMenu
 extends Control
 
-@onready var start_button: TextureButton = $MarginContainer/VBoxContainer/HBoxContainer/start_button as TextureButton
-@onready var settings_button: TextureButton = $MarginContainer/VBoxContainer/HBoxContainer/settings_button as TextureButton
-@onready var exit_button: TextureButton = $MarginContainer/VBoxContainer/HBoxContainer/exit_button as TextureButton
-@onready var settings_menu_acessibility: SettingsMenu = $SettingsMenuAcessibility as SettingsMenu 
-@onready var margin_container: MarginContainer = $MarginContainer
-@onready var start_level: = preload("res://scenes/main.tscn") as PackedScene
+@export var start_button: TextureButton
+@export var settings_button: TextureButton
+@export var exit_button: TextureButton
+@export var button_root: Control
+@export var settings_menu_scene: PackedScene
+
+var settings_menu: Control
 
 func _ready():
-	handle_connecting_signals()
+	start_button.button_down.connect(_on_start_pressed)
+	settings_button.button_down.connect(_on_settings_pressed)
+	exit_button.button_down.connect(_on_exit_pressed)
 	start_button.grab_focus()
 
-func on_start_pressed()-> void:
+func _on_start_pressed()-> void:
 	GameManager.InitialiseCardGame(true)
 
-func on_settings_pressed()-> void:
-	margin_container.visible = false
-	settings_menu_acessibility.set_process(true)
-	settings_menu_acessibility.visible = true
+func _on_settings_pressed()-> void:
+	if is_instance_valid(settings_menu):
+		settings_menu.queue_free()
+		settings_menu = null
+	
+	settings_menu = settings_menu_scene.instantiate()
+	add_child(settings_menu)
+	settings_menu.owner = self
+	
+	(settings_menu.get("exit_button") as Button).button_down.connect(_on_exit_settings_menu)
+	
+	button_root.hide()
 
-func on_exit_pressed() -> void:
+func _on_exit_pressed() -> void:
 	get_tree().quit()
 
-func on_exit_settings_menu() -> void:
-	margin_container.visible = true
-	settings_menu_acessibility.visible = false
-
-func handle_connecting_signals() -> void:
-	start_button.button_down.connect(on_start_pressed)
-	settings_button.button_down.connect(on_settings_pressed)
-	exit_button.button_down.connect(on_exit_pressed)
-	settings_menu_acessibility.exit_settings_menu_acessibility.connect(on_exit_settings_menu)
+func _on_exit_settings_menu() -> void:
+	button_root.show()
+	if is_instance_valid(settings_menu):
+		settings_menu.hide()
+		settings_menu.queue_free()
+		settings_menu = null

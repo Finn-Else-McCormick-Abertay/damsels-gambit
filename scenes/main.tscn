@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://dmi01ml60nrj6"]
+<<<<<<< HEAD
+[gd_scene load_steps=3 format=3 uid="uid://dmi01ml60nrj6"]
 
 [ext_resource type="PackedScene" uid="uid://gqmapmoqb22o" path="res://scenes/ui/dialogue/dialogue_system.tscn" id="2_mb4hw"]
+[ext_resource type="Script" path="res://scenes/AudioSystem.cs" id="2_q5n54"]
 
 [node name="Main" type="Node"]
 
@@ -18,3 +20,40 @@ mouse_filter = 2
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(576, 324)
+
+[node name="AudioSystem" type="Node" parent="." node_paths=PackedStringArray("SoundPlayers")]
+script = ExtResource("2_q5n54")
+SoundPlayers = []
+
+[node name="Music_StreamPlayer" type="AudioStreamPlayer" parent="AudioSystem"]
+bus = &"music"
+
+[node name="SFX_StreamPlayer1" type="AudioStreamPlayer" parent="AudioSystem"]
+bus = &"SFX"
+
+[node name="SFX_StreamPlayer2" type="AudioStreamPlayer" parent="AudioSystem"]
+bus = &"SFX"
+
+[node name="SFX_StreamPlayer3" type="AudioStreamPlayer" parent="AudioSystem"]
+bus = &"SFX"
+
+[node name="SFX_StreamPlayer4" type="AudioStreamPlayer" parent="AudioSystem"]
+bus = &"SFX"
+
+[node name="SFX_StreamPlayer5" type="AudioStreamPlayer" parent="AudioSystem"]
+bus = &"SFX"
+
+[node name="SFX_StreamPlayer6" type="AudioStreamPlayer" parent="AudioSystem"]
+bus = &"SFX"
+
+[node name="SFX_StreamPlayer7" type="AudioStreamPlayer" parent="AudioSystem"]
+bus = &"SFX"
+
+[node name="SFX_StreamPlayer8" type="AudioStreamPlayer" parent="AudioSystem"]
+bus = &"SFX"
+=======
+[gd_scene format=3 uid="uid://dmi01ml60nrj6"]
+
+[node name="Main" type="Node"]
+editor_description = "A series of architecture decisions (which I largely stand by) left us with this load-bearing blank empty node. Don't touch it."
+>>>>>>> 4c83fd8556c55a2ac6e701184eab7d7908452aba

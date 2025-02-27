@@ -27,6 +27,7 @@ public partial class PauseMenu : Control
 	}
 
 	private void OnQuit() {
-		GameManager.Instance.QuitToTitle();
+		GetTree().Paused = false;
+		GameManager.Instance.InitialiseMainMenu();
 	}
 }
