@@ -51,7 +51,7 @@ public partial class DialogueManager : Node
         void LoadFilesIn(string folderPath) {
             foreach (var rawPath in DirAccess.GetFilesAt(folderPath)) {
                 var file = Path.GetExtension(rawPath) == ".remap" ? Path.GetFileNameWithoutExtension(rawPath) : rawPath;
-                if (Path.GetExtension(file) != ".tscn") continue;          
+                if (Path.GetExtension(file) != ".tscn") continue;
 
                 var fullPath = $"{folderPath}{file}";
                 var environmentName = $"{folderPath.StripFront(rootFolder)}{Path.GetFileNameWithoutExtension(file)}";

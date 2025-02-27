@@ -1,0 +1,58 @@
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://bb8k068675myl"]
+
+[ext_resource type="Texture2D" uid="uid://dq42cbbhv3yw4" path="res://assets/ui/dialogue/Penelope_Text_Box.png" id="1_nlhad"]
+[ext_resource type="Script" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="2_5ptgp"]
+[ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_ui_dynamic_font.tres" id="2_f1qtu"]
+[ext_resource type="Texture2D" uid="uid://cs38ucsb4ifer" path="res://assets/ui/dialogue/Penelope_Name_Tag.png" id="4_dxkk4"]
+
+[sub_resource type="StyleBox" id="StyleBox_fo6aq"]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = 15.0
+content_margin_top = 18.0
+content_margin_right = 18.0
+content_margin_bottom = 15.0
+script = ExtResource("2_5ptgp")
+Texture = ExtResource("1_nlhad")
+Scale = 0.5
+DrawCenter = true
+TextureMarginLeft = 130
+TextureMarginTop = 106
+TextureMarginRight = 130
+TextureMarginBottom = 106
+ExpandMarginLeft = 34.0
+ExpandMarginTop = 25.0
+ExpandMarginRight = 33.0
+ExpandMarginBottom = 25.0
+AxisStretchHorizontal = 0
+AxisStretchVertical = 0
+ModulateColor = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBox" id="StyleBox_4pb70"]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = 15.0
+content_margin_top = 3.0
+content_margin_right = 15.0
+content_margin_bottom = 3.0
+script = ExtResource("2_5ptgp")
+Texture = ExtResource("4_dxkk4")
+Scale = 0.521
+DrawCenter = true
+TextureMarginLeft = 105
+TextureMarginTop = 26
+TextureMarginRight = 105
+TextureMarginBottom = 26
+ExpandMarginLeft = 24.0
+ExpandMarginTop = 2.0
+ExpandMarginRight = 24.0
+ExpandMarginBottom = 2.0
+AxisStretchHorizontal = 0
+AxisStretchVertical = 0
+ModulateColor = Color(1, 1, 1, 1)
+
+[resource]
+default_font = ExtResource("2_f1qtu")
+PanelContainer/styles/panel = SubResource("StyleBox_fo6aq")
+TitlePanel/base_type = &"PanelContainer"
+TitlePanel/styles/panel = SubResource("StyleBox_4pb70")

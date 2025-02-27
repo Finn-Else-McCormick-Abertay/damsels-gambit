@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://c8warv5k2winh"]
 
-[ext_resource type="Theme" uid="uid://6wenayvf0auw" path="res://assets/ui/round_meter_theme.tres" id="1_ydkkc"]
+[ext_resource type="Theme" uid="uid://6wenayvf0auw" path="res://assets/ui/theme/round_meter_theme.tres" id="1_ydkkc"]
 [ext_resource type="Script" path="res://scenes/ui/RoundMeter.cs" id="2_vhvy2"]
 [ext_resource type="PackedScene" uid="uid://dvluhda7ny7a8" path="res://scenes/ui/round_meter_node.tscn" id="3_jsgwv"]
 

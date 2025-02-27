@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://deobtkte2lfye"
-path="res://.godot/imported/name_tag.png-31577cc7511c7e146d534e4537c29ac4.ctex"
+uid="uid://dq42cbbhv3yw4"
+path="res://.godot/imported/Penelope_Text_Box.png-c96bca901fe2a64ce8b92890fc76511c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ui/panels/name_tag.png"
-dest_files=["res://.godot/imported/name_tag.png-31577cc7511c7e146d534e4537c29ac4.ctex"]
+source_file="res://assets/ui/dialogue/Penelope_Text_Box.png"
+dest_files=["res://.godot/imported/Penelope_Text_Box.png-c96bca901fe2a64ce8b92890fc76511c.ctex"]
 
 [params]
 

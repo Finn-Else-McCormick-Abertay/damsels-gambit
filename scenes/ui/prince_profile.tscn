@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://jukd3377womm" path="res://assets/ui/panels/papertexturesmall.png" id="1_82kt6"]
 [ext_resource type="FontFile" uid="uid://c27txckdp7a4a" path="res://assets/fonts/vinque/Vinque Rg.otf" id="2_knaur"]
 [ext_resource type="Texture2D" uid="uid://bfoqt200g8dkj" path="res://assets/characters/suitor/Suitor Card.png" id="3_egqja"]
-[ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/default_theme.tres" id="4_7j741"]
+[ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/theme/default_theme.tres" id="4_7j741"]
 [ext_resource type="FontFile" uid="uid://etfvluh4ie85" path="res://assets/fonts/argos-george/ArgosGeorge.ttf" id="5_rxc53"]
 
 [node name="Princeprofile" type="Control"]

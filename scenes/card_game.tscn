@@ -3,10 +3,10 @@
 [ext_resource type="Script" path="res://scenes/CardGameController.cs" id="1_4k8rw"]
 [ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_ui_dynamic_font.tres" id="1_b7goe"]
 [ext_resource type="Script" path="res://scenes/ui/cards/CardDisplay.cs" id="2_kdxpq"]
-[ext_resource type="Theme" uid="uid://dhax3sfwm6isl" path="res://assets/ui/affection_meter_theme.tres" id="2_ko4o6"]
+[ext_resource type="Theme" uid="uid://dhax3sfwm6isl" path="res://assets/ui/theme/affection_meter_theme.tres" id="2_ko4o6"]
 [ext_resource type="Script" path="res://scenes/ui/AffectionMeter.cs" id="4_dw2x6"]
 [ext_resource type="Script" path="res://scenes/ui/cards/HandContainer.cs" id="4_xg83y"]
-[ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/default_theme.tres" id="6_7wss3"]
+[ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/theme/default_theme.tres" id="6_7wss3"]
 [ext_resource type="PackedScene" uid="uid://c8warv5k2winh" path="res://scenes/ui/round_meter.tscn" id="8_oypvw"]
 
 [sub_resource type="Theme" id="Theme_ouffm"]

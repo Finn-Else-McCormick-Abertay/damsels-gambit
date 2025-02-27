@@ -1,6 +1,6 @@
 title: action/want+topic/parents
 ---
-Princess Penelope: I want... #withnext
+Princess Penelope: I want... #withnext  #theme=princess
 	-> Different parents.
 		<<score -3>>
 	-> To bring my parents a gift!
@@ -9,7 +9,7 @@ Princess Penelope: I want... #withnext
 
 title: action/want+topic/food
 ---
-Princess Penelope: I want... #withnext
+Princess Penelope: I want... #withnext  #theme=princess
 	-> To have wolf-shaped jelly!
 		<<score -3>>
 	-> Tallow fried chicken!
@@ -18,7 +18,7 @@ Princess Penelope: I want... #withnext
 
 title: action/want+topic/animals
 ---
-Princess Penelope: I want... #withnext
+Princess Penelope: I want... #withnext  #theme=princess
 	-> A pet cat, they're so elegant!
 		<<score -3>>
 	-> A pet wolf, don't you see how majestic they are?
@@ -27,7 +27,7 @@ Princess Penelope: I want... #withnext
 
 title: action/want+topic/art
 ---
-Princess Penelope: I want... #withnext
+Princess Penelope: I want... #withnext  #theme=princess
 	-> To learn how to paint one day...
 		<<score 3>>
 	-> To stay away from art my whole life!
@@ -36,7 +36,7 @@ Princess Penelope: I want... #withnext
 
 title: action/want+topic/loyalty
 ---
-Princess Penelope: I want... #withnext
+Princess Penelope: I want... #withnext  #theme=princess
 	-> To kiss the waiter...?!
 		<<score -3>>
 	-> To discuss our engagement.
@@ -45,7 +45,7 @@ Princess Penelope: I want... #withnext
 
 title: action/want+topic/witchcraft
 ---
-Princess Penelope: I want... #withnext
+Princess Penelope: I want... #withnext  #theme=princess
 	-> To go on a witch hunt!!
 		<<score 3>>
 	-> To abolish witch hunting!
@@ -54,7 +54,7 @@ Princess Penelope: I want... #withnext
 
 title: action/want+topic/religion
 ---
-Princess Penelope: I want... #withnext
+Princess Penelope: I want... #withnext  #theme=princess
 	-> To visit the Central Church, it's a sight.
 		<<score 3>>
 	-> To abolish all religion!
@@ -63,7 +63,7 @@ Princess Penelope: I want... #withnext
 
 title: action/want+topic/children
 ---
-Princess Penelope: I want... #withnext
+Princess Penelope: I want... #withnext  #theme=princess
 	-> To have children in the future.
 		<<score 3>>
 	-> To never have children.
@@ -72,7 +72,7 @@ Princess Penelope: I want... #withnext
 
 title: action/want+topic/weather
 ---
-Princess Penelope: I want... #withnext
+Princess Penelope: I want... #withnext  #theme=princess
 	-> Some warm summer weather!
 		<<score -3>>
 	-> Some cool autumn breeze.
@@ -81,7 +81,7 @@ Princess Penelope: I want... #withnext
 
 title: action/want+topic/hobbies
 ---
-Princess Penelope: I want... #withnext
+Princess Penelope: I want... #withnext  #theme=princess
 	-> To learn archery.
 		<<score 3>>
 	-> To learn swordsmanship.

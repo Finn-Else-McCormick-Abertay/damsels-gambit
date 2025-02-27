@@ -50,7 +50,7 @@ folder_colors={
 
 [gui]
 
-theme/custom="res://assets/ui/default_theme.tres"
+theme/custom="res://assets/ui/theme/default_theme.tres"
 
 [importer_defaults]
 

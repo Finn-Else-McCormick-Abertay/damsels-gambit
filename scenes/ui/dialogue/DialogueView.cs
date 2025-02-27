@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using YarnSpinnerGodot;
 using DamselsGambit.Util;
+using System.Collections.Generic;
+using System.IO;
 
 namespace DamselsGambit.Dialogue;
 
@@ -19,6 +21,20 @@ public partial class DialogueView : Node, DialogueViewBase
 	public Control LineLabel { get; private set; }
 
 	[Export] Button ContinueButton { get; set { ContinueButton?.TryDisconnect(Button.SignalName.Pressed, OnContinue); field = value; ContinueButton?.TryConnect(Button.SignalName.Pressed, OnContinue); } }
+
+	private static readonly Dictionary<string, Theme> _themes = [];
+	static DialogueView() {
+        var rootFolder = "res://assets/ui/theme/dialogue/";
+        void LoadFilesIn(string folderPath) {
+			foreach (var rawPath in DirAccess.GetFilesAt(folderPath)) {
+				var file = Path.GetExtension(rawPath) == ".remap" ? Path.GetFileNameWithoutExtension(rawPath) : rawPath;
+				if (Path.GetExtension(file) != ".tres" && Path.GetExtension(file) != ".theme") continue;
+
+				_themes.Add($"{folderPath.StripFront(rootFolder)}{Path.GetFileNameWithoutExtension(file)}", ResourceLoader.Load<Theme>($"{folderPath}{file}"));
+			}
+		}
+		LoadFilesIn(rootFolder);
+	}
 
 	public enum DialogueState { Inactive, DisplayingLine, DisplayingOptions, Waiting }
 	public DialogueState State { get; private set; }
@@ -57,6 +73,16 @@ public partial class DialogueView : Node, DialogueViewBase
 		TitleRoot.Visible = dialogueLine.CharacterName is not null && dialogueLine.CharacterName != "";
 		LineRoot.Visible = true;
 		ContinueButton.Visible = !withNext;
+
+		var themeTag = (dialogueLine?.Metadata?.Where(x => x.StartsWith("theme=")) ?? []).SingleOrDefault();
+		if (themeTag is not null) {
+			var themeName = themeTag.StripFront("theme=");
+			if (_themes.TryGetValue(themeName, out var theme)) {
+				Root.Theme = theme;
+			}
+			else Console.Warning($"Failed to switch to dialogue theme '{themeName}': theme does not exist.");
+		}
+		else Root.Theme = null;
 		
 		State = DialogueState.DisplayingLine;
 		if (withNext) { _onLineFinishedAction?.Invoke(); }
