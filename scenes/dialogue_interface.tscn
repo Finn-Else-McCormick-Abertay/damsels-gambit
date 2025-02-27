@@ -9,9 +9,9 @@ layer = 20
 
 [node name="DialogueSystem" parent="Interface" instance=ExtResource("1_n48j3")]
 anchors_preset = -1
-anchor_top = 0.466
+anchor_top = 0.569
 offset_left = 51.0
-offset_top = 77.032
+offset_top = 0.287994
 offset_right = -51.0
 offset_bottom = -23.0
 mouse_filter = 2
