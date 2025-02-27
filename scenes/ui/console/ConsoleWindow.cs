@@ -153,6 +153,7 @@ public partial class ConsoleWindow : Control
 				_history[_historyIndex] = TextEdit.Text;
 				_historyIndex++;
 				TextEdit.Text = _history[_historyIndex];
+				TextEdit.SetCaretColumn(TextEdit.Text.Length);
 				TextEdit.AcceptEvent();
 			}
 		}
@@ -161,6 +162,7 @@ public partial class ConsoleWindow : Control
 				_history[_historyIndex] = TextEdit.Text;
 				_historyIndex--;
 				TextEdit.Text = _history[_historyIndex];
+				TextEdit.SetCaretColumn(TextEdit.Text.Length);
 				TextEdit.AcceptEvent();
 			}
 		}

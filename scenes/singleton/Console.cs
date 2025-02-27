@@ -113,9 +113,11 @@ public partial class Console : Node
 
         var args = inputString.Split();
         if (args.IsEmpty()) return;
-        if (Instance._commands.TryGetValue(args.First().ToLower(), out Command command)) {
+        var commandName = args.FirstOrDefault()?.ToLower();
+        if (Instance._commands.TryGetValue(commandName, out Command command)) {
             command.Parse(Instance._parser, args.Length == 1 ? [] : args[1..]);
         }
+        else Error($"No such command '{commandName}'.", false);
     }
 
     public static IEnumerable<string> GetAutofillSuggestions(string inputString) {
