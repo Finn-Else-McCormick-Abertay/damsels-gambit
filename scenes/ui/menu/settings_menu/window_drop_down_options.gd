@@ -2,37 +2,36 @@ extends Control
 
 @onready var option_button: OptionButton = $OptionButton as OptionButton
 
-const WINDOW_MODE_ARRAY :Array[String] = [
-	"Fullscreen",
-	"Borderless Fullscreen",
-	"Windowed",
-	"Borderless Window",
-]
+enum WindowMode {
+	EXCLUSIVE_FULLSCREEN,
+	BORDERLESS_FULLSCREEN,
+	WINDOWED,
+}
 
 func _ready():
 	option_button.clear()
-	for window_mode in WINDOW_MODE_ARRAY:
-		option_button.add_item(window_mode)
+	for mode in WindowMode:
+		var raw_elements = mode.split("_")
+		var modified_elements = []
+		for element in raw_elements:
+			modified_elements.append(element.to_lower().to_pascal_case())
+		option_button.add_item(" ".join(modified_elements), WindowMode[mode])
 	match DisplayServer.window_get_mode():
+		DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
+			option_button.select(WindowMode.EXCLUSIVE_FULLSCREEN)
 		DisplayServer.WINDOW_MODE_FULLSCREEN:
-			option_button.select(1 if DisplayServer.window_get_flag(DisplayServer.WINDOW_FLAG_BORDERLESS) else 0)
+			option_button.select(WindowMode.BORDERLESS_FULLSCREEN)
 		DisplayServer.WINDOW_MODE_WINDOWED:
-			option_button.select(3 if DisplayServer.window_get_flag(DisplayServer.WINDOW_FLAG_BORDERLESS) else 2)
+			option_button.select(WindowMode.WINDOWED)
 	
 	option_button.item_selected.connect(_on_window_mode_selected)
 
 func _on_window_mode_selected(index : int) -> void:
 	match index:
-		0: #fullscreen
+		WindowMode.EXCLUSIVE_FULLSCREEN:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)
+		WindowMode.BORDERLESS_FULLSCREEN:
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
-		1: #Window Mode
+		WindowMode.WINDOWED:
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
-		2: #Borderless Window
-			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, true)
-		3: #Borderless Fullscreen
-			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, true)
 	
