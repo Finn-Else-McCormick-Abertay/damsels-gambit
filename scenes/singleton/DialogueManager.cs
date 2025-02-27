@@ -45,39 +45,47 @@ public partial class DialogueManager : Node
         // (animations can change the state of them, so we need to hard reset)
         _environments.Clear();
         foreach (var node in _environmentRoot.GetChildren()) { _environmentRoot.RemoveChild(node); node.QueueFree(); }
-        foreach (var rawPath in DirAccess.GetFilesAt("res://scenes/environment/")) {
-            var file = Path.GetExtension(rawPath) == ".remap" ? Path.GetFileNameWithoutExtension(rawPath) : rawPath;
-            if (Path.GetExtension(file) != ".tscn") continue;          
 
-            var fullPath = $"res://scenes/environment/{file}";
-            var environmentName = Path.GetFileNameWithoutExtension(file);
+        var rootFolder = "res://scenes/environment/";
 
-            bool shouldLoad = true;
-            if (cleanupExisting) {
-                var instances = GetTree().Root.FindChildrenWhere(x => x.SceneFilePath == fullPath);
-                if (instances.Count > 1) foreach (var extraInstance in instances[1..]) extraInstance.QueueFree();
+        void LoadFilesIn(string folderPath) {
+            foreach (var rawPath in DirAccess.GetFilesAt(folderPath)) {
+                var file = Path.GetExtension(rawPath) == ".remap" ? Path.GetFileNameWithoutExtension(rawPath) : rawPath;
+                if (Path.GetExtension(file) != ".tscn") continue;          
 
-                var instance = instances.FirstOrDefault();
-                shouldLoad = instance is null;
-                if (instance is not null) {
-                    _environments.Add(environmentName, instance);
-                    Callable.From(() => {
-                        instance.GetParent().RemoveChild(instance);
-                        _environmentRoot.AddChild(instance); instance.Owner = _environmentRoot;
-                    }).CallDeferred();
+                var fullPath = $"{folderPath}{file}";
+                var environmentName = $"{folderPath.StripFront(rootFolder)}{Path.GetFileNameWithoutExtension(file)}";
+
+                bool shouldLoad = true;
+                if (cleanupExisting) {
+                    var instances = GetTree().Root.FindChildrenWhere(x => x.SceneFilePath == fullPath);
+                    if (instances.Count > 1) foreach (var extraInstance in instances[1..]) extraInstance.QueueFree();
+
+                    var instance = instances.FirstOrDefault();
+                    shouldLoad = instance is null;
+                    if (instance is not null) {
+                        _environments.Add(environmentName, instance);
+                        Callable.From(() => {
+                            instance.GetParent().RemoveChild(instance);
+                            _environmentRoot.AddChild(instance); instance.Owner = _environmentRoot;
+                        }).CallDeferred();
+                    }
+                }
+                if (shouldLoad) {
+                    var scene = ResourceLoader.Load<PackedScene>(fullPath);
+                    if (scene is not null) {
+                        var node = scene.Instantiate();
+                        _environmentRoot.AddChild(node); node.Owner = _environmentRoot;
+
+                        _environments.Add(environmentName, node);
+                        foreach (var item in GetEnvironmentItems(environmentName)) { item?.Set(CanvasItem.PropertyName.Visible, false); }
+                    }
                 }
             }
-            if (shouldLoad) {
-                var scene = ResourceLoader.Load<PackedScene>(fullPath);
-                if (scene is not null) {
-                    var node = scene.Instantiate();
-                    _environmentRoot.AddChild(node); node.Owner = _environmentRoot;
-
-                    _environments.Add(environmentName, node);
-                    foreach (var item in GetEnvironmentItems(environmentName)) { item?.Set(CanvasItem.PropertyName.Visible, false); }
-                }
-            }
+            foreach (var directory in DirAccess.GetDirectoriesAt(folderPath)) LoadFilesIn($"{folderPath}{directory}/");
         }
+
+        LoadFilesIn(rootFolder);
     }
 
     private readonly Node _environmentRoot = new() { Name = "EnvironmentRoot" };
@@ -178,24 +186,48 @@ public partial class DialogueManager : Node
         }
 
         [YarnCommand("fade")]
-        public static void Fade(string inOut, string characterName, float time) {
-            var display = GetCharacterDisplay(characterName);
-            if (display is null) return;
+        public static void Fade(string inOut, string itemName, float time) {
+            List<CanvasItem> affectedItems = [];
+            List<CanvasLayer> affectedLayers = [];
+
+            var display = GetCharacterDisplay(itemName); 
+            var environmentItems = GetEnvironmentItems(itemName);
+
+            if (display is not null) affectedItems.Add(display);
+            affectedItems.AddRange(environmentItems.Where(x => x is CanvasItem).Select(x => x as CanvasItem));
+            foreach (var layer in environmentItems.Where(x => x is CanvasLayer).Select(x => x as CanvasLayer)) {
+                var affectedInLayer = layer.GetChildren().Where(x => x is CanvasItem).Select(x => x as CanvasItem);
+                affectedItems.AddRange(affectedInLayer);
+                if (affectedInLayer.Any()) affectedLayers.Add(layer);
+            }
+
             if (time <= 0f) {
-                if (inOut == "in") { display.Show(); } else if (inOut == "out") { display.Hide(); }
+                foreach (var item in affectedItems) if (inOut == "in") item.Show(); else if (inOut == "out") item.Hide();
+                foreach (var layer in affectedLayers) if (inOut == "in") layer.Show(); else if (inOut == "out") layer.Hide();
                 return;
             }
 
-            float target;
-            if (inOut == "in") { display.Modulate = display.Modulate with { A = 0f }; target = 1f; } else if (inOut == "out") { display.Modulate = display.Modulate with { A = 1f }; target = 0f; }
-            else { return; }
+            foreach (var item in affectedItems) {
+                float target;
+                if (inOut == "in") { item.Modulate = item.Modulate with { A = 0f }; target = 1f; } else if (inOut == "out") { item.Modulate = item.Modulate with { A = 1f }; target = 0f; }
+                else continue;
+                
+                item.Show();
+
+                var tween = item.CreateTween();
+                tween.TweenProperty(item, "modulate:a", target, time);
+
+                if (inOut == "out") { tween.TweenCallback(Callable.From(item.Hide)); }
+            }
             
-            display.Show();
-
-            var tween = display.CreateTween();
-            tween.TweenProperty(display, "modulate:a", target, time);
-
-            if (inOut == "out") { tween.TweenCallback(Callable.From(() => { display.Hide(); })); }
+            foreach (var layer in affectedLayers) {
+                layer.Show();
+                if (inOut == "out") {
+                    var tween = layer.CreateTween();
+                    tween.TweenInterval(time);
+                    tween.TweenCallback(Callable.From(layer.Hide));
+                }
+            }
         }
 
         [YarnCommand("score")]

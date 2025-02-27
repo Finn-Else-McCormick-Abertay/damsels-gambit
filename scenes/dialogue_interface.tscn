@@ -5,7 +5,7 @@
 [node name="DialogueInterface" type="Node"]
 
 [node name="Interface" type="CanvasLayer" parent="."]
-layer = 25
+layer = 20
 
 [node name="DialogueSystem" parent="Interface" instance=ExtResource("1_n48j3")]
 anchors_preset = -1

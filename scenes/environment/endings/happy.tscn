@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://b0dlqbebrqhl4"]
+
+[ext_resource type="Texture2D" uid="uid://8vuk5iwfamm1" path="res://assets/environment/endings/Good_Ending.png" id="1_k76ge"]
+
+[node name="Happy" type="CanvasLayer"]
+layer = 5
+
+[node name="HappyEnding" type="Sprite2D" parent="."]
+position = Vector2(576, 320)
+scale = Vector2(0.302431, 0.302431)
+texture = ExtResource("1_k76ge")
