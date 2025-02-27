@@ -1,33 +1,44 @@
 title: action/want+topic/parents
 ---
-Princess Penelope: I want... #withnext  #theme=princess
+Princess Penelope: I want... #withnext #theme=princess
 	-> Different parents.
-		<<score -3>>
+		<<score -5>>
+		<<emote suitor sad_2>>
+		<<after 1.3>>
+		<<emote suitor sad_1>>
+		<<after 1>>
+		<<emote suitor neutral from sad_1>>
 	-> To bring my parents a gift!
 		<<score 3>>
 ===
 
 title: action/want+topic/food
 ---
-Princess Penelope: I want... #withnext  #theme=princess
+Princess Penelope: I want... #withnext #theme=princess
 	-> To have wolf-shaped jelly!
 		<<score -3>>
+		<<emote suitor sad_2>>
+		<<after 1.5>>
+		<<emote suitor neutral from sad_2>>
 	-> Tallow fried chicken!
 		<<score 3>>
 ===
 
 title: action/want+topic/animals
 ---
-Princess Penelope: I want... #withnext  #theme=princess
+Princess Penelope: I want... #withnext #theme=princess
 	-> A pet cat, they're so elegant!
 		<<score -3>>
 	-> A pet wolf, don't you see how majestic they are?
 		<<score 3>>
+		<<emote suitor happy_2>>
+		<<after 1.5>>
+		<<emote suitor neutral from happy_2>>
 ===
 
 title: action/want+topic/art
 ---
-Princess Penelope: I want... #withnext  #theme=princess
+Princess Penelope: I want... #withnext #theme=princess
 	-> To learn how to paint one day...
 		<<score 3>>
 	-> To stay away from art my whole life!
@@ -36,7 +47,7 @@ Princess Penelope: I want... #withnext  #theme=princess
 
 title: action/want+topic/loyalty
 ---
-Princess Penelope: I want... #withnext  #theme=princess
+Princess Penelope: I want... #withnext #theme=princess
 	-> To kiss the waiter...?!
 		<<score -3>>
 	-> To discuss our engagement.
@@ -45,45 +56,62 @@ Princess Penelope: I want... #withnext  #theme=princess
 
 title: action/want+topic/witchcraft
 ---
-Princess Penelope: I want... #withnext  #theme=princess
+Princess Penelope: I want... #withnext #theme=princess
 	-> To go on a witch hunt!!
-		<<score 3>>
+		<<score 6>>
+		<<emote suitor happy_2>>
+		<<after 1.5>>
+		<<emote suitor neutral from happy_2>>
 	-> To abolish witch hunting!
-		<<score -3>>
+		<<score -6>>
+		<<emote suitor angry>>
+		<<after 1.5>>
+		<<emote suitor sad_2 from angry>>
 ===
 
 title: action/want+topic/religion
 ---
-Princess Penelope: I want... #withnext  #theme=princess
+Princess Penelope: I want... #withnext #theme=princess
 	-> To visit the Central Church, it's a sight.
 		<<score 3>>
 	-> To abolish all religion!
 		<<score -3>>
+		<<emote suitor angry>>
+		<<after 1.5>>
+		<<emote suitor neutral from angry>>
 ===
 
 title: action/want+topic/children
 ---
-Princess Penelope: I want... #withnext  #theme=princess
+Princess Penelope: I want... #withnext #theme=princess
 	-> To have children in the future.
 		<<score 3>>
 	-> To never have children.
 		<<score -3>>
+		<<emote suitor sad_2>>
+		<<after 1>>
+		<<emote suitor sad_1>>
+		<<after 1>>
+		<<emote suitor neutral from sad_1>>
 ===
 
 title: action/want+topic/weather
 ---
-Princess Penelope: I want... #withnext  #theme=princess
+Princess Penelope: I want... #withnext #theme=princess
 	-> Some warm summer weather!
 		<<score -3>>
+		<<emote suitor sad_1>>
+		<<after 1.5>>
+		<<emote suitor neutral from sad_1>>
 	-> Some cool autumn breeze.
 		<<score 3>>
 ===
 
 title: action/want+topic/hobbies
 ---
-Princess Penelope: I want... #withnext  #theme=princess
+Princess Penelope: I want... #withnext #theme=princess
 	-> To learn archery.
-		<<score 3>>
-	-> To learn swordsmanship.
 		<<score -3>>
+	-> To learn swordsmanship.
+		<<score 3>>
 ===

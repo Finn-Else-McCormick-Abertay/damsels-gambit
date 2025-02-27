@@ -4,7 +4,10 @@ Princess Penelope: I got this... #withnext #theme=princess
 	-> Elegant fox pelt slippers for your mother.
 		<<score 3>>
 	-> Occult dreamwatcher for your father, so he may see visions in his dreams.
-		<<score -3>>
+		<<score -5>>
+		<<emote suitor angry>>
+		<<after 1.5>>
+		<<emote suitor sad_2 from angry>>
 ===
 
 title: action/give+topic/food
@@ -48,8 +51,14 @@ title: action/give+topic/witchcraft
 Princess Penelope: Here, I got you a... #withnext #theme=princess
 	-> Newly made pitchfork crafted from black iron for your next witch hunt!
 		<<score 3>>
+		<<emote suitor happy_2>>
+		<<after 1.5>>
+		<<emote suitor neutral from happy_2>>
 	-> Sacrificial doll...
-		<<score -3>>
+		<<score -5>>
+		<<emote suitor angry>>
+		<<after 1.5>>
+		<<emote suitor sad_2 from angry>>
 ===
 
 title: action/give+topic/religion
@@ -83,7 +92,10 @@ title: action/give+topic/hobbies
 ---
 Princess Penelope: *Searches around...* Here it is...! #withnext #theme=princess
 	-> I got you a brand new sword, made from black steel!
-		<<score 3>>
+		<<score 5>>
+		<<emote suitor happy_2>>
+		<<after 1.5>>
+		<<emote suitor happy_1 from happy_2>>
 	-> I got you a bow made of the finest willow wood!
 		<<score -3>>
 ===

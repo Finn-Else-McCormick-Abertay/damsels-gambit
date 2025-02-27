@@ -13,7 +13,11 @@ King Ráðúlfr: I suppose I've never really been one for sweet things...
 title: action/question+topic/animals
 ---
 Princess Penelope: Do you have any animal that you favour? #theme=princess
+<<emote suitor happy_2>>
 King Ráðúlfr: Indeed, I've always been fascinated by wolves, and how majestic they are.
+<<emote suitor happy_1>>
+<<after 1.5>>
+<<emote suitor neutral from happy_1>>
 ===
 
 title: action/question+topic/art
@@ -31,7 +35,9 @@ King Ráðúlfr: It is indeed correct I value loyalty closely to me.
 title: action/question+topic/witchcraft
 ---
 Princess Penelope: What's your thoughts on all these witches nowadays? #theme=princess
+<<emote suitor angry>>
 King Ráðúlfr: They should be hunted down, witches have no place here.
+<<emote suitor neutral>>
 ===
 
 title: action/question+topic/religion
@@ -44,16 +50,23 @@ title: action/question+topic/children
 ---
 Princess Penelope: Would you ever consider children? #theme=princess
 King Ráðúlfr: Hm I've not given it much thought... But of course, I'm obligated being a king.
+<<emote suitor sad_1>>
+<<after 1>>
+<<emote suitor neutral from sad_1>>
 ===
 
 title: action/question+topic/weather
 ---
 Princess Penelope: It's been pretty cold recently, what's your preferred weather? #theme=princess
+<<emote suitor happy_2>>
 King Ráðúlfr: Snow, rain, any cold weather reminds me of home.
+<<emote suitor neutral>>
 ===
 
 title: action/question+topic/hobbies
 ---
 Princess Penelope: What do you do in spare time, you must tell me... #theme=princess
+<<emote suitor happy_1>>
 King Ráðúlfr: Actually, I indulge in the sword, a fair bit I would say.
+<<emote suitor neutral>>
 ===

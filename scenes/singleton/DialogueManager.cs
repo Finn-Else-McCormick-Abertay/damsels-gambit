@@ -189,6 +189,17 @@ public partial class DialogueManager : Node
         if (Instance._commandState.Timers.TryPeek(out var nextTimer)) { nextTimer.Start(); /*Console.Info($"Timer {nextTimer} started.");*/ }
     }
 
+    [YarnCommand("flush_command_queue")]
+    public static void FlushCommandQueue() {
+        if (Instance is null) return;
+        foreach (var timer in Instance._commandState.Timers) {
+            timer.Timeout -= OnDeferralTimerTimeout;
+            timer.Connect(Timer.SignalName.Timeout, Callable.From(timer.QueueFree), (uint)ConnectFlags.OneShot);
+            timer.Start(0.01f);
+        }
+        Instance._commandState.Timers.Clear();
+    }
+
     [YarnCommand("scene")]
     public static void Scene(string sceneName) {
         RunCommandDeferred(() => {
@@ -216,11 +227,12 @@ public partial class DialogueManager : Node
     }
 
     [YarnCommand("emote")]
-    public static void Emote(string characterName, string emotionName) {
+    public static void Emote(string characterName, string emotionName, string from = "", string revertFrom = "") {
+        var display = GetCharacterDisplay(characterName);
+        if (display is null) return;
         RunCommandDeferred(() => {
-            var display = GetCharacterDisplay(characterName);
-            if (display is null) return;
             if (display.Visible == false) { display.Show(); }
+            if (from == "from" && !string.IsNullOrWhiteSpace(revertFrom) && display.SpriteName != revertFrom) return;
             display.SpriteName = emotionName;
         });
     }
