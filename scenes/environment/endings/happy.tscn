@@ -1,19 +1,12 @@
-[gd_scene load_steps=3 format=3 uid="uid://b0dlqbebrqhl4"]
+[gd_scene load_steps=2 format=3 uid="uid://b0dlqbebrqhl4"]
 
-[ext_resource type="Texture2D" uid="uid://8vuk5iwfamm1" path="res://assets/environment/endings/Good_Ending.png" id="1_k76ge"]
-[ext_resource type="Texture2D" uid="uid://bpb31f1lhcn5x" path="res://assets/environment/endings/gay people.png" id="2_pvd11"]
+[ext_resource type="Texture2D" uid="uid://ctkkhkk0n2j4d" path="res://assets/environment/endings/Good_Ending_Rough.png" id="3_anero"]
 
 [node name="Happy" type="CanvasLayer"]
 layer = 5
+follow_viewport_enabled = true
 
-[node name="Node2D" type="Node2D" parent="."]
-
-[node name="HappyEnding" type="Sprite2D" parent="Node2D"]
-position = Vector2(576, 320)
-scale = Vector2(0.302431, 0.302431)
-texture = ExtResource("1_k76ge")
-
-[node name="GayPeople" type="Sprite2D" parent="Node2D"]
-position = Vector2(244, 332.523)
-scale = Vector2(0.686046, 0.686046)
-texture = ExtResource("2_pvd11")
+[node name="GoodEndingRough" type="Sprite2D" parent="."]
+position = Vector2(574.111, 328.25)
+scale = Vector2(0.305324, 0.305324)
+texture = ExtResource("3_anero")
