@@ -10,8 +10,6 @@ namespace DamselsGambit;
 [Tool, GlobalClass, Icon("res://assets/editor/icons/card.svg")]
 public partial class CardDisplay : Control, IReloadableToolScript
 {
-	private static readonly CardSharedParams SharedParams = ResourceLoader.Load<CardSharedParams>("res://assets/cards/card_shared.tres");
-
 	[Export] public StringName CardId {
 		get; set {
 			field = value;
@@ -52,11 +50,19 @@ public partial class CardDisplay : Control, IReloadableToolScript
 
 	public Texture2D Texture { get; private set { field = value; RebuildMeshes(); UpdatePivot(); (GetParent() as Container)?.QueueSort(); } }
 	private static readonly GradientTexture1D s_shadowGradientTexture;
+	
+	private static readonly CardSharedParams SharedParams;
 
 	static CardDisplay() {
 		var gradient = new Gradient{ InterpolationColorSpace = Gradient.ColorSpace.Oklab };
 		gradient.SetColor(0, Colors.Black); gradient.SetColor(1, new Color(Colors.Black, 0f));
 		s_shadowGradientTexture = new GradientTexture1D { Gradient = gradient };
+
+		if (!Engine.IsEditorHint()) { SharedParams = ResourceLoader.Load<CardSharedParams>("res://assets/cards/card_shared.tres"); }
+		else {
+			GD.PushWarning("Could not load shared card info.");
+			SharedParams = new();
+		}
 	}
 
 	public CardDisplay() { MouseFilter = MouseFilterEnum.Pass; }
