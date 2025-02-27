@@ -8,7 +8,7 @@
 [ext_resource type="FontFile" uid="uid://geqwvgugqsyy" path="res://assets/fonts/monaspace/MonaspaceNeon-Italic.otf" id="3_s72dg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8dvcl"]
-bg_color = Color(0.19, 0.19, 0.19, 0.698039)
+bg_color = Color(0.19, 0.19, 0.19, 0.843137)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qjeu0"]
 content_margin_left = 5.0
