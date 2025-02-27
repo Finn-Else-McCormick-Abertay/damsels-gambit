@@ -48,6 +48,7 @@ theme_type_variation = &"LinePanel"
 
 [node name="LineLabel" type="RichTextLabel" parent="Root/VBoxContainer/LinePanel"]
 layout_mode = 2
+bbcode_enabled = true
 text = "Dialogue text"
 
 [node name="OptionContainer" type="VBoxContainer" parent="Root/VBoxContainer"]

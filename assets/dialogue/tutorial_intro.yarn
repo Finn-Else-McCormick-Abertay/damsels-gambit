@@ -15,14 +15,9 @@ Lady in Waiting: Don't worry, Princess, I'm sure you can get out of this.
 <<emote lady_in_waiting sad_2>>
 Lady in Waiting: You'll need to be careful though. If he likes you too much then the wedding will go ahead, and you'll have to leave for Frostholm, never to return. But cause too much offence and our kingdoms may end up at war!
 <<emote lady_in_waiting explaining_2>>
-Lady in Waiting: Choose your cards carefully. You'll need to combine a Subject card with either a Question or Action card; together these will produce a conversation starter. Depending on your choices in the conversation, his opinion of you will change.
+Lady in Waiting: Choose your cards carefully. You'll need to combine an \[color=\#6d85ff\]Action\[/color\] card with a \[color=\#d67931\]Topic\[/color\] card; together these will produce a conversation starter. Depending on your choices in the conversation, his opinion of you will change.
 <<emote lady_in_waiting explaining_1>>
-Lady in Waiting: Mind the Affection Bar - you want to stay neutral. If, at the end of the date, you are in the region marked in red, you will be wed. If in the region marked in black, you may cause a war.
-<<emote lady_in_waiting sad_1>>
-Lady in Waiting: I'd show you how it works myself, but they haven't finished making the tutorial sequence yet.
-Princess Penelope: Finished what? #theme=princess
-<<emote lady_in_waiting neutral>>
-Lady in Waiting: Oh, never you mind all that.
+Lady in Waiting: Mind the \[color=\#d67931\]Affection Bar\[/color\] - you want to stay neutral. If, at the end of the date, you are in the region marked in \[color=\#d78799\]pink\[/color\], you will be wed. If in the region marked in \[color=\#2b308b\]blue\[/color\], you may cause a war.
 <<emote lady_in_waiting happy>>
 Lady in Waiting: Good luck, Princess. I'll always be here to support you.
 <<hide lady_in_waiting>>
