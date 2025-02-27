@@ -12,7 +12,7 @@ using YarnSpinnerGodot;
 public partial class CardGameController : Control
 {
 	public readonly int MaxRound = 8;
-	private int Round { get; set { field = value; if (RoundMeter is not null) { RoundMeter.CurrentRound = Round; } } }
+	public int Round { get; set { field = value; if (RoundMeter is not null) RoundMeter.CurrentRound = Round; if (Round > MaxRound) OnGameEnd(); } }
 
 	[Export] public Godot.Collections.Dictionary<string, int> TopicDeck { get; set; }
 	[Export] public Godot.Collections.Dictionary<string, int> ActionDeck { get; set; }
@@ -22,11 +22,11 @@ public partial class CardGameController : Control
 	public ReadOnlyCollection<string> RemainingTopicDeck => _topicDeckWorking.AsReadOnly();
 	public ReadOnlyCollection<string> RemainingActionDeck => _actionDeckWorking.AsReadOnly();
 
-	[Export] AffectionMeter AffectionMeter { get; set; }
-	[Export] HandContainer TopicHand { get; set; }
-	[Export] HandContainer ActionHand { get; set; }
-	[Export] Button PlayButton { get; set; }
-	[Export] RoundMeter RoundMeter { get; set; }
+	[Export] public AffectionMeter AffectionMeter { get; set; }
+	[Export] public HandContainer TopicHand { get; set; }
+	[Export] public HandContainer ActionHand { get; set; }
+	[Export] public Button PlayButton { get; set; }
+	[Export] public RoundMeter RoundMeter { get; set; }
 
 	private readonly int _scoreMax = 10, _scoreMin = -10;
 	private readonly int _loveThreshold = 4, _hateThreshold = -4;
@@ -95,9 +95,7 @@ public partial class CardGameController : Control
 		PlayButton.Show();
 
 		Round += 1;
-
-		if (Round <= MaxRound) { Deal(); }
-		else { OnGameEnd(); }
+		if (Round <= MaxRound) Deal();
 	}
 
 	private void OnGameEnd() {
