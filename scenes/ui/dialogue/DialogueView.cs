@@ -57,7 +57,14 @@ public partial class DialogueView : Node, DialogueViewBase
 		DialogueManager.Deregister(this);
 	}
 
-	public void DialogueStarted() {
+	public override void _Ready() {
+		OptionArchetype?.GetParent()?.RemoveChild(OptionArchetype);
+	}
+    public override void _Notification(int what) {
+		if (what == NotificationPredelete) OptionArchetype?.QueueFree();
+    }
+
+    public void DialogueStarted() {
 		Root.Show();
 		State = DialogueState.Waiting;
 	}
@@ -108,6 +115,8 @@ public partial class DialogueView : Node, DialogueViewBase
 		foreach (var child in OptionRoot.GetChildren()) { if (child != OptionArchetype) { child.QueueFree(); } }
 		OptionArchetype.Hide();
 
+		Control toFocus = null;
+
 		foreach (var option in dialogueOptions) {
 			var optionControl = OptionArchetype.Duplicate() as Control;
 			optionControl.GetParent()?.RemoveChild(optionControl); OptionRoot.AddChild(optionControl);
@@ -121,11 +130,12 @@ public partial class DialogueView : Node, DialogueViewBase
 					onOptionSelected?.Invoke(option.DialogueOptionID);
 				});
 			};
+			if (toFocus is null) toFocus = button;
 
 			optionControl.Show();
 		}
 
-		InputManager.FindFocusableWithin(OptionRoot, InputManager.FocusDirection.Down)?.GrabFocus();
+		toFocus?.GrabFocus();
 
 		OptionRoot.Show();
 		State = DialogueState.DisplayingOptions;
