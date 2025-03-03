@@ -26,40 +26,26 @@ public sealed partial class GameManager : Node
     private static readonly PackedScene _pauseMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/ui/menu/pause_menu.tscn");
 
     public override void _EnterTree() {
+        if (Instance is not null) throw AutoloadException.For(this);
         Instance = this;
-        GetTree().Root.Ready += OnTreeReady;
-
-        GetTree().Connect(SceneTree.SignalName.NodeAdded, Callable.From(
-            (Node node) => { if (node is PopupMenu popup) { popup.TransparentBg = true; } }
-        ));
-    }
-    public override void _Ready() {
-        AddChild(_cardGameCanvasLayer); _cardGameCanvasLayer.Owner = this;
-        AddChild(_menuCanvasLayer); _menuCanvasLayer.Owner = this;
+        void OnTreeReadyCallback() { OnTreeReady(); GetTree().Root.Ready -= OnTreeReadyCallback; } GetTree().Root.Ready += OnTreeReadyCallback;
     }
     private void OnTreeReady() {
+        AddChild(_cardGameCanvasLayer); _cardGameCanvasLayer.Owner = this;
+        AddChild(_menuCanvasLayer); _menuCanvasLayer.Owner = this;
+
         GUIDE.Initialise(GetTree().Root.GetNode("GUIDE"));
         GUIDE.Connect(GUIDE.SignalName.InputMappingsChanged, new Callable(this, MethodName.OnInputMappingsChanged));
+        
+        GetTree().Connect(SceneTree.SignalName.NodeAdded, Callable.From((Node node) => { if (node is PopupMenu popup) { popup.TransparentBg = true; } }));
 
-        OnStartup();
+        MainMenu = GetTree().Root.FindChildWhere<Control>(x => x.SceneFilePath.Equals(_mainMenuScene.ResourcePath));
+        PauseMenu = GetTree().Root.FindChildWhere<PauseMenu>(x => x.SceneFilePath.Equals(_pauseMenuScene.ResourcePath));
+        CardGameController = GetTree().Root.FindChildWhere<CardGameController>(x => x.SceneFilePath.Equals(_cardGameScene.ResourcePath));
+        DialogueInterface = GetTree().Root.FindChildWhere<DialogueView>(x => x.SceneFilePath.Equals(_dialogueInterfaceScene.ResourcePath));
+        if (DialogueInterface is null) { DialogueInterface = _dialogueInterfaceScene.Instantiate(); AddChild(DialogueInterface); DialogueInterface.Owner = this; }
 
-        GetTree().Root.Ready -= OnTreeReady;
-    }
-
-    private void OnStartup() {
-        var potentialSceneRoots = GetTree().Root.GetChildren().Where(x => !x.Name.IsAnyOf<StringName>([ "GameManager", "DialogueManager", "GUIDE", "Console" ]));
-        var sceneRoot = potentialSceneRoots.FirstOrDefault();
-
-        MainMenu = GetTree().Root.FindChildWhere<Control>(x => x.SceneFilePath == _mainMenuScene.ResourcePath);
-        PauseMenu = GetTree().Root.FindChildWhere<PauseMenu>(x => x.SceneFilePath == _pauseMenuScene.ResourcePath);
-        DialogueInterface = GetTree().Root.FindChildWhere<DialogueView>(x => x.SceneFilePath == _dialogueInterfaceScene.ResourcePath);
-        CardGameController = GetTree().Root.FindChildWhere<CardGameController>(x => x.SceneFilePath == _cardGameScene.ResourcePath);
-
-        if (DialogueInterface is null) {
-            DialogueInterface = _dialogueInterfaceScene.Instantiate();
-            AddChild(DialogueInterface); DialogueInterface.Owner = this;
-        }
-
+        var sceneRoot = GetTree().Root.GetChildren().LastOrDefault();
         if (sceneRoot is null || sceneRoot.SceneFilePath.Equals("res://scenes/main.tscn")) { InitialiseMainMenu(); }
     }
 

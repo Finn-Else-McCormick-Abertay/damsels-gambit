@@ -49,8 +49,9 @@ public sealed class GUIDE
 	public static void Connect(StringName signal, Callable callable) => Instance._guide.Connect(signal, callable);
 	public static void Disconnect(StringName signal, Callable callable) => Instance._guide.Disconnect(signal, callable);
 
+	// Should only be called from GameManager
 	public static bool Initialise(Node GUIDE) {
-		if (Instance._guide is not null) throw new Exception("Attempted to init GUIDE more than once");
+		if (Instance._guide is not null) throw new Exception("Attempted to init GUIDE singleton more than once.");
 		Instance._guide = GUIDE;
 		return Instance._guide is not null;
 	}
