@@ -77,7 +77,7 @@ public sealed partial class InputManager : Node
 		focusNext?.GrabFocus();
 	}
 
-	public static Control FindFocusableWithin(Node root, FocusDirection direction) {
+	public static Control FindFocusableWithin(Node root, FocusDirection direction = FocusDirection.Right) {
 		if (root is null) return null;
 		if (root is Control control && control.FocusMode == Control.FocusModeEnum.All) return control;
 		var validChildren = root.FindChildrenWhere<Control>(x => x.FocusMode == Control.FocusModeEnum.All);
@@ -153,7 +153,11 @@ public sealed partial class InputManager : Node
 
 	private void OnUIDirectionTriggered() {
 		var focused = GetViewport().GuiGetFocusOwner();
-		if (focused is null) return;
+		if (focused is null) {
+			var focusContext = GetTree().Root.FindChildWhere(x => x is IFocusContext) as IFocusContext;
+			FindFocusableWithin(focusContext?.GetDefaultFocus())?.GrabFocus();
+			return;
+		}
 		
 		var direction = Actions.UIDirection.ValueAxis3d;
 

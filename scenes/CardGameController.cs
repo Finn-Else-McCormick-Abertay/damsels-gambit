@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using YarnSpinnerGodot;
 
-public partial class CardGameController : Control
+public partial class CardGameController : Control, IFocusContext
 {
 	public readonly int MaxRound = 8;
 	public int Round { get; set { field = value; if (RoundMeter is not null) RoundMeter.CurrentRound = Round; if (Round > MaxRound) OnGameEnd(); } }
@@ -82,6 +82,8 @@ public partial class CardGameController : Control
 	public override void _Process(double delta) {
 		PlayButton.Disabled = TopicHand.GetSelected().Count() != 1 || ActionHand.GetSelected().Count() != 1;
 	}
+	
+    public Control GetDefaultFocus() => ActionHand;
 
 	private void PlayHand() {
 		var selectedSubject = TopicHand.GetSelected().First();

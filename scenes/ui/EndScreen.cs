@@ -12,9 +12,10 @@ public partial class EndScreen : Control
 	public override void _Ready() {
 		RetryButton?.TryConnect(Button.SignalName.Pressed, new Callable(this, MethodName.OnRetry));
 		QuitButton?.TryConnect(Button.SignalName.Pressed, new Callable(this, MethodName.OnQuit));
+		RetryButton?.GrabFocus();
 	}
 
-	private void OnRetry() { GameManager.Instance.InitialiseCardGame(); }
+	private static void OnRetry() { GameManager.Instance.InitialiseCardGame(); }
 
-	private void OnQuit() { GameManager.Instance.InitialiseMainMenu(); }
+	private static void OnQuit() { GameManager.Instance.InitialiseMainMenu(); }
 }
