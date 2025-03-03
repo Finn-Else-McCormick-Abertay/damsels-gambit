@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="GUIDEMappingContext" load_steps=72 format=3 uid="uid://bgjnx0vc0bmun"]
+[gd_resource type="Resource" script_class="GUIDEMappingContext" load_steps=71 format=3 uid="uid://bgjnx0vc0bmun"]
 
 [ext_resource type="Script" path="res://addons/guide/guide_action_mapping.gd" id="1_fbvni"]
 [ext_resource type="Resource" uid="uid://ceaqyfvwc4ryo" path="res://assets/input/actions/select.tres" id="2_qobao"]
@@ -18,7 +18,6 @@
 [ext_resource type="Script" path="res://addons/guide/triggers/guide_trigger_chorded_action.gd" id="14_fxb8f"]
 [ext_resource type="Resource" uid="uid://dmf6d56ddqask" path="res://assets/input/actions/ui_direction.tres" id="15_5keav"]
 [ext_resource type="Script" path="res://addons/guide/modifiers/guide_modifier_input_swizzle.gd" id="16_7r8ea"]
-[ext_resource type="Script" path="res://addons/guide/triggers/guide_trigger_tap.gd" id="17_mkh0g"]
 [ext_resource type="Resource" uid="uid://bqwgnr5n8inik" path="res://assets/input/actions/drag.tres" id="17_n2im4"]
 [ext_resource type="Script" path="res://addons/guide/triggers/guide_trigger_hold.gd" id="18_svivd"]
 [ext_resource type="Script" path="res://addons/guide/inputs/guide_input_mouse_axis_2d.gd" id="18_yc3ew"]
@@ -173,9 +172,8 @@ allow_additional_modifiers = true
 script = ExtResource("16_7r8ea")
 order = 0
 
-[sub_resource type="Resource" id="Resource_8kaqq"]
-script = ExtResource("17_mkh0g")
-tap_threshold = 0.2
+[sub_resource type="Resource" id="Resource_pdrd4"]
+script = ExtResource("7_cwoxq")
 actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_tyaxx"]
@@ -188,7 +186,7 @@ actuation_threshold = 0.5
 script = ExtResource("3_0e6l7")
 input = SubResource("Resource_uwwt3")
 modifiers = Array[ExtResource("5_bcglh")]([SubResource("Resource_e5wp5")])
-triggers = Array[ExtResource("6_hovn7")]([SubResource("Resource_8kaqq"), SubResource("Resource_tyaxx")])
+triggers = Array[ExtResource("6_hovn7")]([SubResource("Resource_pdrd4"), SubResource("Resource_tyaxx")])
 
 [sub_resource type="Resource" id="Resource_mr43j"]
 script = ExtResource("4_d1ckv")
@@ -209,9 +207,8 @@ x = false
 y = true
 z = false
 
-[sub_resource type="Resource" id="Resource_80ruw"]
-script = ExtResource("17_mkh0g")
-tap_threshold = 0.2
+[sub_resource type="Resource" id="Resource_gcgqq"]
+script = ExtResource("7_cwoxq")
 actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_q3g1p"]
@@ -224,7 +221,7 @@ actuation_threshold = 0.5
 script = ExtResource("3_0e6l7")
 input = SubResource("Resource_mr43j")
 modifiers = Array[ExtResource("5_bcglh")]([SubResource("Resource_3i5eb"), SubResource("Resource_0orqw")])
-triggers = Array[ExtResource("6_hovn7")]([SubResource("Resource_80ruw"), SubResource("Resource_q3g1p")])
+triggers = Array[ExtResource("6_hovn7")]([SubResource("Resource_gcgqq"), SubResource("Resource_q3g1p")])
 
 [sub_resource type="Resource" id="Resource_xoirv"]
 script = ExtResource("4_d1ckv")
@@ -238,12 +235,11 @@ allow_additional_modifiers = true
 [sub_resource type="Resource" id="Resource_j5r5l"]
 script = ExtResource("19_4my5i")
 x = true
-y = true
-z = true
+y = false
+z = false
 
-[sub_resource type="Resource" id="Resource_qtole"]
-script = ExtResource("17_mkh0g")
-tap_threshold = 0.2
+[sub_resource type="Resource" id="Resource_2k2ug"]
+script = ExtResource("7_cwoxq")
 actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_clxvi"]
@@ -256,7 +252,7 @@ actuation_threshold = 0.5
 script = ExtResource("3_0e6l7")
 input = SubResource("Resource_xoirv")
 modifiers = Array[ExtResource("5_bcglh")]([SubResource("Resource_j5r5l")])
-triggers = Array[ExtResource("6_hovn7")]([SubResource("Resource_qtole"), SubResource("Resource_clxvi")])
+triggers = Array[ExtResource("6_hovn7")]([SubResource("Resource_2k2ug"), SubResource("Resource_clxvi")])
 
 [sub_resource type="Resource" id="Resource_o6xo7"]
 script = ExtResource("4_d1ckv")
@@ -267,9 +263,8 @@ alt = false
 meta = false
 allow_additional_modifiers = true
 
-[sub_resource type="Resource" id="Resource_ripha"]
-script = ExtResource("17_mkh0g")
-tap_threshold = 0.2
+[sub_resource type="Resource" id="Resource_2foop"]
+script = ExtResource("7_cwoxq")
 actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_lm6rk"]
@@ -282,7 +277,7 @@ actuation_threshold = 0.5
 script = ExtResource("3_0e6l7")
 input = SubResource("Resource_o6xo7")
 modifiers = Array[ExtResource("5_bcglh")]([])
-triggers = Array[ExtResource("6_hovn7")]([SubResource("Resource_ripha"), SubResource("Resource_lm6rk")])
+triggers = Array[ExtResource("6_hovn7")]([SubResource("Resource_2foop"), SubResource("Resource_lm6rk")])
 
 [sub_resource type="Resource" id="Resource_7cpmd"]
 script = ExtResource("1_fbvni")

@@ -68,6 +68,7 @@ public sealed partial class Console : Node
         if (@event.IsActionPressed(ToggleActionName)) {
             _window.Visible = !_window.Visible;
             if (_window.Visible) { _window.TextEdit.CallDeferred(Control.MethodName.GrabFocus); }
+            InputManager.ShouldOverrideGuiInput = !_window.Visible;
         }
     }
 

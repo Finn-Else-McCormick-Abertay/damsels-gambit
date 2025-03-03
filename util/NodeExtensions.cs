@@ -54,6 +54,72 @@ static class NodeExtensions
     }
     public static Godot.Collections.Array<Node> FindChildrenWhere(this Node self, Func<Node, bool> predicate, bool recursive = true) => self.FindChildrenWhere<Node>(predicate, recursive);
 
+    public static TNode FindParentOfType<TNode>(this Node self) where TNode : Node {
+        var parent = self.GetParent();
+        if (parent is TNode) { return parent as TNode; }
+        return parent?.FindParentOfType<TNode>();
+    }
+    public static Godot.Collections.Array<TNode> FindParentsOfType<[MustBeVariant]TNode>(this Node self) where TNode : Node {
+        var validParents = new List<TNode>();
+        var parent = self.GetParent();
+        if (parent is TNode) validParents.Add(parent as TNode);
+        if (parent is not null) validParents.AddRange(parent.FindParentsOfType<TNode>());
+        return [.. validParents];
+    }
+    
+    public static TNode FindParentWhere<TNode>(this Node self, Func<TNode, bool> predicate) where TNode : Node {
+        var parent = self.GetParent();
+        if (parent is TNode && predicate(parent as TNode)) return parent as TNode;
+        return parent?.FindParentWhere(predicate);
+    }
+    public static Node FindParentWhere(this Node self, Func<Node, bool> predicate) => self.FindParentWhere<Node>(predicate);
+
+    public static Godot.Collections.Array<TNode> FindParentsWhere<[MustBeVariant]TNode>(this Node self, Func<TNode, bool> predicate) where TNode : Node {
+        var validParents = new List<TNode>();
+        var parent = self.GetParent();
+        if (parent is TNode && predicate(parent as TNode)) validParents.Add(parent as TNode);
+        if (parent is not null) validParents.AddRange(parent.FindParentsWhere(predicate));
+        return [.. validParents];
+    }
+    public static Godot.Collections.Array<Node> FindParentsWhere(this Node self, Func<Node, bool> predicate) => self.FindParentsWhere<Node>(predicate);
+
+    public static int FindDistanceToParent(this Node self, Node ancestor) {
+        var root = self.GetTree().Root;
+        int working = 0;
+        Node workingNode = self;
+        while (workingNode != ancestor) {
+            if (workingNode == root || workingNode is null) return -1;
+            working++;
+            workingNode = workingNode.GetParent();
+        }
+        return working;
+    }
+    public static int FindDistanceToChild(this Node self, Node child) => child.FindDistanceToParent(self);
+
+    public static Godot.Collections.Array<Node> FindAncestorChainTo(this Node self, Node ancestor, bool includeSelf = true, bool includeTarget = false) {
+        var ancestorChain = new List<Node>();
+        if (includeSelf) ancestorChain.Add(self);
+        bool ancestorFound = false;
+        void FindChainRecursive(Node current) {
+            var parent = current.GetParent();
+            ancestorFound |= parent == ancestor;
+            if (parent is null) return;
+            if (parent != ancestor) {
+                ancestorChain.Add(parent);
+                FindChainRecursive(parent);
+            }
+            else if (includeTarget) ancestorChain.Add(parent);
+        }
+        FindChainRecursive(self);
+        if (ancestorFound) return [..ancestorChain];
+        return [];
+    }
+    public static Godot.Collections.Array<Node> FindChildChainTo(this Node self, Node child, bool includeSelf = false, bool includeTarget = true) {
+        var ancestorChain = child.FindAncestorChainTo(self, includeTarget, includeSelf);
+        ancestorChain.Reverse();
+        return ancestorChain;
+    }
+
     public static Godot.Collections.Array<Node> GetSelfAndChildren(this Node self) {
         var array = new Godot.Collections.Array<Node> { self };
         array.AddRange(self.GetChildren());
