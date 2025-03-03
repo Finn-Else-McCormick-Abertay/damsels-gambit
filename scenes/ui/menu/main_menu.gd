@@ -18,6 +18,8 @@ func _on_start_pressed()-> void:
 	GameManager.InitialiseCardGame(true)
 
 func _on_settings_pressed()-> void:
+	InputManager.PushToFocusStack()
+	
 	if is_instance_valid(settings_menu):
 		settings_menu.queue_free()
 		settings_menu = null
@@ -39,3 +41,4 @@ func _on_exit_settings_menu() -> void:
 		settings_menu.hide()
 		settings_menu.queue_free()
 		settings_menu = null
+	InputManager.PopFromFocusStack()

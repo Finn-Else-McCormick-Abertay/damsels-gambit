@@ -25,7 +25,7 @@ public sealed partial class InputManager : Node
 	
 	public static bool ShouldOverrideGuiInput { get; set; } = true;
 
-    private static InputManager Instance { get; set; }
+    public static InputManager Instance { get; set; }
 
 	public override void _EnterTree() {
         if (Instance is not null) throw AutoloadException.For(this);
@@ -40,7 +40,44 @@ public sealed partial class InputManager : Node
 		Actions.UIDirection.Connect(GUIDEAction.SignalName.Triggered, new Callable(this, MethodName.OnUIDirectionTriggered), 0);
 	}
 
-	enum FocusDirection { Up, Down, Left, Right }
+	private readonly Stack<NodePath> _focusStack = [];
+	public void PushToFocusStack() {
+		var focused = GetViewport().GuiGetFocusOwner();
+		if (focused is not null) { _focusStack.Push(focused.GetPath()); }
+	}
+	public void PopFromFocusStack() {
+		if (_focusStack.TryPop(out NodePath path)) {
+			var restoredFocus = GetNode(path) as Control;
+			restoredFocus?.GrabFocus();
+		}
+	}
+
+	public enum FocusDirection { Up, Down, Left, Right }
+
+	private static void ShiftFocus(FocusDirection direction, Control root) {
+		if (root is IManualFocus manualFocus && manualFocus.OnFocusShift(direction)) return;
+
+		if (root is TabBar tabBar) {
+			if (direction == FocusDirection.Left || direction == FocusDirection.Right) {
+				bool tabSelectSuccessful = direction switch {
+					FocusDirection.Left => tabBar.SelectPreviousAvailable(), FocusDirection.Right => tabBar.SelectNextAvailable(),
+					_ => throw new IndexOutOfRangeException()
+				};
+				if (tabSelectSuccessful) return;
+			}
+		}
+
+		Control focusNext = GetNextFocus(direction, root);
+		focusNext?.GrabFocus();
+	}
+
+	private static Control FindFocusableWithin(Node root, FocusDirection direction) {
+		if (root is null) return null;
+		if (root is Control control && control.FocusMode == Control.FocusModeEnum.All) return control;
+		var validChildren = root.FindChildrenWhere<Control>(x => x.FocusMode == Control.FocusModeEnum.All);
+		if (direction == FocusDirection.Left || direction == FocusDirection.Up) validChildren.Reverse();
+		return validChildren.FirstOrDefault();
+	}
 
 	private static Control GetNextFocus(FocusDirection direction, Control root) {
 		var nextPath = direction switch {
@@ -50,26 +87,39 @@ public sealed partial class InputManager : Node
 			FocusDirection.Right => root.FocusNeighborRight,
 			_ => throw new IndexOutOfRangeException()
 		};
-		if (!nextPath.IsEmpty) return root.GetNode(nextPath) as Control;
+		if (!nextPath.IsEmpty) return FindFocusableWithin(root.GetNode(nextPath), direction);
+
 		foreach (var container in root.FindParentsOfType<Container>()) {
 			var chain = container.FindChildChainTo(root);
-			var index = chain.First().GetIndex();
 			if (((direction == FocusDirection.Left || direction == FocusDirection.Right) && container is HBoxContainer) || ((direction == FocusDirection.Up || direction == FocusDirection.Down) && container is VBoxContainer)) {
+				var index = chain.First().GetIndex();
 				var nextIndex = direction switch {
 					FocusDirection.Left => index - 1, FocusDirection.Right => index + 1,
 					FocusDirection.Up => index - 1, FocusDirection.Down => index + 1,
 					_ => throw new IndexOutOfRangeException()
 				};
 				if (nextIndex >= 0 && nextIndex < container.GetChildCount()) {
-					var nextRoot = container.GetChild(nextIndex);
-					if (nextRoot is Control control && control.FocusMode == Control.FocusModeEnum.All) return nextRoot as Control;
-					else { var validChild = nextRoot.FindChildWhere<Control>(x => x.FocusMode == Control.FocusModeEnum.All); if (validChild is not null) return validChild; }
-				}
-				else {
-					var containerNextFocus = GetNextFocus(direction, container);
-					if (containerNextFocus is not null) return containerNextFocus;
+					var nextFocus = FindFocusableWithin(container.GetChild(nextIndex), direction);
+					if (nextFocus is not null) return nextFocus;
 				}
 			}
+
+			if (container is TabContainer tabContainer) {
+				if (direction == FocusDirection.Down && root is TabBar) {
+					var nextFocus = FindFocusableWithin(tabContainer.GetCurrentTabControl(), direction);
+					if (nextFocus is not null) return nextFocus;
+				}
+				if (direction == FocusDirection.Up) return tabContainer.GetTabBar();
+			}
+
+			if (container is IFocusableContainer focusableContainer) {
+				var index = chain.First().GetIndex();
+				var nextFocus = focusableContainer.GetNextFocus(direction, index);
+				if (nextFocus is not null) return nextFocus;
+			}
+
+			var containerNextFocus = GetNextFocus(direction, container);
+			if (containerNextFocus is not null) return containerNextFocus;
 		}
 		return null;
 	}
@@ -80,15 +130,11 @@ public sealed partial class InputManager : Node
 		
 		var direction = Actions.UIDirection.ValueAxis3d;
 
-		Control focusNext = null;
+		if (direction.X > 0.9f) ShiftFocus(FocusDirection.Right, focused);
+		else if (direction.X < -0.9f) ShiftFocus(FocusDirection.Left, focused);
 
-		if (direction.X > 0.9f) focusNext = GetNextFocus(FocusDirection.Right, focused);
-		else if (direction.X < -0.9f) focusNext = GetNextFocus(FocusDirection.Left, focused);
-
-		if (direction.Y > 0.9f) focusNext = GetNextFocus(FocusDirection.Up, focused);
-		else if (direction.Y < -0.9f) focusNext = GetNextFocus(FocusDirection.Down, focused);
-
-		focusNext?.GrabFocus();
+		if (direction.Y > 0.9f) ShiftFocus(FocusDirection.Up, focused);
+		else if (direction.Y < -0.9f) ShiftFocus(FocusDirection.Down, focused);
 	}
 	
     private bool _keyboardAndMouseContextEnabled = false;
