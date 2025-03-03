@@ -9,7 +9,7 @@ using Bridge;
 namespace DamselsGambit;
 
 [Tool, GlobalClass, Icon("res://assets/editor/icons/cards_hand.svg")]
-public partial class HandContainer : Container, IReloadableToolScript
+public partial class HandContainer : Container, IReloadableToolScript, IFocusableContainer
 {
     [Export] public BoxContainer.AlignmentMode Alignment { get; set { field = value; QueueSort(); } } = BoxContainer.AlignmentMode.Center;
     [Export] public bool Fill { get; set { field = value; QueueSort(); } } = false;
@@ -82,6 +82,16 @@ public partial class HandContainer : Container, IReloadableToolScript
         }
     }
 
+    public Control GetNextFocus(InputManager.FocusDirection direction, int childIndex) {
+        var nextIndex = direction switch {
+            InputManager.FocusDirection.Left => childIndex - 1,
+            InputManager.FocusDirection.Right => childIndex + 1,
+            _ => -1
+        };
+        if (nextIndex >= 0 && nextIndex < GetChildCount()) return InputManager.FindFocusableWithin(GetChild(nextIndex), direction);
+        return null;
+    }
+
     private void OnSelectAt() {
         if (Engine.IsEditorHint()) return;
 
@@ -97,6 +107,7 @@ public partial class HandContainer : Container, IReloadableToolScript
             if (card.CardRect.HasPoint(positionLocal)) { selectedCard = card; }
         }
         if (selectedCard is not null) {
+            selectedCard.GrabFocus();
             bool isSelected = _selectedCards.Contains(selectedCard);
             _prevSelectedState[selectedCard] = isSelected;
             if (isSelected) { _selectedCards.Remove(selectedCard); }

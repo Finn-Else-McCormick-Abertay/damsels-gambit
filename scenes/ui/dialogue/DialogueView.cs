@@ -73,6 +73,7 @@ public partial class DialogueView : Node, DialogueViewBase
 		TitleRoot.Visible = dialogueLine.CharacterName is not null && dialogueLine.CharacterName != "";
 		LineRoot.Visible = true;
 		ContinueButton.Visible = !withNext;
+		ContinueButton.GrabFocus();
 
 		var themeTag = (dialogueLine?.Metadata?.Where(x => x.StartsWith("theme=")) ?? []).SingleOrDefault();
 		if (themeTag is not null) {
@@ -89,9 +90,6 @@ public partial class DialogueView : Node, DialogueViewBase
 	}
 
 	private void OnContinue() {
-		//GD.Print($"Continue Pressed - Current State is {Enum.GetName(State)}");
-		//if (State != DialogueState.DisplayingLine) return;
-
 		_onLineFinishedAction?.Invoke();
 	}
 
@@ -100,7 +98,6 @@ public partial class DialogueView : Node, DialogueViewBase
 	}
 
 	public void DismissLine(Action onDismissalComplete) {
-
 		ContinueButton.Hide();
 		onDismissalComplete?.Invoke();
 		State = DialogueState.Waiting;
@@ -127,6 +124,8 @@ public partial class DialogueView : Node, DialogueViewBase
 
 			optionControl.Show();
 		}
+
+		InputManager.FindFocusableWithin(OptionRoot, InputManager.FocusDirection.Down)?.GrabFocus();
 
 		OptionRoot.Show();
 		State = DialogueState.DisplayingOptions;

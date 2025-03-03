@@ -40,6 +40,8 @@ public sealed partial class InputManager : Node
 		Actions.UIDirection.Connect(GUIDEAction.SignalName.Triggered, new Callable(this, MethodName.OnUIDirectionTriggered), 0);
 	}
 
+	private Control _prevFocus = null;
+
 	private readonly Stack<NodePath> _focusStack = [];
 	public void PushToFocusStack() {
 		var focused = GetViewport().GuiGetFocusOwner();
@@ -68,10 +70,11 @@ public sealed partial class InputManager : Node
 		}
 
 		Control focusNext = GetNextFocus(direction, root);
+		Instance._prevFocus = Instance.GetViewport().GuiGetFocusOwner();
 		focusNext?.GrabFocus();
 	}
 
-	private static Control FindFocusableWithin(Node root, FocusDirection direction) {
+	public static Control FindFocusableWithin(Node root, FocusDirection direction) {
 		if (root is null) return null;
 		if (root is Control control && control.FocusMode == Control.FocusModeEnum.All) return control;
 		var validChildren = root.FindChildrenWhere<Control>(x => x.FocusMode == Control.FocusModeEnum.All);
@@ -79,7 +82,7 @@ public sealed partial class InputManager : Node
 		return validChildren.FirstOrDefault();
 	}
 
-	private static Control GetNextFocus(FocusDirection direction, Control root) {
+	public static Control GetNextFocus(FocusDirection direction, Control root) {
 		var nextPath = direction switch {
 			FocusDirection.Up => root.FocusNeighborTop,
 			FocusDirection.Down => root.FocusNeighborBottom,
@@ -87,6 +90,8 @@ public sealed partial class InputManager : Node
 			FocusDirection.Right => root.FocusNeighborRight,
 			_ => throw new IndexOutOfRangeException()
 		};
+		if (nextPath == "!return") return Instance._prevFocus;
+
 		if (!nextPath.IsEmpty) return FindFocusableWithin(root.GetNode(nextPath), direction);
 
 		foreach (var container in root.FindParentsOfType<Container>()) {

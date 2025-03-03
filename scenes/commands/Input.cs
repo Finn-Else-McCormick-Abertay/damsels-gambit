@@ -30,9 +30,17 @@ public class Input : Console.Command
         //public IEnumerable<string> Get { get; set; } = null;
     }
 
+    [Verb("", true)]
+    class DefaultOptions {
+        [Value(0)]
+        public IEnumerable<string> Value { get; set; }
+        [Option(SetName = "get")]
+        public bool Get { get; set; }
+    }
+
     public override void Parse(Parser parser, IEnumerable<string> args)
     {
-        var result = parser.ParseArguments<ContextOptions, ActionOptions>(args);
+        var result = parser.ParseArguments<ContextOptions, ActionOptions, DefaultOptions>(args);
         result.WithParsed<ContextOptions>(options => {
             if (options.Get) {
                 OutputMappingContexts();
@@ -40,6 +48,15 @@ public class Input : Console.Command
             else { OutputHelp(result); }
         });
         result.WithParsed<ActionOptions>(options => {
+        });
+
+        result.WithParsed<DefaultOptions>(options => {
+            if (options.Get) {
+                if (options.Value.Any(x => x.MatchN("focus"))) {
+                    var focusOwner = InputManager.Instance.GetViewport().GuiGetFocusOwner();
+                    Console.Info($"{focusOwner}");
+                }
+            }
         });
 
         result.WithNotParsed(err => OutputHelp(result));

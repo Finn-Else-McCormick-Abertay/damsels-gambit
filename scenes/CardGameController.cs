@@ -27,6 +27,8 @@ public partial class CardGameController : Control
 	[Export] public HandContainer ActionHand { get; set; }
 	[Export] public Button PlayButton { get; set; }
 	[Export] public RoundMeter RoundMeter { get; set; }
+	
+	public bool SkipIntro { get; set; }
 
 	private readonly int _scoreMax = 10, _scoreMin = -10;
 	private readonly int _loveThreshold = 4, _hateThreshold = -4;
@@ -70,8 +72,11 @@ public partial class CardGameController : Control
 			Deal();
 			DialogueManager.Runner.TryConnect(DialogueRunner.SignalName.onDialogueComplete, new Callable(this, MethodName.OnDialogueComplete));
 		}
-		DialogueManager.Runner.TryConnect(DialogueRunner.SignalName.onDialogueComplete, onTutorialComplete);
-		DialogueManager.Run("tutorial_intro");
+		if (SkipIntro) { onTutorialComplete(); }
+		else {
+			DialogueManager.Runner.TryConnect(DialogueRunner.SignalName.onDialogueComplete, onTutorialComplete);
+			DialogueManager.Run("tutorial_intro");
+		}
 	}
 
 	public override void _Process(double delta) {

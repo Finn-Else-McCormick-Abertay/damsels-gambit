@@ -15,7 +15,7 @@ func _ready():
 	start_button.grab_focus()
 
 func _on_start_pressed()-> void:
-	GameManager.InitialiseCardGame(true)
+	GameManager.InitialiseCardGame(true, false)
 
 func _on_settings_pressed()-> void:
 	InputManager.PushToFocusStack()

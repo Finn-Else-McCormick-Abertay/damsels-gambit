@@ -133,6 +133,8 @@ offset_right = -0.0720215
 offset_bottom = -40.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_neighbor_right = NodePath("../RightHandContainer")
+focus_neighbor_bottom = NodePath("../PlayHandButton")
 script = ExtResource("4_xg83y")
 Alignment = 0
 HandSize = 3
@@ -147,6 +149,7 @@ metadata/_edit_group_ = true
 
 [node name="CardDisplay2" type="Control" parent="LeftHandContainer"]
 layout_mode = 2
+focus_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"action/question"
@@ -154,6 +157,7 @@ ShadowOffset = Vector2(-6, 2.465)
 
 [node name="CardDisplay6" type="Control" parent="LeftHandContainer"]
 layout_mode = 2
+focus_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"action/secret"
@@ -161,6 +165,7 @@ ShadowOffset = Vector2(-6, 2.465)
 
 [node name="CardDisplay4" type="Control" parent="LeftHandContainer"]
 layout_mode = 2
+focus_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"action/want"
@@ -179,6 +184,8 @@ offset_right = 408.072
 offset_bottom = -40.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_neighbor_left = NodePath("../LeftHandContainer")
+focus_neighbor_bottom = NodePath("../PlayHandButton")
 script = ExtResource("4_xg83y")
 Alignment = 2
 HandSize = 3
@@ -193,6 +200,7 @@ metadata/_edit_group_ = true
 
 [node name="CardDisplay" type="Control" parent="RightHandContainer"]
 layout_mode = 2
+focus_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"topic/animals"
@@ -200,6 +208,7 @@ ShadowOffset = Vector2(-6, 2.465)
 
 [node name="CardDisplay5" type="Control" parent="RightHandContainer"]
 layout_mode = 2
+focus_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"topic/witchcraft"
@@ -207,6 +216,7 @@ ShadowOffset = Vector2(-6, 2.465)
 
 [node name="CardDisplay3" type="Control" parent="RightHandContainer"]
 layout_mode = 2
+focus_mode = 2
 mouse_filter = 1
 script = ExtResource("2_kdxpq")
 CardId = &"topic/art"
@@ -225,6 +235,9 @@ offset_right = 49.6799
 offset_bottom = -36.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_neighbor_left = NodePath("../LeftHandContainer")
+focus_neighbor_top = NodePath("!return")
+focus_neighbor_right = NodePath("../RightHandContainer")
 theme = ExtResource("6_7wss3")
 text = "Play Hand"
 
