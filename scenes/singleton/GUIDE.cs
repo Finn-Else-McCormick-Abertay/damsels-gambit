@@ -7,22 +7,9 @@ using Bridge;
 
 namespace DamselsGambit;
 
-// Setup by GameManager - bridge to GUIDE GDScript autoload
+// Setup by InputManager - bridge to GUIDE GDScript autoload
 public sealed class GUIDE
 {
-	public static class Contexts
-	{
-		public static readonly GUIDEMappingContext KeyboardAndMouse = GUIDEMappingContext.From(ResourceLoader.Load("res://assets/input/context_keyboard_mouse.tres"));
-		public static readonly GUIDEMappingContext Controller = GUIDEMappingContext.From(ResourceLoader.Load("res://assets/input/context_controller.tres"));
-	}
-
-	public static class Actions
-	{
-    	public static readonly GUIDEAction Select = GUIDEAction.From(ResourceLoader.Load("res://assets/input/actions/select.tres"));
-    	public static readonly GUIDEAction SelectAt = GUIDEAction.From(ResourceLoader.Load("res://assets/input/actions/select_at.tres"));
-    	public static readonly GUIDEAction UIDirection = GUIDEAction.From(ResourceLoader.Load("res://assets/input/actions/ui_direction.tres"));
-	}
-
 	public static void InjectInput(InputEvent @event) => Call(MethodName.InjectInput, Variant.From(@event));
 	public static void SetRemappingConfig(GUIDERemappingConfig remappingConfig) => Call(MethodName.SetRemappingConfig, Variant.From(remappingConfig.InnerObject));
 
@@ -49,7 +36,7 @@ public sealed class GUIDE
 	public static void Connect(StringName signal, Callable callable) => Instance._guide.Connect(signal, callable);
 	public static void Disconnect(StringName signal, Callable callable) => Instance._guide.Disconnect(signal, callable);
 
-	// Should only be called from GameManager
+	// Should only be called from InputManager
 	public static bool Initialise(Node GUIDE) {
 		if (Instance._guide is not null) throw new Exception("Attempted to init GUIDE singleton more than once.");
 		Instance._guide = GUIDE;

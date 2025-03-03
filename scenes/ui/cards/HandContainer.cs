@@ -56,7 +56,7 @@ public partial class HandContainer : Container, IReloadableToolScript
     }
 
     public override void _Ready() {
-        GUIDE.Actions.SelectAt.Connect(GUIDEAction.SignalName.Triggered, new Callable(this, MethodName.OnSelectAt), 0);
+        InputManager.Actions.SelectAt.Connect(GUIDEAction.SignalName.Triggered, new Callable(this, MethodName.OnSelectAt), 0);
     }
 
     public override void _EnterTree() {
@@ -85,7 +85,7 @@ public partial class HandContainer : Container, IReloadableToolScript
     private void OnSelectAt() {
         if (Engine.IsEditorHint()) return;
 
-        var position = GUIDE.Actions.SelectAt.ValueAxis2d;
+        var position = InputManager.Actions.SelectAt.ValueAxis2d;
         
         //Console.Info($"Select At { position }");
 

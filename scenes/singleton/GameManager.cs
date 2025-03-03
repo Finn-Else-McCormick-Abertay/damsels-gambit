@@ -4,6 +4,7 @@ using DamselsGambit.Util;
 using Godot;
 using Bridge;
 using System.Linq;
+using Google.Protobuf.WellKnownTypes;
 
 namespace DamselsGambit;
 
@@ -16,6 +17,10 @@ public sealed partial class GameManager : Node
     public static PauseMenu PauseMenu { get; private set; }
     public static Node DialogueInterface { get; private set; }
     public static CardGameController CardGameController { get; private set; }
+
+    public static event Action<Control> OnMainMenuInitialised, OnMainMenuFreed;
+    public static event Action<PauseMenu> OnPauseMenuInitialised, OnPauseMenuFreed;
+    public static event Action<CardGameController> OnCardGameControllerInitialised, OnCardGameControllerFreed;
 
     private CanvasLayer _cardGameCanvasLayer = new() { Layer = 20, Name = "CardGameLayer" };
     private CanvasLayer _menuCanvasLayer = new() { Layer = 25, Name = "MenuLayer" };
@@ -33,9 +38,6 @@ public sealed partial class GameManager : Node
     private void OnTreeReady() {
         AddChild(_cardGameCanvasLayer); _cardGameCanvasLayer.Owner = this;
         AddChild(_menuCanvasLayer); _menuCanvasLayer.Owner = this;
-
-        GUIDE.Initialise(GetTree().Root.GetNode("GUIDE"));
-        GUIDE.Connect(GUIDE.SignalName.InputMappingsChanged, new Callable(this, MethodName.OnInputMappingsChanged));
         
         GetTree().Connect(SceneTree.SignalName.NodeAdded, Callable.From((Node node) => { if (node is PopupMenu popup) { popup.TransparentBg = true; } }));
 
@@ -43,50 +45,36 @@ public sealed partial class GameManager : Node
         PauseMenu = GetTree().Root.FindChildWhere<PauseMenu>(x => x.SceneFilePath.Equals(_pauseMenuScene.ResourcePath));
         CardGameController = GetTree().Root.FindChildWhere<CardGameController>(x => x.SceneFilePath.Equals(_cardGameScene.ResourcePath));
         DialogueInterface = GetTree().Root.FindChildWhere<DialogueView>(x => x.SceneFilePath.Equals(_dialogueInterfaceScene.ResourcePath));
-        if (DialogueInterface is null) { DialogueInterface = _dialogueInterfaceScene.Instantiate(); AddChild(DialogueInterface); DialogueInterface.Owner = this; }
+        if (DialogueInterface is null) { DialogueInterface = _dialogueInterfaceScene.Instantiate(); _menuCanvasLayer.AddChild(DialogueInterface); DialogueInterface.Owner = this; }
 
         var sceneRoot = GetTree().Root.GetChildren().LastOrDefault();
         if (sceneRoot is null || sceneRoot.SceneFilePath.Equals("res://scenes/main.tscn")) { InitialiseMainMenu(); }
     }
 
     public void InitialiseMainMenu(bool force = true) {
-        if (MainMenu is not null) { if (!force) return; MainMenu.GetParent().RemoveChild(MainMenu); MainMenu.QueueFree(); MainMenu = null; }
-        PauseMenu?.QueueFree(); PauseMenu = null;
-        CardGameController?.QueueFree(); CardGameController = null;
+        if (MainMenu is not null) { if (!force) return; MainMenu.GetParent().RemoveChild(MainMenu); MainMenu.QueueFree(); OnMainMenuFreed?.Invoke(MainMenu); MainMenu = null; }
+        if (PauseMenu is not null) { PauseMenu.GetParent().RemoveChild(PauseMenu); PauseMenu.QueueFree(); OnPauseMenuFreed?.Invoke(PauseMenu); PauseMenu = null; }
+        if (CardGameController is not null) { CardGameController.GetParent().RemoveChild(CardGameController); CardGameController.QueueFree(); OnCardGameControllerFreed?.Invoke(CardGameController); CardGameController = null; }
 
         MainMenu = _mainMenuScene.Instantiate<Control>();
         _menuCanvasLayer.AddChild(MainMenu); MainMenu.Owner = _menuCanvasLayer;
+        OnMainMenuInitialised?.Invoke(MainMenu);
     }
     
     public void InitialiseCardGame(bool force = true) {
-        if (CardGameController is not null) { if (!force) return; CardGameController.GetParent().RemoveChild(CardGameController); CardGameController.QueueFree(); CardGameController = null; }
-        if (PauseMenu is not null) { PauseMenu.GetParent().RemoveChild(PauseMenu); PauseMenu.QueueFree(); PauseMenu = null; }
-        MainMenu?.QueueFree(); MainMenu = null;
+        if (CardGameController is not null) { if (!force) return; CardGameController.GetParent().RemoveChild(CardGameController); CardGameController.QueueFree(); OnCardGameControllerFreed?.Invoke(CardGameController); CardGameController = null; }
+        if (PauseMenu is not null) { PauseMenu.GetParent().RemoveChild(PauseMenu); PauseMenu.QueueFree(); OnPauseMenuFreed?.Invoke(PauseMenu); PauseMenu = null; }
+        if (MainMenu is not null) { MainMenu.GetParent().RemoveChild(MainMenu); MainMenu.QueueFree(); OnMainMenuFreed?.Invoke(MainMenu); MainMenu = null; }
         
         DialogueManager.Instance.Reset();
 
         CardGameController = _cardGameScene.Instantiate<CardGameController>();
         _cardGameCanvasLayer.AddChild(CardGameController); CardGameController.Owner = _cardGameCanvasLayer;
+        OnCardGameControllerInitialised?.Invoke(CardGameController);
 
         PauseMenu = _pauseMenuScene.Instantiate<PauseMenu>();
         _menuCanvasLayer.AddChild(PauseMenu); PauseMenu.Owner = _menuCanvasLayer;
         PauseMenu.Hide();
-    }
-
-    private bool _keyboardAndMouseContextEnabled = false;
-    private bool _controllerContextEnabled = false;
-
-    private void OnInputMappingsChanged() {
-        _keyboardAndMouseContextEnabled = GUIDE.IsMappingContextEnabled(GUIDE.Contexts.KeyboardAndMouse);
-        _controllerContextEnabled = GUIDE.IsMappingContextEnabled(GUIDE.Contexts.Controller);
-    }
-
-    public override void _Input(InputEvent @event) {
-        if (!_keyboardAndMouseContextEnabled && (@event is InputEventKey || @event is InputEventMouse)) {
-            GUIDE.EnableMappingContext(GUIDE.Contexts.KeyboardAndMouse, true);
-        }
-        if (!_controllerContextEnabled && (@event is InputEventJoypadButton || @event is InputEventJoypadMotion)) {
-            GUIDE.EnableMappingContext(GUIDE.Contexts.Controller, true);
-        }
+        OnPauseMenuInitialised?.Invoke(PauseMenu);
     }
 } 
