@@ -57,7 +57,7 @@ public sealed partial class InputManager : Node
 		}
 	}
 
-	public enum FocusDirection { Up, Down, Left, Right }
+	public enum FocusDirection { Up, Down, Left, Right, None }
 
 	private static void ShiftFocus(FocusDirection direction, Control root) {
 		if (root is IManualFocus manualFocus && manualFocus.OnFocusShift(direction)) return;
@@ -153,19 +153,22 @@ public sealed partial class InputManager : Node
 
 	private void OnUIDirectionTriggered() {
 		var focused = GetViewport().GuiGetFocusOwner();
+
+		FocusDirection direction = FocusDirection.None;
+
+		float threshold = 0.5f;
+		if (Actions.UIDirection.ValueAxis3d.X > threshold) direction = FocusDirection.Right;
+		else if (Actions.UIDirection.ValueAxis3d.X < -threshold) direction = FocusDirection.Left;
+		else if (Actions.UIDirection.ValueAxis3d.Y > threshold) direction = FocusDirection.Up;
+		else if (Actions.UIDirection.ValueAxis3d.Y < -threshold) direction = FocusDirection.Down;
+
 		if (focused is null) {
 			var focusContext = GetTree().Root.FindChildWhere(x => x is IFocusContext) as IFocusContext;
-			FindFocusableWithin(focusContext?.GetDefaultFocus())?.GrabFocus();
+			FindFocusableWithin(focusContext?.GetDefaultFocus(direction))?.GrabFocus();
 			return;
 		}
-		
-		var direction = Actions.UIDirection.ValueAxis3d;
 
-		if (direction.X > 0.9f) ShiftFocus(FocusDirection.Right, focused);
-		else if (direction.X < -0.9f) ShiftFocus(FocusDirection.Left, focused);
-
-		if (direction.Y > 0.9f) ShiftFocus(FocusDirection.Up, focused);
-		else if (direction.Y < -0.9f) ShiftFocus(FocusDirection.Down, focused);
+		if (direction != FocusDirection.None) ShiftFocus(direction, focused);
 	}
 	
     private bool _keyboardAndMouseContextEnabled = false;

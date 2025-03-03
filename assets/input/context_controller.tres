@@ -12,7 +12,6 @@
 [ext_resource type="Script" path="res://addons/guide/inputs/guide_input_joy_axis_2d.gd" id="9_wsixt"]
 [ext_resource type="Script" path="res://addons/guide/triggers/guide_trigger_hold.gd" id="10_dk2ih"]
 [ext_resource type="Script" path="res://addons/guide/modifiers/guide_modifier_negate.gd" id="11_0eauu"]
-[ext_resource type="Script" path="res://addons/guide/triggers/guide_trigger_tap.gd" id="12_p70bq"]
 [ext_resource type="Script" path="res://addons/guide/modifiers/guide_modifier_input_swizzle.gd" id="13_nmfsy"]
 [ext_resource type="Resource" uid="uid://bqwgnr5n8inik" path="res://assets/input/actions/drag.tres" id="14_f8dkl"]
 [ext_resource type="Resource" uid="uid://5nfi2cyljqsi" path="res://assets/input/actions/click_hold.tres" id="14_tsyh4"]
@@ -20,7 +19,7 @@
 [ext_resource type="Script" path="res://addons/guide/triggers/guide_trigger_down.gd" id="15_thwl8"]
 [ext_resource type="Script" path="res://addons/guide/triggers/guide_trigger_chorded_action.gd" id="16_7qn63"]
 
-[sub_resource type="Resource" id="Resource_01yy6"]
+[sub_resource type="Resource" id="Resource_xsm2d"]
 script = ExtResource("4_hb457")
 button = 0
 joy_index = -1
@@ -31,7 +30,7 @@ actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_uoi8v"]
 script = ExtResource("3_axd73")
-input = SubResource("Resource_01yy6")
+input = SubResource("Resource_xsm2d")
 modifiers = Array[ExtResource("5_h5nfx")]([])
 triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_llwjy")])
 
@@ -40,11 +39,17 @@ script = ExtResource("1_fo03c")
 action = ExtResource("2_vqvye")
 input_mappings = Array[ExtResource("3_axd73")]([SubResource("Resource_uoi8v")])
 
-[sub_resource type="Resource" id="Resource_rqf1w"]
+[sub_resource type="Resource" id="Resource_mrru1"]
 script = ExtResource("9_wsixt")
 x = 0
 y = 1
 joy_index = -1
+
+[sub_resource type="Resource" id="Resource_vquex"]
+script = ExtResource("11_0eauu")
+x = false
+y = true
+z = false
 
 [sub_resource type="Resource" id="Resource_xy8sx"]
 script = ExtResource("7_1k1qq")
@@ -58,9 +63,10 @@ actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_8sron"]
 script = ExtResource("3_axd73")
-input = SubResource("Resource_rqf1w")
-modifiers = Array[ExtResource("5_h5nfx")]([])
+input = SubResource("Resource_mrru1")
+modifiers = Array[ExtResource("5_h5nfx")]([SubResource("Resource_vquex")])
 triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_xy8sx"), SubResource("Resource_u1bju")])
+metadata/_guide_modifiers_collapsed = false
 
 [sub_resource type="Resource" id="Resource_5p7ef"]
 script = ExtResource("4_hb457")
@@ -73,12 +79,11 @@ x = true
 y = true
 z = true
 
-[sub_resource type="Resource" id="Resource_afii1"]
-script = ExtResource("12_p70bq")
-tap_threshold = 0.2
+[sub_resource type="Resource" id="Resource_6h25o"]
+script = ExtResource("7_1k1qq")
 actuation_threshold = 0.5
 
-[sub_resource type="Resource" id="Resource_nvxjq"]
+[sub_resource type="Resource" id="Resource_tca2j"]
 script = ExtResource("10_dk2ih")
 hold_treshold = 1.0
 is_one_shot = false
@@ -88,19 +93,18 @@ actuation_threshold = 0.5
 script = ExtResource("3_axd73")
 input = SubResource("Resource_5p7ef")
 modifiers = Array[ExtResource("5_h5nfx")]([SubResource("Resource_1kpd7")])
-triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_afii1"), SubResource("Resource_nvxjq")])
+triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_6h25o"), SubResource("Resource_tca2j")])
 
-[sub_resource type="Resource" id="Resource_dc8l8"]
+[sub_resource type="Resource" id="Resource_o0srd"]
 script = ExtResource("4_hb457")
 button = 14
 joy_index = -1
 
-[sub_resource type="Resource" id="Resource_s2t8y"]
-script = ExtResource("12_p70bq")
-tap_threshold = 0.2
+[sub_resource type="Resource" id="Resource_chpn3"]
+script = ExtResource("7_1k1qq")
 actuation_threshold = 0.5
 
-[sub_resource type="Resource" id="Resource_ca2nu"]
+[sub_resource type="Resource" id="Resource_g1nt4"]
 script = ExtResource("10_dk2ih")
 hold_treshold = 1.0
 is_one_shot = false
@@ -108,11 +112,11 @@ actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_6v6am"]
 script = ExtResource("3_axd73")
-input = SubResource("Resource_dc8l8")
+input = SubResource("Resource_o0srd")
 modifiers = Array[ExtResource("5_h5nfx")]([])
-triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_s2t8y"), SubResource("Resource_ca2nu")])
+triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_chpn3"), SubResource("Resource_g1nt4")])
 
-[sub_resource type="Resource" id="Resource_2gjq7"]
+[sub_resource type="Resource" id="Resource_tet06"]
 script = ExtResource("4_hb457")
 button = 11
 joy_index = -1
@@ -121,9 +125,8 @@ joy_index = -1
 script = ExtResource("13_nmfsy")
 order = 0
 
-[sub_resource type="Resource" id="Resource_ggrlx"]
-script = ExtResource("12_p70bq")
-tap_threshold = 0.2
+[sub_resource type="Resource" id="Resource_llg48"]
+script = ExtResource("7_1k1qq")
 actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_krbt6"]
@@ -134,9 +137,9 @@ actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_lwej3"]
 script = ExtResource("3_axd73")
-input = SubResource("Resource_2gjq7")
+input = SubResource("Resource_tet06")
 modifiers = Array[ExtResource("5_h5nfx")]([SubResource("Resource_ju6bu")])
-triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_ggrlx"), SubResource("Resource_krbt6")])
+triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_llg48"), SubResource("Resource_krbt6")])
 
 [sub_resource type="Resource" id="Resource_70axe"]
 script = ExtResource("4_hb457")
@@ -153,9 +156,8 @@ x = true
 y = true
 z = true
 
-[sub_resource type="Resource" id="Resource_0ewu4"]
-script = ExtResource("12_p70bq")
-tap_threshold = 0.2
+[sub_resource type="Resource" id="Resource_ds07s"]
+script = ExtResource("7_1k1qq")
 actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_sd3hi"]
@@ -168,14 +170,14 @@ actuation_threshold = 0.5
 script = ExtResource("3_axd73")
 input = SubResource("Resource_70axe")
 modifiers = Array[ExtResource("5_h5nfx")]([SubResource("Resource_v1jyy"), SubResource("Resource_81wkd")])
-triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_0ewu4"), SubResource("Resource_sd3hi")])
+triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_ds07s"), SubResource("Resource_sd3hi")])
 
 [sub_resource type="Resource" id="Resource_vjgr6"]
 script = ExtResource("1_fo03c")
 action = ExtResource("8_38bhk")
 input_mappings = Array[ExtResource("3_axd73")]([SubResource("Resource_8sron"), SubResource("Resource_nd2jl"), SubResource("Resource_6v6am"), SubResource("Resource_lwej3"), SubResource("Resource_ajytf")])
 
-[sub_resource type="Resource" id="Resource_eysfs"]
+[sub_resource type="Resource" id="Resource_npu2u"]
 script = ExtResource("4_hb457")
 button = 0
 joy_index = -1
@@ -186,7 +188,7 @@ actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_d14a1"]
 script = ExtResource("3_axd73")
-input = SubResource("Resource_eysfs")
+input = SubResource("Resource_npu2u")
 modifiers = Array[ExtResource("5_h5nfx")]([])
 triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_0jg1l")])
 

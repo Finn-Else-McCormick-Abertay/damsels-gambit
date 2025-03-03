@@ -84,6 +84,12 @@ public partial class CardGameController : Control, IFocusContext
 	}
 	
     public Control GetDefaultFocus() => ActionHand;
+    public Control GetDefaultFocus(InputManager.FocusDirection direction) => direction switch {
+		InputManager.FocusDirection.Left => ActionHand.GetChildren().LastOrDefault() as Control,
+		InputManager.FocusDirection.Right => TopicHand.GetChildren().FirstOrDefault() as Control,
+		InputManager.FocusDirection.Up => PlayButton,
+		_ => GetDefaultFocus()
+	};
 
 	private void PlayHand() {
 		var selectedSubject = TopicHand.GetSelected().First();
