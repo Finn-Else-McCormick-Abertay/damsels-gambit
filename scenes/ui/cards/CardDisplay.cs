@@ -137,10 +137,6 @@ public partial class CardDisplay : Control, IReloadableToolScript
 			var font = GetThemeFont(ThemeProperties.Font.Score, ThemeClassName); var fontSize = GetThemeFontSize(ThemeProperties.Font.Size.Score, ThemeClassName); var fontColor = GetThemeColor(ThemeProperties.Color.ScoreFont, ThemeClassName);
 			DrawString(font, new Vector2(_textureAspectRatio * Size.Y / 2f * SharedParams.ScorePosition.X, Size.Y  * SharedParams.ScorePosition.Y), Score, HorizontalAlignment.Center, _textureAspectRatio * Size.Y, fontSize, fontColor);
 		}
-
-		if (HasFocus()) {
-			DrawCircle(new(), 20f, Colors.Red, true);
-		}
 	}
 
 	private float _textureAspectRatio = 0f;

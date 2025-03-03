@@ -57,26 +57,33 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
 
     public override void _Ready() {
         InputManager.Actions.SelectAt.Connect(GUIDEAction.SignalName.Triggered, new Callable(this, MethodName.OnSelectAt), 0);
+        
+        InputManager.Actions.Accept.Connect(GUIDEAction.SignalName.Triggered, new Callable(this, MethodName.OnAccept), 0);
     }
 
     public override void _EnterTree() {
-        this.TryConnect(SignalName.ChildEnteredTree, new Callable(this, MethodName.OnChildEnteredTree));
-        this.TryConnect(SignalName.ChildExitingTree, new Callable(this, MethodName.OnChildExitingTree));
+        this.TryConnect(Node.SignalName.ChildEnteredTree, new Callable(this, MethodName.OnChildEnteredTree));
+        this.TryConnect(Node.SignalName.ChildExitingTree, new Callable(this, MethodName.OnChildExitingTree));
     }
     private void OnChildEnteredTree(Node child) {
         if (!Engine.IsEditorHint()) {
-            child.TryConnect(SignalName.MouseEntered, new Callable(this, MethodName.QueueSort));
-            child.TryConnect(SignalName.MouseExited, new Callable(this, MethodName.QueueSort));
+            child.TryConnect(Control.SignalName.MouseEntered, new Callable(this, MethodName.QueueSort));
+            child.TryConnect(Control.SignalName.MouseExited, new Callable(this, MethodName.QueueSort));
+            child.TryConnect(Control.SignalName.FocusEntered, new Callable(this, MethodName.QueueSort));
+            child.TryConnect(Control.SignalName.FocusExited, new Callable(this, MethodName.QueueSort));
+            
             _newChildren.Add(child);
         }
     }
     private void OnChildExitingTree(Node child) {
         if (!Engine.IsEditorHint()) {
-            child.TryDisconnect(SignalName.MouseEntered, new Callable(this, MethodName.QueueSort));
-            child.TryConnect(SignalName.MouseExited, new Callable(this, MethodName.QueueSort));
+            child.TryDisconnect(Control.SignalName.MouseEntered, new Callable(this, MethodName.QueueSort));
+            child.TryDisconnect(Control.SignalName.MouseExited, new Callable(this, MethodName.QueueSort));
+            child.TryDisconnect(Control.SignalName.FocusEntered, new Callable(this, MethodName.QueueSort));
+            child.TryDisconnect(Control.SignalName.FocusExited, new Callable(this, MethodName.QueueSort));
             _newChildren.Remove(child);
             _selectedCards.Remove(child);
-            _prevMouseOverState.Remove(child);
+            _prevHighlightedState.Remove(child);
             _prevSelectedState.Remove(child);
             _prevIndex.Remove(child);
         }
@@ -92,12 +99,24 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
         return null;
     }
 
+    private void OnAccept() {
+        if (Engine.IsEditorHint()) return;
+        
+        foreach (Control child in GetChildren().Cast<Control>()) {
+            if (child.HasFocus()) {
+                bool isSelected = _selectedCards.Contains(child);
+                _prevSelectedState[child] = isSelected;
+                if (isSelected) { _selectedCards.Remove(child); }
+                else if (MaxSelected == -1 || _selectedCards.Count < MaxSelected) { _selectedCards.Add(child); }
+                QueueSort();
+            }
+        }
+    }
+
     private void OnSelectAt() {
         if (Engine.IsEditorHint()) return;
 
         var position = InputManager.Actions.SelectAt.ValueAxis2d;
-        
-        //Console.Info($"Select At { position }");
 
         CardDisplay selectedCard = null;
         foreach (Control child in GetChildren().Cast<Control>()) {
@@ -114,45 +133,13 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
             else if (MaxSelected == -1 || _selectedCards.Count < MaxSelected) { _selectedCards.Add(selectedCard); }
             QueueSort();
         }
-
-        /*CardDisplay cardToSelect = null;
-        foreach (var child in GetChildren()) {
-            if (child is not CardDisplay card) continue;
-            if (card.IsMousedOver) { cardToSelect = card; }
-        }
-
-        if (cardToSelect is not null) {
-            if (_selectedCards.Contains(cardToSelect)) { _selectedCards.Remove(cardToSelect); }
-            else { _selectedCards.Add(cardToSelect); }
-            QueueSort();
-        }*/
-    }
-
-    public override void _GuiInput(InputEvent @event) {
-        /*if (@event is InputEventMouseButton buttonEvent) {
-            if (buttonEvent.ButtonIndex == MouseButton.Left && !buttonEvent.Pressed) {
-                CardDisplay selectedCard = null;
-                foreach (Control child in GetChildren().Cast<Control>()) {
-                    if (child is not CardDisplay card) continue;
-                    var positionLocal = child.GetTransform().AffineInverse() * buttonEvent.Position;
-                    if (card.CardRect.HasPoint(positionLocal)) { selectedCard = card; }
-                }
-                if (selectedCard is not null) {
-                    bool isSelected = _selectedCards.Contains(selectedCard);
-                    _prevSelectedState[selectedCard] = isSelected;
-                    if (isSelected) { _selectedCards.Remove(selectedCard); }
-                    else if (MaxSelected == -1 || _selectedCards.Count < MaxSelected) { _selectedCards.Add(selectedCard); }
-                    QueueSort();
-                }
-            }
-        }*/
     }
 
     public IEnumerable<CardDisplay> GetSelected() => _selectedCards.Select(x => x as CardDisplay);
 
     private readonly HashSet<Node> _newChildren = [];
     private readonly HashSet<Node> _selectedCards = [];
-    private readonly Dictionary<Node, bool> _prevMouseOverState = [];
+    private readonly Dictionary<Node, bool> _prevHighlightedState = [];
     private readonly Dictionary<Node, bool> _prevSelectedState = [];
     private readonly Dictionary<Node, int> _prevIndex = [];
     private readonly Dictionary<Node, Tween> _tweens = [];
@@ -199,16 +186,16 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
                 
                 _prevSelectedState.TryGetValue(card, out bool wasSelected);
 
-                bool mousedOver = (card as CardDisplay)?.IsMousedOver ?? false;
-                if (mousedOver && !Engine.IsEditorHint()) { newPosition += new Vector2(0f, -20f); }
+                bool highlighted = ((card as CardDisplay)?.IsMousedOver ?? false) || card.HasFocus();
+                if (highlighted && !Engine.IsEditorHint()) { newPosition += new Vector2(0f, -20f); }
                 
-                _prevMouseOverState.TryGetValue(card, out bool prevMousedOver);
+                _prevHighlightedState.TryGetValue(card, out bool prevHighlighted);
 
                 _prevIndex.TryGetValueOr(card, out int prevIndex, -1);
                 _prevIndex[card] = pair.Index;
 
                 bool hasTween = _tweens.TryGetValue(card, out Tween oldTween);
-                if (!(prevMousedOver && hasTween && oldTween.IsRunning())) { _prevMouseOverState[card] = mousedOver; }
+                if (!(prevHighlighted && hasTween && oldTween.IsRunning())) { _prevHighlightedState[card] = highlighted; }
                 if (!(wasSelected && hasTween && oldTween.IsRunning())) { _prevSelectedState[card] = selected; }
 
                 bool skipAnimation = false;
@@ -223,7 +210,7 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
                 
                 if (!skipAnimation) {
                     var isNew = _newChildren.Contains(card); if (isNew) { _newChildren.Remove(card); }
-                    var animationTime = isNew ? AnimationTimeAdd : (mousedOver != prevMousedOver || selected != wasSelected) ? AnimationTimeHighlight : AnimationTimeReorder;
+                    var animationTime = isNew ? AnimationTimeAdd : (highlighted != prevHighlighted || selected != wasSelected) ? AnimationTimeHighlight : AnimationTimeReorder;
 
                     if (animationTime > 0.0 && !Engine.IsEditorHint()) {
                         var tween = CreateTween().SetParallel(true);

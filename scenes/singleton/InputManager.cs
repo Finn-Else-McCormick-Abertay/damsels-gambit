@@ -18,7 +18,7 @@ public sealed partial class InputManager : Node
 
 	public static class Actions
 	{
-    	public static readonly GUIDEAction Select = GUIDEAction.From(ResourceLoader.Load("res://assets/input/actions/select.tres"));
+    	public static readonly GUIDEAction Accept = GUIDEAction.From(ResourceLoader.Load("res://assets/input/actions/accept.tres"));
     	public static readonly GUIDEAction SelectAt = GUIDEAction.From(ResourceLoader.Load("res://assets/input/actions/select_at.tres"));
     	public static readonly GUIDEAction UIDirection = GUIDEAction.From(ResourceLoader.Load("res://assets/input/actions/ui_direction.tres"));
 	}
@@ -38,6 +38,9 @@ public sealed partial class InputManager : Node
         GUIDE.Connect(GUIDE.SignalName.InputMappingsChanged, new Callable(this, MethodName.OnInputMappingsChanged));
 
 		Actions.UIDirection.Connect(GUIDEAction.SignalName.Triggered, new Callable(this, MethodName.OnUIDirectionTriggered), 0);
+		//Actions.Accept.Connect(GUIDEAction.SignalName.Started, new Callable(this, MethodName.OnAcceptTriggered), 0);
+		Actions.Accept.Connect(GUIDEAction.SignalName.Triggered, new Callable(this, MethodName.OnAcceptTriggered), 0);
+		Actions.Accept.Connect(GUIDEAction.SignalName.Completed, new Callable(this, MethodName.OnAcceptCompleted), 0);
 	}
 
 	private Control _prevFocus = null;
@@ -129,6 +132,25 @@ public sealed partial class InputManager : Node
 		return null;
 	}
 
+	private void OnAcceptTriggered() {
+		var focused = GetViewport().GuiGetFocusOwner();
+		if (focused is null) return;
+
+		if (focused is BaseButton button && !button.Disabled) {
+			button.EmitSignal(BaseButton.SignalName.ButtonDown);
+			if (button.ActionMode == BaseButton.ActionModeEnum.Press) button.EmitSignal(BaseButton.SignalName.Pressed);
+		}
+	}
+	private void OnAcceptCompleted() {
+		var focused = GetViewport().GuiGetFocusOwner();
+		if (focused is null) return;
+
+		if (focused is BaseButton button && !button.Disabled) {
+			button.EmitSignal(BaseButton.SignalName.ButtonUp);
+			if (button.ActionMode == BaseButton.ActionModeEnum.Release) button.EmitSignal(BaseButton.SignalName.Pressed);
+		}
+	}
+
 	private void OnUIDirectionTriggered() {
 		var focused = GetViewport().GuiGetFocusOwner();
 		if (focused is null) return;
@@ -151,7 +173,7 @@ public sealed partial class InputManager : Node
     }
 
     public override void _Input(InputEvent @event) {
-		if (ShouldOverrideGuiInput && new List<StringName>{ UIInput.UiLeft, UIInput.UiRight, UIInput.UiUp, UIInput.UiDown }.Any(x => @event.IsAction(x))) {
+		if (ShouldOverrideGuiInput && new List<StringName>{ UIInput.UiLeft, UIInput.UiRight, UIInput.UiUp, UIInput.UiDown, UIInput.UiSelect, UIInput.UiAccept }.Any(x => @event.IsAction(x))) {
 			GetViewport().SetInputAsHandled();
 			GUIDE.InjectInput(@event);
 		}
@@ -170,5 +192,7 @@ public sealed partial class InputManager : Node
 		public static readonly StringName UiRight = "ui_right";
 		public static readonly StringName UiUp = "ui_up";
 		public static readonly StringName UiDown = "ui_down";
+		public static readonly StringName UiSelect = "ui_select";
+		public static readonly StringName UiAccept = "ui_accept";
 	}
 }
