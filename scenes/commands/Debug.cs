@@ -16,12 +16,18 @@ public class Debug : Console.Command
         public bool Enable { get; set; } = true;
     }
 
+    [Verb("focus")]
+    class FocusOptions {
+        [Option]
+        public bool Enable { get; set; } = true;
+    }
+
     private static readonly CanvasLayer _debugCanvasLayer = new() { Layer = 50 };
     private static Control _guideDebugger = null;
 
     public override void Parse(Parser parser, IEnumerable<string> args)
     {
-        var result = parser.ParseArguments<InputOptions>(args);
+        var result = parser.ParseArguments<InputOptions, FocusOptions>(args);
         result.WithParsed<InputOptions>(options => {
             if (options.Enable) {
                 if (!_debugCanvasLayer.IsInsideTree()) {
@@ -36,6 +42,10 @@ public class Debug : Console.Command
             else {
                 _guideDebugger?.Hide();
             }
+        });
+
+        result.WithParsed<FocusOptions>(options => {
+            InputManager.ShouldDisplayFocusDebugInfo = options.Enable;
         });
 
         result.WithNotParsed(err => {

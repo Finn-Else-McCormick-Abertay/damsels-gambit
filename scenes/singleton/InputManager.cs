@@ -25,6 +25,8 @@ public sealed partial class InputManager : Node
 	
 	public static bool ShouldOverrideGuiInput { get; set; } = true;
 
+	public static bool ShouldDisplayFocusDebugInfo { get; set; } = false;
+
     public static InputManager Instance { get; set; }
 
 	public override void _EnterTree() {
@@ -93,8 +95,8 @@ public sealed partial class InputManager : Node
 
 	public static Control FindFocusableWithin(Node root, FocusDirection direction = FocusDirection.Right) {
 		if (root is null) return null;
-		if (root is Control control && control.FocusMode == Control.FocusModeEnum.All) return control;
-		var validChildren = root.FindChildrenWhere<Control>(x => x.FocusMode == Control.FocusModeEnum.All);
+		if (root is Control control && control.FocusMode == Control.FocusModeEnum.All && control.IsVisibleInTree()) return control;
+		var validChildren = root.FindChildrenWhere<Control>(x => x.FocusMode == Control.FocusModeEnum.All && x.IsVisibleInTree());
 		if (direction == FocusDirection.Left || direction == FocusDirection.Up) validChildren.Reverse();
 		return validChildren.FirstOrDefault();
 	}
@@ -122,16 +124,20 @@ public sealed partial class InputManager : Node
 
 		foreach (var container in root.FindParentsOfType<Container>()) {
 			var chain = container.FindChildChainTo(root);
+
 			if (IsAxisAnd<HBoxContainer, VBoxContainer>(container, direction)) {
 				var index = chain.First().GetIndex();
-				var nextIndex = direction switch {
-					FocusDirection.Left => index - 1, FocusDirection.Right => index + 1,
-					FocusDirection.Up => index - 1, FocusDirection.Down => index + 1,
+				var indexDirection = direction switch {
+					FocusDirection.Left or FocusDirection.Up => -1,
+					FocusDirection.Right or FocusDirection.Down => 1,
 					_ => throw new IndexOutOfRangeException()
 				};
-				if (nextIndex >= 0 && nextIndex < container.GetChildCount()) {
-					var nextFocus = FindFocusableWithin(container.GetChild(nextIndex), direction);
+
+				index += indexDirection;
+				while (index >= 0 && index < container.GetChildCount()) {
+					var nextFocus = FindFocusableWithin(container.GetChild(index), direction);
 					if (nextFocus is not null) return nextFocus;
+					index += indexDirection;
 				}
 			}
 
@@ -225,6 +231,7 @@ public sealed partial class InputManager : Node
 		if (direction != FocusDirection.None && !UseDirectionalInput(focused, direction)) {
 			Control focusNext = GetNextFocus(direction, focused);
 			Instance._prevFocus = focused;
+			if (ShouldDisplayFocusDebugInfo) Console.Info(focusNext is not null ? $"Shifted focus {Enum.GetName(direction)} to {focusNext}." : $"Could not shift focus {Enum.GetName(direction)}.");
 			focusNext?.GrabFocus();
 		}
 	}
