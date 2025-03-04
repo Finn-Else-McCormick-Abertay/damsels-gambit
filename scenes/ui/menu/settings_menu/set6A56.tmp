@@ -56,7 +56,6 @@ offset_bottom = -120.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
-focus_neighbor_bottom = NodePath("../ExitButton")
 theme = ExtResource("5_ww2uk")
 current_tab = 3
 
@@ -180,6 +179,5 @@ offset_right = -177.0
 offset_bottom = -24.0
 size_flags_horizontal = 8
 size_flags_vertical = 4
-focus_neighbor_top = NodePath("../TabContainer")
 theme = ExtResource("2_k810m")
 text = "Exit"
