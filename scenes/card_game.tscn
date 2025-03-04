@@ -1,11 +1,11 @@
 [gd_scene load_steps=17 format=3 uid="uid://dipd7bv4d85ws"]
 
-[ext_resource type="Script" path="res://scenes/CardGameController.cs" id="1_4k8rw"]
+[ext_resource type="Script" uid="uid://fhn7dbryyxai" path="res://scenes/CardGameController.cs" id="1_4k8rw"]
 [ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_ui_dynamic_font.tres" id="1_b7goe"]
-[ext_resource type="Script" path="res://scenes/ui/cards/CardDisplay.cs" id="2_kdxpq"]
+[ext_resource type="Script" uid="uid://c6fd25jlnt26l" path="res://scenes/ui/cards/CardDisplay.cs" id="2_kdxpq"]
 [ext_resource type="Theme" uid="uid://dhax3sfwm6isl" path="res://assets/ui/theme/affection_meter_theme.tres" id="2_ko4o6"]
-[ext_resource type="Script" path="res://scenes/ui/AffectionMeter.cs" id="4_dw2x6"]
-[ext_resource type="Script" path="res://scenes/ui/cards/HandContainer.cs" id="4_xg83y"]
+[ext_resource type="Script" uid="uid://dbwnt4443aqcc" path="res://scenes/ui/AffectionMeter.cs" id="4_dw2x6"]
+[ext_resource type="Script" uid="uid://cq1ndckdbfugt" path="res://scenes/ui/cards/HandContainer.cs" id="4_xg83y"]
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/theme/default_theme.tres" id="6_7wss3"]
 [ext_resource type="PackedScene" uid="uid://c8warv5k2winh" path="res://scenes/ui/round_meter.tscn" id="8_oypvw"]
 
@@ -33,32 +33,27 @@ fill_from = Vector2(0.478632, 0.290598)
 fill_to = Vector2(-1.25, 0)
 
 [sub_resource type="Curve" id="Curve_6espp"]
-min_value = -50.0
-max_value = 50.0
+_limits = [-50.0, 50.0, 0.0, 1.0]
 _data = [Vector2(0, -16.0156), 0.0, 0.0, 0, 0]
 point_count = 1
 
 [sub_resource type="Curve" id="Curve_2cmp0"]
-min_value = -50.0
-max_value = 50.0
+_limits = [-50.0, 50.0, 0.0, 1.0]
 _data = [Vector2(0, -24.8256), 0.0, 144.798, 0, 0, Vector2(0.488166, 22.7907), 67.6231, 67.6231, 0, 0, Vector2(1, 38.6628), 0.0, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="Curve" id="Curve_kxdyk"]
-min_value = -90.0
-max_value = 90.0
+_limits = [-90.0, 90.0, 0.0, 1.0]
 _data = [Vector2(0, -18.3817), 0.0, 0.0, 0, 0, Vector2(0.529586, -7.93526), 56.3441, 56.3441, 0, 0, Vector2(1, -4.01785), 0.0, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="Curve" id="Curve_5nabb"]
-min_value = -50.0
-max_value = 50.0
+_limits = [-50.0, 50.0, 0.0, 1.0]
 _data = [Vector2(0, 38.6628), 0.0, 0.0, 0, 0, Vector2(0.535503, 20.5233), -41.4268, -41.4268, 0, 0, Vector2(1, -33.1395), -204.372, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="Curve" id="Curve_mupma"]
-min_value = -90.0
-max_value = 90.0
+_limits = [-90.0, 90.0, 0.0, 1.0]
 _data = [Vector2(0, 5.12277), 0.0, 0.0, 0, 0, Vector2(0.502959, 9.04018), 20.9715, 20.9715, 0, 0, Vector2(1, 15.5692), 0.0, 0.0, 0, 0]
 point_count = 3
 

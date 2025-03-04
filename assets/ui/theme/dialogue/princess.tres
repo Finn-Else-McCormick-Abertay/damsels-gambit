@@ -1,7 +1,7 @@
 [gd_resource type="Theme" load_steps=7 format=3 uid="uid://bb8k068675myl"]
 
 [ext_resource type="Texture2D" uid="uid://dq42cbbhv3yw4" path="res://assets/ui/dialogue/Penelope_Text_Box.png" id="1_nlhad"]
-[ext_resource type="Script" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="2_5ptgp"]
+[ext_resource type="Script" uid="uid://bgveruq6sb3li" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="2_5ptgp"]
 [ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_ui_dynamic_font.tres" id="2_f1qtu"]
 [ext_resource type="Texture2D" uid="uid://cs38ucsb4ifer" path="res://assets/ui/dialogue/Penelope_Name_Tag.png" id="4_dxkk4"]
 

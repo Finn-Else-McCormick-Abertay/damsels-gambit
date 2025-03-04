@@ -1,10 +1,9 @@
-[gd_resource type="Resource" load_steps=3 format=3 uid="uid://mi5aeqsksuy8"]
+[gd_resource type="Resource" script_class="CardSharedParams" load_steps=3 format=3 uid="uid://mi5aeqsksuy8"]
 
-[ext_resource type="Script" path="res://scenes/ui/cards/CardSharedParams.cs" id="1_r8t73"]
+[ext_resource type="Script" uid="uid://crxb3ey3wg43v" path="res://scenes/ui/cards/CardSharedParams.cs" id="1_r8t73"]
 
 [sub_resource type="Curve" id="Curve_ku3ps"]
-min_value = -10.0
-max_value = 10.0
+_limits = [-10.0, 10.0, 0.0, 1.0]
 _data = [Vector2(0.262857, -2.41416), 0.0, 21.051, 0, 0, Vector2(0.511429, 0.933476), 0.0, 0.0, 0, 0, Vector2(0.74, -1.85622), -17.6313, 0.0, 0, 0]
 point_count = 3
 

@@ -1,10 +1,10 @@
 [gd_scene load_steps=7 format=3 uid="uid://bv42g323prh5f"]
 
-[ext_resource type="Script" path="res://addons/YarnSpinner-Godot/Runtime/LineProviders/TextLineProvider.cs" id="1"]
-[ext_resource type="Script" path="res://addons/YarnSpinner-Godot/Runtime/Views/OptionsListView.cs" id="2"]
-[ext_resource type="Script" path="res://addons/YarnSpinner-Godot/Runtime/Views/LineView.cs" id="3"]
-[ext_resource type="Script" path="res://addons/YarnSpinner-Godot/Runtime/InMemoryVariableStorage.cs" id="4"]
-[ext_resource type="Script" path="res://addons/YarnSpinner-Godot/Runtime/DialogueRunner.cs" id="5"]
+[ext_resource type="Script" uid="uid://kuix8ythgd2h" path="res://addons/YarnSpinner-Godot/Runtime/LineProviders/TextLineProvider.cs" id="1"]
+[ext_resource type="Script" uid="uid://bi1c57cuoo8ar" path="res://addons/YarnSpinner-Godot/Runtime/Views/OptionsListView.cs" id="2"]
+[ext_resource type="Script" uid="uid://c75inttviys6m" path="res://addons/YarnSpinner-Godot/Runtime/Views/LineView.cs" id="3"]
+[ext_resource type="Script" uid="uid://wnoccw02oh1m" path="res://addons/YarnSpinner-Godot/Runtime/InMemoryVariableStorage.cs" id="4"]
+[ext_resource type="Script" uid="uid://c7sxpa8ws0lr1" path="res://addons/YarnSpinner-Godot/Runtime/DialogueRunner.cs" id="5"]
 [ext_resource type="PackedScene" uid="uid://b56ngcrq31nc5" path="res://addons/YarnSpinner-Godot/Scenes/OptionView.tscn" id="6"]
 
 [node name="YarnSpinnerCanvasLayer" type="CanvasLayer"]

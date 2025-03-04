@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://gqmapmoqb22o"]
 
 [ext_resource type="Theme" uid="uid://cj01ghso8eli6" path="res://assets/ui/theme/dialogue/default.tres" id="1_gxacw"]
-[ext_resource type="Script" path="res://scenes/ui/dialogue/DialogueView.cs" id="5_o0l0u"]
+[ext_resource type="Script" uid="uid://bvc0jwckt327w" path="res://scenes/ui/dialogue/DialogueView.cs" id="5_o0l0u"]
 
 [node name="DialogueSystem" type="Control"]
 layout_mode = 3

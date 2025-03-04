@@ -164,8 +164,8 @@ tracks/3/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_kxbjk"]
 _data = {
-"RESET": SubResource("Animation_rdxcp"),
-"neg effects": SubResource("Animation_fr5s8")
+&"RESET": SubResource("Animation_rdxcp"),
+&"neg effects": SubResource("Animation_fr5s8")
 }
 
 [node name="PositiveInteractionEffect" type="Node2D"]

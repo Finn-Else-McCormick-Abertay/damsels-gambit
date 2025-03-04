@@ -1,13 +1,13 @@
 [gd_scene load_steps=9 format=3 uid="uid://cl108jysyilp"]
 
-[ext_resource type="Script" path="res://scenes/ui/menu/settings_menu/settings_menu.gd" id="1_kwkr7"]
+[ext_resource type="Script" uid="uid://d3ma37cvjj3an" path="res://scenes/ui/menu/settings_menu/settings_menu.gd" id="1_kwkr7"]
 [ext_resource type="Texture2D" uid="uid://2cbl24t405i5" path="res://assets/ui/panels/Paper texture.png" id="1_tfbc3"]
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/theme/default_theme.tres" id="2_k810m"]
 [ext_resource type="PackedScene" uid="uid://i8d73rmb2ldl" path="res://scenes/ui/menu/settings_menu/audio_slider.tscn" id="5_0qogq"]
 [ext_resource type="Theme" uid="uid://td8u5lubicg8" path="res://assets/ui/theme/menu_theme.tres" id="5_ww2uk"]
-[ext_resource type="Script" path="res://scenes/ui/menu/settings_menu/window_drop_down_options.gd" id="6_fkvev"]
-[ext_resource type="Script" path="res://scenes/ui/menu/settings_menu/resolution_drop_down_options.gd" id="7_d6ec4"]
-[ext_resource type="PackedScene" path="res://scenes/ui/menu/settings_menu/dyslexia_toggle.tscn" id="8_1klx8"]
+[ext_resource type="Script" uid="uid://3vkxtd4o4toi" path="res://scenes/ui/menu/settings_menu/window_drop_down_options.gd" id="6_fkvev"]
+[ext_resource type="Script" uid="uid://bi1t25iy0eqir" path="res://scenes/ui/menu/settings_menu/resolution_drop_down_options.gd" id="7_d6ec4"]
+[ext_resource type="PackedScene" uid="uid://xny1ypqybn6j" path="res://scenes/ui/menu/settings_menu/dyslexia_toggle.tscn" id="8_1klx8"]
 
 [node name="SettingsMenu" type="Control" node_paths=PackedStringArray("exit_button")]
 layout_mode = 3

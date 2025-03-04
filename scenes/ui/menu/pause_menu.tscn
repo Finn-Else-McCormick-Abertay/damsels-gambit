@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://ty2out148w5i"]
 
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/theme/default_theme.tres" id="1_a4atp"]
-[ext_resource type="Script" path="res://scenes/ui/menu/PauseMenu.cs" id="2_vtb13"]
+[ext_resource type="Script" uid="uid://cybijydblyve2" path="res://scenes/ui/menu/PauseMenu.cs" id="2_vtb13"]
 
 [node name="PauseMenu" type="Control" node_paths=PackedStringArray("ResumeButton", "QuitButton")]
 process_mode = 3

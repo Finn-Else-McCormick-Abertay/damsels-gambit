@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b56ngcrq31nc5"]
 
-[ext_resource type="Script" path="res://addons/YarnSpinner-Godot/Runtime/Views/OptionView.cs" id="1"]
+[ext_resource type="Script" uid="uid://qus3n2yewb1e" path="res://addons/YarnSpinner-Godot/Runtime/Views/OptionView.cs" id="1"]
 
 [node name="OptionView" type="Button" node_paths=PackedStringArray("label")]
 custom_minimum_size = Vector2(0, 26)
