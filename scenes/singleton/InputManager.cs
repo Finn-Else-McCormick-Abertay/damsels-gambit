@@ -141,6 +141,26 @@ public sealed partial class InputManager : Node
 				}
 			}
 
+			if (container is GridContainer gridContainer && gridContainer.Columns > 0) {
+				var originalIndex = chain.First().GetIndex();
+				var index = originalIndex;
+				var indexJump = direction switch {
+					FocusDirection.Up => -gridContainer.Columns, FocusDirection.Down => gridContainer.Columns,
+					FocusDirection.Left => -1, FocusDirection.Right => 1,
+					_ => throw new IndexOutOfRangeException()
+				};
+				index += indexJump;
+				while (index >= 0 && index < container.GetChildCount() && direction switch { FocusDirection.Left => (index + 1) % gridContainer.Columns != 0, FocusDirection.Right => index % gridContainer.Columns != 0, _ => true }) {
+					var nextFocus = FindFocusableWithin(container.GetChild(index), direction);
+					if (nextFocus is not null) return nextFocus;
+					index += indexJump;
+				}
+				if (index >= container.GetChildCount() && originalIndex < container.GetChildCount() - (container.GetChildCount() % gridContainer.Columns)) {
+					var nextFocus = FindFocusableWithin(container.GetChildren().Last(), direction);
+					if (nextFocus is not null) return nextFocus;
+				}
+			}
+
 			if (container is TabContainer tabContainer) {
 				if (direction == FocusDirection.Down && root is TabBar) {
 					var nextFocus = FindFocusableWithin(tabContainer.GetCurrentTabControl(), direction);
