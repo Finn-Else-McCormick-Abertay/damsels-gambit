@@ -59,24 +59,6 @@ public sealed partial class InputManager : Node
 
 	public enum FocusDirection { Up, Down, Left, Right, None }
 
-	private static void ShiftFocus(FocusDirection direction, Control root) {
-		if (root is IManualFocus manualFocus && manualFocus.OnFocusShift(direction)) return;
-
-		if (root is TabBar tabBar) {
-			if (direction == FocusDirection.Left || direction == FocusDirection.Right) {
-				bool tabSelectSuccessful = direction switch {
-					FocusDirection.Left => tabBar.SelectPreviousAvailable(), FocusDirection.Right => tabBar.SelectNextAvailable(),
-					_ => throw new IndexOutOfRangeException()
-				};
-				if (tabSelectSuccessful) return;
-			}
-		}
-
-		Control focusNext = GetNextFocus(direction, root);
-		Instance._prevFocus = Instance.GetViewport().GuiGetFocusOwner();
-		focusNext?.GrabFocus();
-	}
-
 	public static Control FindFocusableWithin(Node root, FocusDirection direction = FocusDirection.Right) {
 		if (root is null) return null;
 		if (root is Control control && control.FocusMode == Control.FocusModeEnum.All) return control;
@@ -84,6 +66,15 @@ public sealed partial class InputManager : Node
 		if (direction == FocusDirection.Left || direction == FocusDirection.Up) validChildren.Reverse();
 		return validChildren.FirstOrDefault();
 	}
+
+	private static bool IsHorizontal(FocusDirection direction) => direction switch { FocusDirection.Left or FocusDirection.Right => true, _ => false };
+	private static bool IsVertical(FocusDirection direction) => direction switch { FocusDirection.Up or FocusDirection.Down => true, _ => false };
+	
+	private static bool IsHorizontalAnd<T>(Control control, FocusDirection direction) => direction switch { FocusDirection.Left or FocusDirection.Right when control is T => true, _ => false };
+	private static bool IsVerticalAnd<T>(Control control, FocusDirection direction) => direction switch { FocusDirection.Up or FocusDirection.Down when control is T => true, _ => false };
+
+	private static bool IsAxisAnd<LeftRightType, UpDownType>(Control control, FocusDirection direction) =>
+		direction switch { FocusDirection.Left or FocusDirection.Right when control is LeftRightType => true, FocusDirection.Up or FocusDirection.Down when control is UpDownType => true, _ => false };
 
 	public static Control GetNextFocus(FocusDirection direction, Control root) {
 		var nextPath = direction switch {
@@ -99,7 +90,7 @@ public sealed partial class InputManager : Node
 
 		foreach (var container in root.FindParentsOfType<Container>()) {
 			var chain = container.FindChildChainTo(root);
-			if (((direction == FocusDirection.Left || direction == FocusDirection.Right) && container is HBoxContainer) || ((direction == FocusDirection.Up || direction == FocusDirection.Down) && container is VBoxContainer)) {
+			if (IsAxisAnd<HBoxContainer, VBoxContainer>(container, direction)) {
 				var index = chain.First().GetIndex();
 				var nextIndex = direction switch {
 					FocusDirection.Left => index - 1, FocusDirection.Right => index + 1,
@@ -132,6 +123,30 @@ public sealed partial class InputManager : Node
 		return null;
 	}
 
+	private static bool UseDirectionalInput(Control control, FocusDirection direction) {
+		if (control is IFocusOverride focusOverride && focusOverride.UseDirectionalInput(direction)) return true;
+
+		if (control is Slider slider && slider.Editable && slider.Value >= slider.MinValue && slider.Value <= slider.MaxValue && IsAxisAnd<HSlider, VSlider>(control, direction)) {
+			var step = slider.Step * direction switch {
+				FocusDirection.Left or FocusDirection.Down => -1f,
+				FocusDirection.Right or FocusDirection.Up => 1f,
+				_ => throw new IndexOutOfRangeException()
+			};
+			slider.Value += step;
+			return true;
+		}
+
+		if (control is TabBar tabBar && IsHorizontal(direction)) {
+			bool tabSelectSuccessful = direction switch {
+				FocusDirection.Left => tabBar.SelectPreviousAvailable(), FocusDirection.Right => tabBar.SelectNextAvailable(),
+				_ => throw new IndexOutOfRangeException()
+			};
+			if (tabSelectSuccessful) return true;
+		}
+
+		return false;
+	}
+
 	private void OnAcceptTriggered() {
 		var focused = GetViewport().GuiGetFocusOwner();
 		if (focused is null) return;
@@ -152,23 +167,28 @@ public sealed partial class InputManager : Node
 	}
 
 	private void OnUIDirectionTriggered() {
+		const float threshold = 0.5f;
+		var axis = Actions.UIDirection.ValueAxis2d;
+		FocusDirection direction = axis switch {
+			_ when axis.X > threshold => FocusDirection.Right,
+			_ when axis.X < -threshold => FocusDirection.Left,
+			_ when axis.Y > threshold => FocusDirection.Up,
+			_ when axis.Y < -threshold => FocusDirection.Down,
+			_ => FocusDirection.None
+		};
+		
 		var focused = GetViewport().GuiGetFocusOwner();
-
-		FocusDirection direction = FocusDirection.None;
-
-		float threshold = 0.5f;
-		if (Actions.UIDirection.ValueAxis3d.X > threshold) direction = FocusDirection.Right;
-		else if (Actions.UIDirection.ValueAxis3d.X < -threshold) direction = FocusDirection.Left;
-		else if (Actions.UIDirection.ValueAxis3d.Y > threshold) direction = FocusDirection.Up;
-		else if (Actions.UIDirection.ValueAxis3d.Y < -threshold) direction = FocusDirection.Down;
-
 		if (focused is null) {
 			var focusContext = GetTree().Root.FindChildWhere(x => x is IFocusContext) as IFocusContext;
 			FindFocusableWithin(focusContext?.GetDefaultFocus(direction))?.GrabFocus();
 			return;
 		}
 
-		if (direction != FocusDirection.None) ShiftFocus(direction, focused);
+		if (direction != FocusDirection.None && !UseDirectionalInput(focused, direction)) {
+			Control focusNext = GetNextFocus(direction, focused);
+			Instance._prevFocus = focused;
+			focusNext?.GrabFocus();
+		}
 	}
 	
     private bool _keyboardAndMouseContextEnabled = false;

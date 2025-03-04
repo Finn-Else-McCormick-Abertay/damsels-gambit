@@ -1,7 +1,7 @@
 
 namespace DamselsGambit;
 
-public interface IManualFocus
+public interface IFocusOverride
 {
-    public abstract bool OnFocusShift(InputManager.FocusDirection direction);
+    public abstract bool UseDirectionalInput(InputManager.FocusDirection direction);
 }

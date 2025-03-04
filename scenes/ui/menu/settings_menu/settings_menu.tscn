@@ -3,11 +3,11 @@
 [ext_resource type="Script" path="res://scenes/ui/menu/settings_menu/settings_menu.gd" id="1_kwkr7"]
 [ext_resource type="Texture2D" uid="uid://2cbl24t405i5" path="res://assets/ui/panels/Paper texture.png" id="1_tfbc3"]
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/theme/default_theme.tres" id="2_k810m"]
-[ext_resource type="PackedScene" uid="uid://cghlvmxvn3msu" path="res://scenes/ui/menu/settings_menu/audio_slider.tscn" id="5_0qogq"]
+[ext_resource type="PackedScene" uid="uid://i8d73rmb2ldl" path="res://scenes/ui/menu/settings_menu/audio_slider.tscn" id="5_0qogq"]
 [ext_resource type="Theme" uid="uid://td8u5lubicg8" path="res://assets/ui/theme/menu_theme.tres" id="5_ww2uk"]
 [ext_resource type="Script" path="res://scenes/ui/menu/settings_menu/window_drop_down_options.gd" id="6_fkvev"]
 [ext_resource type="Script" path="res://scenes/ui/menu/settings_menu/resolution_drop_down_options.gd" id="7_d6ec4"]
-[ext_resource type="PackedScene" uid="uid://xny1ypqybn6j" path="res://scenes/ui/menu/settings_menu/dyslexia_toggle.tscn" id="8_1klx8"]
+[ext_resource type="PackedScene" path="res://scenes/ui/menu/settings_menu/dyslexia_toggle.tscn" id="8_1klx8"]
 
 [node name="SettingsMenu" type="Control" node_paths=PackedStringArray("exit_button")]
 layout_mode = 3
@@ -58,10 +58,9 @@ grow_vertical = 2
 size_flags_vertical = 3
 focus_neighbor_bottom = NodePath("../ExitButton")
 theme = ExtResource("5_ww2uk")
-current_tab = 3
+current_tab = 0
 
 [node name="Audio" type="Control" parent="TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -151,6 +150,7 @@ layout_mode = 2
 text = "Options Unfinished"
 
 [node name="Accessibility" type="Control" parent="TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 3
 
