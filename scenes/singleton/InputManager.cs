@@ -34,6 +34,9 @@ public sealed partial class InputManager : Node
     }
 
 	private void OnTreeReady() {
+		_rootViewport = GetViewport();
+		_focusedViewport = _rootViewport;
+
 		GUIDE.Initialise(GetTree().Root.GetNode("GUIDE"));
         GUIDE.Connect(GUIDE.SignalName.InputMappingsChanged, new Callable(this, MethodName.OnInputMappingsChanged));
 
@@ -41,13 +44,42 @@ public sealed partial class InputManager : Node
 		//Actions.Accept.Connect(GUIDEAction.SignalName.Started, new Callable(this, MethodName.OnAcceptTriggered), 0);
 		Actions.Accept.Connect(GUIDEAction.SignalName.Triggered, new Callable(this, MethodName.OnAcceptTriggered), 0);
 		Actions.Accept.Connect(GUIDEAction.SignalName.Completed, new Callable(this, MethodName.OnAcceptCompleted), 0);
+		
+        GetTree().Connect(SceneTree.SignalName.NodeAdded, new Callable(this, MethodName.OnNodeAddedToTree));
+        GetTree().Connect(SceneTree.SignalName.NodeRemoved, new Callable(this, MethodName.OnNodeRemovedFromTree));
+	}
+
+	private Viewport _rootViewport = null;
+	private Viewport _focusedViewport = null;
+	private readonly Dictionary<Popup, Dictionary<StringName, Action>> _popups = [];
+
+	private void OnNodeAddedToTree(Node node) {
+		if (node is not Popup popup) return;
+		if (_popups.ContainsKey(popup)) return;
+
+		_popups.Add(popup, []);
+		_popups[popup].Add(Window.SignalName.FocusEntered, () => {
+			_focusedViewport = popup;
+		});
+		_popups[popup].Add(Window.SignalName.FocusExited, () => {
+			_focusedViewport = _rootViewport;
+		});
+
+		foreach (var (signal, action) in _popups[popup]) popup.Connect(signal, Callable.From(action));
+	}
+	private void OnNodeRemovedFromTree(Node node) {
+		if (node is not Popup popup) return;
+		if (!_popups.ContainsKey(popup)) return;
+
+		foreach (var (signal, action) in _popups[popup]) popup.Disconnect(signal, Callable.From(action));
+		_popups.Remove(popup);
 	}
 
 	private Control _prevFocus = null;
 
 	private readonly Stack<NodePath> _focusStack = [];
 	public void PushToFocusStack() {
-		var focused = GetViewport().GuiGetFocusOwner();
+		var focused = _focusedViewport.GuiGetFocusOwner();
 		if (focused is not null) { _focusStack.Push(focused.GetPath()); }
 	}
 	public void PopFromFocusStack() {
@@ -148,21 +180,27 @@ public sealed partial class InputManager : Node
 	}
 
 	private void OnAcceptTriggered() {
-		var focused = GetViewport().GuiGetFocusOwner();
+		var focused = _focusedViewport.GuiGetFocusOwner();
 		if (focused is null) return;
 
 		if (focused is BaseButton button && !button.Disabled) {
 			button.EmitSignal(BaseButton.SignalName.ButtonDown);
-			if (button.ActionMode == BaseButton.ActionModeEnum.Press) button.EmitSignal(BaseButton.SignalName.Pressed);
+			if (button.ActionMode == BaseButton.ActionModeEnum.Press) {
+				button.EmitSignal(BaseButton.SignalName.Pressed);
+				if (button is OptionButton optionButton) optionButton.ShowPopup();
+			}
 		}
 	}
 	private void OnAcceptCompleted() {
-		var focused = GetViewport().GuiGetFocusOwner();
+		var focused = _focusedViewport.GuiGetFocusOwner();
 		if (focused is null) return;
 
 		if (focused is BaseButton button && !button.Disabled) {
 			button.EmitSignal(BaseButton.SignalName.ButtonUp);
-			if (button.ActionMode == BaseButton.ActionModeEnum.Release) button.EmitSignal(BaseButton.SignalName.Pressed);
+			if (button.ActionMode == BaseButton.ActionModeEnum.Release) {
+				button.EmitSignal(BaseButton.SignalName.Pressed);
+				if (button is OptionButton optionButton) optionButton.ShowPopup();
+			}
 		}
 	}
 
@@ -177,7 +215,7 @@ public sealed partial class InputManager : Node
 			_ => FocusDirection.None
 		};
 		
-		var focused = GetViewport().GuiGetFocusOwner();
+		var focused = _focusedViewport.GuiGetFocusOwner();
 		if (focused is null) {
 			var focusContext = GetTree().Root.FindChildWhere(x => x is IFocusContext) as IFocusContext;
 			FindFocusableWithin(focusContext?.GetDefaultFocus(direction))?.GrabFocus();
@@ -201,7 +239,8 @@ public sealed partial class InputManager : Node
 
     public override void _Input(InputEvent @event) {
 		if (ShouldOverrideGuiInput && new List<StringName>{ UIInput.UiLeft, UIInput.UiRight, UIInput.UiUp, UIInput.UiDown, UIInput.UiSelect, UIInput.UiAccept }.Any(x => @event.IsAction(x))) {
-			GetViewport().SetInputAsHandled();
+			_focusedViewport.SetInputAsHandled();
+			if (_focusedViewport != _rootViewport) _rootViewport.SetInputAsHandled();
 			GUIDE.InjectInput(@event);
 		}
 
