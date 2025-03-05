@@ -26,7 +26,7 @@ text = "Dyslexia Mode"
 layout_mode = 2
 theme_override_constants/separation = 124
 
-[node name="CheckBox" type="CheckBox" parent="HBoxContainer"]
+[node name="CheckButton" type="CheckButton" parent="HBoxContainer"]
 layout_mode = 2
 
 [node name="VSeparator2" type="VSeparator" parent="HBoxContainer"]

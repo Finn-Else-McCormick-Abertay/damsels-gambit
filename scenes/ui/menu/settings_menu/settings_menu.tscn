@@ -1,13 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://cl108jysyilp"]
+[gd_scene load_steps=8 format=3 uid="uid://cl108jysyilp"]
 
 [ext_resource type="Script" uid="uid://d3ma37cvjj3an" path="res://scenes/ui/menu/settings_menu/settings_menu.gd" id="1_kwkr7"]
 [ext_resource type="Texture2D" uid="uid://2cbl24t405i5" path="res://assets/ui/panels/Paper texture.png" id="1_tfbc3"]
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/theme/default_theme.tres" id="2_k810m"]
-[ext_resource type="PackedScene" uid="uid://i8d73rmb2ldl" path="res://scenes/ui/menu/settings_menu/audio_slider.tscn" id="5_0qogq"]
 [ext_resource type="Theme" uid="uid://td8u5lubicg8" path="res://assets/ui/theme/menu_theme.tres" id="5_ww2uk"]
 [ext_resource type="Script" uid="uid://3vkxtd4o4toi" path="res://scenes/ui/menu/settings_menu/window_drop_down_options.gd" id="6_fkvev"]
+[ext_resource type="Script" uid="uid://hpe6rand18ey" path="res://scenes/ui/menu/settings_menu/font_selection.gd" id="7_0snvw"]
 [ext_resource type="Script" uid="uid://bi1t25iy0eqir" path="res://scenes/ui/menu/settings_menu/resolution_drop_down_options.gd" id="7_d6ec4"]
-[ext_resource type="PackedScene" uid="uid://xny1ypqybn6j" path="res://scenes/ui/menu/settings_menu/dyslexia_toggle.tscn" id="8_1klx8"]
 
 [node name="SettingsMenu" type="Control" node_paths=PackedStringArray("exit_button")]
 layout_mode = 3
@@ -58,7 +57,7 @@ grow_vertical = 2
 size_flags_vertical = 3
 focus_neighbor_bottom = NodePath("../ExitButton")
 theme = ExtResource("5_ww2uk")
-current_tab = 1
+current_tab = 3
 
 [node name="Audio" type="Control" parent="TabContainer"]
 visible = false
@@ -79,16 +78,8 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 60
 
-[node name="AudioSlider" parent="TabContainer/Audio/VBoxContainer" instance=ExtResource("5_0qogq")]
-layout_mode = 2
-
-[node name="AudioSlider2" parent="TabContainer/Audio/VBoxContainer" instance=ExtResource("5_0qogq")]
-layout_mode = 2
-
-[node name="AudioSlider3" parent="TabContainer/Audio/VBoxContainer" instance=ExtResource("5_0qogq")]
-layout_mode = 2
-
 [node name="Graphics" type="Control" parent="TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -152,7 +143,6 @@ layout_mode = 2
 text = "Options Unfinished"
 
 [node name="Accessibility" type="Control" parent="TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 3
 
@@ -167,8 +157,21 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 64
 
-[node name="dyslexia_toggle" parent="TabContainer/Accessibility/VBoxContainer" instance=ExtResource("8_1klx8")]
+[node name="Font Selection" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer"]
 layout_mode = 2
+script = ExtResource("7_0snvw")
+
+[node name="Label2" type="Label" parent="TabContainer/Accessibility/VBoxContainer/Font Selection"]
+custom_minimum_size = Vector2(264, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HeaderMedium"
+text = "Font Selection"
+
+[node name="OptionButton2" type="OptionButton" parent="TabContainer/Accessibility/VBoxContainer/Font Selection"]
+custom_minimum_size = Vector2(256, 64)
+layout_mode = 2
+allow_reselect = true
 
 [node name="ExitButton" type="Button" parent="."]
 custom_minimum_size = Vector2(120, 20)
