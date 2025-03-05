@@ -1,23 +1,33 @@
 [gd_scene load_steps=5 format=3 uid="uid://q1kh0whg1g0g"]
 
-[ext_resource type="Texture2D" uid="uid://jukd3377womm" path="res://assets/ui/panels/papertexturesmall.png" id="1_c4ias"]
 [ext_resource type="Theme" uid="uid://db11aw5aoqnpw" path="res://assets/ui/theme/suitor_profile_theme.tres" id="1_yh5ad"]
 [ext_resource type="Script" uid="uid://c5bi6sq63upok" path="res://scenes/ui/SuitorProfile.cs" id="2_eweoj"]
 [ext_resource type="Texture2D" uid="uid://bfoqt200g8dkj" path="res://assets/characters/suitor/suitor_card.png" id="3_bt4o7"]
+[ext_resource type="Texture2D" uid="uid://bgp5yt38gueut" path="res://assets/ui/panels/paper_texture_white_bkg.png" id="3_eweoj"]
 
-[node name="SuitorProfile" type="Control" node_paths=PackedStringArray("TabButton")]
+[node name="SuitorProfile" type="Control" node_paths=PackedStringArray("Root", "TabButton")]
 layout_mode = 3
 anchor_right = 0.45
 anchor_bottom = 0.958
-offset_right = -0.400024
+offset_right = 3.59998
 offset_bottom = 0.215942
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_yh5ad")
 script = ExtResource("2_eweoj")
-TabButton = NodePath("TabButton")
+HighlightOffset = Vector2(-10, 0)
+Root = NodePath("Profile Root")
+TabButton = NodePath("Profile Root/TabButton")
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="Profile Root" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="TextureRect" parent="Profile Root"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -25,10 +35,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(229, 197)
-texture = ExtResource("1_c4ias")
+texture = ExtResource("3_eweoj")
 expand_mode = 1
 
-[node name="Portrait" type="TextureRect" parent="."]
+[node name="Portrait" type="TextureRect" parent="Profile Root"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.019
@@ -44,7 +54,7 @@ texture = ExtResource("3_bt4o7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Title" type="Label" parent="."]
+[node name="Title" type="Label" parent="Profile Root"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.446
@@ -60,7 +70,7 @@ theme_type_variation = &"HeaderLarge"
 text = "King Ráðúlfr of Frostholm"
 autowrap_mode = 2
 
-[node name="Pronounciation Guide" type="RichTextLabel" parent="."]
+[node name="Pronounciation Guide" type="RichTextLabel" parent="Profile Root"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.454
@@ -76,7 +86,7 @@ theme_type_variation = &"PronounciationGuide"
 bbcode_enabled = true
 text = "[i]rah-thool-fer[/i]"
 
-[node name="Kingdom Info" type="RichTextLabel" parent="."]
+[node name="Kingdom Info" type="RichTextLabel" parent="Profile Root"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.45
@@ -92,7 +102,7 @@ bbcode_enabled = true
 text = "Frostholm is a freezing, harsh kingdom in the far north, where survival requires resilience and sensibleness. Its citizens value hard work, loyalty, and community. The kingdom is known for it's ice carving traditions and hardy crops."
 tab_size = 12
 
-[node name="RichTextLabel2" type="RichTextLabel" parent="."]
+[node name="RichTextLabel2" type="RichTextLabel" parent="Profile Root"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.494
@@ -108,7 +118,7 @@ text = "He hates witchcraft
 He hates warm weather
 "
 
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
+[node name="RichTextLabel" type="RichTextLabel" parent="Profile Root"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.079
@@ -129,15 +139,14 @@ He likes sword practice
 He likes his parents
 He likes savoury things"
 
-[node name="TabButton" type="Button" parent="."]
+[node name="TabButton" type="Button" parent="Profile Root"]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.005
-anchor_bottom = 0.005
-offset_left = -57.0
-offset_top = 146.895
-offset_right = 90.0
-offset_bottom = 227.895
-rotation = -1.5708
+anchor_top = 0.059
+anchor_bottom = 0.059
+offset_left = -142.0
+offset_top = -40.8915
+offset_right = 5.0
+offset_bottom = 40.1085
 theme_type_variation = &"TabBanner"
 text = "Suitor Profile"
