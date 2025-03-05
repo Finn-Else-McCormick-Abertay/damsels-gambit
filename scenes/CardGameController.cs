@@ -16,7 +16,17 @@ public partial class CardGameController : Control, IFocusContext
 	[Export] public int NumRounds { get; private set { field = value; this.OnReady(() => RoundMeter.NumRounds = NumRounds); } } = 8;
 
 	public int Round { get; set { field = value; if (RoundMeter is not null) RoundMeter.CurrentRound = Round; if (Round > NumRounds) OnGameEnd(); } }
+	
+	public bool SkipIntro { get; set; }
+	
+	[ExportGroup("Score")]
+	[Export] public int ScoreMax { get; private set; } = 10;
+	[Export] public int ScoreMin { get; private set; } = -10;
 
+	[Export] public int LoveThreshold { get; private set { field = value; this.OnReady(() => AffectionMeter.LovePercent = (Math.Abs(ScoreMax) - Math.Abs(LoveThreshold)) / (float)(Math.Abs(ScoreMax) + Math.Abs(ScoreMin))); } } = 4;
+	[Export] public int HateThreshold { get; private set { field = value; this.OnReady(() => AffectionMeter.HatePercent = (Math.Abs(ScoreMin) - Math.Abs(HateThreshold)) / (float)(Math.Abs(ScoreMax) + Math.Abs(ScoreMin))); } } = -4;
+
+	[ExportGroup("Deck")]
 	[Export] public Godot.Collections.Dictionary<string, int> TopicDeck { get; set; }
 	[Export] public Godot.Collections.Dictionary<string, int> ActionDeck { get; set; }
 
@@ -25,19 +35,12 @@ public partial class CardGameController : Control, IFocusContext
 	public ReadOnlyCollection<string> RemainingTopicDeck => _topicDeckWorking.AsReadOnly();
 	public ReadOnlyCollection<string> RemainingActionDeck => _actionDeckWorking.AsReadOnly();
 
+	[ExportGroup("Nodes")]
 	[Export] public AffectionMeter AffectionMeter { get; set; }
 	[Export] public HandContainer TopicHand { get; set; }
 	[Export] public HandContainer ActionHand { get; set; }
 	[Export] public Button PlayButton { get; set; }
 	[Export] public RoundMeter RoundMeter { get; set; }
-	
-	public bool SkipIntro { get; set; }
-	
-	[Export] public int ScoreMax { get; private set; } = 10;
-	[Export] public int ScoreMin { get; private set; } = -10;
-
-	[Export] public int LoveThreshold { get; private set { field = value; this.OnReady(() => AffectionMeter.LovePercent = (Math.Abs(ScoreMax) - Math.Abs(LoveThreshold)) / (float)(Math.Abs(ScoreMax) + Math.Abs(ScoreMin))); } } = 4;
-	[Export] public int HateThreshold { get; private set { field = value; this.OnReady(() => AffectionMeter.HatePercent = (Math.Abs(ScoreMin) - Math.Abs(HateThreshold)) / (float)(Math.Abs(ScoreMax) + Math.Abs(ScoreMin))); } } = -4;
 
 	public int Score { get; set {
 			field = value;
@@ -49,8 +52,6 @@ public partial class CardGameController : Control, IFocusContext
 
 	public override void _Ready() {
 		PlayButton?.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.PlayHand));
-		var suitor = DialogueManager.GetCharacterDisplay("suitor");
-		if (suitor is not null) { suitor.SpriteName = "neutral"; }
 
 		foreach (var child in TopicHand.GetChildren()) { TopicHand.RemoveChild(child); child.QueueFree(); }
 		foreach (var child in ActionHand.GetChildren()) { ActionHand.RemoveChild(child); child.QueueFree(); }
