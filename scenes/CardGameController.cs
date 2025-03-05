@@ -11,20 +11,28 @@ using YarnSpinnerGodot;
 
 namespace DamselsGambit;
 
-public partial class CardGameController : Control, IFocusContext
+[Tool]
+public partial class CardGameController : Control, IReloadableToolScript, IFocusContext
 {
-	[Export] public int NumRounds { get; private set { field = value; this.OnReady(() => RoundMeter.NumRounds = NumRounds); } } = 8;
+	[Export(PropertyHint.Range, "0,20,")] public int NumRounds { get; private set { field = value; this.OnReady(() => { if (RoundMeter is null) return; RoundMeter.NumRounds = NumRounds; }); } } = 8;
 
 	public int Round { get; set { field = value; if (RoundMeter is not null) RoundMeter.CurrentRound = Round; if (Round > NumRounds) OnGameEnd(); } }
 	
 	public bool SkipIntro { get; set; }
 	
 	[ExportGroup("Score")]
-	[Export] public int ScoreMax { get; private set; } = 10;
-	[Export] public int ScoreMin { get; private set; } = -10;
+	[Export(PropertyHint.Range, "-30,30,")] public int ScoreMax { get; private set; } = 10;
+	[Export(PropertyHint.Range, "-30,30,")] public int ScoreMin { get; private set; } = -10;
 
-	[Export] public int LoveThreshold { get; private set { field = value; this.OnReady(() => AffectionMeter.LovePercent = (Math.Abs(ScoreMax) - Math.Abs(LoveThreshold)) / (float)(Math.Abs(ScoreMax) + Math.Abs(ScoreMin))); } } = 4;
-	[Export] public int HateThreshold { get; private set { field = value; this.OnReady(() => AffectionMeter.HatePercent = (Math.Abs(ScoreMin) - Math.Abs(HateThreshold)) / (float)(Math.Abs(ScoreMax) + Math.Abs(ScoreMin))); } } = -4;
+	[Export(PropertyHint.Range, "-30,30,")] public int LoveThreshold { get; private set { field = value; this.OnReady(() => { if (RoundMeter is null) return; AffectionMeter.LovePercent = (Math.Abs(ScoreMax) - Math.Abs(LoveThreshold)) / (float)(Math.Abs(ScoreMax) + Math.Abs(ScoreMin)); }); } } = 4;
+	[Export(PropertyHint.Range, "-30,30,")] public int HateThreshold { get; private set { field = value; this.OnReady(() => { if (RoundMeter is null) return; AffectionMeter.HatePercent = (Math.Abs(ScoreMin) - Math.Abs(HateThreshold)) / (float)(Math.Abs(ScoreMax) + Math.Abs(ScoreMin)); }); } } = -4;
+	
+	public int Score {
+		get; set {
+			field = value; var newDisplayValue = 1 - ((Score / (float)(Math.Abs(ScoreMax) + Math.Abs(ScoreMin))) + Math.Abs(ScoreMin) / (float)(Math.Abs(ScoreMax) + Math.Abs(ScoreMin)));
+			AffectionMeter?.CreateTween()?.TweenProperty(AffectionMeter, AffectionMeter.PropertyName.ValuePercent.ToString(), newDisplayValue, 1.0);
+		}
+	}
 
 	[ExportGroup("Deck")]
 	[Export] public Godot.Collections.Dictionary<string, int> TopicDeck { get; set; }
@@ -32,25 +40,20 @@ public partial class CardGameController : Control, IFocusContext
 
 	private List<string> _topicDeckWorking, _actionDeckWorking;
 
-	public ReadOnlyCollection<string> RemainingTopicDeck => _topicDeckWorking.AsReadOnly();
-	public ReadOnlyCollection<string> RemainingActionDeck => _actionDeckWorking.AsReadOnly();
+	public ReadOnlyCollection<string> RemainingTopicDeck => _topicDeckWorking?.AsReadOnly();
+	public ReadOnlyCollection<string> RemainingActionDeck => _actionDeckWorking?.AsReadOnly();
 
 	[ExportGroup("Nodes")]
 	[Export] public AffectionMeter AffectionMeter { get; set; }
+	[Export] public RoundMeter RoundMeter { get; set; }
 	[Export] public HandContainer TopicHand { get; set; }
 	[Export] public HandContainer ActionHand { get; set; }
 	[Export] public Button PlayButton { get; set; }
-	[Export] public RoundMeter RoundMeter { get; set; }
-
-	public int Score { get; set {
-			field = value;
-			var newDisplayValue = 1 - ((Score / (float)(Math.Abs(ScoreMax) + Math.Abs(ScoreMin))) + Math.Abs(ScoreMin) / (float)(Math.Abs(ScoreMax) + Math.Abs(ScoreMin)));
-			var valueTween = AffectionMeter.CreateTween();
-			valueTween.TweenProperty(AffectionMeter, AffectionMeter.PropertyName.ValuePercent.ToString(), newDisplayValue, 1.0);
-		}
-	}
+	[Export] public SuitorProfile SuitorProfile { get; set; }
 
 	public override void _Ready() {
+		if (Engine.IsEditorHint()) return;
+
 		PlayButton?.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.PlayHand));
 
 		foreach (var child in TopicHand.GetChildren()) { TopicHand.RemoveChild(child); child.QueueFree(); }
@@ -63,8 +66,8 @@ public partial class CardGameController : Control, IFocusContext
 		}
 
 		// Create and shuffle deck
-		_topicDeckWorking = CreateWorkingDeck(TopicDeck).OrderBy(x => Random.Shared.Next()).ToList();
-		_actionDeckWorking = CreateWorkingDeck(ActionDeck).OrderBy(x => Random.Shared.Next()).ToList();
+		_topicDeckWorking = [..CreateWorkingDeck(TopicDeck).OrderBy(x => Random.Shared.Next())];
+		_actionDeckWorking = [..CreateWorkingDeck(ActionDeck).OrderBy(x => Random.Shared.Next())];
 
 		Hide();
 		Round = 1;
@@ -84,6 +87,8 @@ public partial class CardGameController : Control, IFocusContext
 	}
 
 	public override void _Process(double delta) {
+		if (Engine.IsEditorHint()) return;
+
 		PlayButton.Disabled = TopicHand.GetSelected().Count() != 1 || ActionHand.GetSelected().Count() != 1;
 	}
 	
@@ -97,6 +102,8 @@ public partial class CardGameController : Control, IFocusContext
 	};
 
 	private void PlayHand() {
+		if (Engine.IsEditorHint()) return;
+
 		var selectedSubject = TopicHand.GetSelected().First();
 		var selectedModifier = ActionHand.GetSelected().First();
 
@@ -110,6 +117,8 @@ public partial class CardGameController : Control, IFocusContext
 	}
 
 	private void OnDialogueComplete() {
+		if (Engine.IsEditorHint()) return;
+
 		PlayButton.Show();
 
 		Round += 1;
@@ -117,6 +126,8 @@ public partial class CardGameController : Control, IFocusContext
 	}
 
 	private void OnGameEnd() {
+		if (Engine.IsEditorHint()) return;
+
 		AffectionMeter.Hide();
 		RoundMeter.Hide();
 		TopicHand.Hide();
@@ -134,6 +145,8 @@ public partial class CardGameController : Control, IFocusContext
 	}
 
 	private void OnGameEndDialogueComplete() {
+		if (Engine.IsEditorHint()) return;
+
 		DialogueManager.Runner.TryDisconnect(DialogueRunner.SignalName.onDialogueComplete, new Callable(this, MethodName.OnGameEndDialogueComplete));
 		var endScreen = ResourceLoader.Load<PackedScene>("res://scenes/ui/end_screen.tscn").Instantiate<EndScreen>();
 		AddChild(endScreen);
@@ -145,6 +158,8 @@ public partial class CardGameController : Control, IFocusContext
 	}
 
 	private void Deal() {
+		if (Engine.IsEditorHint()) return;
+
 		void InternalDeal(HandContainer container, List<string> workingDeck, Vector2 startPosition, float startAngle, double waitTime = 0.2) {
 			int cardsToDeal = Math.Max(3 - container.GetChildCount(), 0);
 			for (int i = 0; i < cardsToDeal; ++i) {
