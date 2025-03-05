@@ -4,5 +4,10 @@
     "git.ignoreSubmodules": true,
     "git.autoRepositoryDetection": "openEditors",
     "git.autofetch": true,
-    "files.eol": "\n"
+    "files.eol": "\n",
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.patterns": {
+        "*": "${capture}.import, ${capture}.uid"
+    },
+    "explorer.fileNesting.expand": false
 }
