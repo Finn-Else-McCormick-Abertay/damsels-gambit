@@ -24,6 +24,7 @@ DialogueManager="*res://scenes/singleton/DialogueManager.cs"
 GUIDE="*res://addons/guide/guide.gd"
 Console="*res://scenes/singleton/Console.cs"
 InputManager="*res://scenes/singleton/InputManager.cs"
+AudioSystem="*res://scenes/AudioSystem.cs"
 
 [display]
 
