@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=17 format=3 uid="uid://bf1esp424fk84"]
+[gd_resource type="Theme" load_steps=19 format=3 uid="uid://bf1esp424fk84"]
 
 [ext_resource type="Texture2D" uid="uid://bldlvyy7r2k20" path="res://assets/ui/buttons/button_disabled.png" id="1_cw5gu"]
 [ext_resource type="Script" uid="uid://bgveruq6sb3li" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="2_0sphh"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://cpu0tegqhpu8o" path="res://assets/ui/buttons/button_pressed.png" id="5_xefd2"]
 [ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_ui_dynamic_font.tres" id="6_gfc0t"]
 [ext_resource type="FontVariation" uid="uid://66hx5icc5cmq" path="res://assets/fonts/header_dynamic_font.tres" id="7_1vjrx"]
+[ext_resource type="FontFile" uid="uid://djp17o0bg677s" path="res://assets/fonts/monaspace/MonaspaceNeon-Regular.otf" id="9_tb5ir"]
 
 [sub_resource type="StyleBox" id="StyleBox_l55ek"]
 resource_local_to_scene = false
@@ -152,6 +153,10 @@ corner_radius_bottom_left = 3
 color = Color(0.411765, 0.117647, 0.2, 1)
 thickness = 2
 
+[sub_resource type="FontVariation" id="FontVariation_ejujc"]
+base_font = ExtResource("6_gfc0t")
+variation_transform = Transform2D(1, 0.19, 0, 1, 0, 0)
+
 [resource]
 default_font = ExtResource("6_gfc0t")
 Button/colors/font_color = Color(0.201849, 0.0939963, 0.0132285, 1)
@@ -189,3 +194,5 @@ PopupMenu/fonts/font = ExtResource("6_gfc0t")
 PopupMenu/styles/hover = SubResource("StyleBoxFlat_81gfx")
 PopupMenu/styles/panel = SubResource("StyleBoxFlat_4uxkm")
 PopupMenu/styles/separator = SubResource("StyleBoxLine_rd3vs")
+RichTextLabel/fonts/italics_font = SubResource("FontVariation_ejujc")
+RichTextLabel/fonts/mono_font = ExtResource("9_tb5ir")

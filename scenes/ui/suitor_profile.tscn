@@ -1,0 +1,132 @@
+[gd_scene load_steps=5 format=3 uid="uid://q1kh0whg1g0g"]
+
+[ext_resource type="Texture2D" uid="uid://jukd3377womm" path="res://assets/ui/panels/papertexturesmall.png" id="1_c4ias"]
+[ext_resource type="FontVariation" uid="uid://66hx5icc5cmq" path="res://assets/fonts/header_dynamic_font.tres" id="1_yje60"]
+[ext_resource type="Texture2D" uid="uid://bfoqt200g8dkj" path="res://assets/characters/suitor/suitor_card.png" id="3_bt4o7"]
+
+[sub_resource type="Theme" id="Theme_eweoj"]
+HeaderLarge/base_type = &"Label"
+HeaderLarge/colors/font_color = Color(0.192157, 0.0784314, 0.0235294, 1)
+HeaderLarge/font_sizes/font_size = 30
+HeaderLarge/fonts/font = ExtResource("1_yje60")
+RichTextLabel/colors/default_color = Color(0.192157, 0.0784314, 0.0235294, 1)
+RichTextLabel/font_sizes/italics_font_size = 15
+RichTextLabel/font_sizes/normal_font_size = 15
+
+[node name="SuitorProfile" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_eweoj")
+
+[node name="background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.528
+anchor_top = 0.031
+anchor_right = 0.974
+anchor_bottom = 0.965
+offset_left = -0.255981
+offset_top = -0.0880013
+offset_right = -0.0480957
+offset_bottom = -1.32001
+texture = ExtResource("1_c4ias")
+expand_mode = 4
+
+[node name="portrait" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.547
+anchor_top = 0.052
+anchor_right = 0.742
+anchor_bottom = 0.571
+offset_left = -0.144043
+offset_top = 0.304001
+offset_right = 0.215881
+offset_bottom = -0.00802612
+texture = ExtResource("3_bt4o7")
+expand_mode = 1
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.746
+anchor_top = 0.085
+anchor_right = 0.959
+anchor_bottom = 0.196
+offset_left = 2.60791
+offset_top = -0.0800018
+offset_right = -20.7681
+offset_bottom = 4.992
+theme_type_variation = &"HeaderLarge"
+text = "King Ráðúlfr of Frostholm"
+autowrap_mode = 2
+
+[node name="Pronounciation Guide" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.752
+anchor_top = 0.205
+anchor_right = 0.882
+anchor_bottom = 0.233
+offset_left = -0.304016
+offset_top = 0.159973
+offset_right = 54.936
+offset_bottom = 24.016
+theme_type_variation = &"PronounciationGuide"
+bbcode_enabled = true
+text = "[i]Ra-thool-fer of Fro-st-holm[/i]
+"
+
+[node name="Kingdom Info" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.753
+anchor_top = 0.262
+anchor_right = 0.953
+anchor_bottom = 0.523
+offset_left = 0.543945
+offset_top = 0.223984
+offset_right = 0.143921
+offset_bottom = 0.0960083
+bbcode_enabled = true
+text = "Frostholm is a freezing, harsh kingdom in the far north, where survival requires resilience and sensibleness. Its citizens value hard work, loyalty, and community. The kingdom is known for it's ice carving traditions and hardy crops."
+tab_size = 12
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.779
+anchor_top = 0.591
+anchor_right = 0.969
+anchor_bottom = 0.914
+offset_left = -0.408081
+offset_top = 0.0319824
+offset_right = -3.28821
+offset_bottom = 5.72797
+text = "He hates witchcraft
+He hates warm weather
+"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.572
+anchor_top = 0.591
+anchor_right = 0.76
+anchor_bottom = 0.923
+offset_left = 0.0559692
+offset_top = 0.0319824
+offset_right = -0.520203
+offset_bottom = -0.104004
+text = "He loves wolves
+He loves art
+He loves loyalty
+He likes religion
+He likes having children
+He likes sword practice
+He likes his parents
+He likes savoury things"
