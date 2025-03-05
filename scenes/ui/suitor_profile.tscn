@@ -22,7 +22,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_eweoj")
 
-[node name="background" type="TextureRect" parent="."]
+[node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.528
@@ -36,7 +36,7 @@ offset_bottom = -1.32001
 texture = ExtResource("1_c4ias")
 expand_mode = 4
 
-[node name="portrait" type="TextureRect" parent="."]
+[node name="Portrait" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.547
@@ -78,8 +78,7 @@ offset_right = 54.936
 offset_bottom = 24.016
 theme_type_variation = &"PronounciationGuide"
 bbcode_enabled = true
-text = "[i]Ra-thool-fer of Fro-st-holm[/i]
-"
+text = "[i]rah-thool-fer[/i]"
 
 [node name="Kingdom Info" type="RichTextLabel" parent="."]
 layout_mode = 1
