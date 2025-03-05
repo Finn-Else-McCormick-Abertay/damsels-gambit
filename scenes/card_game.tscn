@@ -92,7 +92,6 @@ PlayButton = NodePath("PlayHandButton")
 RoundMeter = NodePath("RoundMeter")
 
 [node name="Vignette" type="TextureRect" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -220,14 +219,14 @@ ShadowOffset = Vector2(-6, 2.465)
 [node name="PlayHandButton" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.47
-anchor_top = 0.857
-anchor_right = 0.535
+anchor_left = 0.472
+anchor_top = 0.853
+anchor_right = 0.528
 anchor_bottom = 1.0
-offset_left = -45.4401
-offset_top = 20.6639
-offset_right = 49.6799
-offset_bottom = -36.0
+offset_left = -52.744
+offset_top = 0.255981
+offset_right = 52.744
+offset_bottom = -14.0
 grow_horizontal = 2
 grow_vertical = 2
 focus_neighbor_left = NodePath("../LeftHandContainer")
