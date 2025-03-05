@@ -7,7 +7,13 @@ namespace DamselsGambit.Util;
 
 static class NodeExtensions
 {
-    public static Godot.Collections.Array<Node> GetInternalChildren<TNode>(this TNode self) where TNode : Node {
+    // If node ready, call immediately. Else defer until node is ready
+    public static void OnReady(this Node self, Action action) {
+        if (self.IsNodeReady()) action();
+        else self.Connect(Node.SignalName.Ready, Callable.From(action), (uint)GodotObject.ConnectFlags.OneShot);
+    }
+
+    public static Godot.Collections.Array<Node> GetInternalChildren(this Node self) {
         var publicChildren = self.GetChildren();
         var internalChildren = self.GetChildren(true).Where(x => !publicChildren.Contains(x));
         return [..internalChildren];

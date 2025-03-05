@@ -51,7 +51,7 @@ public class Game : Console.Command
             if (!options.What.Any()) return;
 
             if (options.What.Count() == 1 && options.What.First().MatchN("round"))
-                Console.Info($"Round {cardGame.Round}/{cardGame.MaxRound} ({(cardGame.Round > cardGame.MaxRound ? "Finished" : $"{cardGame.MaxRound - cardGame.Round + 1} Remaining")})");
+                Console.Info($"Round {cardGame.Round}/{cardGame.NumRounds} ({(cardGame.Round > cardGame.NumRounds ? "Finished" : $"{cardGame.NumRounds - cardGame.Round + 1} Remaining")})");
 
             if (options.What.First().MatchN("cards") || options.What.First().MatchN("card")) {
                 Console.Info($"{options.Topic}, {options.Action}");

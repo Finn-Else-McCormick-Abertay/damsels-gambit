@@ -9,10 +9,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using YarnSpinnerGodot;
 
+namespace DamselsGambit;
+
 public partial class CardGameController : Control, IFocusContext
 {
-	public readonly int MaxRound = 8;
-	public int Round { get; set { field = value; if (RoundMeter is not null) RoundMeter.CurrentRound = Round; if (Round > MaxRound) OnGameEnd(); } }
+	[Export] public int NumRounds { get; private set { field = value; this.OnReady(() => RoundMeter.NumRounds = NumRounds); } } = 8;
+
+	public int Round { get; set { field = value; if (RoundMeter is not null) RoundMeter.CurrentRound = Round; if (Round > NumRounds) OnGameEnd(); } }
 
 	[Export] public Godot.Collections.Dictionary<string, int> TopicDeck { get; set; }
 	[Export] public Godot.Collections.Dictionary<string, int> ActionDeck { get; set; }
@@ -29,23 +32,23 @@ public partial class CardGameController : Control, IFocusContext
 	[Export] public RoundMeter RoundMeter { get; set; }
 	
 	public bool SkipIntro { get; set; }
+	
+	[Export] public int ScoreMax { get; private set; } = 10;
+	[Export] public int ScoreMin { get; private set; } = -10;
 
-	private readonly int _scoreMax = 10, _scoreMin = -10;
-	private readonly int _loveThreshold = 4, _hateThreshold = -4;
+	[Export] public int LoveThreshold { get; private set { field = value; this.OnReady(() => AffectionMeter.LovePercent = (Math.Abs(ScoreMax) - Math.Abs(LoveThreshold)) / (float)(Math.Abs(ScoreMax) + Math.Abs(ScoreMin))); } } = 4;
+	[Export] public int HateThreshold { get; private set { field = value; this.OnReady(() => AffectionMeter.HatePercent = (Math.Abs(ScoreMin) - Math.Abs(HateThreshold)) / (float)(Math.Abs(ScoreMax) + Math.Abs(ScoreMin))); } } = -4;
+
 	public int Score { get; set {
 			field = value;
-			var newDisplayValue = 1 - ((Score / (float)(Math.Abs(_scoreMax) + Math.Abs(_scoreMin))) + Math.Abs(_scoreMin) / (float)(Math.Abs(_scoreMax) + Math.Abs(_scoreMin)));
+			var newDisplayValue = 1 - ((Score / (float)(Math.Abs(ScoreMax) + Math.Abs(ScoreMin))) + Math.Abs(ScoreMin) / (float)(Math.Abs(ScoreMax) + Math.Abs(ScoreMin)));
 			var valueTween = AffectionMeter.CreateTween();
 			valueTween.TweenProperty(AffectionMeter, AffectionMeter.PropertyName.ValuePercent.ToString(), newDisplayValue, 1.0);
 		}
 	}
 
 	public override void _Ready() {
-		AffectionMeter.LovePercent = (Math.Abs(_scoreMax) - Math.Abs(_loveThreshold)) / (float)(Math.Abs(_scoreMax) + Math.Abs(_scoreMin));
-		AffectionMeter.HatePercent = (Math.Abs(_scoreMin) - Math.Abs(_hateThreshold)) / (float)(Math.Abs(_scoreMax) + Math.Abs(_scoreMin));
-		RoundMeter.NumRounds = MaxRound;
-
-		PlayButton?.TryConnect(Button.SignalName.Pressed, new Callable(this, MethodName.PlayHand));
+		PlayButton?.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.PlayHand));
 		var suitor = DialogueManager.GetCharacterDisplay("suitor");
 		if (suitor is not null) { suitor.SpriteName = "neutral"; }
 
@@ -109,7 +112,7 @@ public partial class CardGameController : Control, IFocusContext
 		PlayButton.Show();
 
 		Round += 1;
-		if (Round <= MaxRound) Deal();
+		if (Round <= NumRounds) Deal();
 	}
 
 	private void OnGameEnd() {
@@ -119,9 +122,11 @@ public partial class CardGameController : Control, IFocusContext
 		ActionHand.Hide();
 		PlayButton.Hide();
 		DialogueManager.Runner.TryDisconnect(DialogueRunner.SignalName.onDialogueComplete, new Callable(this, MethodName.OnDialogueComplete));
-		if (Score >= _loveThreshold) { DialogueManager.Run("love_ending", true); }
-		else if (Score <= _hateThreshold) { DialogueManager.Run("hate_ending", true); }
-		else { DialogueManager.Run("neutral_ending", true); }
+		DialogueManager.Run(Score switch {
+			_ when Score >= LoveThreshold => "love_ending",
+			_ when Score <= HateThreshold => "hate_ending",
+			_ => "neutral_ending"
+		});
 		Callable.From(() => { 
 			DialogueManager.Runner.TryConnect(DialogueRunner.SignalName.onDialogueComplete, new Callable(this, MethodName.OnGameEndDialogueComplete));
 		}).CallDeferred();
@@ -131,9 +136,11 @@ public partial class CardGameController : Control, IFocusContext
 		DialogueManager.Runner.TryDisconnect(DialogueRunner.SignalName.onDialogueComplete, new Callable(this, MethodName.OnGameEndDialogueComplete));
 		var endScreen = ResourceLoader.Load<PackedScene>("res://scenes/ui/end_screen.tscn").Instantiate<EndScreen>();
 		AddChild(endScreen);
-		if (Score >= _loveThreshold) { endScreen.MessageLabel.Text = "Prepare for marriage."; }
-		else if (Score <= _hateThreshold) { endScreen.MessageLabel.Text = "Prepare for war."; }
-		else { endScreen.MessageLabel.Text = "You win!"; }	
+		endScreen.MessageLabel.Text = Score switch {
+			_ when Score >= LoveThreshold => "Prepare for marriage.",
+			_ when Score <= HateThreshold => "Prepare for war.",
+			_ => "You win!"
+		};
 	}
 
 	private void Deal() {
