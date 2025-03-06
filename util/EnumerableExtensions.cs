@@ -5,7 +5,5 @@ namespace DamselsGambit.Util;
 
 static class EnumerableExtensions
 {
-    public static bool Any<T>(this IEnumerable<T> self, T value) {
-        return self.Any(x => Equals(x, value));
-    }
+    public static bool Any<T>(this IEnumerable<T> self, T value) => self.Any(x => Equals(x, value));
 }

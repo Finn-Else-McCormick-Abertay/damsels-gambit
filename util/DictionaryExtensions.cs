@@ -6,10 +6,9 @@ namespace DamselsGambit.Util;
 
 public static class DictionaryExtensions
 {
-    public static bool TryGetValueOr<TKey, TValue>(this Dictionary<TKey, TValue> self, TKey key, out TValue value, TValue fallback) {
-        bool found = self.TryGetValue(key, out TValue valTemp);
-        if (found) { value = valTemp; } else { value = fallback; }
-        return found;
+    public static TValue GetValueOr<TKey, TValue>(this Dictionary<TKey, TValue> self, TKey key, TValue fallback) {
+        bool found = self.TryGetValue(key, out TValue value);
+        if (found) return value; else return fallback;
     }
 
     public static TValue GetOrAdd<TKey, TValue>(this Dictionary<TKey, TValue> self, TKey key, TValue value) {

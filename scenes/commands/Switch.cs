@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using CommandLine;
 using CommandLine.Text;
+using DamselsGambit.Util;
 using Godot;
 
 namespace DamselsGambit.Commands;
@@ -11,12 +12,7 @@ public class Switch : Console.Command
 {
     public Switch() {
         _scenePaths = [];
-        void AddPath(string path) { _scenePaths.Add(path); if (path[..6] == "res://") { _scenePaths.Add(path[6..]); } if (path[..13] == "res://scenes/") { _scenePaths.Add(path[13..]); } }
-        void TraverseAndAddScenes(string path) {
-            foreach (var fileName in DirAccess.GetFilesAt(path)) { if (Path.GetExtension(fileName) == ".tscn") { AddPath($"{path}/{fileName}"); } }
-            foreach (var dirName in DirAccess.GetDirectoriesAt(path)) { TraverseAndAddScenes($"{path}/{dirName}"); }
-        }
-        TraverseAndAddScenes("res://scenes");
+        foreach (var file in FileUtils.GetFilesOfType<PackedScene>()) { _scenePaths.Add(file); if (file.StartsWith("res://")) _scenePaths.Add(file.StripFront("res://")); }
     }
     private readonly List<string> _scenePaths;
 
@@ -44,21 +40,17 @@ public class Switch : Console.Command
     }
 
     private static void SwitchToScene(string scenePath) {
-        string normalisedPath = scenePath;
-        if (scenePath.Length >= 6 && scenePath[..6] == "res://") { normalisedPath = normalisedPath[6..]; }
-        var lastDot = scenePath.LastIndexOf('.');
-        if (lastDot != -1 && scenePath[(lastDot + 1)..] == "tscn") { normalisedPath = normalisedPath[..lastDot]; }
-        normalisedPath += ".tscn";
+        scenePath = scenePath.StripFront("res://").ReplaceExtension(".tscn");
 
-        if (!ResourceLoader.Exists($"res://{normalisedPath}") && ResourceLoader.Exists($"res://scenes/{normalisedPath}")) { normalisedPath = $"scenes/{normalisedPath}"; }
+        if (!ResourceLoader.Exists($"res://{scenePath}") && ResourceLoader.Exists($"res://scenes/{scenePath}")) scenePath = $"scenes/{scenePath}";
 
-        if (ResourceLoader.Exists($"res://{normalisedPath}")) {
-            var scene = ResourceLoader.Load<PackedScene>($"res://{normalisedPath}");
+        if (ResourceLoader.Exists($"res://{scenePath}")) {
+            var scene = ResourceLoader.Load<PackedScene>($"res://{scenePath}");
             GameManager.Instance.GetTree().ChangeSceneToPacked(scene);
             
-            Console.Info($"Switched to {normalisedPath}");
+            Console.Info($"Switched to {scenePath}");
         }
-        else { Console.Error($"Failed to switch to scene {normalisedPath}: no such scene exists."); }
+        else { Console.Error($"Failed to switch to scene {scenePath}: no such scene exists."); }
     }
     
     public override IEnumerable<string> GetAutofill(string[] args) {

@@ -191,7 +191,7 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
                 
                 _prevHighlightedState.TryGetValue(card, out bool prevHighlighted);
 
-                _prevIndex.TryGetValueOr(card, out int prevIndex, -1);
+                int prevIndex = _prevIndex.GetValueOr(card, -1);
                 _prevIndex[card] = pair.Index;
 
                 bool hasTween = _tweens.TryGetValue(card, out Tween oldTween);

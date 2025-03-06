@@ -24,16 +24,8 @@ public partial class DialogueView : Node, DialogueViewBase
 
 	private static readonly Dictionary<string, Theme> _themes = [];
 	static DialogueView() {
-        var rootFolder = "res://assets/ui/theme/dialogue/";
-        void LoadFilesIn(string folderPath) {
-			foreach (var rawPath in DirAccess.GetFilesAt(folderPath)) {
-				var file = Path.GetExtension(rawPath) == ".remap" ? Path.GetFileNameWithoutExtension(rawPath) : rawPath;
-				if (Path.GetExtension(file) != ".tres" && Path.GetExtension(file) != ".theme") continue;
-
-				_themes.Add($"{folderPath.StripFront(rootFolder)}{Path.GetFileNameWithoutExtension(file)}", ResourceLoader.Load<Theme>($"{folderPath}{file}"));
-			}
-		}
-		LoadFilesIn(rootFolder);
+		foreach (var (fullPath, relativePath) in FileUtils.GetFilesOfTypeAbsoluteAndRelative<Theme>("res://assets/ui/theme/dialogue/"))
+			_themes.Add(relativePath.StripExtension(), ResourceLoader.Load<Theme>(fullPath));
 	}
 
 	public enum DialogueState { Inactive, DisplayingLine, DisplayingOptions, Waiting }
@@ -44,7 +36,7 @@ public partial class DialogueView : Node, DialogueViewBase
 	public Action requestInterrupt { get; set; }
 
 	public override void _EnterTree() {
-		ContinueButton?.TryConnect(Button.SignalName.Pressed, OnContinue);
+		ContinueButton?.TryConnect(BaseButton.SignalName.Pressed, OnContinue);
 		Root.Hide();
 		TitleRoot.Hide();
 		LineRoot.Hide();
@@ -53,7 +45,7 @@ public partial class DialogueView : Node, DialogueViewBase
 		DialogueManager.Register(this);
 	}
 	public override void _ExitTree() {
-		ContinueButton?.TryDisconnect(Button.SignalName.Pressed, OnContinue);
+		ContinueButton?.TryDisconnect(BaseButton.SignalName.Pressed, OnContinue);
 		DialogueManager.Deregister(this);
 	}
 
