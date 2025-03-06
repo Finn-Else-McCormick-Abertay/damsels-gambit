@@ -1,0 +1,10 @@
+title: profile/frostholm
+---
+First line
+A second line
+A third line even
+<<if knows("frostholm/likes_wolves")>>
+He likes wolves
+<<endif>>
+Final line
+===

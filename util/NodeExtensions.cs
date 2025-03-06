@@ -7,6 +7,8 @@ namespace DamselsGambit.Util;
 
 static class NodeExtensions
 {
+    public static bool IsValid(this GodotObject self) => GodotObject.IsInstanceValid(self);
+
     // If node ready, call immediately. Else defer until node is ready
     public static void OnReady(this Node self, Action action) {
         if (self.IsNodeReady()) action();

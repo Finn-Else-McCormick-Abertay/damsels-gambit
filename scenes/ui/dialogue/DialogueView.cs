@@ -20,7 +20,7 @@ public partial class DialogueView : Node, DialogueViewBase
 	public Control TitleLabel { get; private set; }
 	public Control LineLabel { get; private set; }
 
-	[Export] Button ContinueButton { get; set { ContinueButton?.TryDisconnect(Button.SignalName.Pressed, OnContinue); field = value; ContinueButton?.TryConnect(Button.SignalName.Pressed, OnContinue); } }
+	[Export] Button ContinueButton { get; set { ContinueButton?.TryDisconnect(BaseButton.SignalName.Pressed, OnContinue); field = value; ContinueButton?.TryConnect(BaseButton.SignalName.Pressed, OnContinue); } }
 
 	private static readonly Dictionary<string, Theme> _themes = [];
 	static DialogueView() {
@@ -122,7 +122,7 @@ public partial class DialogueView : Node, DialogueViewBase
 					onOptionSelected?.Invoke(option.DialogueOptionID);
 				});
 			};
-			if (toFocus is null) toFocus = button;
+			toFocus ??= button;
 
 			optionControl.Show();
 		}

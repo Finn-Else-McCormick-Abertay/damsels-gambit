@@ -5,6 +5,7 @@ using System.Text;
 using CommandLine;
 using CommandLine.Text;
 using DamselsGambit.Dialogue;
+using DamselsGambit.Util;
 using Godot;
 
 namespace DamselsGambit.Commands;
@@ -34,10 +35,22 @@ public class Dialogue : Console.Command
         public string Node { get; set; }
     }
 
+    [Verb("learn")]
+    class LearnOptions {
+        [Value(0, HelpText = "Fact to learn", MetaName = "Fact")]
+        public string Fact { get; set; }
+    }
+
+    [Verb("unlearn")]
+    class UnlearnOptions {
+        [Value(0, HelpText = "Fact to unlearn", MetaName = "Fact")]
+        public string Fact { get; set; }
+    }
+
     public override void Parse(Parser parser, IEnumerable<string> args)
     {
         var program = DialogueManager.Runner.yarnProject.Program;
-        var result = parser.ParseArguments<GetOptions, RunOptions>(args);
+        var result = parser.ParseArguments<GetOptions, RunOptions, LearnOptions, UnlearnOptions>(args);
         result.WithParsed<GetOptions>(options => {
             if (!string.IsNullOrEmpty(options.Node)) {
                 if (program.Nodes.TryGetValue(options.Node, out var node)) {
@@ -117,9 +130,14 @@ public class Dialogue : Console.Command
             if (options.Scenes) Console.Info(string.Join(", ", DialogueManager.GetEnvironmentNames()));
             if (options.Characters) Console.Info(string.Join(", ", DialogueManager.GetCharacterNames()));
         });
+
         result.WithParsed<RunOptions>(options => {
             DialogueManager.Run(options.Node, true);
         });
+
+        result.WithParsed<LearnOptions>(options => { DialogueManager.Knowledge.Learn(options.Fact); });
+
+        result.WithParsed<UnlearnOptions>(options => { DialogueManager.Knowledge.Unlearn(options.Fact); });
 
         result.WithNotParsed(err => {
             var helpText = HelpText.AutoBuild(result, h => {
@@ -132,7 +150,7 @@ public class Dialogue : Console.Command
     }
 
     public override IEnumerable<string> GetAutofill(string[] args) {
-        if (args.Length == 1) return [ "get", "run" ];
+        if (args.Length == 1) return [ "get", "run", "learn", "unlearn" ];
         if (args.Length > 1) {
             if (args.First() == "get") {
                 if (args.Contains("--node")) return DialogueManager.Runner.yarnProject.Program.Nodes.Keys;
@@ -141,7 +159,9 @@ public class Dialogue : Console.Command
                 return [ "--node", "--nodes", "--scene", "--scenes", "--character", "--characters" ];
             }
             
-            if (args.First() == "run" && args.Length == 2) return DialogueManager.Runner.yarnProject.Program.Nodes.Keys; 
+            if (args.First() == "run" && args.Length == 2) return DialogueManager.Runner.yarnProject.Program.Nodes.Keys;
+            
+            if (args.First().IsAnyOf([ "learn", "unlearn" ]) && args.Length == 2) return [];
         }
         return [];
     }

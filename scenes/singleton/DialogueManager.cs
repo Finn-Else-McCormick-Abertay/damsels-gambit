@@ -14,7 +14,20 @@ namespace DamselsGambit.Dialogue;
 public partial class DialogueManager : Node
 {
     public static DialogueManager Instance { get; private set; }
+
     public static DialogueRunner Runner { get; private set; }
+    public static DialogueRunner ProfileRunner { get; private set; }
+    
+    public static readonly Knowledge Knowledge = new();
+
+    private static YarnProject _yarnProject;
+    private static TextLineProvider _textLineProvider;
+    private static VariableStorageBehaviour _variableStorage;
+    
+    private readonly Node _environmentRoot = new() { Name = "EnvironmentRoot" };
+    private readonly Dictionary<string, Node> _environments = [];
+    private readonly Dictionary<string, CharacterDisplay> _characterDisplays = [];
+    private readonly HashSet<Node> _dialogueViews = [];
 
     public override void _EnterTree() {
         Instance = this;
@@ -29,16 +42,27 @@ public partial class DialogueManager : Node
     }
 
     public void Reset() {
-        if (Runner is not null) { RemoveChild(Runner); Runner.QueueFree(); Runner = null; }
         InitRunner();
         ReloadEnvironments();
+        Knowledge.Reset();
     }
 
-    private void InitRunner() {
-        if (Runner is not null) return;
-        Runner = new DialogueRunner { Name = "DialogueRunner", yarnProject = ResourceLoader.Load<YarnProject>("res://assets/dialogue/DamselsGambit.yarnproject"), startAutomatically = false };
-        AddChild(Runner); Runner.Owner = this;
-        Runner.SetDialogueViews(_dialogueViews);
+    private void InitRunner(bool force = true) {
+        if (Runner is not null) if (force) { RemoveChild(Runner); Runner.QueueFree(); Runner = null; } else return;
+        if (ProfileRunner is not null) if (force) { RemoveChild(ProfileRunner); ProfileRunner.QueueFree(); ProfileRunner = null; } else return;
+
+        _yarnProject ??= ResourceLoader.Load<YarnProject>("res://assets/dialogue/DamselsGambit.yarnproject");
+
+        if (_textLineProvider is null) { _textLineProvider = new TextLineProvider(); AddChild(_textLineProvider); _textLineProvider.Owner = this; }
+        if (_variableStorage is null) { _variableStorage = new InMemoryVariableStorage(); AddChild(_variableStorage); _variableStorage.Owner = this; }
+
+        Runner = new DialogueRunner { Name = "DialogueRunner", yarnProject = _yarnProject, lineProvider = _textLineProvider, variableStorage = _variableStorage, startAutomatically = false }; AddChild(Runner); Runner.Owner = this;
+        ProfileRunner = new DialogueRunner { Name = "ProfileRunner", yarnProject = _yarnProject, lineProvider = _textLineProvider, variableStorage = _variableStorage, startAutomatically = false }; AddChild(ProfileRunner); ProfileRunner.Owner = this;
+
+        Runner.SetDialogueViews(_dialogueViews.Where(x => x is not ProfileDialogueView));
+        ProfileRunner.SetDialogueViews(_dialogueViews.Where(x => x is ProfileDialogueView));
+
+        ProfileDialogueView.SetupDialogueCommands(ProfileRunner);
     }
 
     private void ReloadEnvironments(bool cleanupExisting = false) {
@@ -73,16 +97,9 @@ public partial class DialogueManager : Node
         }
     }
 
-    private readonly Node _environmentRoot = new() { Name = "EnvironmentRoot" };
-    private readonly Dictionary<string, Node> _environments = [];
-    private readonly Dictionary<string, CharacterDisplay> _characterDisplays = [];
-    private readonly HashSet<Node> _dialogueViews = [];
-
-    private readonly HashSet<string> _knowledge = [];
-
     public static void Register(CharacterDisplay display) {
         if (Instance is null) return;
-        if (Instance._characterDisplays.TryGetValue(display.CharacterName, out var existing)) {
+        if (Instance._characterDisplays.TryGetValue(display.CharacterName, out var _)) {
             Instance._characterDisplays.Remove(display.CharacterName);
             Console.Warning($"Duplicate CharacterDisplay for '{display.CharacterName}' registered.");
         }
@@ -93,8 +110,16 @@ public partial class DialogueManager : Node
         if (Instance._characterDisplays.TryGetValue(display.CharacterName, out var existing) && existing == display) Instance._characterDisplays.Remove(display.CharacterName);
     }
 
-    public static void Register<TView>(TView view) where TView : Node, DialogueViewBase { Instance?._dialogueViews?.Add(view); Runner?.OnReady(() => Runner.dialogueViews.Add(view)); }
-    public static void Deregister<TView>(TView view) where TView : Node, DialogueViewBase { Instance?._dialogueViews?.Remove(view); Runner?.OnReady(() => Runner.dialogueViews.Remove(view)); }
+    public static void Register<TView>(TView view) where TView : Node, DialogueViewBase {
+        Instance?._dialogueViews?.Add(view);
+        var runner = view is ProfileDialogueView ? ProfileRunner : Runner;
+        runner?.OnReady(() => runner.dialogueViews.Add(view));
+    }
+    public static void Deregister<TView>(TView view) where TView : Node, DialogueViewBase {
+        Instance?._dialogueViews?.Remove(view);
+        var runner = view is ProfileDialogueView ? ProfileRunner : Runner;
+        runner?.OnReady(() => runner.dialogueViews.Remove(view));
+    }
 
     public static IEnumerable<string> GetCharacterNames() => Instance?._characterDisplays?.Keys;
 
@@ -117,9 +142,11 @@ public partial class DialogueManager : Node
         return layers;
     }
 
+    public static bool DialogueExists(string nodeName) => _yarnProject?.Program?.Nodes?.ContainsKey(nodeName) ?? false;
+
     public static bool Run(string nodeName, bool force = false, bool orErrorDialogue = true) {
         if (force) { Runner.Stop(); } else if (Runner.IsDialogueRunning) { return false; }
-		if (Runner.yarnProject.Program.Nodes.ContainsKey(nodeName)) {
+		if (DialogueExists(nodeName)) {
 			Runner.StartDialogue(nodeName);
             return true;
 		}
@@ -276,10 +303,12 @@ public partial class DialogueManager : Node
             });
         }
 
-        [YarnCommand("score")]
-        public static void Score(int val) => GameManager.CardGameController.Score += val;
+        [YarnCommand("score")] public static void Score(int val) => GameManager.CardGameController.Score += val;
 
-        [YarnCommand("learn")]
-        public static void Learn(string id) => Instance._knowledge.Add(id);
+        [YarnCommand("learn")] public static void Learn(string id) => Knowledge.Learn(id);
+        
+        [YarnCommand("unlearn")] public static void Unlearn(string id) => Knowledge.Unlearn(id);
+
+        [YarnFunction("knows")] public static bool Knows(string id) => Knowledge.Knows(id);
     }
 }

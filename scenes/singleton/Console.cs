@@ -41,7 +41,7 @@ public sealed partial class Console : Node
         var commandTypes = Assembly.GetAssembly(GetType()).GetTypes().Where(type => typeof(Command).IsAssignableFrom(type) && !type.IsAbstract);
         foreach (var commandType in commandTypes) {
             var commandAttribute = commandType.GetCustomAttribute<CommandAttribute>();
-            string name = commandAttribute?.Name ?? commandType.Name.PascalToKebabCase();
+            string name = commandAttribute?.Name ?? Case.ToKebab(commandType.Name);
             var commandInstance = Activator.CreateInstance(commandType) as Command;
             _commands.Add(name, commandInstance);
         }
@@ -89,27 +89,13 @@ public sealed partial class Console : Node
         OnClear?.Invoke();
     }
 
-    public static void PrintRaw(string msg) {
-        Instance?._logBuilder?.Append(msg);
-        OnPrint?.Invoke(msg);
-    }
+    public static void PrintRaw(string msg) { Instance?._logBuilder?.Append(msg); OnPrint?.Invoke(msg); }
 
-    public static void Print(string msg) {
-        PrintRaw($"{msg}\n");
-    }
+    public static void Print(string msg) => PrintRaw($"{msg}\n");
 
-    public static void Info(string msg, bool pushToStdOut = true) {
-        Print(msg);
-        if (pushToStdOut) { GD.Print(msg); }
-    }
-    public static void Warning(string msg, bool pushToStdOut = true) {
-        PrintRaw($"[color=yellow]{msg}[/color]\n");
-        if (pushToStdOut) { GD.PushWarning(msg); }
-    }
-    public static void Error(string msg, bool pushToStdOut = true) {
-        PrintRaw($"[color=red]{msg}[/color]\n");
-        if (pushToStdOut) { GD.PrintErr(msg); }
-    }
+    public static void Info(string msg, bool pushToStdOut = true) { Print(msg); if (pushToStdOut) GD.Print(msg); }
+    public static void Warning(string msg, bool pushToStdOut = true) { string richMsg = $"[color=#ffde66]{msg}[/color]"; Print(richMsg); if (pushToStdOut) GD.PrintRich(richMsg); }
+    public static void Error(string msg, bool pushToStdOut = true) { Print($"[color=red]{msg}[/color]"); if (pushToStdOut) GD.PrintErr(msg); }
 
     public static void ParseCommand(string inputString) {
         if (Instance is null) return;

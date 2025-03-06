@@ -181,7 +181,7 @@ offset_bottom = -40.0
 grow_horizontal = 2
 grow_vertical = 2
 focus_neighbor_left = NodePath("../LeftHandContainer")
-focus_neighbor_top = NodePath("../SuitorProfile/Profile Root/TabButton")
+focus_neighbor_top = NodePath("../SuitorProfile/Root/TabButton")
 focus_neighbor_bottom = NodePath("../PlayHandButton")
 script = ExtResource("4_xg83y")
 Alignment = 2
@@ -266,7 +266,13 @@ HighlightOffset = Vector2(-50, 0)
 OpenOffset = Vector2(-500, 0)
 OpenDuration = 0.25
 
-[node name="TabButton" parent="SuitorProfile/Profile Root" index="7"]
+[node name="RichTextLabel2" parent="SuitorProfile/Root" index="5"]
+visible = false
+
+[node name="RichTextLabel" parent="SuitorProfile/Root" index="6"]
+visible = false
+
+[node name="TabButton" parent="SuitorProfile/Root" index="7"]
 focus_neighbor_bottom = NodePath("../../../RightHandContainer")
 
 [editable path="SuitorProfile"]

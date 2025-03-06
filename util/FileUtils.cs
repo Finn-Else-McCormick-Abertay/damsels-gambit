@@ -44,7 +44,7 @@ public static class FileUtils
             .Where(file => fileExtensions is null || fileExtensions.Contains(file.GetExtension())) // Skip if not one of the valid extensions. Null for 'all extensions valid'
             .ToList();
 
-        if (recursive) foreach (var directory in DirAccess.GetDirectoriesAt(folder))
+        if (recursive) foreach (var directory in DirAccess.GetDirectoriesAt(folder).Where(x => !x.StartsWith('.')))
             files.AddRange(GetFiles($"{folder}{directory}", recursive, relative, fileExtensions).Select(file => relative ? $"{directory}/{file}" : file));
 
         return [..files];

@@ -9,5 +9,5 @@ static class EqualityExtensions
         return false;
     }
 
-    public static bool IsAnyOf<T>(this T self, IEnumerable<T> values) => self.IsAnyOf<T, T>(values);
+    //public static bool IsAnyOf<T>(this T self, IEnumerable<T> values) => self.IsAnyOf<T, T>(values);
 }
