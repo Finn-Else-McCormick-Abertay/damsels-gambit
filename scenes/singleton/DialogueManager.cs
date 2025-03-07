@@ -1,10 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using DamselsGambit.Util;
-using Eltons.ReflectionKit;
 using Godot;
 using YarnSpinnerGodot;
 
@@ -61,8 +57,6 @@ public partial class DialogueManager : Node
 
         Runner.SetDialogueViews(_dialogueViews.Where(x => x is not ProfileDialogueView));
         ProfileRunner.SetDialogueViews(_dialogueViews.Where(x => x is ProfileDialogueView));
-
-        ProfileDialogueView.SetupDialogueCommands(ProfileRunner);
     }
 
     private void ReloadEnvironments(bool cleanupExisting = false) {
@@ -132,183 +126,18 @@ public partial class DialogueManager : Node
     public static IEnumerable<string> GetEnvironmentNames() => Instance?._environments?.Keys;
 
     // These are either CanvasLayers or CanvasItems - have to do it this way as they both have 'Visible' fields but are not derived from a shared interface
-    public static IEnumerable<Node> GetEnvironmentItems(string environmentName) {
-        if (Instance is null) return [];
-        Instance._environments.TryGetValue(environmentName, out var environment);
-        if (environment is null) return [];
-
-        var layers = new List<Node>();
-        foreach (var node in environment.GetSelfAndChildren()) { if (node is CanvasLayer || node is CanvasItem) { layers.Add(node); } }
-        return layers;
-    }
+    public static IEnumerable<Node> GetEnvironmentItems(string environmentName) => Instance?._environments?.GetValueOrDefault(environmentName)?.GetSelfAndChildren()?.Where(node => node is CanvasLayer || node is CanvasItem) ?? [];
 
     public static bool DialogueExists(string nodeName) => _yarnProject?.Program?.Nodes?.ContainsKey(nodeName) ?? false;
 
     public static bool Run(string nodeName, bool force = false, bool orErrorDialogue = true) {
-        if (force) { Runner.Stop(); } else if (Runner.IsDialogueRunning) { return false; }
+        if (force) Runner.Stop(); else if (Runner.IsDialogueRunning) return false;
 		if (DialogueExists(nodeName)) {
 			Runner.StartDialogue(nodeName);
             return true;
 		}
-        Console.Error($"No such node '{nodeName}'"); GD.PushWarning($"No such node '{nodeName}'");
-        if (orErrorDialogue) { Runner.StartDialogue("error"); }
+        Console.Error($"No such node '{nodeName}'");
+        if (orErrorDialogue) Runner.StartDialogue("error");
         return false;
-    }
-    
-    // Dialogue commands
-    static class Commands
-    {
-        private static readonly Queue<Timer> Timers = new();
-
-        private static void RunCommandDeferred(Action action) {
-            if (Instance is null) return;
-            var actionSignature = action.Method.GetSignature(false);
-            var timer = Timers.LastOrDefault();
-            if (timer is not null) {
-                var awaiter = timer.ToSignal(timer, Timer.SignalName.Timeout);
-                Task.Factory.StartNew(async () => {
-                    await awaiter;
-                    Callable.From(action).CallDeferred();
-                });
-            }
-            else action?.Invoke();
-        }
-
-        // Non-blocking wait
-        [YarnCommand("after")]
-        public static void After(float time) {
-            if (Instance is null) return;
-            var timer = new Timer() { OneShot = true, WaitTime = time };
-            Instance.AddChild(timer);
-            Timers.Enqueue(timer);
-            timer.Timeout += OnDeferralTimerTimeout;
-            if (Timers.Count <= 1) timer.Start();
-        }
-        private static void OnDeferralTimerTimeout() {
-            if (Instance is null) return;
-            if (Timers.TryDequeue(out var oldTimer)) {
-                oldTimer.Timeout -= OnDeferralTimerTimeout;
-                Instance.RemoveChild(oldTimer);
-                oldTimer.QueueFree();
-            }
-            if (Timers.TryPeek(out var nextTimer)) nextTimer.Start();
-        }
-
-        [YarnCommand("flush_command_queue")]
-        public static void FlushCommandQueue() {
-            if (Instance is null) return;
-            foreach (var timer in Timers) {
-                timer.Timeout -= OnDeferralTimerTimeout;
-                timer.Connect(Timer.SignalName.Timeout, Callable.From(timer.QueueFree), (uint)ConnectFlags.OneShot);
-                timer.Start(0.01f);
-            }
-            Timers.Clear();
-        }
-
-        [YarnCommand("scene")]
-        public static void Scene(string sceneName) {
-            RunCommandDeferred(() => {
-                foreach (var (name, root) in Instance?._environments) {
-                    bool visible = name == sceneName;
-                    foreach (var node in root.GetSelfAndChildren()) { if (node is CanvasLayer || node is CanvasItem) { node?.Set(CanvasItem.PropertyName.Visible, visible); } }
-                }
-            });
-        }
-
-        [YarnCommand("show")]
-        public static void Show(string itemName) {
-            RunCommandDeferred(() => {
-                GetCharacterDisplay(itemName)?.Show();
-                foreach (var item in GetEnvironmentItems(itemName)) { item?.Set(CanvasItem.PropertyName.Visible, true); }
-            });
-        }
-
-        [YarnCommand("hide")]
-        public static void Hide(string itemName) {
-            RunCommandDeferred(() => {
-                GetCharacterDisplay(itemName)?.Hide();
-                foreach (var item in GetEnvironmentItems(itemName)) { item?.Set(CanvasItem.PropertyName.Visible, false); }
-            });
-        }
-
-        [YarnCommand("emote")]
-        public static void Emote(string characterName, string emotionName, string from = "", string revertFrom = "") {
-            var display = GetCharacterDisplay(characterName);
-            if (display is null) return;
-            RunCommandDeferred(() => {
-                if (display.Visible == false) { display.Show(); }
-                if (from == "from" && !string.IsNullOrWhiteSpace(revertFrom) && display.SpriteName != revertFrom) return;
-                display.SpriteName = emotionName;
-            });
-        }
-
-        [YarnCommand("move")]
-        public static void Move(string characterName, float x, float y, float time = 0f) {
-            RunCommandDeferred(() => {
-                var display = GetCharacterDisplay(characterName);
-                if (display is null) return;
-                if (time <= 0f) {
-                    display.Position += new Vector2(x, y);
-                    return;
-                }
-                var tween = display.CreateTween();
-                tween.TweenProperty(display, Node2D.PropertyName.Position.ToString(), new Vector2(x, y), time).AsRelative();
-            });
-        }
-
-        [YarnCommand("fade")]
-        public static void Fade(string inOut, string itemName, float time) {
-            RunCommandDeferred(() => {
-                List<CanvasItem> affectedItems = [];
-                List<CanvasLayer> affectedLayers = [];
-
-                var display = GetCharacterDisplay(itemName); 
-                var environmentItems = GetEnvironmentItems(itemName);
-
-                if (display is not null) affectedItems.Add(display);
-                affectedItems.AddRange(environmentItems.Where(x => x is CanvasItem).Select(x => x as CanvasItem));
-                foreach (var layer in environmentItems.Where(x => x is CanvasLayer).Select(x => x as CanvasLayer)) {
-                    var affectedInLayer = layer.GetChildren().Where(x => x is CanvasItem).Select(x => x as CanvasItem);
-                    affectedItems.AddRange(affectedInLayer);
-                    if (affectedInLayer.Any()) affectedLayers.Add(layer);
-                }
-
-                if (time <= 0f) {
-                    foreach (var item in affectedItems) if (inOut == "in") item.Show(); else if (inOut == "out") item.Hide();
-                    foreach (var layer in affectedLayers) if (inOut == "in") layer.Show(); else if (inOut == "out") layer.Hide();
-                    return;
-                }
-
-                foreach (var item in affectedItems) {
-                    float target;
-                    if (inOut == "in") { item.Modulate = item.Modulate with { A = 0f }; target = 1f; } else if (inOut == "out") { item.Modulate = item.Modulate with { A = 1f }; target = 0f; }
-                    else continue;
-                    
-                    item.Show();
-
-                    var tween = item.CreateTween();
-                    tween.TweenProperty(item, "modulate:a", target, time);
-
-                    if (inOut == "out") { tween.TweenCallback(Callable.From(item.Hide)); }
-                }
-                
-                foreach (var layer in affectedLayers) {
-                    layer.Show();
-                    if (inOut == "out") {
-                        var tween = layer.CreateTween();
-                        tween.TweenInterval(time);
-                        tween.TweenCallback(Callable.From(layer.Hide));
-                    }
-                }
-            });
-        }
-
-        [YarnCommand("score")] public static void Score(int val) => GameManager.CardGameController.Score += val;
-
-        [YarnCommand("learn")] public static void Learn(string id) => Knowledge.Learn(id);
-        
-        [YarnCommand("unlearn")] public static void Unlearn(string id) => Knowledge.Unlearn(id);
-
-        [YarnFunction("knows")] public static bool Knows(string id) => Knowledge.Knows(id);
     }
 }

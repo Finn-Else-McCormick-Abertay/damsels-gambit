@@ -266,13 +266,7 @@ HighlightOffset = Vector2(-50, 0)
 OpenOffset = Vector2(-500, 0)
 OpenDuration = 0.25
 
-[node name="RichTextLabel2" parent="SuitorProfile/Root" index="5"]
-visible = false
-
-[node name="RichTextLabel" parent="SuitorProfile/Root" index="6"]
-visible = false
-
-[node name="TabButton" parent="SuitorProfile/Root" index="7"]
+[node name="TabButton" parent="SuitorProfile/Root" index="5"]
 focus_neighbor_bottom = NodePath("../../../RightHandContainer")
 
 [editable path="SuitorProfile"]

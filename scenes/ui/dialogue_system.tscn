@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://gqmapmoqb22o"]
 
-[ext_resource type="Theme" uid="uid://cj01ghso8eli6" path="res://assets/ui/theme/dialogue/default.tres" id="1_gxacw"]
-[ext_resource type="Script" uid="uid://bvc0jwckt327w" path="res://scenes/ui/dialogue/DialogueView.cs" id="5_o0l0u"]
+[ext_resource type="Theme" uid="uid://cj01ghso8eli6" path="res://assets/ui/theme/dialogue/default.tres" id="1_jkk5n"]
+[ext_resource type="Script" uid="uid://bvc0jwckt327w" path="res://scenes/dialogue/DialogueView.cs" id="2_jkk5n"]
 
 [node name="DialogueSystem" type="Control"]
 layout_mode = 3
@@ -10,10 +10,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_gxacw")
+theme = ExtResource("1_jkk5n")
 
 [node name="DialogueView" type="Node" parent="." node_paths=PackedStringArray("Root", "TitleRoot", "LineRoot", "OptionRoot", "OptionArchetype", "ContinueButton")]
-script = ExtResource("5_o0l0u")
+script = ExtResource("2_jkk5n")
 Root = NodePath("../Root")
 TitleRoot = NodePath("../Root/TitlePanel")
 LineRoot = NodePath("../Root/VBoxContainer/LinePanel")

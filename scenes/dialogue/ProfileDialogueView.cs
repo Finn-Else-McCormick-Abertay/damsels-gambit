@@ -9,7 +9,7 @@ namespace DamselsGambit.Dialogue;
 public partial class ProfileDialogueView : Node, DialogueViewBase
 {
     public Action requestInterrupt { get; set; }
-    
+
     public string ProfileNode { get; set; }
 
     [Export] private RichTextLabel Label { get; set; }
@@ -29,10 +29,6 @@ public partial class ProfileDialogueView : Node, DialogueViewBase
     private void Update() {
         if (DialogueManager.ProfileRunner.IsDialogueRunning) DialogueManager.ProfileRunner.Stop();
         if (DialogueManager.DialogueExists(ProfileNode)) DialogueManager.ProfileRunner.StartDialogue(ProfileNode); else Console.Warning($"Profile view could not update: '{ProfileNode}' is not a valid dialogue node.");
-    }
-
-    public static void SetupDialogueCommands(DialogueRunner runner) {
-        //runner.AddCommandHandler("", () => {});
     }
 
     public void DialogueStarted() {
