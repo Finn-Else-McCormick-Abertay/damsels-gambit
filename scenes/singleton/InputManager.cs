@@ -270,16 +270,17 @@ public sealed partial class InputManager : Node
 
     public override void _Input(InputEvent @event) {
 		if (ShouldOverrideGuiInput && new List<StringName>{ UIInput.UiLeft, UIInput.UiRight, UIInput.UiUp, UIInput.UiDown, UIInput.UiSelect, UIInput.UiAccept }.Any(x => @event.IsAction(x))) {
-			_focusedViewport.SetInputAsHandled();
-			if (_focusedViewport != _rootViewport) _rootViewport.SetInputAsHandled();
+			_focusedViewport.SetInputAsHandled(); if (_focusedViewport != _rootViewport) _rootViewport.SetInputAsHandled();
 			GUIDE.InjectInput(@event);
 		}
 
         if (!_keyboardAndMouseContextEnabled && (@event is InputEventKey || @event is InputEventMouse)) {
             GUIDE.EnableMappingContext(Contexts.KeyboardAndMouse, true);
+			GUIDE.InjectInput(@event);
         }
         if (!_controllerContextEnabled && (@event is InputEventJoypadButton || @event is InputEventJoypadMotion)) {
             GUIDE.EnableMappingContext(Contexts.Controller, true);
+			GUIDE.InjectInput(@event);
         }
     }
 
