@@ -14,6 +14,6 @@ func _ready():
 	for font in FONT_DICTIONARY:
 		option_button_2.add_item(font)
 
-func on_font_selected(index : int) -> void:
-	#DisplayServer.window_set_size(FONT_DICTIONARY.values()[index])extends HBoxContainer
+func on_font_selected(_index : int) -> void:
+	#FONT_DICTIONARY.values()[index]
 	pass

@@ -1,7 +1,5 @@
 extends Control
 
-extends Control
-
 @onready var option_button: OptionButton = $OptionButton as OptionButton
 
 const RESOLUTION_DICTIONARY : Dictionary = {

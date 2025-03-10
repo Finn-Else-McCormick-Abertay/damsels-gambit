@@ -5,7 +5,7 @@
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/theme/default_theme.tres" id="2_k810m"]
 [ext_resource type="Theme" uid="uid://td8u5lubicg8" path="res://assets/ui/theme/menu_theme.tres" id="5_ww2uk"]
 [ext_resource type="Script" uid="uid://3vkxtd4o4toi" path="res://scenes/ui/menu/settings_menu/window_drop_down_options.gd" id="6_fkvev"]
-[ext_resource type="Script" path="res://scenes/ui/menu/settings_menu/font_selection.gd" id="7_0snvw"]
+[ext_resource type="Script" uid="uid://hpe6rand18ey" path="res://scenes/ui/menu/settings_menu/font_selection.gd" id="7_0snvw"]
 [ext_resource type="Script" uid="uid://bi1t25iy0eqir" path="res://scenes/ui/menu/settings_menu/resolution_drop_down_options.gd" id="7_d6ec4"]
 
 [node name="SettingsMenu" type="Control" node_paths=PackedStringArray("exit_button")]
