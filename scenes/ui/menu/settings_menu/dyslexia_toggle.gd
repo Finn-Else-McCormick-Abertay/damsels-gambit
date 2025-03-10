@@ -1,20 +1,21 @@
 extends Control
 
+extends Control
 
-@onready var state_label: Label = $HBoxContainer/state_label
-@onready var check_box: CheckBox = $HBoxContainer/CheckBox
+@onready var option_button: OptionButton = $OptionButton as OptionButton
+
+const RESOLUTION_DICTIONARY : Dictionary = {
+	"1152 x 648" : Vector2i(1152, 648),
+	"1280 x 720" : Vector2i(1280, 720),
+	"1920 x 1080" : Vector2i(1920, 1080),
+}
 
 func _ready():
-	check_box.toggled.connect(on_dyslexia_toggled)
+	option_button.item_selected.connect(on_resolution_selected)
+	option_button.clear()
+	for resolution_size_text in RESOLUTION_DICTIONARY:
+		option_button.add_item(resolution_size_text)
 
-func set_label_text(button_pressed : bool) -> void:
-	if button_pressed != true: 
-		state_label.text = "Off"
-	else:
-		state_label.text = "On"
-
-
-
-func on_dyslexia_toggled(button_pressed : bool) -> void:
-	set_label_text(button_pressed) 
+func on_resolution_selected(index : int) -> void:
+	DisplayServer.window_set_size(RESOLUTION_DICTIONARY.values()[index])
 	
