@@ -14,8 +14,9 @@ config/name="Damsel's Gambit"
 config/version="0.2.2"
 run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.4", "C#", "Forward Plus")
-boot_splash/show_image=false
-config/icon="res://icon.svg"
+boot_splash/bg_color=Color(0.945098, 0.862745, 0.819608, 1)
+boot_splash/image="uid://347p4fnedn1a"
+config/icon="uid://347p4fnedn1a"
 
 [autoload]
 
