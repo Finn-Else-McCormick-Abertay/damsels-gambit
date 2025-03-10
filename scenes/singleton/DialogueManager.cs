@@ -105,14 +105,10 @@ public partial class DialogueManager : Node
     }
 
     public static void Register<TView>(TView view) where TView : Node, DialogueViewBase {
-        Instance?._dialogueViews?.Add(view);
-        var runner = view is ProfileDialogueView ? ProfileRunner : Runner;
-        runner?.OnReady(() => runner.dialogueViews.Add(view));
+        Instance?._dialogueViews?.Add(view); (view is ProfileDialogueView ? ProfileRunner : Runner)?.OnReady(x => x.dialogueViews.Add(view));
     }
     public static void Deregister<TView>(TView view) where TView : Node, DialogueViewBase {
-        Instance?._dialogueViews?.Remove(view);
-        var runner = view is ProfileDialogueView ? ProfileRunner : Runner;
-        runner?.OnReady(() => runner.dialogueViews.Remove(view));
+        Instance?._dialogueViews?.Remove(view); (view is ProfileDialogueView ? ProfileRunner : Runner)?.OnReady(x => x.dialogueViews.Remove(view));
     }
 
     public static IEnumerable<string> GetCharacterNames() => Instance?._characterDisplays?.Keys;

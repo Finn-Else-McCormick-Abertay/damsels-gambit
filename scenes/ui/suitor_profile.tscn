@@ -21,9 +21,12 @@ DialogueView = NodePath("ProfileView")
 Root = NodePath("Root")
 TabButton = NodePath("Root/TabButton")
 
-[node name="ProfileView" type="Node" parent="." node_paths=PackedStringArray("Label")]
+[node name="ProfileView" type="Node" parent="." node_paths=PackedStringArray("Title", "Subtitle", "Label", "Portrait")]
 script = ExtResource("3_c4ias")
+Title = NodePath("../Root/Title")
+Subtitle = NodePath("../Root/Pronounciation Guide")
 Label = NodePath("../Root/Kingdom Info")
+Portrait = NodePath("../Root/Portrait")
 
 [node name="Root" type="Control" parent="."]
 layout_mode = 1
