@@ -24,13 +24,14 @@ RoundLabel/constants/outline_size = 11
 RoundLabel/font_sizes/font_size = 25
 
 [sub_resource type="Gradient" id="Gradient_xf1xp"]
+offsets = PackedFloat32Array(0.171141, 1)
 colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_sfysy"]
 gradient = SubResource("Gradient_xf1xp")
 use_hdr = true
 fill = 1
-fill_from = Vector2(0.478632, 0.290598)
+fill_from = Vector2(0.495726, 0.316239)
 fill_to = Vector2(-1.25, 0)
 
 [sub_resource type="Curve" id="Curve_6espp"]
@@ -68,6 +69,7 @@ grow_vertical = 2
 mouse_filter = 1
 theme = SubResource("Theme_ouffm")
 script = ExtResource("1_4k8rw")
+SuitorName = "Frostholm"
 TopicDeck = {
 "topic/animals": 1,
 "topic/art": 1,
@@ -115,6 +117,8 @@ offset_bottom = -19.216
 grow_vertical = 2
 theme = ExtResource("2_ko4o6")
 script = ExtResource("4_dw2x6")
+LoveThreshold = 4.0
+HateThreshold = -4.0
 
 [node name="LeftHandContainer" type="Container" parent="."]
 layout_mode = 1

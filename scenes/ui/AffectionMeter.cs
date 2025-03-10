@@ -9,9 +9,13 @@ namespace DamselsGambit;
 [Tool, GlobalClass, Icon("res://assets/editor/icons/affection_meter.svg")]
 public partial class AffectionMeter : Control, IReloadableToolScript
 {
-	[Export(PropertyHint.Range, "0,1")] public float ValuePercent { get; set { field = value; QueueRedraw(); } } = 0.5f;
-	[Export(PropertyHint.Range, "0,1")] public float LovePercent { get; set { field = value; QueueRedraw(); } } = 0.3f;
-	[Export(PropertyHint.Range, "0,1")] public float HatePercent { get; set { field = value; QueueRedraw(); } } = 0.3f;
+	[Export] public float Value { get; set { field = value; QueueRedraw(); } } = 0f;
+	
+	[Export] public float MinValue { get; set { field = value; QueueRedraw(); } } = -10f;
+	[Export] public float MaxValue { get; set { field = value; QueueRedraw(); } } = 10f;
+
+	[Export] public float LoveThreshold { get; set { field = value; QueueRedraw(); } } = 3f;
+	[Export] public float HateThreshold { get; set { field = value; QueueRedraw(); } } = -3f;
 	
 	static readonly StringName TypeName = nameof(AffectionMeter);
 	public static class ThemeProperties
@@ -39,6 +43,14 @@ public partial class AffectionMeter : Control, IReloadableToolScript
 	}
 
 	public override void _Draw() {
+		float barLength = MathF.Abs(MaxValue) + MathF.Abs(MinValue);
+
+		var aboveLovePercent = (MaxValue - LoveThreshold) / barLength;
+		var middlePercent = MaxValue / barLength;
+		var belowHatePercent = (MathF.Abs(MinValue) - MathF.Abs(HateThreshold)) / barLength;
+
+		var valuePercent = 1f - (Value / barLength + Math.Abs(MinValue) / barLength);
+
 		Theme theme = Theme;
 		Control node = this;
 		while (theme is null && node is not null) {
@@ -69,21 +81,21 @@ public partial class AffectionMeter : Control, IReloadableToolScript
 		var hateScale = theme?.TryGetConstant(ThemeProperties.Constant.HateIconSize, TypeName) ?? hateIcon?.GetHeight() ?? 0; if (hateScale < 0) { hateScale = hateIcon?.GetHeight() ?? 0; }
 		Vector2 hateSize = hateIcon is not null ? hateIcon.GetSize() / hateIcon.GetHeight() * hateScale : new();
 
-		DrawStyleBox(love, new Rect2(0f, 0f, Size with { Y = Size.Y * LovePercent }));
-		DrawStyleBox(hate, new Rect2(0f, (1 - HatePercent) * Size.Y, Size with { Y = Size.Y * HatePercent }));
+		DrawStyleBox(love, new Rect2(0f, 0f, Size with { Y = Size.Y * aboveLovePercent }));
+		DrawStyleBox(hate, new Rect2(0f, (1 - belowHatePercent) * Size.Y, Size with { Y = Size.Y * belowHatePercent }));
 		
 		DrawStyleBox(under, new Rect2(0f, 0f, Size));
 		
-		DrawStyleBox(loveBound, new Rect2(0f, Size.Y * LovePercent, Size.X, 0f));
-		DrawStyleBox(hateBound, new Rect2(0f, Size.Y * (1 - HatePercent), Size.X, 0f));
-		DrawStyleBox(middleBound, new Rect2(0f, Size.Y * 0.5f, Size.X, 0f));
+		DrawStyleBox(loveBound, new Rect2(0f, Size.Y * aboveLovePercent, Size.X, 0f));
+		DrawStyleBox(hateBound, new Rect2(0f, Size.Y * (1 - belowHatePercent), Size.X, 0f));
+		DrawStyleBox(middleBound, new Rect2(0f, Size.Y * middlePercent, Size.X, 0f));
 
-		DrawStyleBox(valueBound, new Rect2(0f, Size.Y * ValuePercent, Size.X, 0f));
+		DrawStyleBox(valueBound, new Rect2(0f, Size.Y * valuePercent, Size.X, 0f));
 		
 		DrawStyleBox(over, new Rect2(0f, 0f, Size));
 
 
-		if (marker is not null)	  DrawTextureRect(marker, new(Size.X / 2f - markerSize.X / 2f, Size.Y * ValuePercent - markerSize.Y / 2f, markerSize), false);
+		if (marker is not null)	  DrawTextureRect(marker, new(Size.X / 2f - markerSize.X / 2f, Size.Y * valuePercent - markerSize.Y / 2f, markerSize), false);
 		if (loveIcon is not null) DrawTextureRect(loveIcon, new(Size.X / 2f - loveSize.X / 2f, 0f - loveSize.Y / 2f, loveSize), false);
 		if (hateIcon is not null) DrawTextureRect(hateIcon, new(Size.X / 2f - hateSize.X / 2f, Size.Y - hateSize.Y / 2f, hateSize), false);
 	}

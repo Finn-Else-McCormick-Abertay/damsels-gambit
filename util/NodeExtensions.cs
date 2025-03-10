@@ -11,8 +11,13 @@ static class NodeExtensions
 
     // If node ready, call immediately. Else defer until node is ready
     public static void OnReady(this Node self, Action action) {
-        if (self.IsNodeReady()) action();
-        else self.Connect(Node.SignalName.Ready, Callable.From(action), (uint)GodotObject.ConnectFlags.OneShot);
+        if (!self.IsValid()) throw new NullReferenceException($"OnReady called on invalid node instance {self}");
+        if (self.IsNodeReady()) action(); else self.Connect(Node.SignalName.Ready, Callable.From(action), (uint)GodotObject.ConnectFlags.OneShot);
+    }
+
+    public static void OnReady<TNode>(this TNode self, Action<TNode> action) where TNode : Node {
+        if (!self.IsValid()) throw new NullReferenceException($"OnReady called on invalid node instance {self}");
+        if (self.IsNodeReady()) action(self); else self.Connect(Node.SignalName.Ready, Callable.From(() => action(self)), (uint)GodotObject.ConnectFlags.OneShot);
     }
 
     public static Godot.Collections.Array<Node> GetInternalChildren(this Node self) {

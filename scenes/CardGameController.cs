@@ -14,25 +14,22 @@ namespace DamselsGambit;
 [Tool]
 public partial class CardGameController : Control, IReloadableToolScript, IFocusContext
 {
-	[Export(PropertyHint.Range, "0,20,")] public int NumRounds { get; private set { field = value; this.OnReady(() => { if (RoundMeter is null) return; RoundMeter.NumRounds = NumRounds; }); } } = 8;
+	[Export] public string SuitorName { get; set { field = value; SuitorProfile?.OnReady(x => x.SuitorName = SuitorName); } }
 
-	public int Round { get; set { field = value; if (RoundMeter is not null) RoundMeter.CurrentRound = Round; if (Round > NumRounds) OnGameEnd(); } }
+	[Export(PropertyHint.Range, "0,20,")] public int NumRounds { get; private set { field = value; RoundMeter?.OnReady(() => RoundMeter.NumRounds = NumRounds); } } = 8;
+
+	public int Round { get; set { field = value;  RoundMeter?.OnReady(x => x.CurrentRound = Round); if (Round > NumRounds) OnGameEnd(); } }
 	
 	public bool SkipIntro { get; set; }
 	
 	[ExportGroup("Score")]
-	[Export(PropertyHint.Range, "-30,30,")] public int ScoreMax { get; private set; } = 10;
-	[Export(PropertyHint.Range, "-30,30,")] public int ScoreMin { get; private set; } = -10;
+	[Export(PropertyHint.Range, "-30,30,")] public int ScoreMin { get; private set { field = value; AffectionMeter?.OnReady(x => x.MinValue = ScoreMin); } } = -10;
+	[Export(PropertyHint.Range, "-30,30,")] public int ScoreMax { get; private set { field = value; AffectionMeter?.OnReady(x => x.MaxValue = ScoreMax); } } = 10;
 
-	[Export(PropertyHint.Range, "-30,30,")] public int LoveThreshold { get; private set { field = value; this.OnReady(() => { if (RoundMeter is null) return; AffectionMeter.LovePercent = (Math.Abs(ScoreMax) - Math.Abs(LoveThreshold)) / (float)(Math.Abs(ScoreMax) + Math.Abs(ScoreMin)); }); } } = 4;
-	[Export(PropertyHint.Range, "-30,30,")] public int HateThreshold { get; private set { field = value; this.OnReady(() => { if (RoundMeter is null) return; AffectionMeter.HatePercent = (Math.Abs(ScoreMin) - Math.Abs(HateThreshold)) / (float)(Math.Abs(ScoreMax) + Math.Abs(ScoreMin)); }); } } = -4;
+	[Export(PropertyHint.Range, "-30,30,")] public int LoveThreshold { get; private set { field = value; AffectionMeter?.OnReady(x => x.LoveThreshold = LoveThreshold); } } = 4;
+	[Export(PropertyHint.Range, "-30,30,")] public int HateThreshold { get; private set { field = value; AffectionMeter?.OnReady(x => x.HateThreshold = HateThreshold); } } = -4;
 	
-	public int Score {
-		get; set {
-			field = value; var newDisplayValue = 1 - ((Score / (float)(Math.Abs(ScoreMax) + Math.Abs(ScoreMin))) + Math.Abs(ScoreMin) / (float)(Math.Abs(ScoreMax) + Math.Abs(ScoreMin)));
-			AffectionMeter?.CreateTween()?.TweenProperty(AffectionMeter, AffectionMeter.PropertyName.ValuePercent.ToString(), newDisplayValue, 1.0);
-		}
-	}
+	public int Score { get; set { field = value; AffectionMeter?.CreateTween()?.TweenProperty(AffectionMeter, AffectionMeter.PropertyName.Value.ToString(), Score, 1.0); } }
 
 	[ExportGroup("Deck")]
 	[Export] public Godot.Collections.Dictionary<string, int> TopicDeck { get; set; }
