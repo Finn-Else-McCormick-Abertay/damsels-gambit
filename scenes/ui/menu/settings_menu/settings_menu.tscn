@@ -5,7 +5,7 @@
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/theme/default_theme.tres" id="2_k810m"]
 [ext_resource type="Theme" uid="uid://td8u5lubicg8" path="res://assets/ui/theme/menu_theme.tres" id="5_ww2uk"]
 [ext_resource type="Script" uid="uid://3vkxtd4o4toi" path="res://scenes/ui/menu/settings_menu/window_drop_down_options.gd" id="6_fkvev"]
-[ext_resource type="Script" uid="uid://hpe6rand18ey" path="res://scenes/ui/menu/settings_menu/font_selection.gd" id="7_0snvw"]
+[ext_resource type="Script" path="res://scenes/ui/menu/settings_menu/font_selection.gd" id="7_0snvw"]
 [ext_resource type="Script" uid="uid://bi1t25iy0eqir" path="res://scenes/ui/menu/settings_menu/resolution_drop_down_options.gd" id="7_d6ec4"]
 
 [node name="SettingsMenu" type="Control" node_paths=PackedStringArray("exit_button")]
@@ -139,6 +139,7 @@ theme_override_constants/separation = 64
 
 [node name="TK" type="Label" parent="TabContainer/Controls/VBoxContainer"]
 layout_mode = 2
+focus_mode = 2
 text = "Options Unfinished"
 
 [node name="Accessibility" type="Control" parent="TabContainer"]
@@ -185,8 +186,8 @@ offset_right = -177.0
 offset_bottom = -24.0
 size_flags_horizontal = 8
 size_flags_vertical = 4
+focus_neighbor_left = NodePath("../SaveButton")
 focus_neighbor_top = NodePath("../TabContainer")
-theme = ExtResource("2_k810m")
 text = "Exit"
 
 [node name="SaveButton" type="Button" parent="."]
@@ -202,5 +203,6 @@ offset_bottom = -24.0
 size_flags_horizontal = 8
 size_flags_vertical = 4
 focus_neighbor_top = NodePath("../TabContainer")
+focus_neighbor_right = NodePath("../ExitButton")
 theme = ExtResource("2_k810m")
 text = "Save"
