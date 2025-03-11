@@ -1,44 +1,47 @@
+using DamselsGambit.Util;
 using Godot;
 using System;
 
+namespace DamselsGambit;
+
 public partial class AudioSystem : Node
 {
+	public static AudioSystem Instance { get; private set; }
+
+	public override void _EnterTree() {
+		if (Instance is not null) throw AutoloadException.For(this);
+		Instance = this;
+	}
+
 	[Export] private AudioStreamPlayer[] SFXPlayers;
 	[Export] private AudioStreamPlayer MusicPlayer;
+	private string _activeMusic;
 
-	public bool IsMusicPlaying { get; set; } = false;
-	private string MusicPlaying = string.Empty;
+	public static bool IsMusicPlaying => Instance?.MusicPlayer?.Playing ?? false;
 
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
-	{
-	}
-
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
-	}
-
-	public void PlaySFX(string Path) {
+	public static void PlaySFX(string filePath) {
+		filePath = $"res://{filePath.Replace('\\', '/').StripFront("res://")}";
 		
-		foreach (var player in SFXPlayers) {
-			if (player.Playing == false) {
-				player.Stream = GD.Load<AudioStream>(Path);
+		if (!ResourceLoader.Exists(filePath) || !Instance.IsValid()) return;
+		foreach (var player in Instance.SFXPlayers) {
+			if (!player.Playing) {
+				player.Stream = ResourceLoader.Load<AudioStream>(filePath);
 				player.Play();
 			}
 		}
 	}
 
-		public void PlayMusic(string Path) {
-		if (Path == "") { return; }
-		if (MusicPlaying == Path && IsMusicPlaying == true) { return; }
-		MusicPlaying = Path;
-		MusicPlayer.Stream = GD.Load<AudioStream>(Path);
-		MusicPlayer.Play();
-		IsMusicPlaying = true;
+	public static void PlayMusic(string filePath) {
+		filePath = $"res://{filePath.Replace('\\', '/').StripFront("res://")}";
+		if (!ResourceLoader.Exists(filePath) || !Instance.IsValid() || (IsMusicPlaying && Instance._activeMusic == filePath)) return;
+
+		Instance._activeMusic = filePath;
+		Instance.MusicPlayer.Stream = ResourceLoader.Load<AudioStream>(filePath);
+		Instance.MusicPlayer.Play();
 	}
-	public void StopMusic() {
-		MusicPlayer.Stop();
-		IsMusicPlaying = false;
+
+	public static void StopMusic() {
+		Instance.MusicPlayer.Stop();
+		Instance._activeMusic = "";
 	}
 }
