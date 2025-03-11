@@ -1,0 +1,14 @@
+[remap]
+
+importer="yarnscript"
+type="Resource"
+uid="uid://cch1lkqvt7ug"
+path="res://.godot/imported/frostholm_endings.yarn-06a4ff0d45cb95ef3022e28c57a97073.tres"
+
+[deps]
+
+source_file="res://assets/dialogue/frostholm/frostholm_endings.yarn"
+dest_files=["res://.godot/imported/frostholm_endings.yarn-06a4ff0d45cb95ef3022e28c57a97073.tres"]
+
+[params]
+

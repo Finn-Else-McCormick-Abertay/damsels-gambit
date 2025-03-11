@@ -1,8 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://q1kh0whg1g0g"]
+[gd_scene load_steps=5 format=3 uid="uid://q1kh0whg1g0g"]
 
 [ext_resource type="Theme" uid="uid://db11aw5aoqnpw" path="res://assets/ui/theme/suitor_profile_theme.tres" id="1_yh5ad"]
 [ext_resource type="Script" uid="uid://c5bi6sq63upok" path="res://scenes/ui/SuitorProfile.cs" id="2_eweoj"]
-[ext_resource type="Texture2D" uid="uid://bfoqt200g8dkj" path="res://assets/characters/frostholm/suitor_card.png" id="3_bt4o7"]
 [ext_resource type="Script" uid="uid://dxgjxwnt0yhqf" path="res://scenes/dialogue/ProfileDialogueView.cs" id="3_c4ias"]
 [ext_resource type="Texture2D" uid="uid://bgp5yt38gueut" path="res://assets/ui/panels/paper_texture_white_bkg.png" id="3_eweoj"]
 
@@ -16,7 +15,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_yh5ad")
 script = ExtResource("2_eweoj")
-SuitorName = "Frostholm"
 DialogueView = NodePath("ProfileView")
 Root = NodePath("Root")
 TabButton = NodePath("Root/TabButton")
@@ -24,8 +22,8 @@ TabButton = NodePath("Root/TabButton")
 [node name="ProfileView" type="Node" parent="." node_paths=PackedStringArray("Title", "Subtitle", "Label", "Portrait")]
 script = ExtResource("3_c4ias")
 Title = NodePath("../Root/Title")
-Subtitle = NodePath("../Root/Pronounciation Guide")
-Label = NodePath("../Root/Kingdom Info")
+Subtitle = NodePath("../Root/Subtitle")
+Label = NodePath("../Root/Info")
 Portrait = NodePath("../Root/Portrait")
 
 [node name="Root" type="Control" parent="."]
@@ -59,7 +57,6 @@ offset_top = -0.525001
 offset_right = -38.0
 offset_bottom = -68.915
 pivot_offset = Vector2(207, 183)
-texture = ExtResource("3_bt4o7")
 expand_mode = 1
 stretch_mode = 5
 
@@ -76,10 +73,10 @@ offset_right = 10.346
 offset_bottom = -17.958
 pivot_offset = Vector2(-24.9999, 162)
 theme_type_variation = &"HeaderLarge"
-text = "King Ráðúlfr of Frostholm"
+text = "Profile Title"
 autowrap_mode = 2
 
-[node name="Pronounciation Guide" type="RichTextLabel" parent="Root"]
+[node name="Subtitle" type="RichTextLabel" parent="Root"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.454
@@ -93,9 +90,9 @@ offset_bottom = 11.558
 pivot_offset = Vector2(-28.9999, 84)
 theme_type_variation = &"PronounciationGuide"
 bbcode_enabled = true
-text = "[i]rah-thool-fer[/i]"
+text = "[i]subtitle line[/i]"
 
-[node name="Kingdom Info" type="RichTextLabel" parent="Root"]
+[node name="Info" type="RichTextLabel" parent="Root"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.45
@@ -108,7 +105,8 @@ offset_right = 10.886
 offset_bottom = -0.833008
 pivot_offset = Vector2(-31, 47)
 bbcode_enabled = true
-text = "Frostholm is a freezing, harsh kingdom in the far north, where survival requires resilience and sensibleness. Its citizens value hard work, loyalty, and community. The kingdom is known for it's ice carving traditions and hardy crops."
+text = "Profile main body text.
+This will extend over multiple lines."
 tab_size = 12
 
 [node name="TabButton" type="Button" parent="Root"]

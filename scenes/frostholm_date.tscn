@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://b1vrrngvb22r3"]
+[gd_scene load_steps=3 format=3 uid="uid://b1vrrngvb22r3"]
 
 [ext_resource type="PackedScene" uid="uid://dipd7bv4d85ws" path="res://scenes/card_game.tscn" id="1_4o28y"]
+[ext_resource type="Script" uid="uid://cxnt172f81tka" path="res://scenes/FrostholmDate.cs" id="1_vqya7"]
 
 [node name="FrostholmDate" type="Control"]
 layout_mode = 3
@@ -10,6 +11,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
+script = ExtResource("1_vqya7")
 
 [node name="CardGame" parent="." instance=ExtResource("1_4o28y")]
 layout_mode = 1

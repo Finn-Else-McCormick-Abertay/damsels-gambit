@@ -32,7 +32,7 @@ public partial class ProfileDialogueView : Node, DialogueViewBase
     }
 
     private void Update() {
-        if (!DialogueManager.ProfileRunner.IsValid()) return;
+        if (!DialogueManager.ProfileRunner.IsValid() || string.IsNullOrEmpty(ProfileNode)) return;
         if (DialogueManager.ProfileRunner.IsDialogueRunning) DialogueManager.ProfileRunner.Stop();
         if (DialogueManager.DialogueExists(ProfileNode)) DialogueManager.ProfileRunner.StartDialogue(ProfileNode); else Console.Warning($"Profile view could not update: '{ProfileNode}' is not a valid dialogue node.");
     }

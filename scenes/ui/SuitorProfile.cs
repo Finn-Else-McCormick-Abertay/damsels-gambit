@@ -62,7 +62,7 @@ public partial class SuitorProfile : Control
     private void ToggleOpen() { Open = !Open; }
 
     public void UpdateDialogueViewNode() {
-        if (Engine.IsEditorHint() || !DialogueView.IsValid()) return;
+        if (Engine.IsEditorHint() || !DialogueView.IsValid() || string.IsNullOrEmpty(SuitorName)) return;
         (DialogueView as ProfileDialogueView).ProfileNode = $"{Case.ToSnake(SuitorName)}/profile";
     }
 }

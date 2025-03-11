@@ -1,20 +1,23 @@
-title: love_ending
+title: frostholm/ending/love
 ---
-<<emote suitor happy_1>>
+<<flush_command_queue>>
+<<emote frostholm happy_1>>
 The date is over; the prince liked you, and you are soon to be wed. You will soon leave for his kingdom in the north, never to return.
 <<fade in endings/marriage 2>>
 ===
 
-title: hate_ending
+title: frostholm/ending/hate
 ---
-<<emote suitor angry>>
+<<flush_command_queue>>
+<<emote frostholm angry>>
 The date is over; the prince took such a hating to you that he declared war on your kingdom. His armies begin to march south for battle.
 <<fade in endings/war 2>>
 ===
 
-title: neutral_ending
+title: frostholm/ending/neutral
 ---
-<<emote suitor sad_1>>
+<<flush_command_queue>>
+<<emote frostholm sad_1>>
 The date is over; the prince seemed unimpressed, and elects to leave you be.
 <<fade in endings/happy 2>>
 ===

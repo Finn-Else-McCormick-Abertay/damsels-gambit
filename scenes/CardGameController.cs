@@ -14,11 +14,17 @@ namespace DamselsGambit;
 [Tool]
 public partial class CardGameController : Control, IReloadableToolScript, IFocusContext
 {
-	[Export] public string SuitorName { get; set { field = value; SuitorProfile?.OnReady(x => x.SuitorName = SuitorName); } }
+	[Signal] public delegate void GameStartEventHandler();
+	[Signal] public delegate void GameEndEventHandler();
+	[Signal] public delegate void RoundStartEventHandler(int round);
+	[Signal] public delegate void RoundEndEventHandler(int round);
+
+	[Export] public string SuitorName { get; set { field = value; _suitorId = Case.ToSnake(SuitorName); SuitorProfile?.OnReady(x => x.SuitorName = SuitorName); } }
+	private string _suitorId;
 
 	[Export(PropertyHint.Range, "0,20,")] public int NumRounds { get; private set { field = value; RoundMeter?.OnReady(() => RoundMeter.NumRounds = NumRounds); } } = 8;
 
-	public int Round { get; set { field = value;  RoundMeter?.OnReady(x => x.CurrentRound = Round); if (Round > NumRounds) OnGameEnd(); } }
+	public int Round { get; set { field = value;  RoundMeter?.OnReady(x => x.CurrentRound = Round); if (Round > NumRounds) TriggerGameEnd(); } }
 	
 	[ExportGroup("Score")]
 	[Export(PropertyHint.Range, "-30,30,")] public int ScoreMin { get; private set { field = value; AffectionMeter?.OnReady(x => x.MinValue = ScoreMin); } } = -10;
@@ -55,12 +61,11 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		foreach (var child in TopicHand.GetChildren()) { TopicHand.RemoveChild(child); child.QueueFree(); }
 		foreach (var child in ActionHand.GetChildren()) { ActionHand.RemoveChild(child); child.QueueFree(); }
 		
-		Hide();
-		Round = 1;
+		Hide(); Round = 1;
 	}
 
 	public void BeginGame() {
-		List<string> CreateWorkingDeck(Godot.Collections.Dictionary<string, int> deck) {
+		static List<string> CreateWorkingDeck(Godot.Collections.Dictionary<string, int> deck) {
 			List<string> working = [];
 			foreach (var (card, count) in deck) { for (int i = 0; i < count; ++i) { working.Add(card); } }
 			return working;
@@ -69,16 +74,13 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		// Create and shuffle deck
 		_topicDeckWorking = [..CreateWorkingDeck(TopicDeck).OrderBy(x => Random.Shared.Next())];
 		_actionDeckWorking = [..CreateWorkingDeck(ActionDeck).OrderBy(x => Random.Shared.Next())];
-
-		SuitorProfile.UpdateDialogueViewNode();
 		
-		void onIntroComplete() {
-			DialogueManager.Runner.TryDisconnect(DialogueRunner.SignalName.onDialogueComplete, onIntroComplete);
+		EmitSignal(SignalName.GameStart);
+		
+		DialogueManager.TryRun($"{_suitorId}/intro").AndThen(() => {
 			Show(); Deal();
-			DialogueManager.Runner.TryConnect(DialogueRunner.SignalName.onDialogueComplete, new Callable(this, MethodName.OnDialogueComplete));
-		}
-		DialogueManager.Runner.TryConnect(DialogueRunner.SignalName.onDialogueComplete, onIntroComplete);
-		DialogueManager.Run($"{Case.ToSnake(SuitorName)}/intro");
+			EmitSignal(SignalName.RoundStart);
+		});
 	}
 
 	public override void _Process(double delta) {
@@ -99,50 +101,35 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	private void PlayHand() {
 		if (Engine.IsEditorHint()) return;
 
-		var selectedTopic = TopicHand.GetSelected().First();
-		var selectedAction = ActionHand.GetSelected().First();
+		CardDisplay selectedTopic = TopicHand.GetSelected().First(), selectedAction = ActionHand.GetSelected().First();
 
-		var dialogueNode = $"{Case.ToSnake(SuitorName)}/{selectedAction.CardId.ToString().StripFront("action/")}+{selectedTopic.CardId.ToString().StripFront("topic/")}";
+		var dialogueNode = $"{_suitorId}/{selectedAction.CardId.ToString().StripFront("action/")}+{selectedTopic.CardId.ToString().StripFront("topic/")}";
 
 		TopicHand.RemoveChild(selectedTopic); selectedTopic.QueueFree();
 		ActionHand.RemoveChild(selectedAction); selectedAction.QueueFree();
 		PlayButton.Hide();
 
-		DialogueManager.Run(dialogueNode);
-	}
-
-	private void OnDialogueComplete() {
-		if (Engine.IsEditorHint()) return;
-
-		PlayButton.Show();
-
-		Round += 1;
-		if (Round <= NumRounds) Deal();
-	}
-
-	private void OnGameEnd() {
-		if (Engine.IsEditorHint()) return;
-
-		AffectionMeter.Hide();
-		RoundMeter.Hide();
-		TopicHand.Hide();
-		ActionHand.Hide();
-		PlayButton.Hide();
-		DialogueManager.Runner.TryDisconnect(DialogueRunner.SignalName.onDialogueComplete, new Callable(this, MethodName.OnDialogueComplete));
-		DialogueManager.Run(Score switch {
-			_ when Score >= LoveThreshold => "love_ending",
-			_ when Score <= HateThreshold => "hate_ending",
-			_ => "neutral_ending"
+		DialogueManager.Run(dialogueNode).AndThen(() => {
+			EmitSignal(SignalName.RoundEnd, Round);
+			Round += 1;
+			if (Round <= NumRounds) { PlayButton.Show(); Deal(); EmitSignal(SignalName.RoundStart, Round); }
 		});
-		Callable.From(() => { 
-			DialogueManager.Runner.TryConnect(DialogueRunner.SignalName.onDialogueComplete, new Callable(this, MethodName.OnGameEndDialogueComplete));
-		}).CallDeferred();
 	}
 
-	private void OnGameEndDialogueComplete() {
+	private void TriggerGameEnd() {
 		if (Engine.IsEditorHint()) return;
 
-		DialogueManager.Runner.TryDisconnect(DialogueRunner.SignalName.onDialogueComplete, new Callable(this, MethodName.OnGameEndDialogueComplete));
+		AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide(); PlayButton.Hide(); SuitorProfile.Hide();
+
+		DialogueManager
+			.TryRun($"{_suitorId}/ending/{Score switch { _ when Score >= LoveThreshold => "love", _ when Score <= HateThreshold => "hate", _ => "neutral" }}")
+			.AndThen(() => EmitSignal(SignalName.GameEnd));
+	}
+
+	/*private void OnGameEndDialogueComplete() {
+		if (Engine.IsEditorHint()) return;
+
+		//DialogueManager.Runner.TryDisconnect(DialogueRunner.SignalName.onDialogueComplete, new Callable(this, MethodName.OnGameEndDialogueComplete));
 		var endScreen = ResourceLoader.Load<PackedScene>("res://scenes/ui/end_screen.tscn").Instantiate<EndScreen>();
 		AddChild(endScreen);
 		endScreen.MessageLabel.Text = Score switch {
@@ -150,12 +137,12 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 			_ when Score <= HateThreshold => "Prepare for war.",
 			_ => "You win!"
 		};
-	}
+	}*/
 
 	private void Deal() {
 		if (Engine.IsEditorHint()) return;
 
-		void InternalDeal(HandContainer container, List<string> workingDeck, Vector2 startPosition, float startAngle, double waitTime = 0.2) {
+		void DealToHand(HandContainer container, List<string> workingDeck, Vector2 startPosition, float startAngle, double waitTime = 0.2) {
 			int cardsToDeal = Math.Max(3 - container.GetChildCount(), 0);
 			for (int i = 0; i < cardsToDeal; ++i) {
 				var cardId = workingDeck.First();
@@ -168,7 +155,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 				});
 			}
 		}
-		InternalDeal(ActionHand, _actionDeckWorking, new Vector2(-200f, 100f), -30f);
-		InternalDeal(TopicHand, _topicDeckWorking, new Vector2(500f, 100f), 30f);
+		DealToHand(ActionHand, _actionDeckWorking, new Vector2(-200f, 100f), -30f);
+		DealToHand(TopicHand, _topicDeckWorking, new Vector2(500f, 100f), 30f);
 	}
 }

@@ -18,11 +18,8 @@ public sealed partial class GameManager : Node
 	public static Node DialogueInterface { get; private set; }
 	public static CardGameController CardGameController { get; private set; }
 
-	public static event Action<Control> OnMainMenuInitialised, OnMainMenuFreed;
-	public static event Action<PauseMenu> OnPauseMenuInitialised, OnPauseMenuFreed;
-	public static event Action<CardGameController> OnCardGameControllerInitialised, OnCardGameControllerFreed;
-
 	private CanvasLayer _cardGameCanvasLayer = new() { Layer = 20, Name = "CardGameLayer" };
+	private CanvasLayer _dialogueCanvasLayer = new() { Layer = 23, Name = "DialogueLayer" };
 	private CanvasLayer _menuCanvasLayer = new() { Layer = 25, Name = "MenuLayer" };
 	
 	private static readonly PackedScene _dialogueInterfaceScene = ResourceLoader.Load<PackedScene>("res://scenes/dialogue/dialogue_interface.tscn");
@@ -35,45 +32,41 @@ public sealed partial class GameManager : Node
 		GetTree().Root.Connect(Node.SignalName.Ready, new Callable(this, MethodName.OnTreeReady), (uint)ConnectFlags.OneShot);
 	}
 	private void OnTreeReady() {
-		AddChild(_cardGameCanvasLayer); _cardGameCanvasLayer.Owner = this;
-		AddChild(_menuCanvasLayer); _menuCanvasLayer.Owner = this;
+		this.AddOwnedChild(_cardGameCanvasLayer); this.AddOwnedChild(_dialogueCanvasLayer); this.AddOwnedChild(_menuCanvasLayer);
 		
 		GetTree().Connect(SceneTree.SignalName.NodeAdded, Callable.From((Node node) => { if (node is PopupMenu popup) { popup.TransparentBg = true; } }));
 
 		MainMenu = GetTree().Root.FindChildWhere<Control>(x => x.SceneFilePath.Equals(_mainMenuScene.ResourcePath));
-		if (MainMenu is not null) {
-			_menuCanvasLayer.AddOwnedChild(MainMenu, true);
-			OnMainMenuInitialised?.Invoke(MainMenu);
-		}
+		if (MainMenu.IsValid()) _menuCanvasLayer.AddOwnedChild(MainMenu, true);
 
 		PauseMenu = GetTree().Root.FindChildWhere<PauseMenu>(x => x.SceneFilePath.Equals(_pauseMenuScene.ResourcePath));
-		if (PauseMenu is not null) {
-			_menuCanvasLayer.AddOwnedChild(PauseMenu, true);
-			PauseMenu.Hide();
-			OnPauseMenuInitialised?.Invoke(PauseMenu);
-		}
+		if (PauseMenu.IsValid()) { _menuCanvasLayer.AddOwnedChild(PauseMenu, true); PauseMenu.Hide(); }
 
-		DialogueInterface = GetTree().Root.FindChildWhere<DialogueView>(x => x.SceneFilePath.Equals(_dialogueInterfaceScene.ResourcePath));
-		if (DialogueInterface is null) { DialogueInterface = _dialogueInterfaceScene.Instantiate(); _menuCanvasLayer.AddOwnedChild(DialogueInterface); }
+		DialogueInterface = GetTree().Root.FindChildWhere<DialogueView>(x => x.SceneFilePath.Equals(_dialogueInterfaceScene.ResourcePath)) ?? _dialogueInterfaceScene.Instantiate();
+		if (DialogueInterface.IsValid()) _dialogueCanvasLayer.AddOwnedChild(DialogueInterface);
 		
 		CardGameController = GetTree().Root.FindChildOfType<CardGameController>();
-		if (CardGameController is not null) {
-			_cardGameCanvasLayer.AddOwnedChild(CardGameController, true);
-			OnCardGameControllerInitialised?.Invoke(CardGameController);
+		if (CardGameController.IsValid()) {
+			var sceneRoot = GetTree().Root.GetChildren().Last();
+			_cardGameCanvasLayer.AddOwnedChild(sceneRoot.IsAncestorOf(CardGameController) ? sceneRoot : CardGameController, true);
 			CardGameController.OnReady(x => x.CallDeferred(CardGameController.MethodName.BeginGame));
 		}
 	}
 
-	public static void SwitchToMainMenu(bool force = true) {
+	private static void ClearLoadedScenes() {
 		if (!Instance.IsValid()) return;
 
-		if (MainMenu is not null) { if (!force) return; MainMenu.GetParent().RemoveChild(MainMenu); MainMenu.QueueFree(); OnMainMenuFreed?.Invoke(MainMenu); MainMenu = null; }
-		if (PauseMenu is not null) { PauseMenu.GetParent().RemoveChild(PauseMenu); PauseMenu.QueueFree(); OnPauseMenuFreed?.Invoke(PauseMenu); PauseMenu = null; }
-		if (CardGameController is not null) { CardGameController.GetParent().RemoveChild(CardGameController); CardGameController.QueueFree(); OnCardGameControllerFreed?.Invoke(CardGameController); CardGameController = null; }
+		foreach (var child in Instance._menuCanvasLayer.GetChildren()) { Instance._menuCanvasLayer.RemoveChild(child); child.QueueFree(); }
+		foreach (var child in Instance._cardGameCanvasLayer.GetChildren()) { Instance._cardGameCanvasLayer.RemoveChild(child); child.QueueFree(); }
+	}
+
+	public static void SwitchToMainMenu() {
+		if (!Instance.IsValid()) return;
+
+		ClearLoadedScenes();
 
 		MainMenu = _mainMenuScene.Instantiate<Control>();
 		Instance._menuCanvasLayer.AddOwnedChild(MainMenu);
-		OnMainMenuInitialised?.Invoke(MainMenu);
 	}
 
 	public static void BeginGame() {
@@ -83,20 +76,16 @@ public sealed partial class GameManager : Node
 	
 	public static void SwitchToCardGameScene(string cardGameScenePath) {
 		if (!Instance.IsValid()) return;
-		
-		if (CardGameController is not null) { CardGameController.GetParent().RemoveChild(CardGameController); CardGameController.QueueFree(); OnCardGameControllerFreed?.Invoke(CardGameController); CardGameController = null; }
-		if (PauseMenu is not null) { PauseMenu.GetParent().RemoveChild(PauseMenu); PauseMenu.QueueFree(); OnPauseMenuFreed?.Invoke(PauseMenu); PauseMenu = null; }
-		if (MainMenu is not null) { MainMenu.GetParent().RemoveChild(MainMenu); MainMenu.QueueFree(); OnMainMenuFreed?.Invoke(MainMenu); MainMenu = null; }
+
+		ClearLoadedScenes();
 
 		var cardGameScene = ResourceLoader.Load<PackedScene>(cardGameScenePath).Instantiate();
 		Instance._cardGameCanvasLayer.AddOwnedChild(cardGameScene);
 		CardGameController = cardGameScene as CardGameController ?? cardGameScene.FindChildOfType<CardGameController>();
-		OnCardGameControllerInitialised?.Invoke(CardGameController);
 		CardGameController.OnReady(x => x.BeginGame());
 
 		PauseMenu = _pauseMenuScene.Instantiate<PauseMenu>();
 		Instance._menuCanvasLayer.AddOwnedChild(PauseMenu);
 		PauseMenu.Hide();
-		OnPauseMenuInitialised?.Invoke(PauseMenu);
 	}
 } 

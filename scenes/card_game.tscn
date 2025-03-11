@@ -69,7 +69,6 @@ grow_vertical = 2
 mouse_filter = 1
 theme = SubResource("Theme_ouffm")
 script = ExtResource("1_4k8rw")
-SuitorName = "Frostholm"
 TopicDeck = {
 "topic/animals": 1,
 "topic/art": 1,

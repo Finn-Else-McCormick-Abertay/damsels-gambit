@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DamselsGambit.Util;
@@ -124,16 +125,40 @@ public partial class DialogueManager : Node
     // These are either CanvasLayers or CanvasItems - have to do it this way as they both have 'Visible' fields but are not derived from a shared interface
     public static IEnumerable<Node> GetEnvironmentItems(string environmentName) => Instance?._environments?.GetValueOrDefault(environmentName)?.GetSelfAndChildren()?.Where(node => node is CanvasLayer || node is CanvasItem) ?? [];
 
-    public static bool DialogueExists(string nodeName) => _yarnProject?.Program?.Nodes?.ContainsKey(nodeName) ?? false;
+    public static bool DialogueExists(string nodeName) => _yarnProject?.Program?.Nodes?.ContainsKey(nodeName ?? "") ?? false;
 
-    public static bool Run(string nodeName, bool force = false, bool orErrorDialogue = true) {
-        if (force) Runner.Stop(); else if (Runner.IsDialogueRunning) return false;
+    public static DialogueResult Run(string nodeName, bool force = true, bool orErrorDialogue = true) {
+        if (force) Runner.Stop(); else if (Runner.IsDialogueRunning) return new DialogueResult(nodeName, false, "Dialogue already running and force set to false.");
 		if (DialogueExists(nodeName)) {
 			Runner.StartDialogue(nodeName);
-            return true;
+            return new DialogueResult(nodeName, true);
 		}
-        Console.Error($"No such node '{nodeName}'");
-        if (orErrorDialogue) Runner.StartDialogue("error");
-        return false;
+        var errorMsg = $"No such node '{nodeName}'";
+        Console.Error(errorMsg);
+        if (orErrorDialogue) {
+            Runner.StartDialogue("error");
+            return new DialogueResult("error", false, errorMsg);
+        }
+        return new DialogueResult(nodeName, false, errorMsg);
+    }
+
+    public static DialogueResult TryRun(string nodeName, bool force = true) => Run(nodeName, force, false);
+    
+    public class DialogueResult
+    {
+        private readonly string _node;
+
+        public bool Success { get; private set; }
+        public string Error { get; private set; }
+
+        public static implicit operator bool(DialogueResult result) => result.Success;
+        
+        internal DialogueResult(string node, bool success, string error = "") { _node = node; Success = success; Error = error; }
+
+        public void AndThen(Callable callable) {
+            if (Runner.CurrentNodeName != _node || !Runner.IsDialogueRunning) { callable.Call(); return; }
+            CallableUtils.CallDeferred(() => Runner.Connect(DialogueRunner.SignalName.onDialogueComplete, callable, (uint)ConnectFlags.OneShot));
+        }
+        public void AndThen(Action action) => AndThen(Callable.From(action));
     }
 }
