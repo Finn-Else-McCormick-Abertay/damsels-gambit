@@ -2,7 +2,7 @@ using Godot;
 
 namespace DamselsGambit;
 
-public partial class FrostholmDate : Date
+public partial class FrostholmDate : BaseDate
 {
     public override void OnGameEnd() {
         var endScreen = ResourceLoader.Load<PackedScene>("res://scenes/ui/menu/end_screen.tscn").Instantiate<EndScreen>();

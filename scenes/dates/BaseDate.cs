@@ -4,7 +4,7 @@ using DamselsGambit.Util;
 
 namespace DamselsGambit;
 
-public abstract partial class Date : Control
+public abstract partial class BaseDate : Control
 {
     protected CardGameController _cardGameController;
 

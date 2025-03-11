@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://c8warv5k2winh"]
 
 [ext_resource type="Theme" uid="uid://6wenayvf0auw" path="res://assets/ui/theme/round_meter_theme.tres" id="1_ydkkc"]
-[ext_resource type="Script" uid="uid://djwkv0ac5u8cb" path="res://scenes/ui/game/round_meter/RoundMeter.cs" id="2_vhvy2"]
-[ext_resource type="PackedScene" uid="uid://dvluhda7ny7a8" path="res://scenes/ui/game/round_meter/round_meter_node.tscn" id="3_jsgwv"]
+[ext_resource type="Script" uid="uid://djwkv0ac5u8cb" path="res://scenes/game/round_meter/RoundMeter.cs" id="2_vhvy2"]
+[ext_resource type="PackedScene" uid="uid://dvluhda7ny7a8" path="res://scenes/game/round_meter/round_meter_node.tscn" id="3_jsgwv"]
 
 [node name="RoundMeter" type="Control" node_paths=PackedStringArray("ProgressBar", "Container")]
 layout_mode = 3

@@ -1,7 +1,7 @@
 [gd_scene load_steps=16 format=3 uid="uid://bm5y6q0uo0hxy"]
 
 [ext_resource type="FontFile" uid="uid://cg4rbsp3717lg" path="res://assets/fonts/monaspace/MonaspaceNeon-SemiBold.otf" id="1_fjdct"]
-[ext_resource type="Script" uid="uid://ommop7xsqge2" path="res://scenes/ui/console/ConsoleWindow.cs" id="1_gcome"]
+[ext_resource type="Script" uid="uid://ommop7xsqge2" path="res://scenes/console/ui/ConsoleWindow.cs" id="1_gcome"]
 [ext_resource type="FontFile" uid="uid://dlmf4yccm7huo" path="res://assets/fonts/monaspace/MonaspaceNeon-ExtraLight.otf" id="1_nm2kb"]
 [ext_resource type="FontFile" uid="uid://8tn1h46fobrd" path="res://assets/fonts/monaspace/MonaspaceNeon-Light.otf" id="1_qi8tp"]
 [ext_resource type="FontFile" uid="uid://bmqsfylmyhpa7" path="res://assets/fonts/monaspace/MonaspaceNeon-SemiBoldItalic.otf" id="2_0cliw"]

@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://b85kbbob2a0hh" path="res://assets/characters/frostholm/neutral.png" id="1_jtctn"]
 [ext_resource type="Texture2D" uid="uid://120j1ta6afcx" path="res://assets/environment/props/Seat.png" id="2_cqnjh"]
 [ext_resource type="Texture2D" uid="uid://dggitk1waeglj" path="res://assets/environment/library_background.png" id="2_lrhu2"]
-[ext_resource type="Script" uid="uid://c5yvgj7xv643o" path="res://scenes/character/CharacterDisplay.cs" id="2_s5131"]
+[ext_resource type="Script" uid="uid://c5yvgj7xv643o" path="res://scenes/environment/CharacterDisplay.cs" id="2_s5131"]
 [ext_resource type="Texture2D" uid="uid://bv2ngki8juk5k" path="res://assets/environment/props/Table.png" id="5_tcu6h"]
 [ext_resource type="Texture2D" uid="uid://0qhn15hlp2pn" path="res://assets/environment/props/Reference.png" id="6_447i8"]
 [ext_resource type="Texture2D" uid="uid://cmepnlsnu6oqf" path="res://assets/environment/props/Cloth.png" id="7_f4vx0"]

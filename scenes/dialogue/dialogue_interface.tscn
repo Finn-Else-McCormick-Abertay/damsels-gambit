@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://0x8a7gsbwftf"]
 
-[ext_resource type="PackedScene" uid="uid://gqmapmoqb22o" path="res://scenes/ui/dialogue_system.tscn" id="1_yme5x"]
+[ext_resource type="PackedScene" uid="uid://gqmapmoqb22o" path="res://scenes/dialogue/views/dialogue_view.tscn" id="1_yme5x"]
 
 [node name="DialogueInterface" type="Node"]
 

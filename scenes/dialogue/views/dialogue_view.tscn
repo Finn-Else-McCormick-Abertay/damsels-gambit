@@ -1,9 +1,9 @@
 [gd_scene load_steps=3 format=3 uid="uid://gqmapmoqb22o"]
 
 [ext_resource type="Theme" uid="uid://cj01ghso8eli6" path="res://assets/ui/theme/dialogue/default.tres" id="1_jkk5n"]
-[ext_resource type="Script" uid="uid://bvc0jwckt327w" path="res://scenes/dialogue/DialogueView.cs" id="2_jkk5n"]
+[ext_resource type="Script" uid="uid://bvc0jwckt327w" path="res://scenes/dialogue/views/DialogueView.cs" id="2_jkk5n"]
 
-[node name="DialogueSystem" type="Control"]
+[node name="DialogueView" type="Control" node_paths=PackedStringArray("Root", "TitleRoot", "LineRoot", "OptionVisualRoot", "OptionRoot", "OptionArchetype", "ContinueButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,15 +11,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_jkk5n")
-
-[node name="DialogueView" type="Node" parent="." node_paths=PackedStringArray("Root", "TitleRoot", "LineRoot", "OptionRoot", "OptionArchetype", "ContinueButton")]
 script = ExtResource("2_jkk5n")
-Root = NodePath("../Root")
-TitleRoot = NodePath("../Root/TitlePanel")
-LineRoot = NodePath("../Root/VBoxContainer/LinePanel")
-OptionRoot = NodePath("../Root/VBoxContainer/OptionContainer")
-OptionArchetype = NodePath("../Root/VBoxContainer/OptionContainer/OptionArchetype")
-ContinueButton = NodePath("../Root/Continue")
+Root = NodePath("Root")
+TitleRoot = NodePath("Root/TitlePanel")
+LineRoot = NodePath("Root/VBoxContainer/LinePanel")
+OptionVisualRoot = NodePath("Root/VBoxContainer/OptionPaddingContainer")
+OptionRoot = NodePath("Root/VBoxContainer/OptionPaddingContainer/OptionContainer")
+OptionArchetype = NodePath("Root/VBoxContainer/OptionPaddingContainer/OptionContainer/OptionArchetype")
+ContinueButton = NodePath("Root/Continue")
 
 [node name="Root" type="Control" parent="."]
 layout_mode = 1
@@ -51,62 +50,34 @@ layout_mode = 2
 bbcode_enabled = true
 text = "Dialogue text"
 
-[node name="OptionContainer" type="VBoxContainer" parent="Root/VBoxContainer"]
+[node name="OptionPaddingContainer" type="HBoxContainer" parent="Root/VBoxContainer"]
 layout_mode = 2
+
+[node name="PaddingLeft" type="Control" parent="Root/VBoxContainer/OptionPaddingContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="OptionContainer" type="VBoxContainer" parent="Root/VBoxContainer/OptionPaddingContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 5.22
 theme_type_variation = &"OptionContainer"
 
-[node name="OptionArchetype" type="HBoxContainer" parent="Root/VBoxContainer/OptionContainer"]
-layout_mode = 2
-
-[node name="Control" type="Control" parent="Root/VBoxContainer/OptionContainer/OptionArchetype"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Button" type="Button" parent="Root/VBoxContainer/OptionContainer/OptionArchetype"]
+[node name="OptionArchetype" type="Button" parent="Root/VBoxContainer/OptionPaddingContainer/OptionContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 5.0
 theme_type_variation = &"DialogueOptionButton"
 text = "Option Text"
 
-[node name="Control2" type="Control" parent="Root/VBoxContainer/OptionContainer/OptionArchetype"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Option2" type="HBoxContainer" parent="Root/VBoxContainer/OptionContainer"]
-layout_mode = 2
-
-[node name="Control" type="Control" parent="Root/VBoxContainer/OptionContainer/Option2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Button" type="Button" parent="Root/VBoxContainer/OptionContainer/Option2"]
+[node name="Option2" type="Button" parent="Root/VBoxContainer/OptionPaddingContainer/OptionContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 5.0
 theme_type_variation = &"DialogueOptionButton"
 text = "Option Text"
 
-[node name="Control2" type="Control" parent="Root/VBoxContainer/OptionContainer/Option2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Option3" type="HBoxContainer" parent="Root/VBoxContainer/OptionContainer"]
-visible = false
-layout_mode = 2
-
-[node name="Control" type="Control" parent="Root/VBoxContainer/OptionContainer/Option3"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Button" type="Button" parent="Root/VBoxContainer/OptionContainer/Option3"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 5.0
-theme_type_variation = &"DialogueOptionButton"
-text = "Option Text"
-
-[node name="Control2" type="Control" parent="Root/VBoxContainer/OptionContainer/Option3"]
+[node name="PaddingRight" type="Control" parent="Root/VBoxContainer/OptionPaddingContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 

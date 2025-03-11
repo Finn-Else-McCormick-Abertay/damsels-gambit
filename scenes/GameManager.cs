@@ -71,7 +71,7 @@ public sealed partial class GameManager : Node
 
 	public static void BeginGame() {
 		DialogueManager.Instance.Reset();
-		SwitchToCardGameScene("res://scenes/tutorial_date.tscn");
+		SwitchToCardGameScene("res://scenes/dates/tutorial_date.tscn");
 	}
 	
 	public static void SwitchToCardGameScene(string cardGameScenePath) {

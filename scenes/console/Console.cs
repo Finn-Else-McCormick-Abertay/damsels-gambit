@@ -51,11 +51,9 @@ public sealed partial class Console : Node
         if (Instance is not null) throw AutoloadException.For(this);
         Instance = this;
         
-        var consoleWindowScene = ResourceLoader.Load<PackedScene>("res://scenes/ui/console/console_window.tscn");
-        _window = consoleWindowScene.Instantiate<ConsoleWindow>();
+        _window = ResourceLoader.Load<PackedScene>("res://scenes/console/ui/console_window.tscn").Instantiate<ConsoleWindow>();
         var canvasLayer = new CanvasLayer { Layer = 100 };
-        AddChild(canvasLayer); canvasLayer.Owner = this;
-        canvasLayer.AddChild(_window); _window.Owner = canvasLayer;
+        this.AddOwnedChild(canvasLayer); canvasLayer.AddOwnedChild(_window);
         _window.Hide();
 
         Print($"{ProjectSettings.GetSetting("application/config/name").AsString()} v{ProjectSettings.GetSetting("application/config/version").AsString()}");

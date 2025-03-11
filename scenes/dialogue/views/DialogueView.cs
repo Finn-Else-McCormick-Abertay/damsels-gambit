@@ -14,8 +14,9 @@ public partial class DialogueView : Node, DialogueViewBase
 	[Export] public Control Root { get; set; }
 	[Export] public Control TitleRoot { get; set { field = value; TitleLabel = TitleRoot is null ? null : TitleRoot is RichTextLabel ? TitleRoot as RichTextLabel : (Control)TitleRoot?.FindChildOfType<RichTextLabel>() ?? TitleRoot?.FindChildOfType<Label>(); } }
 	[Export] public Control LineRoot { get; set { field = value; LineLabel = LineRoot is null ? null : LineRoot is RichTextLabel ? LineRoot as RichTextLabel : (Control)LineRoot?.FindChildOfType<RichTextLabel>() ?? TitleRoot?.FindChildOfType<Label>(); } }
+	[Export] public Control OptionVisualRoot { get; set; }
 	[Export] public Control OptionRoot { get; set; }
-	[Export] public Control OptionArchetype { get; set { field = value; OptionArchetype?.Hide(); } }
+	[Export] public Control OptionArchetype { get; set { field = value; OptionArchetype?.Hide(); OptionArchetype?.GetParent()?.OnReady(x => x.RemoveChild(OptionArchetype)); } }
 
 	public Control TitleLabel { get; private set; }
 	public Control LineLabel { get; private set; }
@@ -41,7 +42,7 @@ public partial class DialogueView : Node, DialogueViewBase
 		TitleRoot.Hide();
 		LineRoot.Hide();
 		ContinueButton.Hide();
-		OptionRoot.Hide();
+		OptionVisualRoot.Hide();
 		DialogueManager.Register(this);
 	}
 	public override void _ExitTree() {
@@ -49,12 +50,7 @@ public partial class DialogueView : Node, DialogueViewBase
 		DialogueManager.Deregister(this);
 	}
 
-	public override void _Ready() {
-		OptionArchetype?.GetParent()?.RemoveChild(OptionArchetype);
-	}
-    public override void _Notification(int what) {
-		if (what == NotificationPredelete) OptionArchetype?.QueueFree();
-    }
+    public override void _Notification(int what) { if (what == NotificationPredelete) OptionArchetype?.QueueFree(); }
 
     public void DialogueStarted() {
 		Root.Show();
@@ -101,15 +97,14 @@ public partial class DialogueView : Node, DialogueViewBase
 	public void RunOptions(DialogueOption[] dialogueOptions, Action<int> onOptionSelected) {
 		CleanupOptions();
 		foreach (var child in OptionRoot.GetChildren()) { if (child != OptionArchetype) { child.QueueFree(); } }
-		OptionArchetype.Hide();
 
 		Control toFocus = null;
 
 		foreach (var option in dialogueOptions) {
 			var optionControl = OptionArchetype.Duplicate() as Control;
-			optionControl.GetParent()?.RemoveChild(optionControl); OptionRoot.AddChild(optionControl);
+			OptionRoot.AddChild(optionControl);
 
-			var button = optionControl.FindChildOfType<Button>();
+			var button = optionControl as Button ?? optionControl.FindChildOfType<Button>();
 			button.Text = option.Line.Text.Text;
 			button.Pressed += () => {
 				Task.Factory.StartNew(async () => {
@@ -125,14 +120,13 @@ public partial class DialogueView : Node, DialogueViewBase
 
 		toFocus?.GrabFocus();
 
-		OptionRoot.Show();
+		OptionVisualRoot.Show();
 		State = DialogueState.DisplayingOptions;
 	}
 
 	private void CleanupOptions() {
 		foreach (var child in OptionRoot.GetChildren()) { if (child != OptionArchetype) { child.QueueFree(); } }
-		OptionArchetype.Hide();
-		OptionRoot.Hide();
+		OptionVisualRoot.Hide();
 		State = DialogueState.Waiting;
 	}
 
