@@ -15,4 +15,4 @@ script = ExtResource("1_vqya7")
 
 [node name="CardGame" parent="." instance=ExtResource("1_4o28y")]
 layout_mode = 1
-SuitorName = "frostholm"
+SuitorName = "Frostholm"

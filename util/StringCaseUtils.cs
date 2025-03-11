@@ -15,5 +15,5 @@ public static partial class Case
 
     [GeneratedRegex("[\\s-_]+", RegexOptions.Compiled)] private static partial Regex SeparatorRegex();
     [GeneratedRegex("(?:[\\s_-]+|^)(\\w)", RegexOptions.Compiled)] private static partial Regex PascalSeparatorRegex();
-    [GeneratedRegex("(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z0-9])", RegexOptions.Compiled)] private static partial Regex PascalBoundaryRegex();
+    [GeneratedRegex("(?<!^|_)([A-Z][a-z]|(?<=[a-z])[A-Z0-9])", RegexOptions.Compiled)] private static partial Regex PascalBoundaryRegex();
 }

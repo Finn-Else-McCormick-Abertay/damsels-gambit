@@ -15,5 +15,5 @@ script = ExtResource("1_nn02b")
 
 [node name="CardGame" parent="." instance=ExtResource("1_h8d8q")]
 layout_mode = 1
-SuitorName = "lady_in_waiting"
+SuitorName = "Lady in Waiting"
 NumRounds = 2
