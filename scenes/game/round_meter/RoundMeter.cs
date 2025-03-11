@@ -16,16 +16,15 @@ public partial class RoundMeter : Control, IReloadableToolScript
 	[Export] private PackedScene NodeScene { get; set; }
 
 	public override void _EnterTree() {
-		Update();
 		ProgressBar?.TryConnect(Control.SignalName.Resized, new Callable(this, MethodName.Update));
 		Container?.TryConnect(Control.SignalName.Resized, new Callable(this, MethodName.Update));
+		CallableUtils.CallDeferred(() => this.OnReady(Update));
 	}
 	public override void _ExitTree() {
 		Clear();
 		ProgressBar?.TryDisconnect(Control.SignalName.Resized, new Callable(this, MethodName.Update));
 		Container?.TryDisconnect(Control.SignalName.Resized, new Callable(this, MethodName.Update));
 	}
-	public override void _Ready() { Update(); }
 
 	private void Update() {
 		if (!IsInstanceValid(Container) || !IsInstanceValid(ProgressBar) || NodeScene is null) return;
