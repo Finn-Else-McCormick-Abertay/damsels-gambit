@@ -1,0 +1,14 @@
+[remap]
+
+importer="yarnscript"
+type="Resource"
+uid="uid://usycettx38mr"
+path="res://.godot/imported/give.yarn-c420a4226ba550df11909a6e40bcb134.tres"
+
+[deps]
+
+source_file="res://assets/dialogue/frostholm/give.yarn"
+dest_files=["res://.godot/imported/give.yarn-c420a4226ba550df11909a6e40bcb134.tres"]
+
+[params]
+

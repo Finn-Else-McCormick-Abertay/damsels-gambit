@@ -20,8 +20,6 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 
 	public int Round { get; set { field = value;  RoundMeter?.OnReady(x => x.CurrentRound = Round); if (Round > NumRounds) OnGameEnd(); } }
 	
-	public bool SkipIntro { get; set; }
-	
 	[ExportGroup("Score")]
 	[Export(PropertyHint.Range, "-30,30,")] public int ScoreMin { get; private set { field = value; AffectionMeter?.OnReady(x => x.MinValue = ScoreMin); } } = -10;
 	[Export(PropertyHint.Range, "-30,30,")] public int ScoreMax { get; private set { field = value; AffectionMeter?.OnReady(x => x.MaxValue = ScoreMax); } } = 10;
@@ -69,18 +67,13 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		Hide();
 		Round = 1;
 		
-		void onTutorialComplete() {
-			DialogueManager.Runner.TryDisconnect(DialogueRunner.SignalName.onDialogueComplete, onTutorialComplete);
-			DialogueManager.Run("suitor_intro", true);
-			Show();
-			Deal();
+		void onIntroComplete() {
+			DialogueManager.Runner.TryDisconnect(DialogueRunner.SignalName.onDialogueComplete, onIntroComplete);
+			Show(); Deal();
 			DialogueManager.Runner.TryConnect(DialogueRunner.SignalName.onDialogueComplete, new Callable(this, MethodName.OnDialogueComplete));
 		}
-		if (SkipIntro) { onTutorialComplete(); }
-		else {
-			DialogueManager.Runner.TryConnect(DialogueRunner.SignalName.onDialogueComplete, onTutorialComplete);
-			DialogueManager.Run("tutorial_intro");
-		}
+		DialogueManager.Runner.TryConnect(DialogueRunner.SignalName.onDialogueComplete, onIntroComplete);
+		DialogueManager.Run($"{Case.ToSnake(SuitorName)}/intro");
 	}
 
 	public override void _Process(double delta) {
@@ -101,16 +94,16 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	private void PlayHand() {
 		if (Engine.IsEditorHint()) return;
 
-		var selectedSubject = TopicHand.GetSelected().First();
-		var selectedModifier = ActionHand.GetSelected().First();
+		var selectedTopic = TopicHand.GetSelected().First();
+		var selectedAction = ActionHand.GetSelected().First();
 
-		var cardId = $"{selectedModifier.CardId}+{selectedSubject.CardId}";
+		var dialogueNode = $"{Case.ToSnake(SuitorName)}/{selectedAction.CardId.ToString().StripFront("action/")}+{selectedTopic.CardId.ToString().StripFront("topic/")}";
 
-		TopicHand.RemoveChild(selectedSubject); selectedSubject.QueueFree();
-		ActionHand.RemoveChild(selectedModifier); selectedModifier.QueueFree();
+		TopicHand.RemoveChild(selectedTopic); selectedTopic.QueueFree();
+		ActionHand.RemoveChild(selectedAction); selectedAction.QueueFree();
 		PlayButton.Hide();
 
-		DialogueManager.Run(cardId);
+		DialogueManager.Run(dialogueNode);
 	}
 
 	private void OnDialogueComplete() {

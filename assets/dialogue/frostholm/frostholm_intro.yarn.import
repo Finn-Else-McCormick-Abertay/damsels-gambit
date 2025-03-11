@@ -1,0 +1,14 @@
+[remap]
+
+importer="yarnscript"
+type="Resource"
+uid="uid://bgkrsf8voy7ci"
+path="res://.godot/imported/frostholm_intro.yarn-bca6de60154e830146f8f470aa23936b.tres"
+
+[deps]
+
+source_file="res://assets/dialogue/frostholm/frostholm_intro.yarn"
+dest_files=["res://.godot/imported/frostholm_intro.yarn-bca6de60154e830146f8f470aa23936b.tres"]
+
+[params]
+

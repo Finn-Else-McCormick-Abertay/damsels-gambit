@@ -49,7 +49,7 @@ public sealed partial class GameManager : Node
 
 		var sceneRoot = GetTree().Root.GetChildren().LastOrDefault();
 		if (sceneRoot is null || sceneRoot.SceneFilePath.Equals("res://scenes/main.tscn")) { InitialiseMainMenu(); }
-		else if (sceneRoot == CardGameController) { CallDeferred(MethodName.InitialiseCardGame, true, true); }
+		else if (sceneRoot == CardGameController) { CallDeferred(MethodName.InitialiseCardGame); }
 	}
 
 	public void InitialiseMainMenu(bool force = true) {
@@ -62,7 +62,7 @@ public sealed partial class GameManager : Node
 		OnMainMenuInitialised?.Invoke(MainMenu);
 	}
 	
-	public void InitialiseCardGame(bool force = true, bool skipIntro = false) {
+	public void InitialiseCardGame(bool force = true) {
 		if (CardGameController is not null) { if (!force) return; CardGameController.GetParent().RemoveChild(CardGameController); CardGameController.QueueFree(); OnCardGameControllerFreed?.Invoke(CardGameController); CardGameController = null; }
 		if (PauseMenu is not null) { PauseMenu.GetParent().RemoveChild(PauseMenu); PauseMenu.QueueFree(); OnPauseMenuFreed?.Invoke(PauseMenu); PauseMenu = null; }
 		if (MainMenu is not null) { MainMenu.GetParent().RemoveChild(MainMenu); MainMenu.QueueFree(); OnMainMenuFreed?.Invoke(MainMenu); MainMenu = null; }
@@ -70,7 +70,6 @@ public sealed partial class GameManager : Node
 		DialogueManager.Instance.Reset();
 
 		CardGameController = _cardGameScene.Instantiate<CardGameController>();
-		CardGameController.SkipIntro = skipIntro;
 		_cardGameCanvasLayer.AddChild(CardGameController); CardGameController.Owner = _cardGameCanvasLayer;
 		OnCardGameControllerInitialised?.Invoke(CardGameController);
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dbckp0dtxk7b0"
-path="res://.godot/imported/sad_2.png-817b08d8e5c46f842a612f7dbe86e2d3.ctex"
+uid="uid://blj64xawofmhc"
+path="res://.godot/imported/angry.png-dc3512bb14b5643f892b057a6ffdf832.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/suitor/sad_2.png"
-dest_files=["res://.godot/imported/sad_2.png-817b08d8e5c46f842a612f7dbe86e2d3.ctex"]
+source_file="res://assets/characters/frostholm/angry.png"
+dest_files=["res://.godot/imported/angry.png-dc3512bb14b5643f892b057a6ffdf832.ctex"]
 
 [params]
 

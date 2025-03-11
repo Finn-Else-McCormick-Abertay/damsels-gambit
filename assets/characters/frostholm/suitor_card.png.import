@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b85kbbob2a0hh"
-path="res://.godot/imported/neutral.png-842ecbc0e0b3ffea9691ef8313f45ec1.ctex"
+uid="uid://bfoqt200g8dkj"
+path="res://.godot/imported/suitor_card.png-69935c51bce774e24d65014a08861d89.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/suitor/neutral.png"
-dest_files=["res://.godot/imported/neutral.png-842ecbc0e0b3ffea9691ef8313f45ec1.ctex"]
+source_file="res://assets/characters/frostholm/suitor_card.png"
+dest_files=["res://.godot/imported/suitor_card.png-69935c51bce774e24d65014a08861d89.ctex"]
 
 [params]
 

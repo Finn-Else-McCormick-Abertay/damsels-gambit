@@ -1,16 +1,16 @@
-title: action/give+topic/parents
+title: frostholm/give+parents
 ---
 Princess Penelope: I got this... #withnext #theme=princess
 	-> Elegant fox pelt slippers for your mother.
 		<<score 3>>
 	-> Occult dreamwatcher for your father, so he may see visions in his dreams.
 		<<score -5>>
-		<<emote suitor angry>>
+		<<emote frostholm angry>>
 		<<after 1.5>>
-		<<emote suitor sad_2 from angry>>
+		<<emote frostholm sad_2 from angry>>
 ===
 
-title: action/give+topic/food
+title: frostholm/give+food
 ---
 Princess Penelope: Here, I got this for you... #withnext #theme=princess
 	-> Wolf-shaped jelly.
@@ -19,7 +19,7 @@ Princess Penelope: Here, I got this for you... #withnext #theme=princess
 		<<score 3>>
 ===
 
-title: action/give+topic/animals
+title: frostholm/give+animals
 ---
 Princess Penelope: Here you are... #withnext #theme=princess
 	-> A wolf pelt!
@@ -28,7 +28,7 @@ Princess Penelope: Here you are... #withnext #theme=princess
 		<<score -3>>
 ===
 
-title: action/give+topic/art
+title: frostholm/give+art
 ---
 Princess Penelope: I got this for you.. #withnext #theme=princess
 	-> It's a painting of the serene magical lake of Rosewood. Painted by our most renowned painter!
@@ -37,7 +37,7 @@ Princess Penelope: I got this for you.. #withnext #theme=princess
 		<<score -3>>
 ===
 
-title: action/give+topic/loyalty
+title: frostholm/give+loyalty
 ---
 Princess Penelope: I got this for you... #withnext #theme=princess
 	-> It's a necklace that lights up when you're close to mine!
@@ -46,22 +46,22 @@ Princess Penelope: I got this for you... #withnext #theme=princess
 		<<score -3>>
 ===
 
-title: action/give+topic/witchcraft
+title: frostholm/give+witchcraft
 ---
 Princess Penelope: Here, I got you a... #withnext #theme=princess
 	-> Newly made pitchfork crafted from black iron for your next witch hunt!
 		<<score 3>>
-		<<emote suitor happy_2>>
+		<<emote frostholm happy_2>>
 		<<after 1.5>>
-		<<emote suitor neutral from happy_2>>
+		<<emote frostholm neutral from happy_2>>
 	-> Sacrificial doll...
 		<<score -5>>
-		<<emote suitor angry>>
+		<<emote frostholm angry>>
 		<<after 1.5>>
-		<<emote suitor sad_2 from angry>>
+		<<emote frostholm sad_2 from angry>>
 ===
 
-title: action/give+topic/religion
+title: frostholm/give+religion
 ---
 Princess Penelope: I got this for you... #withnext #theme=princess
 	-> It's an idol of our God, it will protect you.
@@ -70,7 +70,7 @@ Princess Penelope: I got this for you... #withnext #theme=princess
 		<<score -3>>
 ===
 
-title: action/give+topic/children
+title: frostholm/give+children
 ---
 Princess Penelope: Here, take... #withnext #theme=princess
 	-> This 'How to Be a Father for Dummies' book.
@@ -79,7 +79,7 @@ Princess Penelope: Here, take... #withnext #theme=princess
 		<<score -3>>
 ===
 
-title: action/give+topic/weather
+title: frostholm/give+weather
 ---
 Princess Penelope: Here you are... #withnext #theme=princess
 	-> It's a winter coat! Made of our finest leather and fur.
@@ -88,14 +88,14 @@ Princess Penelope: Here you are... #withnext #theme=princess
 		<<score -3>>
 ===
 
-title: action/give+topic/hobbies
+title: frostholm/give+hobbies
 ---
 Princess Penelope: *Searches around...* Here it is...! #withnext #theme=princess
 	-> I got you a brand new sword, made from black steel!
 		<<score 5>>
-		<<emote suitor happy_2>>
+		<<emote frostholm happy_2>>
 		<<after 1.5>>
-		<<emote suitor happy_1 from happy_2>>
+		<<emote frostholm happy_1 from happy_2>>
 	-> I got you a bow made of the finest willow wood!
 		<<score -3>>
 ===

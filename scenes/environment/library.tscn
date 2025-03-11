@@ -1,6 +1,6 @@
 [gd_scene load_steps=16 format=3 uid="uid://d4dgonbop8ygy"]
 
-[ext_resource type="Texture2D" uid="uid://b85kbbob2a0hh" path="res://assets/characters/suitor/neutral.png" id="1_jtctn"]
+[ext_resource type="Texture2D" uid="uid://b85kbbob2a0hh" path="res://assets/characters/frostholm/neutral.png" id="1_jtctn"]
 [ext_resource type="Texture2D" uid="uid://120j1ta6afcx" path="res://assets/environment/props/Seat.png" id="2_cqnjh"]
 [ext_resource type="Texture2D" uid="uid://dggitk1waeglj" path="res://assets/environment/library_background.png" id="2_lrhu2"]
 [ext_resource type="Script" uid="uid://c5yvgj7xv643o" path="res://scenes/character/CharacterDisplay.cs" id="2_s5131"]
@@ -57,7 +57,7 @@ position = Vector2(576, 328)
 scale = Vector2(0.666757, 0.666757)
 texture = ExtResource("1_jtctn")
 script = ExtResource("2_s5131")
-CharacterName = &"suitor"
+CharacterName = &"frostholm"
 SpriteName = "neutral"
 
 [node name="Foreground" type="CanvasLayer" parent="."]
