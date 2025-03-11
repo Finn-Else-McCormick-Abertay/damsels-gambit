@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://csigl75jsygoi"]
+
+[ext_resource type="PackedScene" uid="uid://dipd7bv4d85ws" path="res://scenes/card_game.tscn" id="1_h8d8q"]
+
+[node name="TutorialDate" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="CardGame" parent="." instance=ExtResource("1_h8d8q")]
+layout_mode = 1
+SuitorName = "lady_in_waiting"
+NumRounds = 2

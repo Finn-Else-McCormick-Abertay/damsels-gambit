@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Damsel's Gambit"
 config/version="0.2.2"
-run/main_scene="res://scenes/main.tscn"
+run/main_scene="uid://c82q6rdj5f5ix"
 config/features=PackedStringArray("4.4", "C#", "Forward Plus")
 boot_splash/bg_color=Color(0.945098, 0.862745, 0.819608, 1)
 boot_splash/image="uid://347p4fnedn1a"

@@ -61,7 +61,7 @@ public partial class SuitorProfile : Control
     private void TriggerUnhighlight() { Highlighted = false; }
     private void ToggleOpen() { Open = !Open; }
 
-    private void UpdateDialogueViewNode() {
+    public void UpdateDialogueViewNode() {
         if (Engine.IsEditorHint() || !DialogueView.IsValid()) return;
         (DialogueView as ProfileDialogueView).ProfileNode = $"{Case.ToSnake(SuitorName)}/profile";
     }

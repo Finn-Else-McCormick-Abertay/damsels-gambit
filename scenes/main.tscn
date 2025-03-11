@@ -1,4 +1,0 @@
-[gd_scene format=3 uid="uid://dmi01ml60nrj6"]
-
-[node name="Main" type="Node"]
-editor_description = "A series of architecture decisions (which I largely stand by) left us with this load-bearing blank empty node. Don't touch it."

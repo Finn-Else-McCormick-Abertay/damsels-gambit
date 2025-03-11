@@ -50,10 +50,16 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		if (Engine.IsEditorHint()) return;
 
 		PlayButton?.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.PlayHand));
+		PlayButton.Disabled = true;
 
 		foreach (var child in TopicHand.GetChildren()) { TopicHand.RemoveChild(child); child.QueueFree(); }
 		foreach (var child in ActionHand.GetChildren()) { ActionHand.RemoveChild(child); child.QueueFree(); }
+		
+		Hide();
+		Round = 1;
+	}
 
+	public void BeginGame() {
 		List<string> CreateWorkingDeck(Godot.Collections.Dictionary<string, int> deck) {
 			List<string> working = [];
 			foreach (var (card, count) in deck) { for (int i = 0; i < count; ++i) { working.Add(card); } }
@@ -64,8 +70,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		_topicDeckWorking = [..CreateWorkingDeck(TopicDeck).OrderBy(x => Random.Shared.Next())];
 		_actionDeckWorking = [..CreateWorkingDeck(ActionDeck).OrderBy(x => Random.Shared.Next())];
 
-		Hide();
-		Round = 1;
+		SuitorProfile.UpdateDialogueViewNode();
 		
 		void onIntroComplete() {
 			DialogueManager.Runner.TryDisconnect(DialogueRunner.SignalName.onDialogueComplete, onIntroComplete);

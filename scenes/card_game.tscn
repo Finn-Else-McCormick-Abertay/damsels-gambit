@@ -266,6 +266,7 @@ offset_left = -16.0
 offset_top = 16.224
 offset_right = 488.0
 offset_bottom = -16.0
+SuitorName = ""
 HighlightOffset = Vector2(-50, 0)
 OpenOffset = Vector2(-500, 0)
 OpenDuration = 0.25

@@ -20,6 +20,11 @@ static class NodeExtensions
         if (self.IsNodeReady()) action(self); else self.Connect(Node.SignalName.Ready, Callable.From(() => action(self)), (uint)GodotObject.ConnectFlags.OneShot);
     }
 
+    public static void AddOwnedChild(this Node self, Node child, bool force = false) {
+        if (force && child.GetParent() is Node parent) parent.RemoveChild(child);
+        self.AddChild(child); child.Owner = self;
+    }
+
     public static Godot.Collections.Array<Node> GetInternalChildren(this Node self) {
         var publicChildren = self.GetChildren();
         var internalChildren = self.GetChildren(true).Where(x => !publicChildren.Contains(x));

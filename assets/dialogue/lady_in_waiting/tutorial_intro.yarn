@@ -20,5 +20,4 @@ Lady in Waiting: Choose your cards carefully. You'll need to combine an [color=a
 Lady in Waiting: Mind the [color="d67931"]Affection Bar[/color] - you want to stay neutral. If, at the end of the date, you are in the region marked in [color=love]pink[/color], you will be wed. If in the region marked in [color=hate]blue[/color], you may cause a war.
 <<emote lady_in_waiting happy>>
 Lady in Waiting: Good luck, Princess. I'll always be here to support you.
-<<hide lady_in_waiting>>
 ===

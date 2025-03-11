@@ -11,7 +11,7 @@ namespace DamselsGambit.Dialogue;
 
 public partial class ProfileDialogueView : Node, DialogueViewBase
 {
-    public string ProfileNode { get; set; }
+    public string ProfileNode { get; set { field = value; Update(); } }
 
     [Export] private Label Title { get; set; }
     [Export] private RichTextLabel Subtitle { get; set; }
@@ -21,6 +21,7 @@ public partial class ProfileDialogueView : Node, DialogueViewBase
     private StringBuilder _stringBuilder;
 
     public override void _EnterTree() {
+        Title.Text = ""; Subtitle.Text = ""; Label.Text = ""; Portrait.Texture = null;
         DialogueManager.Register(this);
         DialogueManager.Knowledge.OnChanged += Update;
         this.OnReady(Update);
@@ -31,6 +32,7 @@ public partial class ProfileDialogueView : Node, DialogueViewBase
     }
 
     private void Update() {
+        if (!DialogueManager.ProfileRunner.IsValid()) return;
         if (DialogueManager.ProfileRunner.IsDialogueRunning) DialogueManager.ProfileRunner.Stop();
         if (DialogueManager.DialogueExists(ProfileNode)) DialogueManager.ProfileRunner.StartDialogue(ProfileNode); else Console.Warning($"Profile view could not update: '{ProfileNode}' is not a valid dialogue node.");
     }
@@ -57,6 +59,6 @@ public partial class ProfileDialogueView : Node, DialogueViewBase
 
 	public void RunOptions(DialogueOption[] dialogueOptions, Action<int> onOptionSelected) => Console.Error("Profile view encountered dialogue options.");
     
-	public void DialogueComplete() { Label.Text = _stringBuilder.ToString(); }
+	public void DialogueComplete() { Label.Text = _stringBuilder?.ToString(); }
 
 }

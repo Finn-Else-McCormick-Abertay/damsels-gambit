@@ -10,8 +10,8 @@ public partial class PauseMenu : Control
 
 	public override void _Ready() {
 		Hide();
-		ResumeButton.TryConnect(Button.SignalName.Pressed, new Callable(this, MethodName.OnResume));
-		QuitButton.TryConnect(Button.SignalName.Pressed, new Callable(this, MethodName.OnQuit));
+		ResumeButton.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnResume));
+		QuitButton.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnQuit));
 	}
 
 	public override void _Process(double delta) {
@@ -28,6 +28,6 @@ public partial class PauseMenu : Control
 
 	private void OnQuit() {
 		GetTree().Paused = false;
-		GameManager.Instance.InitialiseMainMenu();
+		GameManager.SwitchToMainMenu();
 	}
 }
