@@ -78,7 +78,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		EmitSignal(SignalName.GameStart);
 		
 		DialogueManager.TryRun($"{_suitorId}/intro").AndThen(() => {
-			Show(); Deal();
+			Round = 1; Show(); Deal();
 			EmitSignal(SignalName.RoundStart);
 		});
 	}

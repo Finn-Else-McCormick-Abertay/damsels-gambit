@@ -18,7 +18,7 @@ public partial class RoundMeter : Control, IReloadableToolScript
 	public override void _EnterTree() {
 		ProgressBar?.TryConnect(Control.SignalName.Resized, new Callable(this, MethodName.Update));
 		Container?.TryConnect(Control.SignalName.Resized, new Callable(this, MethodName.Update));
-		CallableUtils.CallDeferred(() => this.OnReady(Update));
+		if (Engine.IsEditorHint()) CallableUtils.CallDeferred(() => this.OnReady(Update)); else this.OnReady(Update);
 	}
 	public override void _ExitTree() {
 		Clear();
