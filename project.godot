@@ -18,6 +18,10 @@ boot_splash/bg_color=Color(0.945098, 0.862745, 0.819608, 1)
 boot_splash/image="uid://347p4fnedn1a"
 config/icon="uid://347p4fnedn1a"
 
+[audio]
+
+buses/default_bus_layout="res://assets/audio/default_bus_layout.tres"
+
 [autoload]
 
 GameManager="*res://scenes/singleton/GameManager.cs"

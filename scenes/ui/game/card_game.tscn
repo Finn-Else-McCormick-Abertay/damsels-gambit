@@ -1,14 +1,14 @@
 [gd_scene load_steps=18 format=3 uid="uid://dipd7bv4d85ws"]
 
-[ext_resource type="Script" uid="uid://fhn7dbryyxai" path="res://scenes/CardGameController.cs" id="1_4k8rw"]
+[ext_resource type="Script" uid="uid://fhn7dbryyxai" path="res://scenes/ui/game/CardGameController.cs" id="1_4k8rw"]
 [ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_ui_dynamic_font.tres" id="1_b7goe"]
 [ext_resource type="Script" uid="uid://c6fd25jlnt26l" path="res://scenes/ui/cards/CardDisplay.cs" id="2_kdxpq"]
 [ext_resource type="Theme" uid="uid://dhax3sfwm6isl" path="res://assets/ui/theme/affection_meter_theme.tres" id="2_ko4o6"]
-[ext_resource type="Script" uid="uid://dbwnt4443aqcc" path="res://scenes/ui/AffectionMeter.cs" id="4_dw2x6"]
+[ext_resource type="Script" uid="uid://dbwnt4443aqcc" path="res://scenes/ui/game/AffectionMeter.cs" id="4_dw2x6"]
 [ext_resource type="Script" uid="uid://cq1ndckdbfugt" path="res://scenes/ui/cards/HandContainer.cs" id="4_xg83y"]
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/theme/default_theme.tres" id="6_7wss3"]
-[ext_resource type="PackedScene" uid="uid://c8warv5k2winh" path="res://scenes/ui/round_meter.tscn" id="8_oypvw"]
-[ext_resource type="PackedScene" uid="uid://q1kh0whg1g0g" path="res://scenes/ui/suitor_profile.tscn" id="9_6xg5x"]
+[ext_resource type="PackedScene" uid="uid://c8warv5k2winh" path="res://scenes/ui/game/round_meter/round_meter.tscn" id="8_oypvw"]
+[ext_resource type="PackedScene" uid="uid://q1kh0whg1g0g" path="res://scenes/ui/game/suitor_profile/suitor_profile.tscn" id="9_6xg5x"]
 
 [sub_resource type="Theme" id="Theme_ouffm"]
 CardDisplay/colors/name_font_color = Color(0.478431, 0.0117647, 0, 1)
@@ -265,7 +265,6 @@ offset_left = -16.0
 offset_top = 16.224
 offset_right = 488.0
 offset_bottom = -16.0
-SuitorName = ""
 HighlightOffset = Vector2(-50, 0)
 OpenOffset = Vector2(-500, 0)
 OpenDuration = 0.25

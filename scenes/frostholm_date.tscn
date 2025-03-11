@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://b1vrrngvb22r3"]
 
-[ext_resource type="PackedScene" uid="uid://dipd7bv4d85ws" path="res://scenes/card_game.tscn" id="1_4o28y"]
+[ext_resource type="PackedScene" uid="uid://dipd7bv4d85ws" path="res://scenes/ui/game/card_game.tscn" id="1_4o28y"]
 [ext_resource type="Script" uid="uid://cxnt172f81tka" path="res://scenes/FrostholmDate.cs" id="1_vqya7"]
 
 [node name="FrostholmDate" type="Control"]
