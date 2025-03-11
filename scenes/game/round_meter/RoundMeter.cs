@@ -35,7 +35,7 @@ public partial class RoundMeter : Control, IReloadableToolScript
 
 		for (int i = 1; i <= NumRounds; ++i) {
 			var meterNode = NodeScene.Instantiate<Control>();
-			Container.AddChild(meterNode); if (!Engine.IsEditorHint()) { meterNode.Owner = Container; }
+			Container.AddChild(meterNode);
 			meterNode.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 			meterNode.SizeFlagsVertical = SizeFlags.ShrinkCenter;
 			meterNode.CustomMinimumSize = new Vector2(50f, 50f);
@@ -43,18 +43,14 @@ public partial class RoundMeter : Control, IReloadableToolScript
 			var activeVariant = meterNode.GetNode<Control>(i < CurrentRound ? "Completed" : i > CurrentRound ? "Upcoming" : "Current");
 			activeVariant.Show();
 			if (i == CurrentRound) {
-				ProgressBar.Value = (1f - (ProgressBar.Size.X - Container.Size.X) / ProgressBar.Size.X) / NumRounds * i;
-
-				var label = activeVariant.GetNode<Label>("Label");
-				label.Text = $"{CurrentRound}";
+				CallableUtils.CallDeferred(() => ProgressBar.Value = (meterNode.GlobalPosition.X + meterNode.Size.X / 2f - ProgressBar.GlobalPosition.X) / ProgressBar.Size.X * ProgressBar.MaxValue);
+				activeVariant.GetNode<Label>("Label").Text = $"{CurrentRound}";
 			}
 		}
 	}
 
 	private void Clear() {
 		if (!IsInstanceValid(Container)) return;
-		foreach (var child in Container.GetChildren()) {
-			Container.RemoveChild(child); child.QueueFree();
-		}
+		foreach (var child in Container.GetChildren()) { Container.RemoveChild(child); child.QueueFree(); }
 	}
 }
