@@ -61,25 +61,21 @@ public partial class DialogueView : Node, DialogueViewBase
 		State = DialogueState.Waiting;
 	}
 
-	public void RunLine(LocalizedLine dialogueLine, Action onDialogueLineFinished) {
-		_onLineFinishedAction = onDialogueLineFinished;
+	public void RunLine(LocalizedLine line, Action onLineFinished) {
+		_onLineFinishedAction = onLineFinished;
 
-		bool withNext = dialogueLine?.Metadata?.Contains("withnext") ?? false;
+		bool withNext = line?.Metadata?.Contains("withnext") ?? false;
 
-		TitleLabel?.Set(Label.PropertyName.Text, dialogueLine.CharacterName);
-		LineLabel?.Set(Label.PropertyName.Text, dialogueLine.TextWithoutCharacterName.Text);
+		TitleLabel?.Set(Label.PropertyName.Text, line.CharacterName);
+		LineLabel?.Set(Label.PropertyName.Text, line.TextWithoutCharacterName.AsBBCode());
 
-		TitleRoot.Visible = dialogueLine.CharacterName is not null && dialogueLine.CharacterName != "";
+		TitleRoot.Visible = line.CharacterName is not null && line.CharacterName != "";
 		LineRoot.Visible = true;
 		ContinueButton.Visible = !withNext;
 		ContinueButton.GrabFocus();
 
-		var themeTag = (dialogueLine?.Metadata?.Where(x => x.StartsWith("theme=")) ?? []).SingleOrDefault();
-		if (themeTag is not null) {
-			var themeName = themeTag.StripFront("theme=");
-			if (_themes.TryGetValue(themeName, out var theme)) {
-				Root.Theme = theme;
-			}
+		if ((line?.Metadata ?? []).Where(x => x.StartsWith("theme=")).Select(x => x.StripFront("theme=")).SingleOrDefault() is string themeName) {
+			if (_themes.TryGetValue(themeName, out var theme)) Root.Theme = theme;
 			else Console.Warning($"Failed to switch to dialogue theme '{themeName}': theme does not exist.");
 		}
 		else Root.Theme = null;

@@ -45,14 +45,14 @@ public partial class ProfileDialogueView : Node, DialogueViewBase
         if (Portrait.IsValid() && complexTags.TryGetValue("portrait", out var path)) Portrait.Texture = ResourceLoader.Load<Texture2D>($"res://{path.Replace('\\','/').StripFront("res://")}");
     }
 
-    public void RunLine(LocalizedLine dialogueLine, Action onDialogueLineFinished) {
-        bool HasTag(string tag) => dialogueLine.Metadata?.Any(x => x.MatchN(tag)) ?? false;
+    public void RunLine(LocalizedLine line, Action onLineFinished) {
+        bool HasTag(string tag) => line.Metadata?.Any(x => x.MatchN(tag)) ?? false;
 
-        if (HasTag("title")) Title.Text = dialogueLine.Text.Text;
-        else if (HasTag("subtitle")) Subtitle.Text = dialogueLine.Text.Text;
-        else _stringBuilder.AppendLine(dialogueLine.Text.Text);
+        if (HasTag("title")) Title.Text = line.Text.AsBBCode();
+        else if (HasTag("subtitle")) Subtitle.Text = line.Text.AsBBCode();
+        else _stringBuilder.AppendLine(line.Text.AsBBCode());
 
-        onDialogueLineFinished?.Invoke();
+        onLineFinished?.Invoke();
 	}
 
 	public void RunOptions(DialogueOption[] dialogueOptions, Action<int> onOptionSelected) => Console.Error("Profile view encountered dialogue options.");
