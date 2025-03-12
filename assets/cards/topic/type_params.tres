@@ -10,7 +10,7 @@ point_count = 3
 [resource]
 script = ExtResource("1_f8to3")
 NamePosition = Vector2(0.01, 0.71)
-TypePosition = Vector2(0, 0.134)
+TypePosition = Vector2(0.009, 0.125)
 ScorePosition = Vector2(0, 0.945)
 NameFontSize = -1
 TypeFontSize = -1
