@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardTypeParams" load_steps=3 format=3 uid="uid://rc1hckr31i5r"]
+
+[ext_resource type="Script" uid="uid://cd1f52y2k0yfw" path="res://scenes/game/cards/CardTypeParams.cs" id="1_f8to3"]
+
+[sub_resource type="Curve" id="Curve_f8to3"]
+_limits = [-10.0, 10.0, 0.0, 1.0]
+_data = [Vector2(0.2, -3.2), 0.0, 11.6633, 0, 1, Vector2(0.5, 0.299), 0.0, 0.0, 0, 0, Vector2(0.8, -3.2), -11.6633, 0.0, 1, 0]
+point_count = 3
+
+[resource]
+script = ExtResource("1_f8to3")
+NamePosition = Vector2(0.01, 0.71)
+TypePosition = Vector2(0, 0.134)
+ScorePosition = Vector2(0, 0.945)
+NameFontSize = -1
+TypeFontSize = -1
+NameCurve = SubResource("Curve_f8to3")
+metadata/_custom_type_script = "uid://cd1f52y2k0yfw"

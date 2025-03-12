@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CardTypeParams" load_steps=3 format=3 uid="uid://cnoeuxd7lwy0j"]
+
+[ext_resource type="Script" uid="uid://cd1f52y2k0yfw" path="res://scenes/game/cards/CardTypeParams.cs" id="1_jqa1w"]
+
+[sub_resource type="Curve" id="Curve_etuoc"]
+
+[resource]
+script = ExtResource("1_jqa1w")
+NamePosition = Vector2(0, 0.765)
+TypePosition = Vector2(0, 0.115)
+ScorePosition = Vector2(0, 0.945)
+NameFontSize = -1
+TypeFontSize = 15
+NameCurve = SubResource("Curve_etuoc")
+metadata/_custom_type_script = "uid://cd1f52y2k0yfw"

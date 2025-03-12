@@ -4,7 +4,7 @@ using System.Linq;
 using DamselsGambit.Util;
 using System.IO;
 using System.Collections.Generic;
-using Godot.Collections;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace DamselsGambit;
 
 [Tool, GlobalClass, Icon("res://assets/editor/icons/card.svg")]
@@ -15,31 +15,30 @@ public partial class CardDisplay : Control, IReloadableToolScript
 			field = value;
 			var id = CardId.ToString();
 			var separator = id.Find('/');
-			var type = separator >= 0 ? id[..separator] : "unknown";
-			var name = separator >= 0 ? id[(separator + 1)..] : id;
+			CardType = separator >= 0 ? id[..separator] : "unknown";
+			CardName = separator >= 0 ? id[(separator + 1)..] : id;
 
-			DisplayName = name.Capitalize();
-			string textureRoot = $"res://assets/cards/{type}";
+			string textureRoot = $"res://assets/cards/{CardType}";
 
-			if (ResourceLoader.Exists($"{textureRoot}/{name}.tres")) {
-				var cardInfo = ResourceLoader.Load<CardInfo>($"{textureRoot}/{name}.tres");
+			if (ResourceLoader.Exists($"{textureRoot}/{CardName}.tres")) {
+				var cardInfo = ResourceLoader.Load<CardInfo>($"{textureRoot}/{CardName}.tres");
 				if (!string.IsNullOrEmpty(cardInfo.DisplayName)) DisplayName = cardInfo.DisplayName;
 				Score = string.IsNullOrEmpty(cardInfo.Score) ? null : cardInfo.Score;
 			}
 
-			if (ResourceLoader.Exists($"{textureRoot}/{name}.png")) {
-				Texture = ResourceLoader.Load<Texture2D>($"{textureRoot}/{name}.png");
-				_renderName = false;
+			if (ResourceLoader.Exists($"{textureRoot}/{CardName}.png")) {
+				Texture = ResourceLoader.Load<Texture2D>($"{textureRoot}/{CardName}.png");
 			}
 			else {
-				_renderName = true;
-				if (ResourceLoader.Exists($"{textureRoot}/template.png")) { Texture = ResourceLoader.Load<Texture2D>($"{textureRoot}/template.png"); }
-				else { Texture = ThemeDB.FallbackIcon; }
+				if (ResourceLoader.Exists($"{textureRoot}/template.png")) Texture = ResourceLoader.Load<Texture2D>($"{textureRoot}/template.png"); else Texture = ThemeDB.FallbackIcon;
 			}
 		}
 	}
+	public string CardType { get; private set { field = value; DisplayType = CardType.Capitalize(); } }
+	public string CardName { get; private set { field = value; DisplayName = CardName.Capitalize(); } }
+
+	public string DisplayType { get; private set; }
 	public string DisplayName { get; private set; }
-	private bool _renderName = false;
 
 	public string Score { get; private set; } = null;
 
@@ -58,6 +57,18 @@ public partial class CardDisplay : Control, IReloadableToolScript
 	}
 	
 	private static CardSharedParams SharedParams { get { if (!field.IsValid()) field = ResourceLoader.Load<CardSharedParams>("res://assets/cards/card_shared.tres") ?? new(); return field; } }
+	
+	private static readonly Dictionary<string, CardTypeParams> _typeParams = [];
+	private CardTypeParams GetTypeParams() {
+		if (_typeParams.TryGetValue(CardType, out var @params)) return @params;
+		var filePath = $"res://assets/cards/{CardType}/type_params.tres";
+		if (ResourceLoader.Exists(filePath)) {
+			var typeParams = ResourceLoader.Load<CardTypeParams>(filePath);
+			_typeParams.Add(CardType, typeParams);
+			return typeParams;
+		}
+		return new();
+	}
 
 	public CardDisplay() { MouseFilter = MouseFilterEnum.Pass; FocusMode = FocusModeEnum.All; }
 
@@ -87,14 +98,17 @@ public partial class CardDisplay : Control, IReloadableToolScript
 	public static class ThemeProperties
 	{
 		public static class Font {
+			public static readonly StringName Type = "type_font";
 			public static readonly StringName Name = "name_font";
 			public static readonly StringName Score = "score_font";
 			public static class Size {
+				public static readonly StringName Type = "type_font_size";
 				public static readonly StringName Name = "name_font_size";
 				public static readonly StringName Score = "score_font_size";
 			}
 		}
 		public static class Color {
+			public static readonly StringName TypeFont = "type_font_color";
 			public static readonly StringName NameFont = "name_font_color";
 			public static readonly StringName ScoreFont = "score_font_color";
 		}
@@ -103,33 +117,65 @@ public partial class CardDisplay : Control, IReloadableToolScript
 	public override void _Draw() {
 		if (Texture is null) { return; }
 		var trans = Transform2D.Identity.Scaled(new Vector2(Size.Y, Size.Y)).Translated(new Vector2((Size.X - _textureAspectRatio * Size.Y) / 2f, 0f));
+
+		var canvasItem = GetCanvasItem();
 		
 		if (ShadowOpacity > 0) { DrawMesh(_shadowMesh, s_shadowGradientTexture, trans.Translated(ShadowOffset.Rotated(-Rotation)), new Color(Colors.White, ShadowOpacity)); }
 		DrawMesh(_cardMesh, Texture, trans);
 
-		// Stop using the _renderName thing once the card textures stop having their names on them
-		if (_renderName) {
-			var font = GetThemeFont(ThemeProperties.Font.Name, ThemeClassName); var fontSize = GetThemeFontSize(ThemeProperties.Font.Size.Name, ThemeClassName); var fontColor = GetThemeColor(ThemeProperties.Color.NameFont, ThemeClassName);
+		var typeParams = GetTypeParams(); typeParams.TryConnect(Resource.SignalName.Changed, new Callable(this, CanvasItem.MethodName.QueueRedraw));
+
+		if (!string.IsNullOrEmpty(DisplayType)) {
+			var font = GetThemeFont(ThemeProperties.Font.Type, ThemeClassName);
+			var fontSize = typeParams.TypeFontSize; if (fontSize < 0) fontSize = GetThemeFontSize(ThemeProperties.Font.Size.Type, ThemeClassName);
+			var fontColor = GetThemeColor(ThemeProperties.Color.TypeFont, ThemeClassName);
+
+			DrawString(font, new Vector2(_textureAspectRatio * Size.Y / 2f * typeParams.TypePosition.X, Size.Y * typeParams.TypePosition.Y), DisplayType, HorizontalAlignment.Center, _textureAspectRatio * Size.Y, fontSize, fontColor);
+		}
+
+		if (!string.IsNullOrEmpty(DisplayName)) {
+			var textServer = TextServerManager.GetPrimaryInterface();
+
+			var font = GetThemeFont(ThemeProperties.Font.Name, ThemeClassName);
+			var fontSize = typeParams.NameFontSize; if (fontSize < 0) fontSize = GetThemeFontSize(ThemeProperties.Font.Size.Name, ThemeClassName);
+			var fontColor = GetThemeColor(ThemeProperties.Color.NameFont, ThemeClassName);
+
+			var shapedText = textServer.CreateShapedText();
+			textServer.ShapedTextAddString(shapedText, DisplayName, font.GetRids(), fontSize, font.GetOpentypeFeatures(), OS.GetLocale());
+
+			var origin = new Vector2(Size.X / 2f - _textureAspectRatio * Size.Y / 2f * typeParams.NamePosition.X - (float)textServer.ShapedTextGetWidth(shapedText) / 2f, Size.Y * typeParams.NamePosition.Y);
 			
-			var stringSize = font.GetStringSize(DisplayName, HorizontalAlignment.Left, -1, fontSize);
-			var origin = new Vector2(Size.X / 2f - _textureAspectRatio * Size.Y / 2f * SharedParams.NamePosition.X - stringSize.X / 2f, Size.Y  * SharedParams.NamePosition.Y);
+			Vector2 nextCharacterOrigin = origin;
 
-			for (int i = 0; i < DisplayName.Length; ++i) {
-				var usedSpace = i == 0 ? new() : font.GetStringSize(DisplayName[..i], HorizontalAlignment.Center, -1, fontSize);
-				var drawPosition = new Vector2(origin.X + usedSpace.X, origin.Y);
+			var glyphs = textServer.ShapedTextGetGlyphs(shapedText);
+			var glyphCount = textServer.ShapedTextGetGlyphCount(shapedText);
 
-				if (SharedParams.NameCurve is not null) {
-					var curveOffset = SharedParams.NameCurve.Sample((drawPosition.X + font.GetCharSize(DisplayName[i], fontSize).X / 2f) / (_textureAspectRatio * Size.Y));
+			for (int i = 0; i < glyphCount; ++i) {
+				var fontId = glyphs[i]["font_rid"].AsRid();
+				var index = glyphs[i]["index"].AsInt64();
+				var offset = glyphs[i]["offset"].AsVector2();
+				var advance = glyphs[i]["advance"].AsDouble();
+
+				var drawPosition = nextCharacterOrigin + offset;
+				
+				if (typeParams.NameCurve is not null) {
+					var glyphSize = textServer.FontGetGlyphSize(fontId, new Vector2I(fontSize, fontSize), index);
+					var curveOffset = typeParams.NameCurve.Sample((drawPosition.X + glyphSize.X / 2f) / (_textureAspectRatio * Size.Y));
 					drawPosition.Y -= curveOffset;
 				}
 
-				font.DrawChar(GetCanvasItem(), drawPosition, DisplayName[i], fontSize, fontColor);
+				textServer.FontDrawGlyph(fontId, canvasItem, fontSize, drawPosition, index, fontColor);
+
+				if ((i + 1) < glyphCount) nextCharacterOrigin += textServer.FontGetKerning(fontId, fontSize, new Vector2I((int)index, (int)glyphs[i]["index"].AsInt64()));
+				nextCharacterOrigin.X += (float)advance;
 			}
+			
+			textServer.FreeRid(shapedText);
 		}
 
 		if (Score is not null) {
 			var font = GetThemeFont(ThemeProperties.Font.Score, ThemeClassName); var fontSize = GetThemeFontSize(ThemeProperties.Font.Size.Score, ThemeClassName); var fontColor = GetThemeColor(ThemeProperties.Color.ScoreFont, ThemeClassName);
-			DrawString(font, new Vector2(_textureAspectRatio * Size.Y / 2f * SharedParams.ScorePosition.X, Size.Y  * SharedParams.ScorePosition.Y), Score, HorizontalAlignment.Center, _textureAspectRatio * Size.Y, fontSize, fontColor);
+			DrawString(font, new Vector2(_textureAspectRatio * Size.Y / 2f * typeParams.ScorePosition.X, Size.Y * typeParams.ScorePosition.Y), Score, HorizontalAlignment.Center, _textureAspectRatio * Size.Y, fontSize, fontColor);
 		}
 	}
 
