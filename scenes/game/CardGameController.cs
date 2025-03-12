@@ -133,10 +133,11 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 
 		void DealToHand(HandContainer container, int handSize, List<string> workingDeck, Vector2 startPosition, float startAngle, double waitTime = 0.2) {
 			int cardsToDeal = Math.Max(handSize - container.GetChildCount(), 0);
+			List<string> cardsInHand = [..container.FindChildrenOfType<CardDisplay>().Select(x => x.CardId.ToString())];
 			for (int i = 0; i < cardsToDeal; ++i) {
-				var cardId = (NoRepeatsInHand ? workingDeck.SkipWhile(id => container.FindChildrenWhere<CardDisplay>(card => card.CardId == id).Count > 0) : workingDeck).FirstOrDefault();
+				var cardId = (NoRepeatsInHand ? workingDeck.SkipWhile(cardsInHand.Contains) : workingDeck).FirstOrDefault() ?? workingDeck.FirstOrDefault();
 				if (cardId is null) break;
-				workingDeck.Remove(cardId);
+				cardsInHand.Add(cardId); workingDeck.Remove(cardId);
 				var cardDisplay = new CardDisplay{ CardId = cardId, ShadowOffset = new(-10, 1), ShadowOpacity = 0.4f, GlobalPosition = startPosition, RotationDegrees = startAngle };
 				Task.Factory.StartNew(async () => {
 					await ToSignal(GetTree().CreateTimer(waitTime * i), Timer.SignalName.Timeout);
