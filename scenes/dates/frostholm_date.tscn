@@ -16,3 +16,14 @@ script = ExtResource("1_vqya7")
 [node name="CardGame" parent="." instance=ExtResource("1_4o28y")]
 layout_mode = 1
 SuitorName = "Frostholm"
+TopicDeck = {
+"topic/animals": 1,
+"topic/art": 1,
+"topic/children": 1,
+"topic/family": 1,
+"topic/food": 1,
+"topic/hobbies": 1,
+"topic/religion": 1,
+"topic/weather": 1,
+"topic/witchcraft": 1
+}

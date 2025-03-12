@@ -17,3 +17,13 @@ script = ExtResource("1_nn02b")
 layout_mode = 1
 SuitorName = "Lady in Waiting"
 NumRounds = 2
+TopicDeck = {
+"topic/animals": 2,
+"topic/children": 2,
+"topic/witchcraft": 2
+}
+ActionDeck = {
+"action/compliment": 2,
+"action/question": 2,
+"action/secret": 2
+}
