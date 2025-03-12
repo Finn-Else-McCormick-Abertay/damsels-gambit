@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bbvpf523ln0aj"]
+[gd_scene load_steps=15 format=3 uid="uid://bbvpf523ln0aj"]
 
 [ext_resource type="Texture2D" uid="uid://lioraxfo5wox" path="res://assets/characters/lady_in_waiting/neutral.png" id="2_4vov1"]
 [ext_resource type="Script" uid="uid://c5yvgj7xv643o" path="res://scenes/environment/CharacterDisplay.cs" id="3_fascp"]
@@ -8,12 +8,12 @@
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_a5dej"]
 blend_mode = 1
 
-[sub_resource type="Gradient" id="Gradient_beah4"]
-offsets = PackedFloat32Array(0, 0.283439, 1)
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 0.552267, 0.38776, 0.528297, 1)
+[sub_resource type="Gradient" id="Gradient_767y1"]
+offsets = PackedFloat32Array(0, 0.399329, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 0.55, 0.385, 0.52525, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_32mfv"]
-gradient = SubResource("Gradient_beah4")
+gradient = SubResource("Gradient_767y1")
 fill = 1
 fill_from = Vector2(0.504274, 0.679487)
 fill_to = Vector2(0.230769, 0.350427)
@@ -21,8 +21,12 @@ fill_to = Vector2(0.230769, 0.350427)
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_hmojl"]
 blend_mode = 3
 
+[sub_resource type="Gradient" id="Gradient_du7ql"]
+offsets = PackedFloat32Array(0, 0.283439, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 0.552267, 0.38776, 0.528297, 1)
+
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_vliwc"]
-gradient = SubResource("Gradient_beah4")
+gradient = SubResource("Gradient_du7ql")
 fill = 1
 fill_from = Vector2(0.559829, 0.730769)
 fill_to = Vector2(0.24359, 0.333333)
@@ -30,17 +34,17 @@ fill_to = Vector2(0.24359, 0.333333)
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_u4yao"]
 blend_mode = 1
 
-[sub_resource type="Gradient" id="Gradient_46k02"]
+[sub_resource type="Gradient" id="Gradient_hieft"]
 colors = PackedColorArray(0.961342, 0.67336, 0.52894, 1, 0, 0, 0, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_bbqmg"]
-gradient = SubResource("Gradient_46k02")
+gradient = SubResource("Gradient_hieft")
 fill = 1
 fill_from = Vector2(0.106838, 0.452991)
 fill_to = Vector2(0.606838, 0.320513)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_6sx44"]
-gradient = SubResource("Gradient_46k02")
+gradient = SubResource("Gradient_hieft")
 fill = 1
 fill_from = Vector2(0.910256, 0.641026)
 fill_to = Vector2(0.371795, 0.551282)
@@ -76,6 +80,7 @@ metadata/_edit_lock_ = true
 follow_viewport_enabled = true
 
 [node name="Queen" type="Sprite2D" parent="CharacterLayer"]
+visible = false
 clip_children = 2
 position = Vector2(904, 416)
 scale = Vector2(0.426402, 0.426402)

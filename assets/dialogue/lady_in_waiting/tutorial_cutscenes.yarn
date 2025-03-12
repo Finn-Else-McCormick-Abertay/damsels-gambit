@@ -1,12 +1,16 @@
 title: lady_in_waiting__intro
 ---
-<<scene chamber>>
+<<scene throne_room>>
 <<fade in queen 1>>
+<<wait 1>>
 Queen Helena: My daughter, you need to be married. I have arranged a date with a suitor tonight.
 <<emote queen turn_right>>
-Queen Helena: King Ráðúlfr is making his way from his kingdom of Frostholm as we speak. Make yourself ready, and try not to disappoint him.
+Queen Helena: Prince Ráðúlfr is making his way from his kingdom of Frostholm as we speak. Make yourself ready, and try not to disappoint him.
+<<hide_box>>
 <<move queen 300 0 1>>
 <<fade out queen 1>>
+<<wait 1>>
+<<scene chamber>>
 <<move lady_in_waiting -300 0>>
 <<move lady_in_waiting 300 0 1>>
 <<fade in lady_in_waiting 1>>
