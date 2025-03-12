@@ -33,3 +33,39 @@ Lady in Waiting: You'll want to stay neutral. If, at the end of the date, you ar
 <<emote lady_in_waiting neutral>>
 <<endif>>
 ===
+
+title: lady_in_waiting__ending__love
+---
+<<emote lady_in_waiting blush_look_up>>
+Lady in Waiting: That, um, might've been a bit too nice.
+<<emote lady_in_waiting neutral_mouth_open>>
+Lady in Waiting: After all, you don't want him to like you enough to take you as his wife, do you?
+<<emote lady_in_waiting happy>>
+Lady in Waiting: Good luck, Princess. I'll always be here to support you.
+<<jump lady_in_waiting__ending__shared>>
+===
+
+title: lady_in_waiting__ending__neutral
+---
+<<emote lady_in_waiting happy>>
+Lady in Waiting: There, you got the hang of it!
+<<emote lady_in_waiting neutral_mouth_open>>
+Lady in Waiting: Good luck, Princess. I'll always be here to support you.
+<<jump lady_in_waiting__ending__shared>>
+===
+
+title: lady_in_waiting__ending__hate
+---
+<<emote lady_in_waiting sad_look_forward>>
+Lady in Waiting: I get that you don't want him to like you, but you may want to tone it back a bit from that. You don't want to be making enemies of powerful people like him.
+<<emote lady_in_waiting neutral_mouth_open>>
+Lady in Waiting: Still, good luck, Princess. I'll always be here to support you.
+<<jump lady_in_waiting__ending__shared>>
+===
+
+title: lady_in_waiting__ending__shared
+---
+<<hide_box>>
+<<fade out lady_in_waiting 1>>
+<<wait 1>>
+===

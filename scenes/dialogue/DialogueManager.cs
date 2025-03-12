@@ -28,6 +28,8 @@ public partial class DialogueManager : Node
     private readonly Dictionary<string, List<PropDisplay>> _propDisplays = [];
     private readonly HashSet<Node> _dialogueViews = [];
 
+    public static ReadOnlyCollection<DialogueView> DialogueViews => Instance?._dialogueViews?.Where(x => x is DialogueView)?.Select(x => x as DialogueView)?.ToList()?.AsReadOnly();
+
     public override void _EnterTree() {
         Instance = this;
         AddChild(_environmentRoot); _environmentRoot.Owner = this;

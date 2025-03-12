@@ -68,7 +68,7 @@ public partial class DialogueView : Node, DialogueViewBase
 		LineLabel?.Set(Label.PropertyName.Text, line.TextWithoutCharacterName.AsBBCode());
 
 		TitleRoot.Visible = line.CharacterName is not null && line.CharacterName != "";
-		LineRoot.Visible = true;
+		LineRoot.Visible = true;//!string.IsNullOrWhiteSpace(line.TextWithoutCharacterName.Text);
 		ContinueButton.Visible = !withNext;
 		ContinueButton.GrabFocus();
 
@@ -82,16 +82,16 @@ public partial class DialogueView : Node, DialogueViewBase
 		});
 		
 		State = DialogueState.DisplayingLine;
-		if (withNext) { _onLineFinishedAction?.Invoke(); }
+		if (withNext) _onLineFinishedAction?.Invoke();
 	}
 
-	private void OnContinue() {
-		_onLineFinishedAction?.Invoke();
+	public void HideBox() {
+		TitleRoot.Hide();
+		LineRoot.Hide();
+		OptionVisualRoot.Hide();
 	}
 
-	public void InterruptLine(LocalizedLine dialogueLine, Action onDialogueLineFinished) {
-		onDialogueLineFinished?.Invoke();
-	}
+	private void OnContinue() => _onLineFinishedAction?.Invoke();
 
 	public void DismissLine(Action onDismissalComplete) {
 		ContinueButton.Hide();
@@ -101,7 +101,6 @@ public partial class DialogueView : Node, DialogueViewBase
 
 	public void RunOptions(DialogueOption[] dialogueOptions, Action<int> onOptionSelected) {
 		CleanupOptions();
-		foreach (var child in OptionRoot.GetChildren()) { if (child != OptionArchetype) { child.QueueFree(); } }
 
 		Control toFocus = null;
 
@@ -130,7 +129,7 @@ public partial class DialogueView : Node, DialogueViewBase
 	}
 
 	private void CleanupOptions() {
-		foreach (var child in OptionRoot.GetChildren()) { if (child != OptionArchetype) { child.QueueFree(); } }
+		foreach (var child in OptionRoot.GetChildren()) child.QueueFree();
 		OptionVisualRoot.Hide();
 		State = DialogueState.Waiting;
 	}

@@ -66,6 +66,9 @@ static class AnimationDialogueCommands
     [YarnCommand("hide")]
     public static void Hide(string itemName) => RunCommandDeferred(() => DialogueManager.GetAllItems(itemName)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, false)));
 
+    [YarnCommand("hide_box")]
+    public static void HideBox() => RunCommandDeferred(() => DialogueManager.DialogueViews?.ForEach(x => x.HideBox()));
+
     [YarnCommand("emote")]
     public static void Emote(string characterName, string emotionName, string from = "", string revertFrom = "") {
         RunCommandDeferred(() =>
