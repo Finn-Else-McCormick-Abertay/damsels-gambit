@@ -17,15 +17,15 @@ script = ExtResource("1_vqya7")
 layout_mode = 1
 SuitorName = "Frostholm"
 TopicDeck = {
-"topic/animals": 1,
-"topic/art": 1,
-"topic/children": 1,
-"topic/family": 1,
-"topic/food": 1,
-"topic/hobbies": 1,
-"topic/religion": 1,
-"topic/weather": 1,
-"topic/witchcraft": 1
+"topic/animals": 2,
+"topic/art": 2,
+"topic/children": 2,
+"topic/family": 2,
+"topic/food": 2,
+"topic/hobbies": 2,
+"topic/religion": 2,
+"topic/weather": 2,
+"topic/witchcraft": 2
 }
 ActionDeck = {
 "action/apologise": 0,
@@ -36,3 +36,4 @@ ActionDeck = {
 "action/secret": 2,
 "action/want": 2
 }
+NoRepeatsInHand = true
