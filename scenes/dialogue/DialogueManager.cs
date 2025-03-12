@@ -51,6 +51,8 @@ public partial class DialogueManager : Node
         _yarnProject ??= ResourceLoader.Load<YarnProject>("res://assets/dialogue/DamselsGambit.yarnproject");
 
         if (_textLineProvider is null) { _textLineProvider = new TextLineProvider(); AddChild(_textLineProvider); _textLineProvider.Owner = this; }
+
+        if (_variableStorage.IsValid() && force) { _variableStorage.QueueFree(); _variableStorage = null; }
         if (_variableStorage is null) { _variableStorage = new InMemoryVariableStorage(); AddChild(_variableStorage); _variableStorage.Owner = this; }
 
         Runner = new DialogueRunner { Name = "DialogueRunner", yarnProject = _yarnProject, lineProvider = _textLineProvider, variableStorage = _variableStorage, startAutomatically = false }; AddChild(Runner); Runner.Owner = this;
