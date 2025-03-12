@@ -120,9 +120,9 @@ public class Dialogue : Console.Command
                 else Console.Info(string.Join(", ", items.Select(x => $"{x.Name} ({(x.Get(CanvasItem.PropertyName.Visible).AsBool() ? "Visible" : "Hidden")})")), false);
             }
             if (!string.IsNullOrEmpty(options.Character)) {
-                var display = DialogueManager.GetCharacterDisplay(options.Character);
-                if (display is null) Console.Error($"No such character '{options.Character}'", false);
-                else Console.Info($"{display.Name}: {display.SpriteName}", false);
+                var displays = DialogueManager.GetCharacterDisplays(options.Character);
+                if (displays.Count == 0) Console.Error($"No such character '{options.Character}'", false);
+                else Console.Info(string.Join(", ", displays.Select(x => $"{x.Name}: {x.SpriteName}")), false);
             }
 
             

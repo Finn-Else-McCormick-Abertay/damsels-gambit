@@ -1,11 +1,11 @@
 title: lady_in_waiting__compliment_animals
 ---
-Princess Penelope: #theme=princess #withnext
+Princess Penelope:
     -> You're a great horseback rider
         Lady in Waiting: Thank you, I think you're great too
         <<score 4>>
     -> You are a great dog carer
-        Lady in Waiting: Thank you, I love your dogs! Which one is your favourite? #withnext
+        Lady in Waiting: Thank you, I love your dogs! Which one is your favourite?
             -> Benjamin 
                 <<score 1>>
             -> None, I'd rather have cats
@@ -15,15 +15,15 @@ Princess Penelope: #theme=princess #withnext
 
 title: lady_in_waiting__compliment_witchcraft
 ---
-Princess Penelope: #theme=princess #withnext
+Princess Penelope:
     -> What spell did you use to look so cute?
-        Lady in Waiting: *blushes* #withnext
+        Lady in Waiting: *blushes*
             -> *Wink* 
                 <<score 3>>
             -> *Blow kiss*
                 <<score 6>>
     -> Your potions are delicious
-        Lady in Waiting: Thank you, I learned from my aunt Heldra. Which one did you like the most? #withnext
+        Lady in Waiting: Thank you, I learned from my aunt Heldra. Which one did you like the most?
             -> The one that tasted like strawberries
                 <<score 5>>
             -> Couldn't pick, they were all amazing
@@ -33,9 +33,9 @@ Princess Penelope: #theme=princess #withnext
 
 title: lady_in_waiting__compliment_children
 ---
-Princess Penelope: #theme=princess #withnext
+Princess Penelope:
     -> I bet you'd be a great parent
-        Lady in Waiting: Why do you think so? #withnext
+        Lady in Waiting: Why do you think so?
             -> You are very kind, and take great care of everyone
                 <<score 6>>
             -> You are very patient

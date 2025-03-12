@@ -1,26 +1,26 @@
 title: lady_in_waiting__question_animals
 ---
-Princess Penelope: #theme=princess #withnext
+Princess Penelope:
     -> What's your favourite animal?
-        A cat
+        Lady in Waiting: A cat
     -> Do you have a pet?
-        Yes, a horse named Chestnut
+        Lady in Waiting: Yes, a horse named Chestnut
 ===
 
 title: lady_in_waiting__question_witchcraft
 ---
-Princess Penelope: #theme=princess #withnext
+Princess Penelope:
     -> Have you ever dabbled with witchcraft?
-        Yes, my aunt is a witch and taught me how to make a few potions
+        Lady in Waiting: Yes, my aunt is a witch and taught me how to make a few potions
     -> Have you ever been to a witch trial? 
-        No, they scare me
+        Lady in Waiting: No, they scare me
 ===
 
 title: lady_in_waiting__question_children
 ---
-Princess Penelope: #theme=princess #withnext
+Princess Penelope:
     -> Do you want to have children in the future?
-        Yes! I'd want to have two
+        Lady in Waiting: Yes! I'd want to have two
     -> How would you like to raise your children?
-        In a warm and loving home
+        Lady in Waiting: In a warm and loving home
 ===

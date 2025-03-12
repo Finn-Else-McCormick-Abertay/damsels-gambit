@@ -60,7 +60,9 @@ public partial class DialogueView : Node, DialogueViewBase
 	public void RunLine(LocalizedLine line, Action onLineFinished) {
 		_onLineFinishedAction = onLineFinished;
 
-		bool withNext = line?.Metadata?.Contains("withnext") ?? false;
+		bool HasTag(string tag) => line?.Metadata?.Contains(tag) ?? false;
+
+		bool withNext = HasTag("withnext") || HasTag("lastline");
 
 		TitleLabel?.Set(Label.PropertyName.Text, line.CharacterName);
 		LineLabel?.Set(Label.PropertyName.Text, line.TextWithoutCharacterName.AsBBCode());
@@ -70,11 +72,14 @@ public partial class DialogueView : Node, DialogueViewBase
 		ContinueButton.Visible = !withNext;
 		ContinueButton.GrabFocus();
 
-		if ((line?.Metadata ?? []).Where(x => x.StartsWith("theme=")).Select(x => x.StripFront("theme=")).SingleOrDefault() is string themeName) {
+		if (line?.Metadata?.Where(x => x.StartsWith("theme="))?.Select(x => x.StripFront("theme="))?.SingleOrDefault() is string themeName) {
 			if (_themes.TryGetValue(themeName, out var theme)) Root.Theme = theme;
 			else Console.Warning($"Failed to switch to dialogue theme '{themeName}': theme does not exist.");
 		}
-		else Root.Theme = null;
+		else Root.Theme = _themes.GetValueOrDefault(line?.CharacterName switch {
+			"Princess Penelope" => "princess",
+			_ => ""
+		});
 		
 		State = DialogueState.DisplayingLine;
 		if (withNext) { _onLineFinishedAction?.Invoke(); }

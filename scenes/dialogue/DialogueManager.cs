@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using DamselsGambit.Util;
 using Godot;
@@ -23,7 +24,8 @@ public partial class DialogueManager : Node
     
     private readonly Node _environmentRoot = new() { Name = "EnvironmentRoot" };
     private readonly Dictionary<string, Node> _environments = [];
-    private readonly Dictionary<string, CharacterDisplay> _characterDisplays = [];
+    private readonly Dictionary<string, List<CharacterDisplay>> _characterDisplays = [];
+    private readonly Dictionary<string, List<PropDisplay>> _propDisplays = [];
     private readonly HashSet<Node> _dialogueViews = [];
 
     public override void _EnterTree() {
@@ -94,38 +96,26 @@ public partial class DialogueManager : Node
         }
     }
 
-    public static void Register(CharacterDisplay display) {
-        if (Instance is null) return;
-        if (Instance._characterDisplays.TryGetValue(display.CharacterName, out var _)) {
-            Instance._characterDisplays.Remove(display.CharacterName);
-            Console.Warning($"Duplicate CharacterDisplay for '{display.CharacterName}' registered.");
-        }
-        Instance._characterDisplays.Add(display.CharacterName, display);
-    }
-    public static void Deregister(CharacterDisplay display) {
-        if (Instance is null) return;
-        if (Instance._characterDisplays.TryGetValue(display.CharacterName, out var existing) && existing == display) Instance._characterDisplays.Remove(display.CharacterName);
-    }
+    public static void Register(CharacterDisplay display) => Instance?._characterDisplays?.GetOrAdd(display.CharacterName, [])?.Add(display);
+    public static void Deregister(CharacterDisplay display) => Instance?._characterDisplays?.GetValueOrDefault(display.CharacterName)?.Remove(display);
 
-    public static void Register<TView>(TView view) where TView : Node, DialogueViewBase {
-        Instance?._dialogueViews?.Add(view); (view is ProfileDialogueView ? ProfileRunner : Runner)?.OnReady(x => x.dialogueViews.Add(view));
-    }
-    public static void Deregister<TView>(TView view) where TView : Node, DialogueViewBase {
-        Instance?._dialogueViews?.Remove(view); (view is ProfileDialogueView ? ProfileRunner : Runner)?.OnReady(x => x.dialogueViews.Remove(view));
-    }
+    public static void Register(PropDisplay display) => Instance?._propDisplays?.GetOrAdd(display.PropName, [])?.Add(display);
+    public static void Deregister(PropDisplay display) => Instance?._propDisplays?.GetValueOrDefault(display.PropName)?.Remove(display);
 
-    public static IEnumerable<string> GetCharacterNames() => Instance?._characterDisplays?.Keys;
+    public static void Register<TView>(TView view) where TView : Node, DialogueViewBase { Instance?._dialogueViews?.Add(view); (view is ProfileDialogueView ? ProfileRunner : Runner)?.OnReady(x => x.dialogueViews.Add(view)); }
+    public static void Deregister<TView>(TView view) where TView : Node, DialogueViewBase { Instance?._dialogueViews?.Remove(view); (view is ProfileDialogueView ? ProfileRunner : Runner)?.OnReady(x => x.dialogueViews.Remove(view)); }
 
-    public static CharacterDisplay GetCharacterDisplay(string characterName) {
-        if (Instance is null) return null;
-        Instance._characterDisplays.TryGetValue(characterName, out var display);
-        return display;
-    }
-
+    public static IEnumerable<string> GetCharacterNames() => Instance?._characterDisplays?.Where(x => x.Value.Count > 0)?.Select(x => x.Key);
+    public static IEnumerable<string> GetPropNames() => Instance?._propDisplays?.Where(x => x.Value.Count > 0)?.Select(x => x.Key);
     public static IEnumerable<string> GetEnvironmentNames() => Instance?._environments?.Keys;
+
+    public static ReadOnlyCollection<CharacterDisplay> GetCharacterDisplays(string characterName) => Instance?._characterDisplays?.GetValueOr(characterName, [])?.AsReadOnly();
+    public static ReadOnlyCollection<PropDisplay> GetPropDisplays(string propName) => Instance?._propDisplays?.GetValueOr(propName, [])?.AsReadOnly();
 
     // These are either CanvasLayers or CanvasItems - have to do it this way as they both have 'Visible' fields but are not derived from a shared interface
     public static IEnumerable<Node> GetEnvironmentItems(string environmentName) => Instance?._environments?.GetValueOrDefault(environmentName)?.GetSelfAndChildren()?.Where(node => node is CanvasLayer || node is CanvasItem) ?? [];
+
+    public static IEnumerable<Node> GetAllItems(string itemName) => GetEnvironmentItems(itemName)?.Concat(GetCharacterDisplays(itemName))?.Concat(GetPropDisplays(itemName)) ?? [];
 
     public static bool DialogueExists(string nodeName) => _yarnProject?.Program?.Nodes?.ContainsKey(nodeName ?? "") ?? false;
 

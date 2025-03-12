@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System;
 using Eltons.ReflectionKit;
+using DamselsGambit.Util;
 
 namespace DamselsGambit.Dialogue;
 
@@ -56,50 +57,36 @@ static class AnimationDialogueCommands
     }
 
     [YarnCommand("scene")]
-    public static void Scene(string sceneName) {
-        RunCommandDeferred(() => { foreach (var name in DialogueManager.GetEnvironmentNames()) foreach (var node in DialogueManager.GetEnvironmentItems(name)) node?.Set(CanvasItem.PropertyName.Visible, name == sceneName); });
-    }
+    public static void Scene(string sceneName) => RunCommandDeferred(()
+        => DialogueManager.GetEnvironmentNames()?.ForEach(name => DialogueManager.GetEnvironmentItems(name)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, name == sceneName))));
 
     [YarnCommand("show")]
-    public static void Show(string itemName) {
-        RunCommandDeferred(() => {
-            DialogueManager.GetCharacterDisplay(itemName)?.Show();
-            foreach (var item in DialogueManager.GetEnvironmentItems(itemName)) { item?.Set(CanvasItem.PropertyName.Visible, true); }
-        });
-    }
+    public static void Show(string itemName) => RunCommandDeferred(() => DialogueManager.GetAllItems(itemName)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, true)));
 
     [YarnCommand("hide")]
-    public static void Hide(string itemName) {
-        RunCommandDeferred(() => {
-            DialogueManager.GetCharacterDisplay(itemName)?.Hide();
-            foreach (var item in DialogueManager.GetEnvironmentItems(itemName)) { item?.Set(CanvasItem.PropertyName.Visible, false); }
-        });
-    }
+    public static void Hide(string itemName) => RunCommandDeferred(() => DialogueManager.GetAllItems(itemName)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, false)));
 
     [YarnCommand("emote")]
     public static void Emote(string characterName, string emotionName, string from = "", string revertFrom = "") {
-        var display = DialogueManager.GetCharacterDisplay(characterName);
-        if (display is null) return;
-        RunCommandDeferred(() => {
-            if (display.Visible == false) { display.Show(); }
-            if (from == "from" && !string.IsNullOrWhiteSpace(revertFrom) && display.SpriteName != revertFrom) return;
-            display.SpriteName = emotionName;
-        });
+        RunCommandDeferred(() =>
+            DialogueManager.GetCharacterDisplays(characterName).ForEach(display => {
+                if (from == "from" && !string.IsNullOrWhiteSpace(revertFrom) && display.SpriteName != revertFrom) return;
+                display.Show(); display.SpriteName = emotionName;
+            })
+        );
     }
 
     [YarnCommand("move")]
-    public static void Move(string characterName, float x, float y, float time = 0f) {
-        RunCommandDeferred(() => {
-            var display = DialogueManager.GetCharacterDisplay(characterName);
-            if (display is null) return;
-            if (time <= 0f) {
-                display.Position += new Vector2(x, y);
-                return;
-            }
-            var tween = display.CreateTween();
-            tween.TweenProperty(display, Node2D.PropertyName.Position.ToString(), new Vector2(x, y), time).AsRelative();
-        });
-    }
+    public static void Move(string itemName, float x, float y, float time = 0f) => RunCommandDeferred(()
+        => DialogueManager.GetAllItems(itemName)?.ForEach(item => {
+            var property = item switch {
+                Node2D => Node2D.PropertyName.Position,
+                CanvasLayer => CanvasLayer.PropertyName.Offset,
+                _ => throw new IndexOutOfRangeException()
+            };
+            if (time <= 0f) { item.Set(property, item.Get(property).AsVector2() + new Vector2(x, y)); return; }
+            item.CreateTween().TweenProperty(item, property.ToString(), new Vector2(x, y), time).AsRelative();
+        }));
 
     [YarnCommand("fade")]
     public static void Fade(string inOut, string itemName, float time) {
@@ -107,10 +94,8 @@ static class AnimationDialogueCommands
             List<CanvasItem> affectedItems = [];
             List<CanvasLayer> affectedLayers = [];
 
-            var display = DialogueManager.GetCharacterDisplay(itemName); 
-            var environmentItems = DialogueManager.GetEnvironmentItems(itemName);
+            var environmentItems = DialogueManager.GetAllItems(itemName);
 
-            if (display is not null) affectedItems.Add(display);
             affectedItems.AddRange(environmentItems.Where(x => x is CanvasItem).Select(x => x as CanvasItem));
             foreach (var layer in environmentItems.Where(x => x is CanvasLayer).Select(x => x as CanvasLayer)) {
                 var affectedInLayer = layer.GetChildren().Where(x => x is CanvasItem).Select(x => x as CanvasItem);
