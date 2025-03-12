@@ -33,17 +33,17 @@ blend_mode = 1
 [sub_resource type="Gradient" id="Gradient_46k02"]
 colors = PackedColorArray(0.961342, 0.67336, 0.52894, 1, 0, 0, 0, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_6sx44"]
-gradient = SubResource("Gradient_46k02")
-fill = 1
-fill_from = Vector2(0.910256, 0.641026)
-fill_to = Vector2(0.371795, 0.551282)
-
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_bbqmg"]
 gradient = SubResource("Gradient_46k02")
 fill = 1
 fill_from = Vector2(0.106838, 0.452991)
 fill_to = Vector2(0.606838, 0.320513)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_6sx44"]
+gradient = SubResource("Gradient_46k02")
+fill = 1
+fill_from = Vector2(0.910256, 0.641026)
+fill_to = Vector2(0.371795, 0.551282)
 
 [node name="Chamber" type="Node"]
 
@@ -75,24 +75,6 @@ metadata/_edit_lock_ = true
 [node name="CharacterLayer" type="CanvasLayer" parent="."]
 follow_viewport_enabled = true
 
-[node name="LadyInWaiting" type="Sprite2D" parent="CharacterLayer"]
-clip_children = 2
-position = Vector2(676, 152)
-scale = Vector2(0.59188, 0.59188)
-texture = ExtResource("2_4vov1")
-offset = Vector2(-113.199, 388.592)
-script = ExtResource("3_fascp")
-CharacterName = &"lady_in_waiting"
-SpriteName = "neutral"
-
-[node name="LightGradient" type="Sprite2D" parent="CharacterLayer/LadyInWaiting"]
-modulate = Color(1, 1, 1, 0.811765)
-material = SubResource("CanvasItemMaterial_u4yao")
-position = Vector2(-45.7428, -75.5447)
-scale = Vector2(19.7092, 20.9437)
-texture = SubResource("GradientTexture2D_6sx44")
-metadata/_edit_lock_ = true
-
 [node name="Queen" type="Sprite2D" parent="CharacterLayer"]
 clip_children = 2
 position = Vector2(904, 416)
@@ -109,6 +91,24 @@ position = Vector2(-1144.46, -168.855)
 scale = Vector2(27.358, 32.418)
 texture = SubResource("GradientTexture2D_bbqmg")
 offset = Vector2(41.4898, 4.62993)
+
+[node name="LadyInWaiting" type="Sprite2D" parent="CharacterLayer"]
+clip_children = 2
+position = Vector2(642, 152)
+scale = Vector2(0.59188, 0.59188)
+texture = ExtResource("2_4vov1")
+offset = Vector2(-113.199, 388.592)
+script = ExtResource("3_fascp")
+CharacterName = &"lady_in_waiting"
+SpriteName = "neutral"
+
+[node name="LightGradient" type="Sprite2D" parent="CharacterLayer/LadyInWaiting"]
+modulate = Color(1, 1, 1, 0.811765)
+material = SubResource("CanvasItemMaterial_u4yao")
+position = Vector2(-45.7428, -75.5447)
+scale = Vector2(19.7092, 20.9437)
+texture = SubResource("GradientTexture2D_6sx44")
+metadata/_edit_lock_ = true
 
 [node name="CanvasModulate" type="CanvasModulate" parent="CharacterLayer"]
 color = Color(0.84983, 0.692038, 0.790925, 1)

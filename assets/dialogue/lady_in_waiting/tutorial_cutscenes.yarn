@@ -12,12 +12,23 @@ Queen Helena: King Ráðúlfr is making his way from his kingdom of Frostholm as
 <<fade in lady_in_waiting 1>>
 <<emote lady_in_waiting neutral_mouth_open>>
 Lady in Waiting: Don't worry, Princess, I'm sure you can get out of this.
-<<emote lady_in_waiting sad_2>>
+<<emote lady_in_waiting sad_look_up>>
 Lady in Waiting: You'll need to be careful though. If he likes you too much then the wedding will go ahead, and you'll have to leave for Frostholm, never to return. But cause too much offence and our kingdoms may end up at war!
-<<emote lady_in_waiting explaining_2>>
+<<emote lady_in_waiting explaining_gesture_right>>
 Lady in Waiting: Choose your cards carefully. You'll need to combine an [color=action]Action[/color] card with a [color=topic]Topic[/color] card; together these will produce a conversation starter. Depending on your choices in the conversation, his opinion of you will change.
-<<emote lady_in_waiting explaining_1>>
+<<emote lady_in_waiting explaining_point>>
 Lady in Waiting: Mind the [color="d67931"]Affection Bar[/color] - you want to stay neutral. If, at the end of the date, you are in the region marked in [color=love]pink[/color], you will be wed. If in the region marked in [color=hate]blue[/color], you may cause a war.
 <<emote lady_in_waiting happy>>
 Lady in Waiting: Good luck, Princess. I'll always be here to support you.
+<<emote lady_in_waiting neutral>>
+===
+
+title: lady_in_waiting__after_score
+---
+<<if !visited("lady_in_waiting__after_score")>>
+<<emote lady_in_waiting explaining_point>>
+Lady in Waiting: Notice the effect that had on your [color=action]Affection Score[/color].
+Lady in Waiting: You'll want to stay neutral. If, at the end of the date, you are in the region marked in [color=love]pink[/color], you will be wed. If in the region marked in [color=hate]blue[/color], you may cause a war.
+<<emote lady_in_waiting neutral>>
+<<endif>>
 ===

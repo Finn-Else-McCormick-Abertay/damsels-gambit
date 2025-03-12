@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c13u5fs5480b3"
-path="res://.godot/imported/explaining_2.png-abee5121dc7b633577285d765e66b87d.ctex"
+uid="uid://cg4pxjjejc5yn"
+path="res://.godot/imported/sad_look_down.png-1a2b916730f42230442827078acc2ce1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/lady_in_waiting/explaining_2.png"
-dest_files=["res://.godot/imported/explaining_2.png-abee5121dc7b633577285d765e66b87d.ctex"]
+source_file="res://assets/characters/lady_in_waiting/sad_look_down.png"
+dest_files=["res://.godot/imported/sad_look_down.png-1a2b916730f42230442827078acc2ce1.ctex"]
 
 [params]
 
