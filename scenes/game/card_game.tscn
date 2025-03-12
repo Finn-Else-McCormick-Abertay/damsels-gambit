@@ -1,8 +1,7 @@
-[gd_scene load_steps=17 format=3 uid="uid://dipd7bv4d85ws"]
+[gd_scene load_steps=16 format=3 uid="uid://dipd7bv4d85ws"]
 
 [ext_resource type="Script" uid="uid://fhn7dbryyxai" path="res://scenes/game/CardGameController.cs" id="1_4k8rw"]
 [ext_resource type="Theme" uid="uid://jf72vigx3i2b" path="res://assets/ui/theme/card_theme.tres" id="1_eci5x"]
-[ext_resource type="Script" uid="uid://c6fd25jlnt26l" path="res://scenes/game/cards/CardDisplay.cs" id="2_kdxpq"]
 [ext_resource type="Theme" uid="uid://dhax3sfwm6isl" path="res://assets/ui/theme/affection_meter_theme.tres" id="2_ko4o6"]
 [ext_resource type="Script" uid="uid://dbwnt4443aqcc" path="res://scenes/game/AffectionMeter.cs" id="4_dw2x6"]
 [ext_resource type="Script" uid="uid://cq1ndckdbfugt" path="res://scenes/game/cards/HandContainer.cs" id="4_xg83y"]
@@ -46,7 +45,7 @@ _limits = [-90.0, 90.0, 0.0, 1.0]
 _data = [Vector2(0, 5.12277), 0.0, 0.0, 0, 0, Vector2(0.502959, 9.04018), 20.9715, 20.9715, 0, 0, Vector2(1, 15.5692), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "RoundMeter", "TopicHand", "ActionHand", "PlayButton", "SuitorProfile")]
+[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "RoundMeter", "ActionHand", "TopicHand", "PlayButton", "SuitorProfile")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -76,8 +75,8 @@ ActionDeck = {
 }
 AffectionMeter = NodePath("AffectionMeter")
 RoundMeter = NodePath("RoundMeter")
-TopicHand = NodePath("RightHandContainer")
 ActionHand = NodePath("LeftHandContainer")
+TopicHand = NodePath("RightHandContainer")
 PlayButton = NodePath("PlayHandButton")
 SuitorProfile = NodePath("SuitorProfile")
 
@@ -133,30 +132,6 @@ CurveOffset = SubResource("Curve_2cmp0")
 CurveRotation = SubResource("Curve_kxdyk")
 metadata/_edit_group_ = true
 
-[node name="CardDisplay2" type="Control" parent="LeftHandContainer"]
-layout_mode = 2
-focus_mode = 2
-mouse_filter = 1
-script = ExtResource("2_kdxpq")
-CardId = &"action/question"
-ShadowOffset = Vector2(-6, 2.465)
-
-[node name="CardDisplay6" type="Control" parent="LeftHandContainer"]
-layout_mode = 2
-focus_mode = 2
-mouse_filter = 1
-script = ExtResource("2_kdxpq")
-CardId = &"action/secret"
-ShadowOffset = Vector2(-6, 2.465)
-
-[node name="CardDisplay4" type="Control" parent="LeftHandContainer"]
-layout_mode = 2
-focus_mode = 2
-mouse_filter = 1
-script = ExtResource("2_kdxpq")
-CardId = &"action/want"
-ShadowOffset = Vector2(-6, 2.465)
-
 [node name="RightHandContainer" type="Container" parent="."]
 layout_mode = 1
 anchors_preset = -1
@@ -184,30 +159,6 @@ CurveSeparation = SubResource("Curve_6espp")
 CurveOffset = SubResource("Curve_5nabb")
 CurveRotation = SubResource("Curve_mupma")
 metadata/_edit_group_ = true
-
-[node name="CardDisplay" type="Control" parent="RightHandContainer"]
-layout_mode = 2
-focus_mode = 2
-mouse_filter = 1
-script = ExtResource("2_kdxpq")
-CardId = &"topic/animals"
-ShadowOffset = Vector2(-6, 2.465)
-
-[node name="CardDisplay5" type="Control" parent="RightHandContainer"]
-layout_mode = 2
-focus_mode = 2
-mouse_filter = 1
-script = ExtResource("2_kdxpq")
-CardId = &"topic/witchcraft"
-ShadowOffset = Vector2(-6, 2.465)
-
-[node name="CardDisplay3" type="Control" parent="RightHandContainer"]
-layout_mode = 2
-focus_mode = 2
-mouse_filter = 1
-script = ExtResource("2_kdxpq")
-CardId = &"topic/art"
-ShadowOffset = Vector2(-6, 2.465)
 
 [node name="PlayHandButton" type="Button" parent="."]
 layout_mode = 1

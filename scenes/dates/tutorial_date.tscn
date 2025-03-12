@@ -27,3 +27,4 @@ ActionDeck = {
 "action/question": 2,
 "action/secret": 2
 }
+NoRepeatsInHand = true

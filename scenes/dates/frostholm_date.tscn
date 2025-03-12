@@ -27,3 +27,12 @@ TopicDeck = {
 "topic/weather": 1,
 "topic/witchcraft": 1
 }
+ActionDeck = {
+"action/apologise": 0,
+"action/compliment": 0,
+"action/give": 2,
+"action/insult": 0,
+"action/question": 4,
+"action/secret": 2,
+"action/want": 2
+}

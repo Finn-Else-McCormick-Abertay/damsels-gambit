@@ -36,23 +36,29 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	public int Score { get; set { field = value; AffectionMeter?.CreateTween()?.TweenProperty(AffectionMeter, AffectionMeter.PropertyName.Value.ToString(), Score, 1.0); } }
 
 	[ExportGroup("Deck")]
-	[Export] public Godot.Collections.Dictionary<string, int> TopicDeck { get; set; }
-	[Export] public Godot.Collections.Dictionary<string, int> ActionDeck { get; set; }
+	[Export] public Godot.Collections.Dictionary<string, int> TopicDeck { get; set { field = value; this.OnReady(EditorUpdateHands); } }
+	[Export] public Godot.Collections.Dictionary<string, int> ActionDeck { get; set { field = value; this.OnReady(EditorUpdateHands); } }
 
 	private List<string> _topicDeckWorking, _actionDeckWorking;
 
 	public ReadOnlyCollection<string> RemainingTopicDeck => _topicDeckWorking?.AsReadOnly();
 	public ReadOnlyCollection<string> RemainingActionDeck => _actionDeckWorking?.AsReadOnly();
 
+	[ExportSubgroup("Draw")]
+	[Export] public int ActionHandSize { get; set { field = value; ActionHand?.OnReady(x => x.HandSize = value); this.OnReady(EditorUpdateHands); } } = 3;
+	[Export] public int TopicHandSize { get; set { field = value; TopicHand?.OnReady(x => x.HandSize = value); this.OnReady(EditorUpdateHands); } } = 3;
+	[Export] public bool NoRepeatsInHand { get; set { field = value; this.OnReady(EditorUpdateHands); } } = false;
+
 	[ExportGroup("Nodes")]
 	[Export] public AffectionMeter AffectionMeter { get; set; }
 	[Export] public RoundMeter RoundMeter { get; set; }
-	[Export] public HandContainer TopicHand { get; set; }
-	[Export] public HandContainer ActionHand { get; set; }
+	[Export] public HandContainer ActionHand { get; set { field = value; this.OnReady(EditorUpdateHands); } }
+	[Export] public HandContainer TopicHand { get; set { field = value; this.OnReady(EditorUpdateHands); } }
 	[Export] public Button PlayButton { get; set; }
 	[Export] public SuitorProfile SuitorProfile { get; set; }
 
 	public override void _Ready() {
+		EditorUpdateHands();
 		if (Engine.IsEditorHint()) return;
 
 		PlayButton?.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.PlayHand));
@@ -65,11 +71,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	}
 
 	public void BeginGame() {
-		static List<string> CreateWorkingDeck(Godot.Collections.Dictionary<string, int> deck) {
-			List<string> working = [];
-			foreach (var (card, count) in deck) { for (int i = 0; i < count; ++i) { working.Add(card); } }
-			return working;
-		}
+		static List<string> CreateWorkingDeck(Godot.Collections.Dictionary<string, int> deck) { List<string> working = []; foreach (var (card, count) in deck) for (int i = 0; i < count; ++i) working.Add(card); return working; }
 
 		// Create and shuffle deck
 		_topicDeckWorking = [..CreateWorkingDeck(TopicDeck).OrderBy(x => Random.Shared.Next())];
@@ -126,27 +128,15 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 			.AndThen(() => EmitSignal(SignalName.GameEnd));
 	}
 
-	/*private void OnGameEndDialogueComplete() {
-		if (Engine.IsEditorHint()) return;
-
-		//DialogueManager.Runner.TryDisconnect(DialogueRunner.SignalName.onDialogueComplete, new Callable(this, MethodName.OnGameEndDialogueComplete));
-		var endScreen = ResourceLoader.Load<PackedScene>("res://scenes/ui/end_screen.tscn").Instantiate<EndScreen>();
-		AddChild(endScreen);
-		endScreen.MessageLabel.Text = Score switch {
-			_ when Score >= LoveThreshold => "Prepare for marriage.",
-			_ when Score <= HateThreshold => "Prepare for war.",
-			_ => "You win!"
-		};
-	}*/
-
 	private void Deal() {
 		if (Engine.IsEditorHint()) return;
 
-		void DealToHand(HandContainer container, List<string> workingDeck, Vector2 startPosition, float startAngle, double waitTime = 0.2) {
-			int cardsToDeal = Math.Max(3 - container.GetChildCount(), 0);
+		void DealToHand(HandContainer container, int handSize, List<string> workingDeck, Vector2 startPosition, float startAngle, double waitTime = 0.2) {
+			int cardsToDeal = Math.Max(handSize - container.GetChildCount(), 0);
 			for (int i = 0; i < cardsToDeal; ++i) {
-				var cardId = workingDeck.First();
-				workingDeck.RemoveAt(0);
+				var cardId = (NoRepeatsInHand ? workingDeck.SkipWhile(id => container.FindChildrenWhere<CardDisplay>(card => card.CardId == id).Count > 0) : workingDeck).FirstOrDefault();
+				if (cardId is null) break;
+				workingDeck.Remove(cardId);
 				var cardDisplay = new CardDisplay{ CardId = cardId, ShadowOffset = new(-10, 1), ShadowOpacity = 0.4f, GlobalPosition = startPosition, RotationDegrees = startAngle };
 				Task.Factory.StartNew(async () => {
 					await ToSignal(GetTree().CreateTimer(waitTime * i), Timer.SignalName.Timeout);
@@ -155,7 +145,36 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 				});
 			}
 		}
-		DealToHand(ActionHand, _actionDeckWorking, new Vector2(-200f, 100f), -30f);
-		DealToHand(TopicHand, _topicDeckWorking, new Vector2(500f, 100f), 30f);
+		DealToHand(ActionHand, ActionHandSize, _actionDeckWorking, new Vector2(-200f, 100f), -30f);
+		DealToHand(TopicHand, TopicHandSize, _topicDeckWorking, new Vector2(500f, 100f), 30f);
+	}
+
+	private void EditorUpdateHands() {
+		if (!Engine.IsEditorHint()) return;
+
+		var random = new Random(0);
+		
+		List<string> CreateConsistentShuffledDeck(Godot.Collections.Dictionary<string, int> deck) {
+			List<string> working = []; foreach (var (card, count) in deck) for (int i = 0; i < count; ++i) working.Add(card);
+			return [..working.OrderBy(x => random.Next())];
+		}
+
+		void UpdateHand(HandContainer container, int handSize, Godot.Collections.Dictionary<string, int> deck) {
+			if (!container.IsValid() || deck is null) return;
+			
+			foreach (var child in container.GetChildren()) { container.RemoveChild(child); child.QueueFree(); }
+
+			var shuffled = CreateConsistentShuffledDeck(deck);
+			for (int i = 0; i < handSize; ++i) {
+				var cardId = (NoRepeatsInHand ? shuffled.SkipWhile(id => container.FindChildrenWhere<CardDisplay>(card => card.CardId == id).Count > 0) : shuffled).FirstOrDefault();
+				if (cardId is null) break;
+				shuffled.Remove(cardId);
+				var cardDisplay = new CardDisplay{ CardId = cardId, ShadowOffset = new(-10, 1), ShadowOpacity = 0.4f };
+				container.AddChild(cardDisplay);
+			}
+		}
+
+		UpdateHand(ActionHand, ActionHandSize, ActionDeck);
+		UpdateHand(TopicHand, TopicHandSize, TopicDeck);
 	}
 }
