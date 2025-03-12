@@ -1,0 +1,14 @@
+[remap]
+
+importer="yarnscript"
+type="Resource"
+uid="uid://dmqig853mbwc8"
+path="res://.godot/imported/question.yarn-146e62c3817ef8ad1184beb187b9298d.tres"
+
+[deps]
+
+source_file="res://assets/dialogue/lady_in_waiting/question.yarn"
+dest_files=["res://.godot/imported/question.yarn-146e62c3817ef8ad1184beb187b9298d.tres"]
+
+[params]
+

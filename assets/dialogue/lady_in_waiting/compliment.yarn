@@ -1,0 +1,34 @@
+title: lady_in_waiting/compliment+animals
+---
+Princess Penelope: #theme=princess #withnext
+    -> You're a great horseback rider
+        Lady in Waiting: Thank you, I think you're great too
+    -> You are a great dog carer
+        Lady in Waiting: Thank you, I love your dogs! Which one is your favourite? #withnext
+            -> Benjamin 
+            -> None, I'd rather have cats
+===
+
+title: lady_in_waiting/compliment+witchcraft
+---
+Princess Penelope: #theme=princess #withnext
+    -> What spell did you use to look so cute?
+        Lady in Waiting: *blushes* #withnext
+            -> *Wink* 
+            -> *Blow kiss*
+    -> Your potions are delicious
+        Lady in Waiting: Thank you, I learned from my aunt Heldra. Which one did you like the most? #withnext
+            -> The one that tasted like strawberries
+            -> Couldn't pick, they were all amazing
+===
+
+title: lady_in_waiting/compliment+children
+---
+Princess Penelope: #theme=princess #withnext
+    -> I bet you'd be a great parent
+        Lady in Waiting: Why do you think so? #withnext
+            -> You are very kind, and take great care of everyone
+            -> You are very patient 
+    -> Your babies would be the most beautiful babies in the kingdom
+        Lady in Waiting: Thank you princess, but I think you're the most beautiful in the kingdom
+===

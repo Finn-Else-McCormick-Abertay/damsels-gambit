@@ -1,0 +1,14 @@
+[remap]
+
+importer="yarnscript"
+type="Resource"
+uid="uid://dvnrrrxrwantf"
+path="res://.godot/imported/compliment.yarn-d2ef47d2ecf512d1c879bb54a236b86f.tres"
+
+[deps]
+
+source_file="res://assets/dialogue/lady_in_waiting/compliment.yarn"
+dest_files=["res://.godot/imported/compliment.yarn-d2ef47d2ecf512d1c879bb54a236b86f.tres"]
+
+[params]
+
