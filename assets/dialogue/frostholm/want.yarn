@@ -1,4 +1,4 @@
-title: frostholm/want+parents
+title: frostholm__want_parents
 ---
 Princess Penelope: I want... #withnext #theme=princess
 	-> Different parents.
@@ -12,7 +12,7 @@ Princess Penelope: I want... #withnext #theme=princess
 		<<score 3>>
 ===
 
-title: frostholm/want+food
+title: frostholm__want_food
 ---
 Princess Penelope: I want... #withnext #theme=princess
 	-> To have wolf-shaped jelly!
@@ -24,7 +24,7 @@ Princess Penelope: I want... #withnext #theme=princess
 		<<score 3>>
 ===
 
-title: frostholm/want+animals
+title: frostholm__want_animals
 ---
 Princess Penelope: I want... #withnext #theme=princess
 	-> A pet cat, they're so elegant!
@@ -36,7 +36,7 @@ Princess Penelope: I want... #withnext #theme=princess
 		<<emote frostholm neutral from happy_2>>
 ===
 
-title: frostholm/want+art
+title: frostholm__want_art
 ---
 Princess Penelope: I want... #withnext #theme=princess
 	-> To learn how to paint one day...
@@ -45,7 +45,7 @@ Princess Penelope: I want... #withnext #theme=princess
 		<<score -3>>
 ===
 
-title: frostholm/want+loyalty
+title: frostholm__want_loyalty
 ---
 Princess Penelope: I want... #withnext #theme=princess
 	-> To kiss the waiter...?!
@@ -54,7 +54,7 @@ Princess Penelope: I want... #withnext #theme=princess
 		<<score 3>>
 ===
 
-title: frostholm/want+witchcraft
+title: frostholm__want_witchcraft
 ---
 Princess Penelope: I want... #withnext #theme=princess
 	-> To go on a witch hunt!!
@@ -69,7 +69,7 @@ Princess Penelope: I want... #withnext #theme=princess
 		<<emote frostholm sad_2 from angry>>
 ===
 
-title: frostholm/want+religion
+title: frostholm__want_religion
 ---
 Princess Penelope: I want... #withnext #theme=princess
 	-> To visit the Central Church, it's a sight.
@@ -81,7 +81,7 @@ Princess Penelope: I want... #withnext #theme=princess
 		<<emote frostholm neutral from angry>>
 ===
 
-title: frostholm/want+children
+title: frostholm__want_children
 ---
 Princess Penelope: I want... #withnext #theme=princess
 	-> To have children in the future.
@@ -95,7 +95,7 @@ Princess Penelope: I want... #withnext #theme=princess
 		<<emote frostholm neutral from sad_1>>
 ===
 
-title: frostholm/want+weather
+title: frostholm__want_weather
 ---
 Princess Penelope: I want... #withnext #theme=princess
 	-> Some warm summer weather!
@@ -107,7 +107,7 @@ Princess Penelope: I want... #withnext #theme=princess
 		<<score 3>>
 ===
 
-title: frostholm/want+hobbies
+title: frostholm__want_hobbies
 ---
 Princess Penelope: I want... #withnext #theme=princess
 	-> To learn archery.

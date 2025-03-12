@@ -1,4 +1,4 @@
-title: lady_in_waiting/compliment+animals
+title: lady_in_waiting__compliment_animals
 ---
 Princess Penelope: #theme=princess #withnext
     -> You're a great horseback rider
@@ -9,7 +9,7 @@ Princess Penelope: #theme=princess #withnext
             -> None, I'd rather have cats
 ===
 
-title: lady_in_waiting/compliment+witchcraft
+title: lady_in_waiting__compliment_witchcraft
 ---
 Princess Penelope: #theme=princess #withnext
     -> What spell did you use to look so cute?
@@ -22,7 +22,7 @@ Princess Penelope: #theme=princess #withnext
             -> Couldn't pick, they were all amazing
 ===
 
-title: lady_in_waiting/compliment+children
+title: lady_in_waiting__compliment_children
 ---
 Princess Penelope: #theme=princess #withnext
     -> I bet you'd be a great parent

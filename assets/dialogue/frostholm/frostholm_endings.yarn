@@ -1,4 +1,4 @@
-title: frostholm/ending/love
+title: frostholm__ending__love
 ---
 <<flush_command_queue>>
 <<emote frostholm happy_1>>
@@ -6,7 +6,7 @@ The date is over; the prince liked you, and you are soon to be wed. You will soo
 <<fade in endings/marriage 2>>
 ===
 
-title: frostholm/ending/hate
+title: frostholm__ending__hate
 ---
 <<flush_command_queue>>
 <<emote frostholm angry>>
@@ -14,7 +14,7 @@ The date is over; the prince took such a hating to you that he declared war on y
 <<fade in endings/war 2>>
 ===
 
-title: frostholm/ending/neutral
+title: frostholm__ending__neutral
 ---
 <<flush_command_queue>>
 <<emote frostholm sad_1>>

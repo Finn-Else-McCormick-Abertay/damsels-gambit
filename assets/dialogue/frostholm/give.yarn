@@ -1,4 +1,4 @@
-title: frostholm/give+parents
+title: frostholm__give_parents
 ---
 Princess Penelope: I got this... #withnext #theme=princess
 	-> Elegant fox pelt slippers for your mother.
@@ -10,7 +10,7 @@ Princess Penelope: I got this... #withnext #theme=princess
 		<<emote frostholm sad_2 from angry>>
 ===
 
-title: frostholm/give+food
+title: frostholm__give_food
 ---
 Princess Penelope: Here, I got this for you... #withnext #theme=princess
 	-> Wolf-shaped jelly.
@@ -19,7 +19,7 @@ Princess Penelope: Here, I got this for you... #withnext #theme=princess
 		<<score 3>>
 ===
 
-title: frostholm/give+animals
+title: frostholm__give_animals
 ---
 Princess Penelope: Here you are... #withnext #theme=princess
 	-> A wolf pelt!
@@ -28,7 +28,7 @@ Princess Penelope: Here you are... #withnext #theme=princess
 		<<score -3>>
 ===
 
-title: frostholm/give+art
+title: frostholm__give_art
 ---
 Princess Penelope: I got this for you.. #withnext #theme=princess
 	-> It's a painting of the serene magical lake of Rosewood. Painted by our most renowned painter!
@@ -37,7 +37,7 @@ Princess Penelope: I got this for you.. #withnext #theme=princess
 		<<score -3>>
 ===
 
-title: frostholm/give+loyalty
+title: frostholm__give_loyalty
 ---
 Princess Penelope: I got this for you... #withnext #theme=princess
 	-> It's a necklace that lights up when you're close to mine!
@@ -46,7 +46,7 @@ Princess Penelope: I got this for you... #withnext #theme=princess
 		<<score -3>>
 ===
 
-title: frostholm/give+witchcraft
+title: frostholm__give_witchcraft
 ---
 Princess Penelope: Here, I got you a... #withnext #theme=princess
 	-> Newly made pitchfork crafted from black iron for your next witch hunt!
@@ -61,7 +61,7 @@ Princess Penelope: Here, I got you a... #withnext #theme=princess
 		<<emote frostholm sad_2 from angry>>
 ===
 
-title: frostholm/give+religion
+title: frostholm__give_religion
 ---
 Princess Penelope: I got this for you... #withnext #theme=princess
 	-> It's an idol of our God, it will protect you.
@@ -70,7 +70,7 @@ Princess Penelope: I got this for you... #withnext #theme=princess
 		<<score -3>>
 ===
 
-title: frostholm/give+children
+title: frostholm__give_children
 ---
 Princess Penelope: Here, take... #withnext #theme=princess
 	-> This 'How to Be a Father for Dummies' book.
@@ -79,7 +79,7 @@ Princess Penelope: Here, take... #withnext #theme=princess
 		<<score -3>>
 ===
 
-title: frostholm/give+weather
+title: frostholm__give_weather
 ---
 Princess Penelope: Here you are... #withnext #theme=princess
 	-> It's a winter coat! Made of our finest leather and fur.
@@ -88,7 +88,7 @@ Princess Penelope: Here you are... #withnext #theme=princess
 		<<score -3>>
 ===
 
-title: frostholm/give+hobbies
+title: frostholm__give_hobbies
 ---
 Princess Penelope: *Searches around...* Here it is...! #withnext #theme=princess
 	-> I got you a brand new sword, made from black steel!

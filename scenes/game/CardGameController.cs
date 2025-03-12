@@ -79,7 +79,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		
 		EmitSignal(SignalName.GameStart);
 		
-		DialogueManager.TryRun($"{_suitorId}/intro").AndThen(() => {
+		DialogueManager.TryRun($"{_suitorId}__intro").AndThen(() => {
 			Round = 1; Show(); Deal();
 			EmitSignal(SignalName.RoundStart);
 		});
@@ -105,7 +105,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 
 		CardDisplay selectedTopic = TopicHand.GetSelected().First(), selectedAction = ActionHand.GetSelected().First();
 
-		var dialogueNode = $"{_suitorId}/{selectedAction.CardId.ToString().StripFront("action/")}+{selectedTopic.CardId.ToString().StripFront("topic/")}";
+		var dialogueNode = $"{_suitorId}__{selectedAction.CardId.ToString().StripFront("action/")}_{selectedTopic.CardId.ToString().StripFront("topic/")}";
 
 		TopicHand.RemoveChild(selectedTopic); selectedTopic.QueueFree();
 		ActionHand.RemoveChild(selectedAction); selectedAction.QueueFree();
@@ -124,7 +124,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide(); PlayButton.Hide(); SuitorProfile.Hide();
 
 		DialogueManager
-			.TryRun($"{_suitorId}/ending/{Score switch { _ when Score >= LoveThreshold => "love", _ when Score <= HateThreshold => "hate", _ => "neutral" }}")
+			.TryRun($"{_suitorId}__ending__{Score switch { _ when Score >= LoveThreshold => "love", _ when Score <= HateThreshold => "hate", _ => "neutral" }}")
 			.AndThen(() => EmitSignal(SignalName.GameEnd));
 	}
 

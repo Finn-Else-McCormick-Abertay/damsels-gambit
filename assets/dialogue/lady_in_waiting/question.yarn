@@ -1,4 +1,4 @@
-title: lady_in_waiting/question+animals
+title: lady_in_waiting__question_animals
 ---
 Princess Penelope: #theme=princess #withnext
     -> What's your favourite animal?
@@ -7,7 +7,7 @@ Princess Penelope: #theme=princess #withnext
         Yes, a horse named Chestnut
 ===
 
-title: lady_in_waiting/question+witchcraft
+title: lady_in_waiting__question_witchcraft
 ---
 Princess Penelope: #theme=princess #withnext
     -> Have you ever dabbled with witchcraft?
@@ -16,7 +16,7 @@ Princess Penelope: #theme=princess #withnext
         No, they scare me
 ===
 
-title: lady_in_waiting/question+children
+title: lady_in_waiting__question_children
 ---
 Princess Penelope: #theme=princess #withnext
     -> Do you want to have children in the future?
