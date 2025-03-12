@@ -26,8 +26,9 @@ Lady in Waiting: Good luck, Princess. I'll always be here to support you.
 title: lady_in_waiting__after_score
 ---
 <<if !visited("lady_in_waiting__after_score")>>
-<<emote lady_in_waiting explaining_point>>
+<<emote lady_in_waiting explaining_gesture_left>>
 Lady in Waiting: Notice the effect that had on your [color=action]Affection Score[/color].
+<<emote lady_in_waiting explaining_point>>
 Lady in Waiting: You'll want to stay neutral. If, at the end of the date, you are in the region marked in [color=love]pink[/color], you will be wed. If in the region marked in [color=hate]blue[/color], you may cause a war.
 <<emote lady_in_waiting neutral>>
 <<endif>>
