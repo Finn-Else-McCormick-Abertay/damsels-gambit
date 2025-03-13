@@ -5,12 +5,32 @@ using System.Linq;
 using System.Text;
 using CommandLine;
 using CommandLine.Text;
+using DamselsGambit.Util;
 using Godot;
 
 namespace DamselsGambit.Commands;
 
 public class Game : Console.Command
 {
+    [Verb("default", isDefault: true)]
+    class DefaultOptions {
+        [Option]
+        public bool SkipIntro { get; set; } = false;
+    }
+
+    [Verb("start")]
+    class StartOptions {
+        [Value(0, Required = false)]
+        public string Suitor { get; set; } = null;
+
+        [Option]
+        public bool SkipIntro { get; set; } = false;
+    }
+
+    [Verb("end")]
+    class EndOptions {
+    }
+
     [Verb("get")]
     class GetOptions {
         [Value(0)]
@@ -44,7 +64,7 @@ public class Game : Console.Command
     {
         var cardGame = GameManager.CardGameController;
 
-        var result = parser.ParseArguments<GetOptions, SetOptions>(args);
+        var result = parser.ParseArguments<GetOptions, SetOptions, StartOptions, EndOptions, DefaultOptions>(args);
         result.WithParsed<GetOptions>(options => {
             if (cardGame is null) { Console.Error("Game scene not instantiated.", false); return; }
 
@@ -87,6 +107,33 @@ public class Game : Console.Command
                 if (int.TryParse(options.NewValue, out int result)) cardGame.Round = result;
                 else Console.Error($"'{options.NewValue}' could not be parsed as an integer.", false);
             }
+
+            if (options.What.MatchN("score")) {
+                if (int.TryParse(options.NewValue, out int result)) cardGame.Score = result;
+                else Console.Error($"'{options.NewValue}' could not be parsed as an integer.", false);
+            }
+        });
+
+        result.WithParsed<StartOptions>(options => {
+            if (options.Suitor is not null) {
+                GameManager.SwitchToCardGameScene($"res://scenes/dates/{Case.ToSnake(options.Suitor)}_date.tscn");
+                if (options.SkipIntro) CallableUtils.CallDeferred(() => GameManager.CardGameController?.ForceSkipIntro());
+            }
+            else if (cardGame is null) {
+                GameManager.BeginGame();
+                if (options.SkipIntro) CallableUtils.CallDeferred(() => GameManager.CardGameController?.ForceSkipIntro());
+            }
+        });
+
+        result.WithParsed<EndOptions>(options => {
+            if (cardGame is null) { Console.Error("Game scene not instantiated.", false); return; }
+
+            cardGame.Round = cardGame.NumRounds + 1;
+        });
+
+        result.WithParsed<DefaultOptions>(options => {
+            if (cardGame is null) { Console.Error("Game scene not instantiated.", false); return; }
+            if (options.SkipIntro) GameManager.CardGameController?.ForceSkipIntro();
         });
 
         result.WithNotParsed(err => {

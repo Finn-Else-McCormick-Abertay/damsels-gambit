@@ -59,6 +59,7 @@ title: lady_in_waiting__skip_setup
 ---
 <<scene chamber>>
 <<show lady_in_waiting>>
+<<hide queen>>
 ===
 
 title: lady_in_waiting__after_score

@@ -77,6 +77,11 @@ public sealed partial class GameManager : Node
 	public static void SwitchToCardGameScene(string cardGameScenePath) {
 		if (!Instance.IsValid()) return;
 
+		if (!ResourceLoader.Exists(cardGameScenePath)) {
+			Console.Error($"No such scene '{cardGameScenePath}'");
+			return;
+		}
+
 		ClearLoadedScenes();
 
 		var cardGameScene = ResourceLoader.Load<PackedScene>(cardGameScenePath).Instantiate();

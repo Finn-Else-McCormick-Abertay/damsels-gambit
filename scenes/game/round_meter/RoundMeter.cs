@@ -42,7 +42,10 @@ public partial class RoundMeter : Control, IReloadableToolScript
 			var activeVariant = meterNode.GetNode<Control>(i < CurrentRound ? "Completed" : i > CurrentRound ? "Upcoming" : "Current");
 			activeVariant.Show();
 			if (i == CurrentRound) {
-				CallableUtils.CallDeferred(() => ProgressBar.Value = (meterNode.GlobalPosition.X + meterNode.Size.X / 2f - ProgressBar.GlobalPosition.X) / ProgressBar.Size.X * ProgressBar.MaxValue);
+				CallableUtils.CallDeferred(() => {
+					if (!ProgressBar.IsValid() || !meterNode.IsValid()) return;
+					ProgressBar.Value = (meterNode.GlobalPosition.X + meterNode.Size.X / 2f - ProgressBar.GlobalPosition.X) / ProgressBar.Size.X * ProgressBar.MaxValue;
+				});
 				activeVariant.GetNode<Label>("Label").Text = $"{CurrentRound}";
 			}
 		}

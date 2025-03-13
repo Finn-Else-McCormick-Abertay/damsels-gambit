@@ -15,7 +15,7 @@ public partial class EndScreen : Control
 		RetryButton?.GrabFocus();
 	}
 
-	private static void OnRetry() { GameManager.SwitchToCardGameScene("res://scenes/frostholm_date.tscn"); }
+	private void OnRetry() { GameManager.SwitchToCardGameScene("res://scenes/dates/frostholm_date.tscn"); QueueFree(); }
 
 	private static void OnQuit() { GameManager.SwitchToMainMenu(); }
 }
