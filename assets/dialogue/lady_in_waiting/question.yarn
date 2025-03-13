@@ -11,6 +11,7 @@ Princess Penelope:
         Lady in Waiting: Yes, my beautiful horse, Chestnut.
         <<emote lady_in_waiting neutral>>
         <<learn has_horse>>
+<<jump lady_in_waiting__explain_profile>>
 ===
 
 title: lady_in_waiting__question_witchcraft
@@ -23,6 +24,7 @@ Princess Penelope:
         <<emote lady_in_waiting sad_look_forward>>
         Lady in Waiting: No, they scare me.
         <<emote lady_in_waiting sad_look_down>>
+<<jump lady_in_waiting__explain_profile>>
 ===
 
 title: lady_in_waiting__question_children
@@ -32,8 +34,10 @@ Princess Penelope:
         <<emote lady_in_waiting happy>>
         Lady in Waiting: Yes! I'd want to have two.
         <<emote lady_in_waiting neutral>>
+        <<learn wants_kids>>
     -> How would you like to raise your children?
         <<emote lady_in_waiting neutral_mouth_open>>
         Lady in Waiting: In a warm and loving home.
         <<emote lady_in_waiting neutral>>
+<<jump lady_in_waiting__explain_profile>>
 ===

@@ -50,9 +50,11 @@ public partial class ProfileDialogueView : Node, DialogueViewBase
     public void RunLine(LocalizedLine line, Action onLineFinished) {
         bool HasTag(string tag) => line.Metadata?.Any(x => x.MatchN(tag)) ?? false;
 
-        if (HasTag("title")) Title.Text = line.Text.AsBBCode();
-        else if (HasTag("subtitle")) Subtitle.Text = line.Text.AsBBCode();
-        else _stringBuilder.AppendLine(line.Text.AsBBCode());
+        var lineText = line.Text.AsBBCode();
+
+        if (HasTag("title")) Title.Text = lineText;
+        else if (HasTag("subtitle")) Subtitle.Text = lineText;
+        else if (!string.IsNullOrWhiteSpace(lineText)) _stringBuilder.AppendLine(lineText);
 
         onLineFinished?.Invoke();
 	}
