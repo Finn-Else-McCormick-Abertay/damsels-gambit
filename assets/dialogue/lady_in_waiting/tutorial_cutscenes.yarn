@@ -65,32 +65,29 @@ title: lady_in_waiting__skip_setup
 title: lady_in_waiting__after_score
 ---
 <<if !visited("lady_in_waiting__after_score")>>
-<<emote lady_in_waiting explaining_gesture_left>>
-Lady in Waiting: Notice the effect that had on your [color=topic]Affection Score[/color].
-<<emote lady_in_waiting explaining_point>>
-Lady in Waiting: You'll want to stay neutral. If, at the end of the date, you are in the region marked in [color=love]pink[/color], you will be wed. If in the region marked in [color=hate]blue[/color], you may cause a war.
-<<emote lady_in_waiting neutral>>
+    <<emote lady_in_waiting explaining_gesture_left>>
+    Lady in Waiting: Notice the effect that had on your [color=topic]Affection Score[/color].
+    <<emote lady_in_waiting explaining_point>>
+    Lady in Waiting: You'll want to stay neutral. If, at the end of the date, you are in the region marked in [color=love]pink[/color], you will be wed. If in the region marked in [color=hate]blue[/color], you may cause a war.
+    <<emote lady_in_waiting neutral>>
 <<endif>>
 ===
 
 title: lady_in_waiting__explain_profile
 ---
 <<if !visited("lady_in_waiting__explain_profile")>>
-<<emote lady_in_waiting explaining_gesture_right>>
-Lady in Waiting: Notice the suitor profile over on the right? That'll update to show all the information you've gathered.
-<<emote lady_in_waiting explaining_point>>
-Lady in Waiting: Question cards won't affect his feelings as much, but they help you gather information about him. It's important to learn what you can so you can use it to push his buttons - otherwise you're just leaving things up to chance!
-<<emote lady_in_waiting neutral>>
+    <<emote lady_in_waiting explaining_gesture_right>>
+    Lady in Waiting: Notice the suitor profile over on the right? That'll update to show all the information you've gathered.
+    <<emote lady_in_waiting explaining_point>>
+    Lady in Waiting: Question cards won't affect his feelings as much, but they help you gather information about him. It's important to learn what you can so you can use it to push his buttons - otherwise you're just leaving things up to chance!
+    <<emote lady_in_waiting neutral>>
 <<endif>>
 ===
 
 title: lady_in_waiting__pre_ending
 ---
-<<if !visited("lady_in_waiting__explain_profile")>>
-<<jump lady_in_waiting__explain_profile>>
-<<else>>
 <<wait 1>>
-<<endif>>
+<<jump lady_in_waiting__explain_profile>>
 ===
 
 title: lady_in_waiting__ending__love

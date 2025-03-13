@@ -138,6 +138,12 @@ public partial class DialogueManager : Node
     }
 
     public static DialogueResult TryRun(string nodeName, bool force = true) => Run(nodeName, force, false);
+
+    public static void OnComplete(Callable callable) {
+        if (!Runner.IsDialogueRunning) callable.Call();
+        else CallableUtils.CallDeferred(() => Runner.Connect(DialogueRunner.SignalName.onDialogueComplete, callable, (uint)ConnectFlags.OneShot));
+    }
+    public static void OnComplete(Action action) => OnComplete(Callable.From(action));
     
     public class DialogueResult
     {
@@ -150,10 +156,7 @@ public partial class DialogueManager : Node
         
         internal DialogueResult(string node, bool success, string error = "") { _node = node; Success = success; Error = error; }
 
-        public void AndThen(Callable callable) {
-            if (/*Runner.CurrentNodeName != _node ||*/ !Runner.IsDialogueRunning) { callable.Call(); return; }
-            CallableUtils.CallDeferred(() => Runner.Connect(DialogueRunner.SignalName.onDialogueComplete, callable, (uint)ConnectFlags.OneShot));
-        }
-        public void AndThen(Action action) => AndThen(Callable.From(action));
+        public void AndThen(Callable callable) => OnComplete(callable);
+        public void AndThen(Action action) => OnComplete(Callable.From(action));
     }
 }

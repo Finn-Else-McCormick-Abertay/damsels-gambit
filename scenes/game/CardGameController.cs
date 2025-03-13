@@ -128,21 +128,21 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	private void TriggerGameEnd() {
 		if (Engine.IsEditorHint()) return;
 
-		AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide(); SuitorProfile.Hide(); PlayButton.Hide();
+		/*AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide(); SuitorProfile.Hide(); PlayButton.Hide();
 		
 		DialogueManager
 			.TryRun($"{_suitorId}__ending__{Score switch { _ when Score >= LoveThreshold => "love", _ when Score <= HateThreshold => "hate", _ => "neutral" }}")
-			.AndThen(() => EmitSignal(SignalName.GameEnd));
+			.AndThen(() => EmitSignal(SignalName.GameEnd));*/
+		PlayButton.Hide();
 
-		/*DialogueManager
+		DialogueManager
 			.TryRun($"{_suitorId}__pre_ending")
 			.AndThen(() => {
-				AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide(); SuitorProfile.Hide();
-				CallableUtils.CallDeferred(() =>
-					DialogueManager.TryRun($"{_suitorId}__ending__{Score switch { _ when Score >= LoveThreshold => "love", _ when Score <= HateThreshold => "hate", _ => "neutral" }}")
-					.AndThen(() => EmitSignal(SignalName.GameEnd))
-				);
-			});*/
+				AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide(); SuitorProfile.Hide(); 
+				DialogueManager
+					.TryRun($"{_suitorId}__ending__{Score switch { _ when Score >= LoveThreshold => "love", _ when Score <= HateThreshold => "hate", _ => "neutral" }}")
+					.AndThen(() => EmitSignal(SignalName.GameEnd));
+			});
 	}
 
 	private void Deal() {

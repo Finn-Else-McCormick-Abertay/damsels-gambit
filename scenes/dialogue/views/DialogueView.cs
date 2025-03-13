@@ -98,13 +98,17 @@ public partial class DialogueView : Node, DialogueViewBase
 
 	private void OnContinue() => _onLineFinishedAction?.Invoke();
 
+	public void InterruptLine(LocalizedLine dialogueLine, Action onDialogueLineFinished) => onDialogueLineFinished?.Invoke();
+
 	public void DismissLine(Action onDismissalComplete) {
+		_onLineFinishedAction = null;
 		ContinueButton.Hide();
 		onDismissalComplete?.Invoke();
 		State = DialogueState.Waiting;
 	}
 
 	public void RunOptions(DialogueOption[] dialogueOptions, Action<int> onOptionSelected) {
+		_onLineFinishedAction = null;
 		CleanupOptions();
 
 		Control toFocus = null;
