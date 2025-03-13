@@ -16,13 +16,28 @@ public partial class AudioManager : Node
 
 	public static bool IsMusicPlaying => Instance?._musicPlayer?.Playing ?? false;
 
+	public override void _Ready(){
+
+		PlayMusic("res://assets/audio/menu.mp3");
+
+	}
+
+	public override void _Process(double delta) {
+		if(!IsMusicPlaying){
+				PlayMusic("res://assets/audio/menu.mp3");
+		}
+	}
+
+	
+
 	public override void _EnterTree() {
 		if (Instance is not null) throw AutoloadException.For(this);
 		Instance = this;
 
 		_musicPlayer = new AudioStreamPlayer() { Bus = "Music" };
 		AddChild(_musicPlayer); _musicPlayer.Owner = this;
-
+		
+		
 		for (int i = 0; i < 8; ++i) {
 			var sfxPlayer = new AudioStreamPlayer() { Bus = "SFX" };
 			AddChild(sfxPlayer); sfxPlayer.Owner = this;
@@ -49,12 +64,15 @@ public partial class AudioManager : Node
 	}
 
 	public static void PlayMusic(string filePath) {
+
 		filePath = $"res://{filePath.Replace('\\', '/').StripFront("res://")}";
+
 		if (!ResourceLoader.Exists(filePath) || !Instance.IsValid() || (IsMusicPlaying && Instance._activeMusic == filePath)) return;
 
 		Instance._activeMusic = filePath;
 		Instance._musicPlayer.Stream = ResourceLoader.Load<AudioStream>(filePath);
 		Instance._musicPlayer.Play();
+
 	}
 
 	public static void StopMusic() {
