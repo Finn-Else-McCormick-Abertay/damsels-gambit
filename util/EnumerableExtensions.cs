@@ -11,4 +11,6 @@ static class EnumerableExtensions
     public static void ForEach<T>(this IEnumerable<T> self, Action<T> action) { foreach (var item in self) action(item); }
     
     public static IEnumerable<T> ForEachChained<T>(this IEnumerable<T> self, Action<T> action) { self.ForEach(action); return self; }
+
+    public static IEnumerable<T> WhereExists<T>(this IEnumerable<T> self) => self.Where(x => x is not null);
 }

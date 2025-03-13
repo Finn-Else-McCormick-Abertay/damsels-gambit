@@ -14,7 +14,7 @@ static class AnimationDialogueCommands
     private static readonly Queue<Timer> Timers = new();
 
     private static void RunCommandDeferred(Action action) {
-        var actionSignature = action.Method.GetSignature(false);
+        //var actionSignature = action.Method.GetSignature(false);
         var timer = Timers.LastOrDefault();
         if (timer is not null) {
             var awaiter = timer.ToSignal(timer, Timer.SignalName.Timeout);
@@ -58,7 +58,7 @@ static class AnimationDialogueCommands
 
     [YarnCommand("scene")]
     public static void Scene(string sceneName) => RunCommandDeferred(()
-        => DialogueManager.GetEnvironmentNames()?.ForEach(name => DialogueManager.GetEnvironmentItems(name)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, name == sceneName))));
+        => DialogueManager.GetEnvironmentNames()?.ForEach(name => DialogueManager.GetEnvironmentLayers(name)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, name == sceneName))));
 
     [YarnCommand("show")]
     public static void Show(string itemName) => RunCommandDeferred(() => DialogueManager.GetAllItems(itemName)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, true)));
@@ -81,7 +81,7 @@ static class AnimationDialogueCommands
 
     [YarnCommand("move")]
     public static void Move(string itemName, float x, float y, float time = 0f) => RunCommandDeferred(()
-        => DialogueManager.GetAllItems(itemName)?.ForEach(item => {
+        => DialogueManager.GetEnvironmentLayers(itemName)?.Select(x => x as Node)?.Concat(DialogueManager.GetCharacterDisplays(itemName))?.Concat(DialogueManager.GetPropDisplays(itemName))?.ForEach(item => {
             var property = item switch {
                 Node2D => Node2D.PropertyName.Position,
                 CanvasLayer => CanvasLayer.PropertyName.Offset,
@@ -94,17 +94,12 @@ static class AnimationDialogueCommands
     [YarnCommand("fade")]
     public static void Fade(string inOut, string itemName, float time) {
         RunCommandDeferred(() => {
-            List<CanvasItem> affectedItems = [];
-            List<CanvasLayer> affectedLayers = [];
-
-            var environmentItems = DialogueManager.GetAllItems(itemName);
-
-            affectedItems.AddRange(environmentItems.Where(x => x is CanvasItem).Select(x => x as CanvasItem));
-            foreach (var layer in environmentItems.Where(x => x is CanvasLayer).Select(x => x as CanvasLayer)) {
-                var affectedInLayer = layer.GetChildren().Where(x => x is CanvasItem).Select(x => x as CanvasItem);
-                affectedItems.AddRange(affectedInLayer);
-                if (affectedInLayer.Any()) affectedLayers.Add(layer);
-            }
+            var affectedLayers = DialogueManager.GetEnvironmentLayers(itemName);
+            var affectedItems =
+                affectedLayers.Aggregate((IEnumerable<CanvasItem>)[], (items, layer) => items.Concat(layer.GetChildren().Cast<CanvasItem>().WhereExists()))
+                .Concat(DialogueManager.GetCharacterDisplays(itemName).Cast<CanvasItem>())
+                .Concat(DialogueManager.GetPropDisplays(itemName).Cast<CanvasItem>())
+                .Distinct();
 
             if (time <= 0f) {
                 foreach (var item in affectedItems) if (inOut == "in") item.Show(); else if (inOut == "out") item.Hide();
@@ -122,7 +117,7 @@ static class AnimationDialogueCommands
                 var tween = item.CreateTween();
                 tween.TweenProperty(item, "modulate:a", target, time);
 
-                if (inOut == "out") { tween.TweenCallback(Callable.From(item.Hide)); }
+                //if (inOut == "out") tween.TweenCallback(Callable.From(item.Hide));
             }
             
             foreach (var layer in affectedLayers) {

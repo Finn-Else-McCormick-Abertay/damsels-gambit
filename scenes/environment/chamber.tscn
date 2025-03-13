@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bbvpf523ln0aj"]
+[gd_scene load_steps=16 format=3 uid="uid://bbvpf523ln0aj"]
 
 [ext_resource type="Texture2D" uid="uid://lioraxfo5wox" path="res://assets/characters/lady_in_waiting/neutral.png" id="2_4vov1"]
 [ext_resource type="Script" uid="uid://c5yvgj7xv643o" path="res://scenes/environment/CharacterDisplay.cs" id="3_fascp"]
@@ -43,8 +43,11 @@ fill = 1
 fill_from = Vector2(0.106838, 0.452991)
 fill_to = Vector2(0.606838, 0.320513)
 
+[sub_resource type="Gradient" id="Gradient_4q1hs"]
+colors = PackedColorArray(0.961342, 0.67336, 0.52894, 1, 0, 0, 0, 1)
+
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_6sx44"]
-gradient = SubResource("Gradient_hieft")
+gradient = SubResource("Gradient_4q1hs")
 fill = 1
 fill_from = Vector2(0.910256, 0.641026)
 fill_to = Vector2(0.371795, 0.551282)
