@@ -21,11 +21,11 @@ Lady in Waiting: Don't worry, Princess, I'm sure you can get out of this.
 <<emote lady_in_waiting neutral>>
 Princess Penelope: How? He's already on his way, my mother's made her mind up.
 <<emote lady_in_waiting explaining_point>>
-Lady in Waiting: [i]You[/i] might not have a choice, but [i]he[/i] does. If
+Lady in Waiting: [i]You[/i] might not have a choice, but [i]he[/i] does. If you can make sure he doesn't take a liking to you, the wedding won't go ahead.
 <<emote lady_in_waiting sad_look_up>>
 <<after 1.5>>
 <<emote lady_in_waiting sad_look_down>>
-Lady in Waiting: You'll need to be careful though. If he likes you too much then the wedding will go ahead, and you'll have to leave for Frostholm, never to return, but cause too much offence and our kingdoms may end up at war.
+Lady in Waiting: You'll need to be careful though. If he likes you too much then you'll have to leave for Frostholm, never to return, but cause too much offence and our kingdoms may end up at war.
 <<flush_command_queue>>
 <<emote lady_in_waiting sad_look_forward_mouth_closed>>
 Princess Penelope: At [i]war?![/i]

@@ -64,8 +64,13 @@ public partial class DialogueView : Node, DialogueViewBase
 
 		bool withNext = HasTag("withnext") || HasTag("lastline");
 
+		var lineText = line.TextWithoutCharacterName.AsBBCode();
+		if (string.IsNullOrWhiteSpace(lineText)) lineText = "";
+
 		TitleLabel?.Set(Label.PropertyName.Text, line.CharacterName);
-		LineLabel?.Set(Label.PropertyName.Text, line.TextWithoutCharacterName.AsBBCode());
+		LineLabel?.Set(Label.PropertyName.Text, lineText);
+
+		if (LineLabel is RichTextLabel richLabel && richLabel.GetLineCount() == 1 && !withNext) richLabel.Text += "\n ";
 
 		TitleRoot.Visible = line.CharacterName is not null && line.CharacterName != "";
 		LineRoot.Visible = true;//!string.IsNullOrWhiteSpace(line.TextWithoutCharacterName.Text);
