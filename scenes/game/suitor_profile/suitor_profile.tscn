@@ -106,7 +106,8 @@ offset_bottom = -0.833008
 pivot_offset = Vector2(-31, 47)
 bbcode_enabled = true
 text = "Profile main body text.
-This will extend over multiple lines."
+This will extend over multiple lines.
+[i]Italics[/i] [b]bold[/b] [i][b]bold italics[/b][/i]"
 tab_size = 12
 
 [node name="TabButton" type="Button" parent="Root"]
