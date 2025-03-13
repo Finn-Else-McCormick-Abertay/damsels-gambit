@@ -70,7 +70,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		Hide(); Round = 1;
 	}
 
-	public void BeginGame() {
+	public void BeginGame(bool skipIntro = false) {
 		static List<string> CreateWorkingDeck(Godot.Collections.Dictionary<string, int> deck) { List<string> working = []; foreach (var (card, count) in deck) for (int i = 0; i < count; ++i) working.Add(card); return working; }
 
 		// Create and shuffle deck
@@ -79,7 +79,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		
 		EmitSignal(SignalName.GameStart);
 		
-		DialogueManager.TryRun($"{_suitorId}__intro").AndThen(() => {
+		DialogueManager.TryRun(skipIntro ? $"{_suitorId}__skip_setup" : $"{_suitorId}__intro").AndThen(() => {
 			Round = 1; Show(); Deal();
 			EmitSignal(SignalName.RoundStart);
 		});

@@ -27,6 +27,8 @@ public class Dialogue : Console.Command
         public bool Scenes { get; set; }
         [Option]
         public bool Characters { get; set; }
+        [Option]
+        public bool Knowledge { get; set; }
     }
 
     [Verb("run")]
@@ -129,6 +131,7 @@ public class Dialogue : Console.Command
             if (options.Nodes) Console.Info(string.Join(", ", program.Nodes.Keys));
             if (options.Scenes) Console.Info(string.Join(", ", DialogueManager.GetEnvironmentNames()));
             if (options.Characters) Console.Info(string.Join(", ", DialogueManager.GetCharacterNames()));
+            if (options.Knowledge) Console.Info(string.Join(", ", DialogueManager.Knowledge.KnownFacts));
         });
 
         result.WithParsed<RunOptions>(options => {
@@ -156,7 +159,7 @@ public class Dialogue : Console.Command
                 if (args.Contains("--node")) return DialogueManager.Runner.yarnProject.Program.Nodes.Keys;
                 if (args.Contains("--scene")) return DialogueManager.GetEnvironmentNames();
                 if (args.Contains("--character")) return DialogueManager.GetCharacterNames();
-                return [ "--node", "--nodes", "--scene", "--scenes", "--character", "--characters" ];
+                return [ "--node", "--nodes", "--scene", "--scenes", "--character", "--characters", "--knowledge" ];
             }
             
             if (args.First() == "run" && args.Length == 2) return DialogueManager.Runner.yarnProject.Program.Nodes.Keys;

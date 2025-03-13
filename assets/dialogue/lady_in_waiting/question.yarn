@@ -2,25 +2,38 @@ title: lady_in_waiting__question_animals
 ---
 Princess Penelope:
     -> What's your favourite animal?
-        Lady in Waiting: A cat
+        <<emote lady_in_waiting neutral_mouth_open>>
+        Lady in Waiting: If I had to pick, I'd say cats. Though horses wouldn't be far behind.
+        <<emote lady_in_waiting neutral>>
+        <<learn likes_cats>>
+        <<learn likes_horses>>
     -> Do you have a pet?
-        Lady in Waiting: Yes, a horse named Chestnut
+        Lady in Waiting: Yes, my beautiful horse, Chestnut.
+        <<emote lady_in_waiting neutral>>
+        <<learn has_horse>>
 ===
 
 title: lady_in_waiting__question_witchcraft
 ---
 Princess Penelope:
     -> Have you ever dabbled with witchcraft?
-        Lady in Waiting: Yes, my aunt is a witch and taught me how to make a few potions
+        Lady in Waiting: Don't tell anyone this, but yes, a little. My aunt taught me how to make a few potions.
+        <<learn makes_potions>>
     -> Have you ever been to a witch trial? 
-        Lady in Waiting: No, they scare me
+        <<emote lady_in_waiting sad_look_forward>>
+        Lady in Waiting: No, they scare me.
+        <<emote lady_in_waiting sad_look_down>>
 ===
 
 title: lady_in_waiting__question_children
 ---
 Princess Penelope:
     -> Do you want to have children in the future?
-        Lady in Waiting: Yes! I'd want to have two
+        <<emote lady_in_waiting happy>>
+        Lady in Waiting: Yes! I'd want to have two.
+        <<emote lady_in_waiting neutral>>
     -> How would you like to raise your children?
-        Lady in Waiting: In a warm and loving home
+        <<emote lady_in_waiting neutral_mouth_open>>
+        Lady in Waiting: In a warm and loving home.
+        <<emote lady_in_waiting neutral>>
 ===

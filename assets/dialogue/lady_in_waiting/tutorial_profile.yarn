@@ -1,6 +1,7 @@
 title: lady_in_waiting__profile
 tags: portrait:assets/characters/lady_in_waiting/neutral.png
 ---
-Whatever her name is #title
-Hey so are you gonna give me a name at some point or what
+Lady in Waiting #title
+//[select value={knows("likes_cats")} true="Cats are her favourite animal." /] [select value={knows("likes_horses") && !knows("has_horse")} true="She likes horses." /] [select value={knows("has_horse")} true="She has a horse called Chestnut." /]
+[knowledge=likes_cats]Cats are her favourite animal[knowledge=likes_horses], though horses are a close second[/knowledge].[/knowledge] [knowledge="likes_horses !likes_cats !has_horse"]She likes horses.[/knowledge][knowledge=has_horse]She has a horse called Chestnut.[/knowledge]
 ===

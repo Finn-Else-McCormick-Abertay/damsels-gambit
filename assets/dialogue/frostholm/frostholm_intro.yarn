@@ -4,3 +4,10 @@ title: frostholm__intro
 <<fade in frostholm 1>>
 <<emote frostholm neutral>>
 ===
+
+title: frostholm__skip_setup
+---
+<<scene library>>
+<<show frostholm>>
+<<emote frostholm neutral>>
+===

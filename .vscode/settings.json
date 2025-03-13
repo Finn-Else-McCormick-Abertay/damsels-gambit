@@ -9,5 +9,8 @@
     "explorer.fileNesting.patterns": {
         "*": "${capture}.import, ${capture}.uid"
     },
-    "explorer.fileNesting.expand": false
+    "explorer.fileNesting.expand": false,
+    "[yarnspinner]": {
+        "editor.wordWrap": "on"
+    }
 }

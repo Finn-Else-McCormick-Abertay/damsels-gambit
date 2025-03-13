@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DamselsGambit.Util;
 using Godot;
 
 namespace DamselsGambit.Dialogue;
@@ -10,27 +11,45 @@ public static class YarnMarkupParseExtensions
     public static string AsBBCode(this Yarn.Markup.MarkupParseResult result) {
 
         Dictionary<int, List<string>> insertions = [];
+        Dictionary<int, int> removals = [];
         
-        foreach (var attribute in result.Attributes.Select(InterpretAttribute)) {
-            var openerSb = new StringBuilder();
-            openerSb.Append('[').Append(attribute.Name);
-            if (attribute.Properties.Any(x => x.Key == attribute.Name)) openerSb.Append('=').Append(attribute.Properties.Where(x => x.Key == attribute.Name).SingleOrDefault().Value);
-            if (attribute.Properties.Any(x => x.Key != attribute.Name)) openerSb.Append(' ').AppendJoin(' ', attribute.Properties.Where(x => x.Key != attribute.Name).Select(x => $"{x.Key}={x.Value}"));
-            openerSb.Append(']');
+        foreach (var (Position, Length, Name, Properties, UseTag, UseText) in result.Attributes.Select(InterpretAttribute)) {
+            if (UseTag) {
+                var sb = new StringBuilder();
+                sb.Append('[').Append(Name);
+                if (Properties.Any(x => x.Key == Name)) sb.Append('=').Append(Properties.Where(x => x.Key == Name).SingleOrDefault().Value);
+                if (Properties.Any(x => x.Key != Name)) sb.Append(' ').AppendJoin(' ', Properties.Where(x => x.Key != Name).Select(x => $"{x.Key}={x.Value}"));
+                sb.Append(']');
 
-            insertions.TryAdd(attribute.Position, []); insertions[attribute.Position].Add(openerSb.ToString());
-            insertions.TryAdd(attribute.Position + attribute.Length, []); insertions[attribute.Position + attribute.Length].Add($"[/{attribute.Name}]");
+                insertions.TryAdd(Position, []); insertions[Position].Add(sb.ToString());
+                insertions.TryAdd(Position + Length, []); insertions[Position + Length].Add($"[/{Name}]");
+            }
+            if (!UseText) removals.Add(Position, Length);
         }
 
+        var removalEndPoints = removals.Select(pair => pair.Key + pair.Value);
+
         var text = result.Text;
-        int runningTotal = 0;
-        foreach (var (index, tags) in insertions.OrderBy(x => x.Key)) foreach (var tag in tags) { text = text.Insert(index + runningTotal, tag); runningTotal += tag.Length; }
+        int runningTotal = 0; bool isRemoving = false;
+        foreach (var index in insertions.Keys.Concat(removals.Keys).Concat(removalEndPoints).Order()) {
+            if (!isRemoving && removals.TryGetValue(index, out int removalLength)) {
+                text = text.Remove(index + runningTotal, removalLength);
+                runningTotal -= removalLength;
+                isRemoving = true;
+            }
+            if (removalEndPoints.Contains(index)) isRemoving = false;
+
+            if (!isRemoving) insertions.GetValueOrDefault(index)?.ForEach(insertion => {
+                text = text.Insert(index + runningTotal, insertion);
+                runningTotal += insertion.Length;
+            });
+        }
 
         return text;
     }
 
-    private static (int Position, int Length, string Name, Dictionary<string, string> Properties) InterpretAttribute(Yarn.Markup.MarkupAttribute attribute) {
-        (int Position, int Length, string Name, Dictionary<string, string> Properties) tuple = (attribute.Position, attribute.Length, attribute.Name, attribute.Properties.Select(x => (x.Key, x.Value.ToString())).ToDictionary());
+    private static (int Position, int Length, string Name, Dictionary<string, string> Properties, bool UseTag, bool UseText) InterpretAttribute(Yarn.Markup.MarkupAttribute attribute) {
+        (int Position, int Length, string Name, Dictionary<string, string> Properties, bool UseTag, bool UseText) tuple = (attribute.Position, attribute.Length, attribute.Name, attribute.Properties.Select(x => (x.Key, x.Value.ToString())).ToDictionary(), true, true);
         if (tuple.Properties.TryGetValue("color", out string val)) {
             tuple.Properties["color"] = val switch {
                 _ when val.MatchN("action") => "6d85ff",
@@ -39,6 +58,24 @@ public static class YarnMarkupParseExtensions
                 _ when val.MatchN("hate") => "2b308b",
                 _ => val
             };
+        }
+        if (tuple.Name.Match("knowledge")) {
+            tuple.UseTag = false;
+            Dictionary<string, bool> knowledgeRequirements = [];
+            if (tuple.Properties.TryGetValue("knowledge", out string knowledgeString)) {
+                foreach (var arg in knowledgeString.Split(' ', System.StringSplitOptions.TrimEntries | System.StringSplitOptions.RemoveEmptyEntries)) {
+                    if (arg.StartsWith('!')) knowledgeRequirements.TryAdd(arg.StripFront('!'), false); else knowledgeRequirements.TryAdd(arg, true);
+                }
+            }
+            foreach (var (propertyName, propertyVal) in tuple.Properties.Where(x => !x.Key.IsAnyOf([ "knowledge", "required" ]))) knowledgeRequirements.TryAdd(propertyName, bool.Parse(propertyVal));
+
+            bool all = tuple.Properties.GetValueOrDefault("required") switch { null => true, "all" => true, "any" => false, _ => throw new System.Exception($"Invalid markup argument [knowledge required={tuple.Properties.GetValueOrDefault("required")}]") };
+
+            tuple.UseText = all ? true : false;
+            foreach (var (id, state) in knowledgeRequirements) {
+                var thisFactState = DialogueManager.Knowledge.Knows(id) == state;
+                tuple.UseText = all ? tuple.UseText && thisFactState : tuple.UseText || thisFactState;
+            }
         }
         return tuple;
     }

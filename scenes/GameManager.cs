@@ -49,7 +49,7 @@ public sealed partial class GameManager : Node
 		if (CardGameController.IsValid()) {
 			var sceneRoot = GetTree().Root.GetChildren().Last();
 			_cardGameCanvasLayer.AddOwnedChild(sceneRoot.IsAncestorOf(CardGameController) ? sceneRoot : CardGameController, true);
-			CardGameController.OnReady(x => x.CallDeferred(CardGameController.MethodName.BeginGame));
+			CardGameController.OnReady(x => x.CallDeferred(CardGameController.MethodName.BeginGame, true));
 		}
 	}
 

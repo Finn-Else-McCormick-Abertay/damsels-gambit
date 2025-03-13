@@ -55,6 +55,12 @@ Lady in Waiting: Come on then, let's see what you've got.
 <<emote lady_in_waiting neutral>>
 ===
 
+title: lady_in_waiting__skip_setup
+---
+<<scene chamber>>
+<<show lady_in_waiting>>
+===
+
 title: lady_in_waiting__after_score
 ---
 <<if !visited("lady_in_waiting__after_score")>>
