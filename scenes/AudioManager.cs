@@ -17,10 +17,18 @@ public partial class AudioManager : Node
 	public static bool IsMusicPlaying => Instance?._musicPlayer?.Playing ?? false;
 
 	public override void _Ready(){
-		GD.Print("1");
+
 		PlayMusic("res://assets/audio/menu.mp3");
 
 	}
+
+	public override void _Process(double delta) {
+		if(!IsMusicPlaying){
+				PlayMusic("res://assets/audio/menu.mp3");
+		}
+	}
+
+	
 
 	public override void _EnterTree() {
 		if (Instance is not null) throw AutoloadException.For(this);
@@ -56,14 +64,15 @@ public partial class AudioManager : Node
 	}
 
 	public static void PlayMusic(string filePath) {
-				GD.Print("2");
+
 		filePath = $"res://{filePath.Replace('\\', '/').StripFront("res://")}";
-		//filePath= "../../assets/audio/" + filePath;
+
 		if (!ResourceLoader.Exists(filePath) || !Instance.IsValid() || (IsMusicPlaying && Instance._activeMusic == filePath)) return;
-				GD.Print("3");
+
 		Instance._activeMusic = filePath;
 		Instance._musicPlayer.Stream = ResourceLoader.Load<AudioStream>(filePath);
 		Instance._musicPlayer.Play();
+
 	}
 
 	public static void StopMusic() {
