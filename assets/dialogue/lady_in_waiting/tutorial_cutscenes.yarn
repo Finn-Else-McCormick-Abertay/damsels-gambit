@@ -73,6 +73,20 @@ Lady in Waiting: You'll want to stay neutral. If, at the end of the date, you ar
 <<endif>>
 ===
 
+title: lady_in_waiting__explain_profile
+---
+Lady in Waiting: Profile explanation
+===
+
+title: lady_in_waiting__pre_ending
+---
+<<if !visited("lady_in_waiting__explain_profile")>>
+<<jump lady_in_waiting__explain_profile>>
+<<else>>
+<<wait 1>>
+<<endif>>
+===
+
 title: lady_in_waiting__ending__love
 ---
 <<emote lady_in_waiting blush_look_up>>

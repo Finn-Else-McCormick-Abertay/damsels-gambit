@@ -1,3 +1,8 @@
+title: frostholm__pre_ending
+---
+<<wait 1>>
+===
+
 title: frostholm__ending__love
 ---
 <<flush_command_queue>>

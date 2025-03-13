@@ -11,6 +11,8 @@
     },
     "explorer.fileNesting.expand": false,
     "[yarnspinner]": {
-        "editor.wordWrap": "on"
+        "editor.wordWrap": "on",
+        "editor.suggest.preview": true,
+        "editor.acceptSuggestionOnCommitCharacter": false
     }
 }

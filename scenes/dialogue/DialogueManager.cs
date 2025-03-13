@@ -129,7 +129,7 @@ public partial class DialogueManager : Node
             return new DialogueResult(nodeName, true);
 		}
         var errorMsg = $"No such node '{nodeName}'";
-        Console.Error(errorMsg);
+        Console.Warning(errorMsg);
         if (orErrorDialogue) {
             Runner.StartDialogue("error");
             return new DialogueResult("error", false, errorMsg);
@@ -151,7 +151,7 @@ public partial class DialogueManager : Node
         internal DialogueResult(string node, bool success, string error = "") { _node = node; Success = success; Error = error; }
 
         public void AndThen(Callable callable) {
-            if (Runner.CurrentNodeName != _node || !Runner.IsDialogueRunning) { callable.Call(); return; }
+            if (/*Runner.CurrentNodeName != _node ||*/ !Runner.IsDialogueRunning) { callable.Call(); return; }
             CallableUtils.CallDeferred(() => Runner.Connect(DialogueRunner.SignalName.onDialogueComplete, callable, (uint)ConnectFlags.OneShot));
         }
         public void AndThen(Action action) => AndThen(Callable.From(action));
