@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="GUIDEAction" load_steps=2 format=3 uid="uid://dnuwosjn76fcy"]
 
-[ext_resource type="Script" uid="uid://d4gu6dqai7l2n" path="res://addons/guide/guide_action.gd" id="1_hamxc"]
+[ext_resource type="Script" uid="uid://brymgl3anvhxo" path="res://addons/guide/guide_action.gd" id="1_hamxc"]
 
 [resource]
 script = ExtResource("1_hamxc")
@@ -8,6 +8,6 @@ name = &"Back"
 action_value_type = 0
 block_lower_priority_actions = true
 emit_as_godot_actions = false
-is_remappable = false
-display_name = ""
-display_category = ""
+is_remappable = true
+display_name = "Back"
+display_category = "UI"

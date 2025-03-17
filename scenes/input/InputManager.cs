@@ -12,15 +12,22 @@ public sealed partial class InputManager : Node
 {
 	public static class Contexts
 	{
-		public static readonly GUIDEMappingContext KeyboardAndMouse = GUIDEMappingContext.From(ResourceLoader.Load("res://assets/input/context_keyboard_mouse.tres"));
-		public static readonly GUIDEMappingContext Controller = GUIDEMappingContext.From(ResourceLoader.Load("res://assets/input/context_controller.tres"));
+		private static GUIDEMappingContext LoadContext(string contextName) => GUIDEMappingContext.From(ResourceLoader.Load($"res://assets/input/context_{Case.ToSnake(contextName)}.tres"));
+
+		public static readonly GUIDEMappingContext Mouse = LoadContext(nameof(Mouse));
+		public static readonly GUIDEMappingContext Keyboard = LoadContext(nameof(Keyboard));
+		public static readonly GUIDEMappingContext Controller = LoadContext(nameof(Controller));
 	}
 
 	public static class Actions
 	{
-    	public static readonly GUIDEAction Accept = GUIDEAction.From(ResourceLoader.Load("res://assets/input/actions/accept.tres"));
-    	public static readonly GUIDEAction SelectAt = GUIDEAction.From(ResourceLoader.Load("res://assets/input/actions/select_at.tres"));
-    	public static readonly GUIDEAction UIDirection = GUIDEAction.From(ResourceLoader.Load("res://assets/input/actions/ui_direction.tres"));
+		private static GUIDEAction LoadAction(string actionName) => GUIDEAction.From(ResourceLoader.Load($"res://assets/input/actions/{Case.ToSnake(actionName)}.tres"));
+
+    	public static readonly GUIDEAction Accept = LoadAction(nameof(Accept));
+    	public static readonly GUIDEAction Back = LoadAction(nameof(Back));
+    	public static readonly GUIDEAction SelectAt = LoadAction(nameof(SelectAt));
+    	public static readonly GUIDEAction UIDirection = LoadAction(nameof(UIDirection));
+    	public static readonly GUIDEAction Pause = LoadAction(nameof(Pause));
 	}
 	
 	public static bool ShouldOverrideGuiInput { get; set; } = true;
@@ -259,14 +266,16 @@ public sealed partial class InputManager : Node
 			focusNext?.GrabFocus();
 		}
 	}
+
+	private readonly Dictionary<GUIDEMappingContext, bool> _contextEnabled = [];
 	
     private bool _keyboardAndMouseContextEnabled = false;
     private bool _controllerContextEnabled = false;
 
     private void OnInputMappingsChanged() {
-        _keyboardAndMouseContextEnabled = GUIDE.IsMappingContextEnabled(Contexts.KeyboardAndMouse);
-        _controllerContextEnabled = GUIDE.IsMappingContextEnabled(Contexts.Controller);
-    }
+		foreach (var context in new GUIDEMappingContext[]{ Contexts.Controller, Contexts.Keyboard, Contexts.Mouse })
+			_contextEnabled[context] = GUIDE.IsMappingContextEnabled(context);
+	}
 
     public override void _Input(InputEvent @event) {
 		if (ShouldOverrideGuiInput && new List<StringName>{ UIInput.UiLeft, UIInput.UiRight, UIInput.UiUp, UIInput.UiDown, UIInput.UiSelect, UIInput.UiAccept }.Any(x => @event.IsAction(x))) {
@@ -274,14 +283,22 @@ public sealed partial class InputManager : Node
 			GUIDE.InjectInput(@event);
 		}
 
-        if (!_keyboardAndMouseContextEnabled && (@event is InputEventKey || @event is InputEventMouse)) {
-            GUIDE.EnableMappingContext(Contexts.KeyboardAndMouse, true);
+        if (!_contextEnabled.GetValueOrDefault(Contexts.Keyboard) && @event is InputEventKey) {
+            GUIDE.EnableMappingContext(Contexts.Keyboard);
+            GUIDE.DisableMappingContext(Contexts.Controller);
 			GUIDE.InjectInput(@event);
         }
-        if (!_controllerContextEnabled && (@event is InputEventJoypadButton || @event is InputEventJoypadMotion)) {
-            GUIDE.EnableMappingContext(Contexts.Controller, true);
+
+        if (!_contextEnabled.GetValueOrDefault(Contexts.Controller) && (@event is InputEventJoypadButton || @event is InputEventJoypadMotion)) {
+            GUIDE.EnableMappingContext(Contexts.Controller);
+            GUIDE.DisableMappingContext(Contexts.Keyboard);
 			GUIDE.InjectInput(@event);
         }
+
+		if (!_contextEnabled.GetValueOrDefault(Contexts.Mouse) && @event is InputEventMouse) {
+            GUIDE.EnableMappingContext(Contexts.Mouse);
+			GUIDE.InjectInput(@event);
+		}
     }
 
 	private static class UIInput
