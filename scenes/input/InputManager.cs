@@ -250,7 +250,7 @@ public sealed partial class InputManager : Node
 		
 		var focused = _focusedViewport.GuiGetFocusOwner();
 		if (focused is null) {
-			foreach (var focusContext in GetTree().Root.FindChildrenWhere(x => x is IFocusContext).Select(x => x as IFocusContext).OrderBy(x => x.FocusContextPriority)) {
+			foreach (var focusContext in GetTree().Root.FindChildrenWhere(x => x is IFocusContext).Select(x => x as IFocusContext).Where(x => x.FocusContextPriority > 0).OrderBy(x => x.FocusContextPriority)) {
 				var contextDefaultFocus = FindFocusableWithin(focusContext?.GetDefaultFocus(direction));
 				if (contextDefaultFocus is not null) {
 					contextDefaultFocus?.GrabFocus();
