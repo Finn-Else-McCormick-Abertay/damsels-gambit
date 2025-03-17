@@ -127,9 +127,9 @@ public sealed partial class InputManager : Node
 		};
 		if (nextPath == "!return") return Instance._prevFocus;
 
-		if (!nextPath.IsEmpty) return FindFocusableWithin(root.GetNode(nextPath), direction);
+		if (!nextPath.IsEmpty && FindFocusableWithin(root.GetNode(nextPath), direction) is Control focusable) return focusable;
 
-		foreach (var container in root.FindParentsOfType<Container>()) {
+		foreach (var container in root.FindParentsWhere<Control>(x => x is Container || x is IFocusableContainer)) {
 			var chain = container.FindChildChainTo(root);
 
 			if (IsAxisAnd<HBoxContainer, VBoxContainer>(container, direction)) {

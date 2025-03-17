@@ -18,6 +18,8 @@ public sealed partial class GameManager : Node
 	public static Node DialogueInterface { get; private set; }
 	public static CardGameController CardGameController { get; private set; }
 
+	public static event Action CardGameChanged;
+
 	private CanvasLayer _cardGameCanvasLayer = new() { Layer = 20, Name = "CardGameLayer" };
 	private CanvasLayer _dialogueCanvasLayer = new() { Layer = 23, Name = "DialogueLayer" };
 	private CanvasLayer _menuCanvasLayer = new() { Layer = 25, Name = "MenuLayer" };
@@ -50,6 +52,7 @@ public sealed partial class GameManager : Node
 			var sceneRoot = GetTree().Root.GetChildren().Last();
 			_cardGameCanvasLayer.AddOwnedChild(sceneRoot.IsAncestorOf(CardGameController) ? sceneRoot : CardGameController, true);
 			CardGameController.OnReady(x => x.CallDeferred(CardGameController.MethodName.BeginGame, true));
+			CardGameChanged?.Invoke();
 		}
 	}
 
@@ -58,6 +61,7 @@ public sealed partial class GameManager : Node
 
 		foreach (var child in Instance._menuCanvasLayer.GetChildren()) { Instance._menuCanvasLayer.RemoveChild(child); child.QueueFree(); }
 		foreach (var child in Instance._cardGameCanvasLayer.GetChildren()) { Instance._cardGameCanvasLayer.RemoveChild(child); child.QueueFree(); }
+		CardGameChanged?.Invoke();
 	}
 
 	public static void SwitchToMainMenu() {
@@ -90,6 +94,7 @@ public sealed partial class GameManager : Node
 		Instance._cardGameCanvasLayer.AddOwnedChild(cardGameScene);
 		CardGameController = cardGameScene as CardGameController ?? cardGameScene.FindChildOfType<CardGameController>();
 		CardGameController.OnReady(x => x.BeginGame());
+		CardGameChanged?.Invoke();
 
 		PauseMenu = _pauseMenuScene.Instantiate<PauseMenu>();
 		Instance._menuCanvasLayer.AddOwnedChild(PauseMenu);

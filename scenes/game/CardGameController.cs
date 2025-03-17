@@ -70,7 +70,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		Hide(); Round = 1;
 	}
 
-	private bool _started = false;
+	public bool Started { get; private set; } = false;
 
 	public void BeginGame(bool skipIntro = false) {
 		static List<string> CreateWorkingDeck(Godot.Collections.Dictionary<string, int> deck) { List<string> working = []; foreach (var (card, count) in deck) for (int i = 0; i < count; ++i) working.Add(card); return working; }
@@ -82,15 +82,13 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		EmitSignal(SignalName.GameStart);
 		
 		DialogueManager.TryRun(skipIntro ? $"{_suitorId}__skip_setup" : $"{_suitorId}__intro").AndThen(() => {
-			_started = true;
+			Started = true;
 			Round = 1; Show(); Deal();
 			EmitSignal(SignalName.RoundStart);
 		});
 	}
 
-	public void ForceSkipIntro() {
-		if (!_started) DialogueManager.Run($"{_suitorId}__skip_setup", true);
-	}
+	public void ForceSkipIntro() { if (!Started) DialogueManager.Run($"{_suitorId}__skip_setup", true); }
 
 	public override void _Process(double delta) {
 		if (Engine.IsEditorHint()) return;

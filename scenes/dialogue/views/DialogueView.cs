@@ -9,7 +9,7 @@ using System.IO;
 
 namespace DamselsGambit.Dialogue;
 
-public partial class DialogueView : Node, DialogueViewBase, IFocusContext
+public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IFocusableContainer
 {
 	[Export] public Control Root { get; set; }
 	[Export] public Control TitleRoot { get; set { field = value; TitleLabel = TitleRoot is null ? null : TitleRoot is RichTextLabel ? TitleRoot as RichTextLabel : (Control)TitleRoot?.FindChildOfType<RichTextLabel>() ?? TitleRoot?.FindChildOfType<Label>(); } }
@@ -155,4 +155,6 @@ public partial class DialogueView : Node, DialogueViewBase, IFocusContext
     public virtual int FocusContextPriority => State != DialogueState.Inactive ? 3 : -1;
 
     public Control GetDefaultFocus() => ContinueButton;
+
+    //public Control GetNextFocus(InputManager.FocusDirection direction, int childIndex) => GetDefaultFocus();
 }

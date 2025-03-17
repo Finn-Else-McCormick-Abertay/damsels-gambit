@@ -1,5 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://0x8a7gsbwftf"]
+[gd_scene load_steps=3 format=3 uid="uid://0x8a7gsbwftf"]
 
+[ext_resource type="Script" uid="uid://8knxbx7adarv" path="res://scenes/dialogue/SkipIntroController.cs" id="1_3hu1c"]
 [ext_resource type="PackedScene" uid="uid://gqmapmoqb22o" path="res://scenes/dialogue/views/dialogue_view.tscn" id="1_yme5x"]
 
 [node name="DialogueInterface" type="Node"]
@@ -7,13 +8,29 @@
 [node name="Interface" type="CanvasLayer" parent="."]
 layer = 20
 
-[node name="DialogueSystem" parent="Interface" instance=ExtResource("1_yme5x")]
+[node name="SkipIntro" type="Button" parent="Interface"]
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.14
+anchor_right = 1.0
+anchor_bottom = 0.14
+offset_left = -258.0
+offset_top = -45.72
+offset_right = -82.0
+offset_bottom = 35.28
+grow_horizontal = 0
+focus_neighbor_bottom = NodePath("../DialogueView")
+text = "Skip Intro"
+script = ExtResource("1_3hu1c")
+
+[node name="DialogueView" parent="Interface" instance=ExtResource("1_yme5x")]
 anchors_preset = -1
 anchor_top = 0.569
 offset_left = 111.0
 offset_top = 0.287994
 offset_right = -111.0
 offset_bottom = -23.0
+focus_neighbor_top = NodePath("../SkipIntro")
 mouse_filter = 2
 
 [node name="Camera2D" type="Camera2D" parent="."]
