@@ -8,6 +8,6 @@ name = &"Accept"
 action_value_type = 0
 block_lower_priority_actions = true
 emit_as_godot_actions = false
-is_remappable = false
+is_remappable = true
 display_name = "Accept"
 display_category = "UI"

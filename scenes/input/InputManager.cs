@@ -51,6 +51,8 @@ public sealed partial class InputManager : Node
 		Actions.UIDirection.Connect(GUIDEAction.SignalName.Triggered, new Callable(this, MethodName.OnUIDirectionTriggered), 0);
 		Actions.Accept.Connect(GUIDEAction.SignalName.Triggered, new Callable(this, MethodName.OnAcceptTriggered), 0);
 		Actions.Accept.Connect(GUIDEAction.SignalName.Completed, new Callable(this, MethodName.OnAcceptCompleted), 0);
+
+		Actions.Back.Connect(GUIDEAction.SignalName.Triggered, new Callable(this, MethodName.OnBackTriggered), 0);
 		
         GetTree().Connect(SceneTree.SignalName.NodeAdded, new Callable(this, MethodName.OnNodeAddedToTree));
         GetTree().Connect(SceneTree.SignalName.NodeRemoved, new Callable(this, MethodName.OnNodeRemovedFromTree));
@@ -61,22 +63,16 @@ public sealed partial class InputManager : Node
 	private readonly Dictionary<Popup, Dictionary<StringName, Action>> _popups = [];
 
 	private void OnNodeAddedToTree(Node node) {
-		if (node is not Popup popup) return;
-		if (_popups.ContainsKey(popup)) return;
+		if (node is not Popup popup || _popups.ContainsKey(popup)) return;
 
 		_popups.Add(popup, []);
-		_popups[popup].Add(Window.SignalName.FocusEntered, () => {
-			_focusedViewport = popup;
-		});
-		_popups[popup].Add(Window.SignalName.FocusExited, () => {
-			_focusedViewport = _rootViewport;
-		});
+		_popups[popup].Add(Window.SignalName.FocusEntered, () => _focusedViewport = popup);
+		_popups[popup].Add(Window.SignalName.FocusExited, () => _focusedViewport = _rootViewport);
 
 		foreach (var (signal, action) in _popups[popup]) popup.Connect(signal, Callable.From(action));
 	}
 	private void OnNodeRemovedFromTree(Node node) {
-		if (node is not Popup popup) return;
-		if (!_popups.ContainsKey(popup)) return;
+		if (node is not Popup popup || !_popups.ContainsKey(popup)) return;
 
 		foreach (var (signal, action) in _popups[popup]) popup.Disconnect(signal, Callable.From(action));
 		_popups.Remove(popup);
@@ -94,6 +90,10 @@ public sealed partial class InputManager : Node
 			var restoredFocus = GetNode(path) as Control;
 			restoredFocus?.GrabFocus();
 		}
+	}
+
+	public void ClearFocus() {
+		_focusedViewport.GuiGetFocusOwner().ReleaseFocus();
 	}
 
 	public enum FocusDirection { Up, Down, Left, Right, None }
@@ -234,6 +234,12 @@ public sealed partial class InputManager : Node
 				button.EmitSignal(BaseButton.SignalName.Pressed);
 				if (button is OptionButton optionButton) optionButton.ShowPopup();
 			}
+		}
+	}
+	
+	private void OnBackTriggered() {
+		foreach (var backContext in GetTree().Root.FindChildrenWhere(x => x is IBackContext).Select(x => x as IBackContext).Where(x => x.BackContextPriority > 0).OrderBy(x => x.BackContextPriority)) {
+			if (backContext.UseBackInput()) return;
 		}
 	}
 

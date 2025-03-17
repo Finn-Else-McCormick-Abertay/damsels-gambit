@@ -1,14 +1,14 @@
 [gd_scene load_steps=8 format=3 uid="uid://cl108jysyilp"]
 
-[ext_resource type="Script" uid="uid://d3ma37cvjj3an" path="res://scenes/ui/menu/settings_menu/settings_menu.gd" id="1_kwkr7"]
 [ext_resource type="Texture2D" uid="uid://2cbl24t405i5" path="res://assets/ui/panels/Paper texture.png" id="1_tfbc3"]
+[ext_resource type="Script" uid="uid://5mxdn2su8s3f" path="res://scenes/ui/menu/settings_menu/SettingsMenu.cs" id="2_0snvw"]
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/theme/default_theme.tres" id="2_k810m"]
 [ext_resource type="Theme" uid="uid://td8u5lubicg8" path="res://assets/ui/theme/menu_theme.tres" id="5_ww2uk"]
 [ext_resource type="Script" uid="uid://3vkxtd4o4toi" path="res://scenes/ui/menu/settings_menu/window_drop_down_options.gd" id="6_fkvev"]
 [ext_resource type="Script" uid="uid://hpe6rand18ey" path="res://scenes/ui/menu/settings_menu/font_selection.gd" id="7_0snvw"]
 [ext_resource type="Script" uid="uid://bi1t25iy0eqir" path="res://scenes/ui/menu/settings_menu/resolution_drop_down_options.gd" id="7_d6ec4"]
 
-[node name="SettingsMenu" type="Control" node_paths=PackedStringArray("exit_button")]
+[node name="SettingsMenu" type="Control" node_paths=PackedStringArray("TabContainer", "ExitButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,8 +16,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_k810m")
-script = ExtResource("1_kwkr7")
-exit_button = NodePath("ExitButton")
+script = ExtResource("2_0snvw")
+TabContainer = NodePath("TabContainer")
+ExitButton = NodePath("ExitButton")
 
 [node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
