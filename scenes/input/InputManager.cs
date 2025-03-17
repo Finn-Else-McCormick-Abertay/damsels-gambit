@@ -93,7 +93,7 @@ public sealed partial class InputManager : Node
 	}
 
 	public void ClearFocus() {
-		_focusedViewport.GuiGetFocusOwner().ReleaseFocus();
+		_focusedViewport?.GuiGetFocusOwner()?.ReleaseFocus();
 	}
 
 	public enum FocusDirection { Up, Down, Left, Right, None }

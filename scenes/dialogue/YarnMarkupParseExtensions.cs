@@ -13,7 +13,7 @@ public static class YarnMarkupParseExtensions
         Dictionary<int, List<string>> insertions = [];
         Dictionary<int, int> removals = [];
         
-        foreach (var (Position, Length, Name, Properties, UseTag, UseText) in result.Attributes.Select(InterpretAttribute)) {
+        foreach (var (Position, Length, Name, Properties, UseTag, UseText, ReplacementText) in result.Attributes.Select(InterpretAttribute)) {
             if (UseTag) {
                 var sb = new StringBuilder();
                 sb.Append('[').Append(Name);
@@ -24,6 +24,8 @@ public static class YarnMarkupParseExtensions
                 insertions.TryAdd(Position, []); insertions[Position].Add(sb.ToString());
                 insertions.TryAdd(Position + Length, []); insertions[Position + Length].Add($"[/{Name}]");
             }
+            else if (ReplacementText is not null) { insertions.TryAdd(Position, []); insertions[Position].Add(ReplacementText); }
+
             if (!UseText) removals.Add(Position, Length);
         }
 
@@ -48,8 +50,9 @@ public static class YarnMarkupParseExtensions
         return text;
     }
 
-    private static (int Position, int Length, string Name, Dictionary<string, string> Properties, bool UseTag, bool UseText) InterpretAttribute(Yarn.Markup.MarkupAttribute attribute) {
-        (int Position, int Length, string Name, Dictionary<string, string> Properties, bool UseTag, bool UseText) tuple = (attribute.Position, attribute.Length, attribute.Name, attribute.Properties.Select(x => (x.Key, x.Value.ToString())).ToDictionary(), true, true);
+    private static (int Position, int Length, string Name, Dictionary<string, string> Properties, bool UseTag, bool UseText, string ReplacementText) InterpretAttribute(Yarn.Markup.MarkupAttribute attribute) {
+        (int Position, int Length, string Name, Dictionary<string, string> Properties, bool UseTag, bool UseText, string ReplacementText) tuple
+            = (attribute.Position, attribute.Length, attribute.Name, attribute.Properties.Select(x => (x.Key, x.Value.ToString())).ToDictionary(), true, true, null);
         if (tuple.Properties.TryGetValue("color", out string val)) {
             tuple.Properties["color"] = val switch {
                 _ when val.MatchN("action") => "6d85ff",
@@ -76,6 +79,10 @@ public static class YarnMarkupParseExtensions
                 var thisFactState = DialogueManager.Knowledge.Knows(id) == state;
                 tuple.UseText = all ? tuple.UseText && thisFactState : tuple.UseText || thisFactState;
             }
+        }
+        if (tuple.Name.Match("br")) {
+            tuple.UseTag = false;
+            tuple.ReplacementText = "\n";
         }
         return tuple;
     }

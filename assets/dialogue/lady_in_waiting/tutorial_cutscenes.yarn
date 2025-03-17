@@ -6,10 +6,9 @@ title: lady_in_waiting__intro
 <<fade in queen 1>>
 <<wait 1>>
 Queen Helena: My daughter, the time is long overdue for you to be married.
-Princess Penelope: But why? I'm still so young! I--
 <<emote queen turn_right>>
-Queen Helena: Enough! I have arranged a date with a suitor tonight.
-Queen Helena: Prince Ráðúlfr is making his way from his kingdom of Frostholm as we speak. Make yourself ready, and try not to disappoint him.
+Queen Helena: I have arranged you a date with a suitor tonight. Prince Ráðúlfr is making his way from his kingdom of Frostholm as we speak.
+Queen Helena: Make yourself ready, and try not to disappoint him.
 <<hide_box>>
 <<move queen 300 0 1>>
 <<fade out queen 1>>
@@ -25,19 +24,10 @@ Princess Penelope: How? He's already on his way, my mother's made her mind up.
 <<emote lady_in_waiting explaining_point>>
 Lady in Waiting: [i]You[/i] might not have a choice, but [i]he[/i] does. If you can make sure he doesn't take a liking to you, the wedding won't go ahead.
 <<emote lady_in_waiting sad_look_up>>
-<<after 1.5>>
-<<emote lady_in_waiting sad_look_down>>
-Lady in Waiting: You'll need to be careful though. If he likes you too much then you'll have to leave for Frostholm, never to return, but cause too much offence and our kingdoms may end up at war.
-<<flush_command_queue>>
-<<emote lady_in_waiting sad_look_forward_mouth_closed>>
-Princess Penelope: At [i]war?![/i]
-<<emote lady_in_waiting sad_look_forward>>
-Lady in Waiting: These princes can be fickle, I don't know what to tell you.
-<<emote lady_in_waiting sad_look_down>>
-<<hide_box>>
-<<wait 1>>
+<<after 1.8>>
 <<emote lady_in_waiting neutral_mouth_open>>
 Lady in Waiting: I'll tell you what, we still have time before he arrives. Why don't you practice with me first, just to get the hang of things?
+<<flush_command_queue>>
 <<hide_box>>
 <<emote lady_in_waiting neutral>>
 <<move lady_in_waiting -300 0 1>>
@@ -48,11 +38,10 @@ Lady in Waiting: I'll tell you what, we still have time before he arrives. Why d
 <<move lady_in_waiting 300 0 1>>
 <<fade in lady_in_waiting 1>>
 <<wait 1>>
-Lady in Waiting: During the date, you'll have to choose your cards carefully.
-<<emote lady_in_waiting explaining_gesture_right>>
-Lady in Waiting: You'll need to combine an [color=action]Action[/color] card with a [color=topic]Topic[/color] card; together these will produce a conversation starter. Depending on your choices in the conversation, his opinion of you will change.
+<<emote lady_in_waiting explaining_point>>
+Lady in Waiting: You can combine an [color=action]Action[/color] card with a [color=topic]Topic[/color] card to start a conversation.
 <<emote lady_in_waiting happy>>
-Lady in Waiting: Come on then, let's see what you've got.
+Lady in Waiting: Come on, let's see what you've got.
 <<after 1.5>>
 <<emote lady_in_waiting neutral>>
 ===
@@ -70,7 +59,13 @@ title: lady_in_waiting__after_score
     <<emote lady_in_waiting explaining_gesture_left>>
     Lady in Waiting: Notice the effect that had on your [color=topic]Affection Score[/color].
     <<emote lady_in_waiting explaining_point>>
-    Lady in Waiting: You'll want to stay neutral. If, at the end of the date, you are in the region marked in [color=love]pink[/color], you will be wed. If in the region marked in [color=hate]blue[/color], you may cause a war.
+    Lady in Waiting: You'll want to stay neutral. If, at the end of the date, you are in the region marked in [color=love]pink[/color], you will be wed. Cause enough offence to end in the [color=hate]blue[/color] and our kingdoms may end up at war.
+    <<emote lady_in_waiting sad_look_forward_mouth_closed>>
+    Princess Penelope: At [i]war?![/i]
+    <<emote lady_in_waiting sad_look_forward>>
+    Lady in Waiting: These princes can be fickle, I don't know what to tell you.
+    <<emote lady_in_waiting sad_look_down>>
+    <<after 1.5>>
     <<emote lady_in_waiting neutral>>
 <<endif>>
 ===
@@ -83,7 +78,7 @@ title: lady_in_waiting__explain_profile
     <<move lady_in_waiting -200 0 0.28>>
     Lady in Waiting: Notice the suitor profile over on the right? That'll update to show all the information you've gathered.
     <<emote lady_in_waiting explaining_point>>
-    Lady in Waiting: Question cards won't affect his feelings as much, but they help you gather information about him. It's important to learn what you can so you can use it to push his buttons - otherwise you're just leaving things up to chance!
+    Lady in Waiting: Question cards won't affect his feelings as much, but they help you gather information about him, so you can learn to push his buttons.
     <<close_profile>>
     <<after 0.08>>
     <<move lady_in_waiting 200 0 0.28>>
