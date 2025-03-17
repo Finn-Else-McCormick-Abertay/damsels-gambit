@@ -1,6 +1,8 @@
 title: lady_in_waiting__intro
 ---
 <<scene throne_room>>
+<<hide lady_in_waiting>>
+<<hide queen>>
 <<fade in queen 1>>
 <<wait 1>>
 Queen Helena: My daughter, the time is long overdue for you to be married.

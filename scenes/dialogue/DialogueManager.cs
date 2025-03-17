@@ -43,24 +43,26 @@ public partial class DialogueManager : Node
     }
 
     public void Reset() {
+        Runner?.Stop();
+        AnimationDialogueCommands.FlushCommandQueue();
         InitRunner();
         ReloadEnvironments();
         Knowledge.Reset();
     }
 
     private void InitRunner(bool force = true) {
-        if (Runner is not null) if (force) { RemoveChild(Runner); Runner.QueueFree(); Runner = null; } else return;
-        if (ProfileRunner is not null) if (force) { RemoveChild(ProfileRunner); ProfileRunner.QueueFree(); ProfileRunner = null; } else return;
+        if (Runner is not null) { if (force) { RemoveChild(Runner); Runner.QueueFree(); Runner = null; } else return; }
+        if (ProfileRunner is not null) { if (force) { RemoveChild(ProfileRunner); ProfileRunner.QueueFree(); ProfileRunner = null; } else return; }
 
         _yarnProject ??= ResourceLoader.Load<YarnProject>("res://assets/dialogue/DamselsGambit.yarnproject");
 
-        if (_textLineProvider is null) { _textLineProvider = new TextLineProvider(); AddChild(_textLineProvider); _textLineProvider.Owner = this; }
+        if (_textLineProvider is null) { _textLineProvider = new TextLineProvider(); this.AddOwnedChild(_textLineProvider); }
 
         if (_variableStorage.IsValid() && force) { _variableStorage.QueueFree(); _variableStorage = null; }
-        if (_variableStorage is null) { _variableStorage = new InMemoryVariableStorage(); AddChild(_variableStorage); _variableStorage.Owner = this; }
+        if (_variableStorage is null) { _variableStorage = new InMemoryVariableStorage(); this.AddOwnedChild(_variableStorage); }
 
-        Runner = new DialogueRunner { Name = "DialogueRunner", yarnProject = _yarnProject, lineProvider = _textLineProvider, variableStorage = _variableStorage, startAutomatically = false }; AddChild(Runner); Runner.Owner = this;
-        ProfileRunner = new DialogueRunner { Name = "ProfileRunner", yarnProject = _yarnProject, lineProvider = _textLineProvider, variableStorage = _variableStorage, startAutomatically = false }; AddChild(ProfileRunner); ProfileRunner.Owner = this;
+        Runner = new DialogueRunner { Name = "DialogueRunner", yarnProject = _yarnProject, lineProvider = _textLineProvider, variableStorage = _variableStorage, startAutomatically = false }; this.AddOwnedChild(Runner);
+        ProfileRunner = new DialogueRunner { Name = "ProfileRunner", yarnProject = _yarnProject, lineProvider = _textLineProvider, variableStorage = _variableStorage, startAutomatically = false }; this.AddOwnedChild(ProfileRunner);
 
         Runner.SetDialogueViews(_dialogueViews.Where(x => x is not ProfileDialogueView));
         ProfileRunner.SetDialogueViews(_dialogueViews.Where(x => x is ProfileDialogueView));
