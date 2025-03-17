@@ -12,7 +12,7 @@ func _ready():
 	start_button.button_down.connect(_on_start_pressed)
 	settings_button.button_down.connect(_on_settings_pressed)
 	exit_button.button_down.connect(_on_exit_pressed)
-	start_button.grab_focus()
+	start_button.grab_focus.call_deferred()
 
 func _on_start_pressed()-> void:
 	GameManager.BeginGame()

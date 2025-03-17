@@ -10,6 +10,13 @@ namespace DamselsGambit;
 // This is an autoload singleton. Because of how Godot works, you can technically instantiate it yourself. Don't.
 public sealed partial class InputManager : Node
 {
+    public static InputManager Instance { get; set; }
+
+	public override void _EnterTree() {
+        if (Instance is not null) throw AutoloadException.For(this);
+        Instance = this; GetTree().Root.Connect(Node.SignalName.Ready, new Callable(this, MethodName.OnTreeReady), (uint)ConnectFlags.OneShot);
+    }
+
 	public static class Contexts
 	{
 		private static GUIDEMappingContext LoadContext(string contextName) => GUIDEMappingContext.From(ResourceLoader.Load($"res://assets/input/context_{Case.ToSnake(contextName)}.tres"));
@@ -32,15 +39,7 @@ public sealed partial class InputManager : Node
 	
 	public static bool ShouldOverrideGuiInput { get; set; } = true;
 
-	public static bool ShouldDisplayFocusDebugInfo { get; set; } = false;
-
-    public static InputManager Instance { get; set; }
-
-	public override void _EnterTree() {
-        if (Instance is not null) throw AutoloadException.For(this);
-        Instance = this;
-		void OnTreeReadyCallback() { OnTreeReady(); GetTree().Root.Ready -= OnTreeReadyCallback; } GetTree().Root.Ready += OnTreeReadyCallback;
-    }
+	public static bool ShouldDisplayFocusDebugInfo { get; set; } = OS.HasFeature("debug");
 
 	private void OnTreeReady() {
 		_rootViewport = GetViewport();
@@ -50,7 +49,6 @@ public sealed partial class InputManager : Node
         GUIDE.Connect(GUIDE.SignalName.InputMappingsChanged, new Callable(this, MethodName.OnInputMappingsChanged));
 
 		Actions.UIDirection.Connect(GUIDEAction.SignalName.Triggered, new Callable(this, MethodName.OnUIDirectionTriggered), 0);
-		//Actions.Accept.Connect(GUIDEAction.SignalName.Started, new Callable(this, MethodName.OnAcceptTriggered), 0);
 		Actions.Accept.Connect(GUIDEAction.SignalName.Triggered, new Callable(this, MethodName.OnAcceptTriggered), 0);
 		Actions.Accept.Connect(GUIDEAction.SignalName.Completed, new Callable(this, MethodName.OnAcceptCompleted), 0);
 		
@@ -118,6 +116,8 @@ public sealed partial class InputManager : Node
 		direction switch { FocusDirection.Left or FocusDirection.Right when control is LeftRightType => true, FocusDirection.Up or FocusDirection.Down when control is UpDownType => true, _ => false };
 
 	public static Control GetNextFocus(FocusDirection direction, Control root) {
+		if (!root.IsValid()) return null;
+
 		var nextPath = direction switch {
 			FocusDirection.Up => root.FocusNeighborTop,
 			FocusDirection.Down => root.FocusNeighborBottom,
@@ -262,15 +262,12 @@ public sealed partial class InputManager : Node
 		if (direction != FocusDirection.None && !UseDirectionalInput(focused, direction)) {
 			Control focusNext = GetNextFocus(direction, focused);
 			Instance._prevFocus = focused;
-			if (ShouldDisplayFocusDebugInfo) Console.Info(focusNext is not null ? $"Shifted focus {Enum.GetName(direction)} to {focusNext}." : $"Could not shift focus {Enum.GetName(direction)}.");
+			if (ShouldDisplayFocusDebugInfo) Console.Info(focusNext is not null ? $"Shifted focus {Enum.GetName(direction)} to {focusNext}." : $"Could not shift focus {Enum.GetName(direction)} from {focused}.");
 			focusNext?.GrabFocus();
 		}
 	}
 
 	private readonly Dictionary<GUIDEMappingContext, bool> _contextEnabled = [];
-	
-    private bool _keyboardAndMouseContextEnabled = false;
-    private bool _controllerContextEnabled = false;
 
     private void OnInputMappingsChanged() {
 		foreach (var context in new GUIDEMappingContext[]{ Contexts.Controller, Contexts.Keyboard, Contexts.Mouse })
@@ -285,13 +282,13 @@ public sealed partial class InputManager : Node
 
         if (!_contextEnabled.GetValueOrDefault(Contexts.Keyboard) && @event is InputEventKey) {
             GUIDE.EnableMappingContext(Contexts.Keyboard);
-            GUIDE.DisableMappingContext(Contexts.Controller);
+            if (_contextEnabled.GetValueOrDefault(Contexts.Controller)) GUIDE.DisableMappingContext(Contexts.Controller);
 			GUIDE.InjectInput(@event);
         }
 
         if (!_contextEnabled.GetValueOrDefault(Contexts.Controller) && (@event is InputEventJoypadButton || @event is InputEventJoypadMotion)) {
             GUIDE.EnableMappingContext(Contexts.Controller);
-            GUIDE.DisableMappingContext(Contexts.Keyboard);
+            if (_contextEnabled.GetValueOrDefault(Contexts.Keyboard)) GUIDE.DisableMappingContext(Contexts.Keyboard);
 			GUIDE.InjectInput(@event);
         }
 
