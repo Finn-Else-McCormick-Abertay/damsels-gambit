@@ -33,6 +33,7 @@ var _reset_node:GUIDEReset
 
 
 func _ready():
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_reset_node = GUIDEReset.new()
 	add_child(_reset_node)
 	# attach to the current viewport to get input events
@@ -224,6 +225,8 @@ func _update_caches():
 			# - it allows us to prioritize input, if two actions check for  
 			#   the same input. This way the first action can consume the
 			#   input and not have it affect further actions.
+			# - we make sure nobody shares triggers as they are stateful and
+			#   should not be shared.
 			
 			var effective_mapping  = GUIDEActionMapping.new()
 			effective_mapping.action = action
@@ -252,10 +255,16 @@ func _update_caches():
 						consolidated_inputs.add(bound_input)
 					
 				new_input_mapping.input = bound_input
-				# triggers and modifiers cannot be re-bound so we can just use the one
-				# from the original configuration
+				# modifiers cannot be re-bound so we can just use the one
+				# from the original configuration. this is also needed for shared
+				# modifiers to work.
 				new_input_mapping.modifiers = action_mapping.input_mappings[index].modifiers
-				new_input_mapping.triggers = action_mapping.input_mappings[index].triggers
+				# triggers also cannot be re-bound but we still make a copy 
+				# to ensure that no shared triggers exist.
+				new_input_mapping.triggers = []
+				
+				for trigger in action_mapping.input_mappings[index].triggers:
+					new_input_mapping.triggers.append(trigger.duplicate())
 				
 				new_input_mapping._initialize()
 				

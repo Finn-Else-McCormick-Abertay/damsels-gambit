@@ -1,25 +1,25 @@
 [gd_resource type="Resource" script_class="GUIDEMappingContext" load_steps=63 format=3 uid="uid://j6jajptjp6hb"]
 
-[ext_resource type="Script" uid="uid://cgxlxe55lnw2o" path="res://addons/guide/guide_action_mapping.gd" id="1_fo03c"]
-[ext_resource type="Script" uid="uid://bkca7c2apf8gq" path="res://addons/guide/guide_mapping_context.gd" id="2_dcpd2"]
+[ext_resource type="Script" uid="uid://cq3bkn31plngn" path="res://addons/guide/guide_action_mapping.gd" id="1_fo03c"]
+[ext_resource type="Script" uid="uid://du2fnmaoh0xqd" path="res://addons/guide/guide_mapping_context.gd" id="2_dcpd2"]
 [ext_resource type="Resource" uid="uid://ceaqyfvwc4ryo" path="res://assets/input/actions/accept.tres" id="2_vqvye"]
-[ext_resource type="Script" uid="uid://pphvws8sh673" path="res://addons/guide/guide_input_mapping.gd" id="3_axd73"]
-[ext_resource type="Script" uid="uid://clbwdgy6mddf0" path="res://addons/guide/inputs/guide_input_joy_button.gd" id="4_hb457"]
-[ext_resource type="Script" uid="uid://bv5vr3ve88x6b" path="res://addons/guide/modifiers/guide_modifier.gd" id="5_h5nfx"]
-[ext_resource type="Script" uid="uid://m4nydctongab" path="res://addons/guide/triggers/guide_trigger.gd" id="6_tdnw0"]
-[ext_resource type="Script" uid="uid://bgib1xaloavqt" path="res://addons/guide/triggers/guide_trigger_pressed.gd" id="7_1k1qq"]
+[ext_resource type="Script" uid="uid://cijhy2fbk7h0o" path="res://addons/guide/guide_input_mapping.gd" id="3_axd73"]
+[ext_resource type="Script" uid="uid://dybpm0whqh1uf" path="res://addons/guide/inputs/guide_input_joy_button.gd" id="4_hb457"]
+[ext_resource type="Script" uid="uid://cd4bj1rvvy0id" path="res://addons/guide/modifiers/guide_modifier.gd" id="5_h5nfx"]
+[ext_resource type="Script" uid="uid://ne2j5nspdg8o" path="res://addons/guide/triggers/guide_trigger.gd" id="6_tdnw0"]
+[ext_resource type="Script" uid="uid://buq08jyj4uw38" path="res://addons/guide/triggers/guide_trigger_pressed.gd" id="7_1k1qq"]
 [ext_resource type="Resource" uid="uid://dmf6d56ddqask" path="res://assets/input/actions/ui_direction.tres" id="8_38bhk"]
 [ext_resource type="Resource" uid="uid://dnuwosjn76fcy" path="res://assets/input/actions/back.tres" id="8_t6rat"]
 [ext_resource type="Resource" uid="uid://6gsfoidfwvlh" path="res://assets/input/actions/pause.tres" id="9_bcebj"]
-[ext_resource type="Script" uid="uid://rnt2t0il7wcs" path="res://addons/guide/inputs/guide_input_joy_axis_2d.gd" id="9_wsixt"]
-[ext_resource type="Script" uid="uid://83r808tmjrfr" path="res://addons/guide/modifiers/guide_modifier_negate.gd" id="11_0eauu"]
-[ext_resource type="Script" uid="uid://2qxdxpok78cx" path="res://addons/guide/modifiers/guide_modifier_input_swizzle.gd" id="13_nmfsy"]
-[ext_resource type="Script" uid="uid://bb3hiwa5if17y" path="res://addons/guide/triggers/guide_trigger_pulse.gd" id="13_wdcs1"]
+[ext_resource type="Script" uid="uid://bvh1rk7dufp6b" path="res://addons/guide/inputs/guide_input_joy_axis_2d.gd" id="9_wsixt"]
+[ext_resource type="Script" uid="uid://bi1iykew13xmg" path="res://addons/guide/modifiers/guide_modifier_negate.gd" id="11_0eauu"]
+[ext_resource type="Script" uid="uid://cgye6y05f26ua" path="res://addons/guide/modifiers/guide_modifier_input_swizzle.gd" id="13_nmfsy"]
+[ext_resource type="Script" uid="uid://6ock8o3cec55" path="res://addons/guide/triggers/guide_trigger_pulse.gd" id="13_wdcs1"]
 [ext_resource type="Resource" uid="uid://bqwgnr5n8inik" path="res://assets/input/actions/drag.tres" id="14_f8dkl"]
 [ext_resource type="Resource" uid="uid://5nfi2cyljqsi" path="res://assets/input/actions/click_hold.tres" id="14_tsyh4"]
-[ext_resource type="Script" uid="uid://4iy50lsgk53s" path="res://addons/guide/modifiers/guide_modifier_virtual_cursor.gd" id="15_mnnaw"]
-[ext_resource type="Script" uid="uid://b0db4ciw0ynwe" path="res://addons/guide/triggers/guide_trigger_down.gd" id="15_thwl8"]
-[ext_resource type="Script" uid="uid://c5ycixkwm2pkv" path="res://addons/guide/triggers/guide_trigger_chorded_action.gd" id="16_7qn63"]
+[ext_resource type="Script" uid="uid://cxbrgu354ta7l" path="res://addons/guide/modifiers/guide_modifier_virtual_cursor.gd" id="15_mnnaw"]
+[ext_resource type="Script" uid="uid://bhsbmhr8oqqh3" path="res://addons/guide/triggers/guide_trigger_down.gd" id="15_thwl8"]
+[ext_resource type="Script" uid="uid://dtju0nf8ctqn0" path="res://addons/guide/triggers/guide_trigger_chorded_action.gd" id="16_7qn63"]
 
 [sub_resource type="Resource" id="Resource_xsm2d"]
 script = ExtResource("4_hb457")
@@ -32,6 +32,10 @@ actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_uoi8v"]
 script = ExtResource("3_axd73")
+override_action_settings = false
+is_remappable = false
+display_name = ""
+display_category = ""
 input = SubResource("Resource_xsm2d")
 modifiers = Array[ExtResource("5_h5nfx")]([])
 triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_llwjy")])
@@ -52,6 +56,10 @@ actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_qfqnp"]
 script = ExtResource("3_axd73")
+override_action_settings = false
+is_remappable = false
+display_name = ""
+display_category = ""
 input = SubResource("Resource_sf8ic")
 modifiers = Array[ExtResource("5_h5nfx")]([])
 triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_xsjur")])
@@ -72,6 +80,10 @@ actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_fsb03"]
 script = ExtResource("3_axd73")
+override_action_settings = false
+is_remappable = false
+display_name = ""
+display_category = ""
 input = SubResource("Resource_gjjf0")
 modifiers = Array[ExtResource("5_h5nfx")]([])
 triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_akddy")])
@@ -103,6 +115,10 @@ actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_8sron"]
 script = ExtResource("3_axd73")
+override_action_settings = false
+is_remappable = false
+display_name = ""
+display_category = ""
 input = SubResource("Resource_mrru1")
 modifiers = Array[ExtResource("5_h5nfx")]([SubResource("Resource_vquex")])
 triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_u0rm6")])
@@ -119,7 +135,7 @@ x = true
 y = true
 z = true
 
-[sub_resource type="Resource" id="Resource_rtv8b"]
+[sub_resource type="Resource" id="Resource_ya4us"]
 script = ExtResource("13_wdcs1")
 trigger_on_start = true
 initial_delay = 0.3
@@ -129,16 +145,20 @@ actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_nd2jl"]
 script = ExtResource("3_axd73")
+override_action_settings = false
+is_remappable = false
+display_name = ""
+display_category = ""
 input = SubResource("Resource_5p7ef")
 modifiers = Array[ExtResource("5_h5nfx")]([SubResource("Resource_1kpd7")])
-triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_rtv8b")])
+triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_ya4us")])
 
 [sub_resource type="Resource" id="Resource_o0srd"]
 script = ExtResource("4_hb457")
 button = 14
 joy_index = -1
 
-[sub_resource type="Resource" id="Resource_n3cex"]
+[sub_resource type="Resource" id="Resource_1s6b5"]
 script = ExtResource("13_wdcs1")
 trigger_on_start = true
 initial_delay = 0.3
@@ -148,9 +168,13 @@ actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_6v6am"]
 script = ExtResource("3_axd73")
+override_action_settings = false
+is_remappable = false
+display_name = ""
+display_category = ""
 input = SubResource("Resource_o0srd")
 modifiers = Array[ExtResource("5_h5nfx")]([])
-triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_n3cex")])
+triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_1s6b5")])
 
 [sub_resource type="Resource" id="Resource_tet06"]
 script = ExtResource("4_hb457")
@@ -161,7 +185,7 @@ joy_index = -1
 script = ExtResource("13_nmfsy")
 order = 0
 
-[sub_resource type="Resource" id="Resource_fb55n"]
+[sub_resource type="Resource" id="Resource_1c8ha"]
 script = ExtResource("13_wdcs1")
 trigger_on_start = true
 initial_delay = 0.3
@@ -171,9 +195,13 @@ actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_lwej3"]
 script = ExtResource("3_axd73")
+override_action_settings = false
+is_remappable = false
+display_name = ""
+display_category = ""
 input = SubResource("Resource_tet06")
 modifiers = Array[ExtResource("5_h5nfx")]([SubResource("Resource_ju6bu")])
-triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_fb55n")])
+triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_1c8ha")])
 
 [sub_resource type="Resource" id="Resource_70axe"]
 script = ExtResource("4_hb457")
@@ -190,7 +218,7 @@ x = true
 y = true
 z = true
 
-[sub_resource type="Resource" id="Resource_3sdfu"]
+[sub_resource type="Resource" id="Resource_3fbhh"]
 script = ExtResource("13_wdcs1")
 trigger_on_start = true
 initial_delay = 0.3
@@ -200,9 +228,13 @@ actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_ajytf"]
 script = ExtResource("3_axd73")
+override_action_settings = false
+is_remappable = false
+display_name = ""
+display_category = ""
 input = SubResource("Resource_70axe")
 modifiers = Array[ExtResource("5_h5nfx")]([SubResource("Resource_v1jyy"), SubResource("Resource_81wkd")])
-triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_3sdfu")])
+triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_3fbhh")])
 
 [sub_resource type="Resource" id="Resource_vjgr6"]
 script = ExtResource("1_fo03c")
@@ -220,6 +252,10 @@ actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_d14a1"]
 script = ExtResource("3_axd73")
+override_action_settings = false
+is_remappable = false
+display_name = ""
+display_category = ""
 input = SubResource("Resource_npu2u")
 modifiers = Array[ExtResource("5_h5nfx")]([])
 triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_0jg1l")])
@@ -238,8 +274,10 @@ joy_index = -1
 [sub_resource type="Resource" id="Resource_2nrth"]
 script = ExtResource("15_mnnaw")
 initial_position = Vector2(0.5, 0.5)
-scale = Vector3(1, 1, 1)
+speed = Vector3(1, 1, 1)
+screen_scale = 1
 apply_delta_time = true
+scale = Vector3(1, 1, 1)
 
 [sub_resource type="Resource" id="Resource_o8jbk"]
 script = ExtResource("16_7qn63")
@@ -248,6 +286,10 @@ actuation_threshold = 0.5
 
 [sub_resource type="Resource" id="Resource_eyfdw"]
 script = ExtResource("3_axd73")
+override_action_settings = false
+is_remappable = false
+display_name = ""
+display_category = ""
 input = SubResource("Resource_uy6di")
 modifiers = Array[ExtResource("5_h5nfx")]([SubResource("Resource_2nrth")])
 triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_o8jbk")])
