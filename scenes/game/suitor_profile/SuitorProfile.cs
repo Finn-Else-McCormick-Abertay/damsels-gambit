@@ -27,7 +27,7 @@ public partial class SuitorProfile : Control
     [Export] private bool DebugHighlighted { get => Highlighted; set => Highlighted = value; }
     
     private Tween _moveTween;
-    private bool Open {
+    public bool Open {
         get; set {
             if (Open != value || (_moveTween?.IsRunning() ?? false)) {
                 var offset = OpenOffset; if (Highlighted) { offset -= HighlightOffset; } offset *= value ? 1f : -1f;
@@ -36,7 +36,7 @@ public partial class SuitorProfile : Control
             field = value;
         }
     } = false;
-    private bool Highlighted {
+    public bool Highlighted {
         get; set {
             if ((Highlighted != value || (_moveTween?.IsRunning() ?? false)) && !Open) this.OnReady(() => {
                 _moveTween?.Kill(); _moveTween = Root.CreateTween(); _moveTween.TweenProperty(Root, "position", value ? HighlightOffset : new Vector2(), HighlightDuration);

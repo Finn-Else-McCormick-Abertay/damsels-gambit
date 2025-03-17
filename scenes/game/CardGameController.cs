@@ -84,7 +84,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		DialogueManager.TryRun(skipIntro ? $"{_suitorId}__skip_setup" : $"{_suitorId}__intro").AndThen(() => {
 			Started = true;
 			Round = 1; Show(); Deal();
-			EmitSignal(SignalName.RoundStart);
+			EmitSignal(SignalName.RoundStart, Round);
 		});
 	}
 
