@@ -26,6 +26,7 @@ buses/default_bus_layout="res://assets/audio/default_bus_layout.tres"
 
 GameManager="*res://scenes/GameManager.cs"
 DialogueManager="*res://scenes/dialogue/DialogueManager.cs"
+EnvironmentManager="*res://scenes/dialogue/EnvironmentManager.cs"
 GUIDE="*res://addons/guide/guide.gd"
 Console="*res://scenes/console/Console.cs"
 InputManager="*res://scenes/input/InputManager.cs"

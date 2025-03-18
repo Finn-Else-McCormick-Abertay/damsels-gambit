@@ -6,6 +6,8 @@ title: lady_in_waiting__intro
 <<fade in queen 1>>
 <<wait 1>>
 Queen Helena: My daughter, the time is long overdue for you to be married.
+<<push lady_in_waiting__pop_test>>
+<<pop>>
 <<emote queen turn_right>>
 Queen Helena: I have arranged you a date with a suitor tonight. Prince Ráðúlfr is making his way from his kingdom of Frostholm as we speak.
 Queen Helena: Make yourself ready, and try not to disappoint him.
@@ -44,6 +46,11 @@ Lady in Waiting: You can combine an [color=action]Action[/color] card with a [co
 Lady in Waiting: Come on, let's see what you've got.
 <<after 1.5>>
 <<emote lady_in_waiting neutral>>
+===
+
+title: lady_in_waiting__pop_test
+---
+Lady in Waiting: Jumped to popped node.
 ===
 
 title: lady_in_waiting__skip_setup

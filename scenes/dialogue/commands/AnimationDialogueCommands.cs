@@ -4,17 +4,16 @@ using Godot;
 using System.Linq;
 using System.Threading.Tasks;
 using System;
-using Eltons.ReflectionKit;
 using DamselsGambit.Util;
+using DamselsGambit.Environment;
 
 namespace DamselsGambit.Dialogue;
 
 static class AnimationDialogueCommands
 {
-    private static readonly Queue<Timer> Timers = new();
+    private static readonly Queue<Timer> Timers = [];
 
     private static void RunCommandDeferred(Action action) {
-        //var actionSignature = action.Method.GetSignature(false);
         var timer = Timers.LastOrDefault();
         if (timer is not null) {
             var awaiter = timer.ToSignal(timer, Timer.SignalName.Timeout);
@@ -29,18 +28,18 @@ static class AnimationDialogueCommands
     // Non-blocking wait
     [YarnCommand("after")]
     public static void After(float time) {
-        if (DialogueManager.Instance is null) return;
+        if (EnvironmentManager.Instance is null) return;
         var timer = new Timer() { OneShot = true, WaitTime = time };
-        DialogueManager.Instance.AddChild(timer);
+        EnvironmentManager.Instance.AddChild(timer);
         Timers.Enqueue(timer);
         timer.Timeout += OnDeferralTimerTimeout;
         if (Timers.Count <= 1) timer.Start();
     }
     private static void OnDeferralTimerTimeout() {
-        if (DialogueManager.Instance is null) return;
+        if (EnvironmentManager.Instance is null) return;
         if (Timers.TryDequeue(out var oldTimer)) {
             oldTimer.Timeout -= OnDeferralTimerTimeout;
-            DialogueManager.Instance.RemoveChild(oldTimer);
+            EnvironmentManager.Instance.RemoveChild(oldTimer);
             oldTimer.QueueFree();
         }
         if (Timers.TryPeek(out var nextTimer)) nextTimer.Start();
@@ -58,13 +57,13 @@ static class AnimationDialogueCommands
 
     [YarnCommand("scene")]
     public static void Scene(string sceneName) => RunCommandDeferred(()
-        => DialogueManager.GetEnvironmentNames()?.ForEach(name => DialogueManager.GetEnvironmentLayers(name)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, name == sceneName))));
+        => EnvironmentManager.GetEnvironmentNames()?.ForEach(name => EnvironmentManager.GetEnvironmentLayers(name)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, name == sceneName))));
 
     [YarnCommand("show")]
-    public static void Show(string itemName) => RunCommandDeferred(() => DialogueManager.GetAllItems(itemName)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, true)));
+    public static void Show(string itemName) => RunCommandDeferred(() => EnvironmentManager.GetAllItems(itemName)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, true)));
 
     [YarnCommand("hide")]
-    public static void Hide(string itemName) => RunCommandDeferred(() => DialogueManager.GetAllItems(itemName)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, false)));
+    public static void Hide(string itemName) => RunCommandDeferred(() => EnvironmentManager.GetAllItems(itemName)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, false)));
 
     [YarnCommand("hide_box")]
     public static void HideBox() => RunCommandDeferred(() => DialogueManager.DialogueViews?.ForEach(x => x.HideBox()));
@@ -78,7 +77,7 @@ static class AnimationDialogueCommands
     [YarnCommand("emote")]
     public static void Emote(string characterName, string emotionName, string from = "", string revertFrom = "") {
         RunCommandDeferred(() =>
-            DialogueManager.GetCharacterDisplays(characterName).ForEach(display => {
+            EnvironmentManager.GetCharacterDisplays(characterName).ForEach(display => {
                 if (from == "from" && !string.IsNullOrWhiteSpace(revertFrom) && display.SpriteName != revertFrom) return;
                 display.Show(); display.SpriteName = emotionName;
             })
@@ -87,7 +86,7 @@ static class AnimationDialogueCommands
 
     [YarnCommand("move")]
     public static void Move(string itemName, float x, float y, float time = 0f) => RunCommandDeferred(()
-        => DialogueManager.GetEnvironmentLayers(itemName)?.Select(x => x as Node)?.Concat(DialogueManager.GetCharacterDisplays(itemName))?.Concat(DialogueManager.GetPropDisplays(itemName))?.ForEach(item => {
+        => EnvironmentManager.GetEnvironmentLayers(itemName)?.Select(x => x as Node)?.Concat(EnvironmentManager.GetCharacterDisplays(itemName))?.Concat(EnvironmentManager.GetPropDisplays(itemName))?.ForEach(item => {
             var property = item switch {
                 Node2D => Node2D.PropertyName.Position,
                 CanvasLayer => CanvasLayer.PropertyName.Offset,
@@ -100,11 +99,11 @@ static class AnimationDialogueCommands
     [YarnCommand("fade")]
     public static void Fade(string inOut, string itemName, float time) {
         RunCommandDeferred(() => {
-            var affectedLayers = DialogueManager.GetEnvironmentLayers(itemName);
+            var affectedLayers = EnvironmentManager.GetEnvironmentLayers(itemName);
             var affectedItems =
                 affectedLayers.Aggregate((IEnumerable<CanvasItem>)[], (items, layer) => items.Concat(layer.GetChildren().Cast<CanvasItem>().WhereExists()))
-                .Concat(DialogueManager.GetCharacterDisplays(itemName).Cast<CanvasItem>())
-                .Concat(DialogueManager.GetPropDisplays(itemName).Cast<CanvasItem>())
+                .Concat(EnvironmentManager.GetCharacterDisplays(itemName).Cast<CanvasItem>())
+                .Concat(EnvironmentManager.GetPropDisplays(itemName).Cast<CanvasItem>())
                 .Distinct();
 
             if (time <= 0f) {

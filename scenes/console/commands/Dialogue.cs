@@ -5,6 +5,7 @@ using System.Text;
 using CommandLine;
 using CommandLine.Text;
 using DamselsGambit.Dialogue;
+using DamselsGambit.Environment;
 using DamselsGambit.Util;
 using Godot;
 
@@ -117,20 +118,20 @@ public class Dialogue : Console.Command
                 else Console.Error($"No such node '{options.Node}'.");
             }
             if (!string.IsNullOrEmpty(options.Scene)) {
-                var items = DialogueManager.GetEnvironmentItems(options.Scene);
+                var items = EnvironmentManager.GetEnvironmentItems(options.Scene);
                 if (!items.Any()) Console.Error($"No such environment '{options.Scene}'", false);
                 else Console.Info(string.Join(", ", items.Select(x => $"{x.Name} ({(x.Get(CanvasItem.PropertyName.Visible).AsBool() ? "Visible" : "Hidden")})")), false);
             }
             if (!string.IsNullOrEmpty(options.Character)) {
-                var displays = DialogueManager.GetCharacterDisplays(options.Character);
+                var displays = EnvironmentManager.GetCharacterDisplays(options.Character);
                 if (displays.Count == 0) Console.Error($"No such character '{options.Character}'", false);
                 else Console.Info(string.Join(", ", displays.Select(x => $"{x.Name}: {x.SpriteName}")), false);
             }
 
             
             if (options.Nodes) Console.Info(string.Join(", ", program.Nodes.Keys));
-            if (options.Scenes) Console.Info(string.Join(", ", DialogueManager.GetEnvironmentNames()));
-            if (options.Characters) Console.Info(string.Join(", ", DialogueManager.GetCharacterNames()));
+            if (options.Scenes) Console.Info(string.Join(", ", EnvironmentManager.GetEnvironmentNames()));
+            if (options.Characters) Console.Info(string.Join(", ", EnvironmentManager.GetCharacterNames()));
             if (options.Knowledge) Console.Info(string.Join(", ", DialogueManager.Knowledge.KnownFacts));
         });
 
@@ -157,8 +158,8 @@ public class Dialogue : Console.Command
         if (args.Length > 1) {
             if (args.First() == "get") {
                 if (args.Contains("--node")) return DialogueManager.Runner.yarnProject.Program.Nodes.Keys;
-                if (args.Contains("--scene")) return DialogueManager.GetEnvironmentNames();
-                if (args.Contains("--character")) return DialogueManager.GetCharacterNames();
+                if (args.Contains("--scene")) return EnvironmentManager.GetEnvironmentNames();
+                if (args.Contains("--character")) return EnvironmentManager.GetCharacterNames();
                 return [ "--node", "--nodes", "--scene", "--scenes", "--character", "--characters", "--knowledge" ];
             }
             

@@ -2,8 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://clj08x647tt2i" path="res://assets/environment/throne_room.png" id="1_ltwxy"]
 [ext_resource type="Texture2D" uid="uid://845c6vjf6v1i" path="res://assets/characters/queen/neutral.png" id="2_tx2im"]
-[ext_resource type="Script" uid="uid://c5yvgj7xv643o" path="res://scenes/environment/CharacterDisplay.cs" id="3_foxbq"]
 [ext_resource type="Texture2D" uid="uid://lioraxfo5wox" path="res://assets/characters/lady_in_waiting/neutral.png" id="4_foxbq"]
+[ext_resource type="Script" uid="uid://c5yvgj7xv643o" path="res://scenes/dialogue/environment/CharacterDisplay.cs" id="4_imeel"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_tx2im"]
 blend_mode = 1
@@ -72,7 +72,7 @@ clip_children = 2
 position = Vector2(769, 486)
 scale = Vector2(0.462958, 0.462958)
 texture = ExtResource("2_tx2im")
-script = ExtResource("3_foxbq")
+script = ExtResource("4_imeel")
 CharacterName = &"queen"
 SpriteName = "neutral"
 
@@ -90,7 +90,7 @@ position = Vector2(520, 140)
 scale = Vector2(0.59188, 0.59188)
 texture = ExtResource("4_foxbq")
 offset = Vector2(-113.199, 388.592)
-script = ExtResource("3_foxbq")
+script = ExtResource("4_imeel")
 CharacterName = &"lady_in_waiting"
 SpriteName = "neutral"
 

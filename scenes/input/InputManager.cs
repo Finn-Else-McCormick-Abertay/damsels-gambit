@@ -12,11 +12,6 @@ public sealed partial class InputManager : Node
 {
     public static InputManager Instance { get; set; }
 
-	public override void _EnterTree() {
-        if (Instance is not null) throw AutoloadException.For(this);
-        Instance = this; GetTree().Root.Connect(Node.SignalName.Ready, new Callable(this, MethodName.OnTreeReady), (uint)ConnectFlags.OneShot);
-    }
-
 	public static class Contexts
 	{
 		private static GUIDEMappingContext LoadContext(string contextName) => GUIDEMappingContext.From(ResourceLoader.Load($"res://assets/input/context_{Case.ToSnake(contextName)}.tres"));
@@ -40,6 +35,11 @@ public sealed partial class InputManager : Node
 	public static bool ShouldOverrideGuiInput { get; set; } = true;
 
 	public static bool ShouldDisplayFocusDebugInfo { get; set; } = OS.HasFeature("debug");
+	
+	public override void _EnterTree() {
+        if (Instance is not null) throw AutoloadException.For(this);
+        Instance = this; GetTree().Root.Connect(Node.SignalName.Ready, new Callable(this, MethodName.OnTreeReady), (uint)ConnectFlags.OneShot);
+    }
 
 	private void OnTreeReady() {
 		_rootViewport = GetViewport();
