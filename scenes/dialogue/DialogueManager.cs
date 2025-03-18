@@ -54,8 +54,8 @@ public partial class DialogueManager : Node
         if (_variableStorage.IsValid() && force) { _variableStorage.QueueFree(); _variableStorage = null; }
         if (_variableStorage is null) { _variableStorage = new InMemoryVariableStorage(); this.AddOwnedChild(_variableStorage); }
 
-        Runner = new DialogueRunner { Name = "DialogueRunner", yarnProject = _yarnProject, lineProvider = _textLineProvider, variableStorage = _variableStorage, startAutomatically = false };
-        ProfileRunner = new DialogueRunner { Name = "ProfileRunner", yarnProject = _yarnProject, lineProvider = _textLineProvider, variableStorage = _variableStorage, startAutomatically = false };
+        Runner = new DialogueRunner { Name = "DialogueRunner", yarnProject = _yarnProject, lineProvider = _textLineProvider, variableStorage = _variableStorage, startAutomatically = false, verboseLogging = false };
+        ProfileRunner = new DialogueRunner { Name = "ProfileRunner", yarnProject = _yarnProject, lineProvider = _textLineProvider, variableStorage = _variableStorage, startAutomatically = false, verboseLogging = false };
 
         this.AddOwnedChild(Runner); this.AddOwnedChild(ProfileRunner);
 
@@ -71,11 +71,10 @@ public partial class DialogueManager : Node
     public static bool DialogueExists(string nodeName) => _yarnProject?.Program?.Nodes?.ContainsKey(nodeName ?? "") ?? false;
 
     public static DialogueResult Run(string nodeName, bool force = true, bool orErrorDialogue = true) {
-        if (force) Runner.Stop(); else if (Runner.IsDialogueRunning) return new DialogueResult(nodeName, false, "Dialogue already running and force set to false.");
-		if (DialogueExists(nodeName)) {
-			Runner.StartDialogue(nodeName);
-            return new DialogueResult(nodeName, true);
-		}
+        if (Runner.IsDialogueRunning && !force) return new DialogueResult(nodeName, false, "Dialogue already running and force set to false.");
+        if (Runner.IsDialogueRunning) { _completesToIgnore++; Runner.Stop(); }
+
+		if (DialogueExists(nodeName)) { Runner.StartDialogue(nodeName); return new DialogueResult(nodeName, true); }
         var errorMsg = $"No such node '{nodeName}'";
         Console.Warning(errorMsg);
         if (orErrorDialogue) {
@@ -101,15 +100,37 @@ public partial class DialogueManager : Node
         public void AndThen(Callable callable) => OnComplete(callable);
         public void AndThen(Action action) => OnComplete(Callable.From(action));
 
-        public void InspectErr(Action<string> inspect) { if (!Success) inspect(Error); }
+        public DialogueResult InspectErr(Action<string> inspect) { if (!Success) inspect(Error); return this; }
     }
+    
+    private static readonly Stack<string> _dialogueStack = [];
+    public static void Push(string nodeName) {
+        if (!DialogueExists(nodeName)) Console.Warning($"Pushed nonexistent node '{nodeName}' to dialogue stack.");
+        _dialogueStack.Push(nodeName);
+    }
+    
+    public static void Pop(bool ignoreEmpty = false) {
+        if (_dialogueStack.TryPop(out string node)) {
+            /*_completesToIgnore++;*/ TryRun(node).InspectErr(err => Console.Error($"Error while popping from dialogue stack: {err}"));
+        }
+        else if (!ignoreEmpty) Console.Warning("Attempted to pop from dialogue stack while empty.");
+    }
+
+    private static int _completesToIgnore = 0;
+    private static readonly Queue<Callable> _onCompleteQueue = [];
 
     private void OnRunnerDialogueStart() {
         Console.Info("OnStart");
     }
 
     private void OnRunnerDialogueComplete() {
-        Console.Info("OnComplete");
+        Console.Info($"OnComplete {_completesToIgnore}");
+        if (_completesToIgnore > 0) { _completesToIgnore--; return; }
+
+        while (_onCompleteQueue.Count > 0) {
+            Console.Info($" - dequeue {_onCompleteQueue.Peek()}");
+            _onCompleteQueue.Dequeue().CallDeferred();
+        }
     }
 
     private void OnRunnerNodeStart(string nodeName) {
@@ -122,7 +143,7 @@ public partial class DialogueManager : Node
 
     public static void OnComplete(Callable callable) {
         if (!Runner.IsDialogueRunning) callable.Call();
-        else CallableUtils.CallDeferred(() => Runner.Connect(DialogueRunner.SignalName.onDialogueComplete, callable, (uint)ConnectFlags.OneShot));
+        else _onCompleteQueue.Enqueue(callable); // CallableUtils.CallDeferred(() => Runner.Connect(DialogueRunner.SignalName.onDialogueComplete, callable, (uint)ConnectFlags.OneShot));
     }
     public static void OnComplete(Action action) => OnComplete(Callable.From(action));
 }
