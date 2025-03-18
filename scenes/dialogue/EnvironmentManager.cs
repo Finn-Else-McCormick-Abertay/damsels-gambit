@@ -51,9 +51,9 @@ public partial class EnvironmentManager : Node
             var scene = ResourceLoader.Load<PackedScene>(fullPath);
             if (scene is not null) {
                 var node = scene.Instantiate();
-                _environmentRoot.AddChild(node); node.Owner = _environmentRoot;
+                _environmentRoot.AddOwnedChild(node);
                 _environments.Add(environmentName, node);
-                foreach (var item in GetEnvironmentItems(environmentName)) { item?.Set(CanvasItem.PropertyName.Visible, false); }
+                foreach (var item in GetEnvironmentItems(environmentName)) item?.Set(CanvasItem.PropertyName.Visible, false);
             }
         }
     }

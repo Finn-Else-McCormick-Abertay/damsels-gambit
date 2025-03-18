@@ -114,7 +114,11 @@ static class AnimationDialogueCommands
 
             foreach (var item in affectedItems) {
                 float target;
-                if (inOut == "in") { item.Modulate = item.Modulate with { A = 0f }; target = 1f; } else if (inOut == "out") { item.Modulate = item.Modulate with { A = 1f }; target = 0f; }
+                if (inOut == "in") { item.Modulate = item.Modulate with { A = 0f }; target = 1f; }
+                else if (inOut == "out") {
+                    item.Modulate = item.Modulate with { A = item.Modulate.A }; target = 0f;
+                    if (!item.Visible) continue;
+                }
                 else continue;
                 
                 item.Show();

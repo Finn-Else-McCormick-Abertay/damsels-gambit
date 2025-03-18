@@ -133,6 +133,8 @@ Lady in Waiting: Good luck, Princess. I'll always be here to support you.
 <<hide_box>>
 <<fade out lady_in_waiting 1>>
 <<wait 1>>
+<<fade out chamber 1.5>>
+<<wait 1.5>>
 ===
 
 title: lady_in_waiting__ending__return_point_neutral
@@ -143,11 +145,6 @@ Lady in Waiting: Good luck, Princess. I'll always be here to support you.
 <<hide_box>>
 <<fade out lady_in_waiting 1>>
 <<wait 1>>
-===
-
-title: lady_in_waiting__ending__shared
----
-<<hide_box>>
-<<fade out lady_in_waiting 1>>
-<<wait 1>>
+<<fade out chamber 1.5>>
+<<wait 1.5>>
 ===

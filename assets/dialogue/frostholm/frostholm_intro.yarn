@@ -1,8 +1,11 @@
 title: frostholm__intro
 ---
-<<scene library>>
-<<fade in frostholm 1>>
+<<fade in library 1.5>>
 <<emote frostholm neutral>>
+<<hide frostholm>>
+<<wait 1.5>>
+<<fade in frostholm 1>>
+<<wait 1>>
 ===
 
 title: frostholm__skip_setup

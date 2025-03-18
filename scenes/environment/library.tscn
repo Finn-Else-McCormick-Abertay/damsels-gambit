@@ -1,11 +1,10 @@
-[gd_scene load_steps=16 format=3 uid="uid://d4dgonbop8ygy"]
+[gd_scene load_steps=15 format=3 uid="uid://d4dgonbop8ygy"]
 
 [ext_resource type="Texture2D" uid="uid://b85kbbob2a0hh" path="res://assets/characters/frostholm/neutral.png" id="1_jtctn"]
 [ext_resource type="Texture2D" uid="uid://120j1ta6afcx" path="res://assets/environment/props/Seat.png" id="2_cqnjh"]
 [ext_resource type="Texture2D" uid="uid://dggitk1waeglj" path="res://assets/environment/library_background.png" id="2_lrhu2"]
-[ext_resource type="Script" uid="uid://c5yvgj7xv643o" path="res://scenes/environment/CharacterDisplay.cs" id="2_s5131"]
+[ext_resource type="Script" uid="uid://c5yvgj7xv643o" path="res://scenes/dialogue/environment/CharacterDisplay.cs" id="2_s5131"]
 [ext_resource type="Texture2D" uid="uid://bv2ngki8juk5k" path="res://assets/environment/props/Table.png" id="5_tcu6h"]
-[ext_resource type="Texture2D" uid="uid://0qhn15hlp2pn" path="res://assets/environment/props/Reference.png" id="6_447i8"]
 [ext_resource type="Texture2D" uid="uid://cmepnlsnu6oqf" path="res://assets/environment/props/Cloth.png" id="7_f4vx0"]
 [ext_resource type="Texture2D" uid="uid://duhbk7c10lnr6" path="res://assets/environment/props/Cutlery.png" id="9_cmbj8"]
 [ext_resource type="Texture2D" uid="uid://5mih1v3tagx0" path="res://assets/environment/props/Plates.png" id="10_qv071"]
@@ -105,9 +104,3 @@ position = Vector2(587, 504.851)
 scale = Vector2(0.554795, 0.554795)
 texture = ExtResource("13_ds0vu")
 offset = Vector2(-627.259, 156.815)
-
-[node name="Reference" type="Sprite2D" parent="Foreground"]
-visible = false
-position = Vector2(577, 321)
-scale = Vector2(0.621875, 0.621875)
-texture = ExtResource("6_447i8")

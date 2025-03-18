@@ -154,10 +154,12 @@ static class NodeExtensions
     }
 
     public static Error TryConnect(this GodotObject self, StringName signal, Callable callable) {
+        if (!self.IsValid()) return Error.Failed;
         if (self.IsConnected(signal, callable)) return Error.AlreadyExists;
         return self.Connect(signal, callable);
     }
     public static Error TryDisconnect(this GodotObject self, StringName signal, Callable callable) {
+        if (!self.IsValid()) return Error.Failed;
         if (!self.IsConnected(signal, callable)) return Error.DoesNotExist;
         self.Disconnect(signal, callable);
         return Error.Ok;
