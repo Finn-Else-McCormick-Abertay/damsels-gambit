@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://bldlvyy7r2k20" path="res://assets/ui/buttons/button_disabled.png" id="1_cw5gu"]
 [ext_resource type="Script" uid="uid://bgveruq6sb3li" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="2_0sphh"]
 [ext_resource type="Texture2D" uid="uid://d8f3oiuwqyr8" path="res://assets/ui/buttons/button_hovered.png" id="3_h1lax"]
-[ext_resource type="Texture2D" uid="uid://ceeqqca5h4jr" path="res://assets/ui/buttons/button_focused.png" id="3_htmxt"]
+[ext_resource type="Texture2D" uid="uid://cyto35hwnqmhb" path="res://assets/ui/buttons/focused_state_button.png" id="3_tb5ir"]
 [ext_resource type="Texture2D" uid="uid://d4epgui5btlvd" path="res://assets/ui/buttons/button_normal.png" id="4_xnbey"]
 [ext_resource type="Texture2D" uid="uid://cpu0tegqhpu8o" path="res://assets/ui/buttons/button_pressed.png" id="5_xefd2"]
 [ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_ui_dynamic_font.tres" id="6_gfc0t"]
@@ -41,8 +41,8 @@ content_margin_top = 28.0
 content_margin_right = 24.0
 content_margin_bottom = 28.0
 script = ExtResource("2_0sphh")
-Texture = ExtResource("3_htmxt")
-Scale = 0.06
+Texture = ExtResource("3_tb5ir")
+Scale = 0.055
 DrawCenter = false
 TextureMarginLeft = 750
 TextureMarginTop = 670
