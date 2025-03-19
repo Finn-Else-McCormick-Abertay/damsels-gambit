@@ -27,11 +27,20 @@ public partial class NotebookMenu : Control, IFocusableContainer
 	[Export] private bool DebugHighlighted { get => Highlighted; set => Highlighted = value; }
 	
 	private Tween _moveTween;
+	private NodePath _oldFocusNeighborBottom = new();
 	public bool Open {
 		get; set {
 			if (Open != value || (_moveTween?.IsRunning() ?? false)) {
 				var offset = OpenOffset; if (Highlighted) { offset -= HighlightOffset; } offset *= value ? 1f : -1f;
 				this.OnReady(() => { _moveTween?.Kill(); _moveTween = Root.CreateTween(); _moveTween.TweenProperty(Root, "position", value ? OpenOffset : Highlighted ? HighlightOffset : new Vector2(), OpenDuration); });
+			}
+			if (!Open && value) {
+				_oldFocusNeighborBottom = FocusNeighborBottom;
+				FocusNeighborBottom = new();
+			}
+			if (Open && !value) {
+				FocusNeighborBottom = _oldFocusNeighborBottom;
+				_oldFocusNeighborBottom = new();
 			}
 			field = value;
 		}
