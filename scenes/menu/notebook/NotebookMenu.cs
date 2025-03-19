@@ -27,20 +27,11 @@ public partial class NotebookMenu : Control, IFocusableContainer
 	[Export] private bool DebugHighlighted { get => Highlighted; set => Highlighted = value; }
 	
 	private Tween _moveTween;
-	private NodePath _oldFocusNeighborBottom = new();
 	public bool Open {
 		get; set {
 			if (Open != value || (_moveTween?.IsRunning() ?? false)) {
 				var offset = OpenOffset; if (Highlighted) { offset -= HighlightOffset; } offset *= value ? 1f : -1f;
 				this.OnReady(() => { _moveTween?.Kill(); _moveTween = Root.CreateTween(); _moveTween.TweenProperty(Root, "position", value ? OpenOffset : Highlighted ? HighlightOffset : new Vector2(), OpenDuration); });
-			}
-			if (!Open && value) {
-				_oldFocusNeighborBottom = FocusNeighborBottom;
-				FocusNeighborBottom = new();
-			}
-			if (Open && !value) {
-				FocusNeighborBottom = _oldFocusNeighborBottom;
-				_oldFocusNeighborBottom = new();
 			}
 			field = value;
 		}
@@ -75,10 +66,13 @@ public partial class NotebookMenu : Control, IFocusableContainer
 		(DialogueView as ProfileDialogueView).ProfileNode = $"{Case.ToSnake(SuitorName)}__profile";
 	}
 
-    public Control TryGainFocus(InputManager.FocusDirection direction) {
-		return direction switch {
-			InputManager.FocusDirection.Up or InputManager.FocusDirection.Right => TabButton,
-			_ => null
-		};
-	}
+    public Control TryGainFocus(InputManager.FocusDirection direction) => direction switch {
+		InputManager.FocusDirection.Up or InputManager.FocusDirection.Right => TabButton,
+		_ => null
+	};
+
+	public bool TryLoseFocus(InputManager.FocusDirection direction) => direction switch {
+		InputManager.FocusDirection.Left or InputManager.FocusDirection.Down when Open => false,
+		_ => true
+	};
 }
