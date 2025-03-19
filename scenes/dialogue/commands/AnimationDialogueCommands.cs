@@ -56,8 +56,8 @@ static class AnimationDialogueCommands
     }
 
     [YarnCommand("scene")]
-    public static void Scene(string sceneName) => RunCommandDeferred(()
-        => EnvironmentManager.GetEnvironmentNames()?.ForEach(name => EnvironmentManager.GetEnvironmentLayers(name)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, name == sceneName))));
+    public static void Scene(string sceneName) => RunCommandDeferred(() =>
+        EnvironmentManager.GetEnvironmentNames()?.ForEach(name => EnvironmentManager.GetEnvironmentLayers(name)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, name == sceneName))));
 
     [YarnCommand("show")]
     public static void Show(string itemName) => RunCommandDeferred(() => EnvironmentManager.GetAllItems(itemName)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, true)));

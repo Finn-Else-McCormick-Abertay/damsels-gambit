@@ -1,13 +1,13 @@
 [gd_scene load_steps=15 format=3 uid="uid://c82q6rdj5f5ix"]
 
-[ext_resource type="Script" uid="uid://bxpg6bc10uwtc" path="res://scenes/ui/menu/MainMenu.cs" id="1_ly6k8"]
+[ext_resource type="Script" uid="uid://bxpg6bc10uwtc" path="res://scenes/menu/main/MainMenu.cs" id="1_ly6k8"]
 [ext_resource type="Texture2D" uid="uid://2cbl24t405i5" path="res://assets/ui/panels/Paper texture.png" id="1_mhvoi"]
 [ext_resource type="Texture2D" uid="uid://bkgkbvf4p5gh0" path="res://assets/ui/buttons/exit_blue.png" id="3_t0cfi"]
 [ext_resource type="Texture2D" uid="uid://c3v23lslssnol" path="res://assets/ui/panels/play_pic.png" id="4_juol1"]
 [ext_resource type="Texture2D" uid="uid://dgrr65og3fkig" path="res://assets/ui/buttons/exit_blue_pressed.png" id="4_wup3t"]
 [ext_resource type="Texture2D" uid="uid://c58bpm3n16nox" path="res://assets/ui/buttons/start_focused.png" id="5_8mdsm"]
 [ext_resource type="Texture2D" uid="uid://bchk1ii6i201t" path="res://assets/ui/buttons/settings_blue.png" id="5_vu7x7"]
-[ext_resource type="PackedScene" uid="uid://cl108jysyilp" path="res://scenes/ui/menu/settings_menu/settings_menu.tscn" id="6_f1uj7"]
+[ext_resource type="PackedScene" uid="uid://cl108jysyilp" path="res://scenes/menu/settings/settings_menu.tscn" id="6_f1uj7"]
 [ext_resource type="Texture2D" uid="uid://dbeqdreuv87xm" path="res://assets/ui/buttons/settings_blue_pressed.png" id="6_p1i6k"]
 [ext_resource type="Texture2D" uid="uid://dxytanx1fosx4" path="res://assets/ui/buttons/play_blue.png" id="7_pfbq2"]
 [ext_resource type="Texture2D" uid="uid://bdvihifi6tym2" path="res://assets/ui/panels/settings_pic.png" id="8_3ve8a"]
@@ -26,11 +26,11 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_gcq7h")
 script = ExtResource("1_ly6k8")
+SettingsMenuScene = ExtResource("6_f1uj7")
 StartButton = NodePath("HBoxContainer/VBoxContainer/Start")
 SettingsButton = NodePath("HBoxContainer/VBoxContainer2/Settings")
 ExitButton = NodePath("HBoxContainer/VBoxContainer3/Exit")
 ButtonRoot = NodePath("HBoxContainer")
-SettingsMenuScene = ExtResource("6_f1uj7")
 
 [node name="Background" type="NinePatchRect" parent="."]
 layout_mode = 1

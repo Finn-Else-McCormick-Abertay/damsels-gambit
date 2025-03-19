@@ -129,7 +129,8 @@ public partial class DialogueManager : Node
 
         while (_onCompleteQueue.Count > 0) {
             Console.Info($" - dequeue {_onCompleteQueue.Peek()}");
-            _onCompleteQueue.Dequeue().CallDeferred();
+            var callable = _onCompleteQueue.Dequeue();
+            if (callable.Target.IsValid()) callable.CallDeferred();
         }
     }
 

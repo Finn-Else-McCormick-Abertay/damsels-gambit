@@ -25,8 +25,8 @@ public sealed partial class GameManager : Node
 	private CanvasLayer _menuCanvasLayer = new() { Layer = 25, Name = "MenuLayer" };
 	
 	private static readonly PackedScene _dialogueInterfaceScene = ResourceLoader.Load<PackedScene>("res://scenes/dialogue/dialogue_interface.tscn");
-	private static readonly PackedScene _mainMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/ui/menu/main_menu.tscn");
-	private static readonly PackedScene _pauseMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/ui/menu/pause_menu.tscn");
+	private static readonly PackedScene _mainMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/main/main_menu.tscn");
+	private static readonly PackedScene _pauseMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/pause_menu.tscn");
 
 	public override void _EnterTree() {
 		if (Instance is not null) throw AutoloadException.For(this);
