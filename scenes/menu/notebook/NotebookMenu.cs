@@ -6,7 +6,7 @@ using System;
 namespace DamselsGambit;
 
 [Tool]
-public partial class NotebookMenu : Control
+public partial class NotebookMenu : Control, IFocusableContainer
 {
 	[Export] public string SuitorName { get; set { field = value; UpdateDialogueViewNode(); } }
 
@@ -64,5 +64,12 @@ public partial class NotebookMenu : Control
 	public void UpdateDialogueViewNode() {
 		if (Engine.IsEditorHint() || !DialogueView.IsValid() || string.IsNullOrEmpty(SuitorName)) return;
 		(DialogueView as ProfileDialogueView).ProfileNode = $"{Case.ToSnake(SuitorName)}__profile";
+	}
+
+    public Control TryGainFocus(InputManager.FocusDirection direction) {
+		return direction switch {
+			InputManager.FocusDirection.Up or InputManager.FocusDirection.Right => TabButton,
+			_ => null
+		};
 	}
 }

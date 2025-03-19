@@ -100,6 +100,7 @@ public sealed partial class InputManager : Node
 
 	public static Control FindFocusableWithin(Node root, FocusDirection direction = FocusDirection.Right) {
 		if (root is null) return null;
+		if (root is IFocusableContainer focusableContainer && focusableContainer.TryGainFocus(direction) is Control newFocus) return newFocus;
 		if (root is Control control && control.FocusMode == Control.FocusModeEnum.All && control.IsVisibleInTree()) return control;
 		var validChildren = root.FindChildrenWhere<Control>(x => x.FocusMode == Control.FocusModeEnum.All && x.IsVisibleInTree());
 		if (direction == FocusDirection.Left || direction == FocusDirection.Up) validChildren.Reverse();

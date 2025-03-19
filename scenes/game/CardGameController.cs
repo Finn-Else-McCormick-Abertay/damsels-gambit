@@ -81,6 +81,10 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		
 		EmitSignal(SignalName.GameStart);
 
+		TopicHand.FocusNeighborTop = GameManager.NotebookMenu.GetPath();
+		TopicHand.FocusNeighborRight = GameManager.NotebookMenu.GetPath();
+		GameManager.NotebookMenu.FocusNeighborBottom = TopicHand.GetPath();
+
 		// Set intro skippable based on intro tags
 		foreach (var tag in DialogueManager.Runner.GetTagsForNode($"{_suitorId}__intro")) {
 			var args = tag.Split('=');
