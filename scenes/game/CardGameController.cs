@@ -33,7 +33,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	[Export(PropertyHint.Range, "-30,30,")] public int LoveThreshold { get; private set { field = value; AffectionMeter?.OnReady(x => x.LoveThreshold = LoveThreshold); } } = 4;
 	[Export(PropertyHint.Range, "-30,30,")] public int HateThreshold { get; private set { field = value; AffectionMeter?.OnReady(x => x.HateThreshold = HateThreshold); } } = -4;
 	
-	public int Score { get; set { field = value; AffectionMeter?.CreateTween()?.TweenProperty(AffectionMeter, AffectionMeter.PropertyName.Value.ToString(), Score, 1.0); } }
+	public int Score { get; set { field = value; AffectionMeter?.CreateTween()?.TweenProperty(AffectionMeter, AffectionMeter.PropertyName.Value.ToString(), Score, 1.0); if (Score <= ScoreMin || Score >= ScoreMax) CallableUtils.CallDeferred(TriggerGameEnd); /*Score = Math.Max(ScoreMin, Math.Min(ScoreMax, Score));*/} }
 
 	[ExportGroup("Deck")]
 	[Export] public Godot.Collections.Dictionary<string, int> TopicDeck { get; set { field = value; this.OnReady(EditorUpdateHands); } }
@@ -136,7 +136,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		DialogueManager
 			.TryRun($"{_suitorId}__pre_ending")
 			.AndThen(() => {
-				AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide(); SuitorProfile.Hide(); 
+				AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide(); SuitorProfile.Hide(); PlayButton.Hide();
 				DialogueManager
 					.TryRun($"{_suitorId}__ending__{Score switch { _ when Score >= LoveThreshold => "love", _ when Score <= HateThreshold => "hate", _ => "neutral" }}")
 					.AndThen(() => EmitSignal(SignalName.GameEnd));
