@@ -71,6 +71,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	}
 
 	public bool Started { get; private set; } = false;
+	public bool IntroSkippable { get; private set; } = false;
 
 	public void BeginGame(bool skipIntro = false) {
 		static List<string> CreateWorkingDeck(Godot.Collections.Dictionary<string, int> deck) { List<string> working = []; foreach (var (card, count) in deck) for (int i = 0; i < count; ++i) working.Add(card); return working; }
@@ -80,6 +81,13 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		_actionDeckWorking = [..CreateWorkingDeck(ActionDeck).OrderBy(x => Random.Shared.Next())];
 		
 		EmitSignal(SignalName.GameStart);
+
+		// Set intro skippable based on intro tags
+		foreach (var tag in DialogueManager.Runner.GetTagsForNode($"{_suitorId}__intro")) {
+			var args = tag.Split('=');
+			if (tag.MatchN("skippable")) IntroSkippable = true; else if (tag.MatchN("unskippable")) IntroSkippable = false;
+			else if (args.Length == 2 && args[0].Trim().ToLower().IsAnyOf([ "skip", "skippable" ]) && bool.TryParse(args[1].Trim(), out bool val)) IntroSkippable = val;
+		}
 		
 		DialogueManager.TryRun(skipIntro ? $"{_suitorId}__skip_setup" : $"{_suitorId}__intro").AndThen(() => {
 			Started = true;
