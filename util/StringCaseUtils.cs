@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using SourceGeneratorUtils;
 
@@ -9,7 +11,7 @@ public static partial class Case
 
     public static string ToKebab(string value) => PascalBoundaryRegex().Replace(SeparatorRegex().Replace(value.Trim(), "-"), "-$1").ToLower();
 
-    public static string ToPascal(string value) => PascalSeparatorRegex().Replace(value.Trim(), "\\U$1");
+    public static string ToPascal(string value) => PascalSeparatorRegex().Replace(value.Trim(), match => match.Groups.GetValueOrDefault("1")?.Value?.ToUpper());
 
     public static string ToCamel(string value) => ToPascal(value).FirstCharToLowerInvariant();
 
