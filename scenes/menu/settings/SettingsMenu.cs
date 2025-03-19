@@ -25,7 +25,7 @@ public partial class SettingsMenu : Control, IFocusContext, IBackContext
 	public Control GetDefaultFocus() => TabContainer.GetTabBar();
 	public Control GetDefaultFocus(InputManager.FocusDirection direction) => direction switch {
 		InputManager.FocusDirection.Up => ExitButton,
-		_ => TabContainer.GetTabBar()
+		_ => InputManager.FindFocusableWithin(TabContainer.GetTabBar(), direction)
 	};
 
 	public virtual int BackContextPriority => 10;

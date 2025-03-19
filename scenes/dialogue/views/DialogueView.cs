@@ -155,6 +155,4 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
     public virtual int FocusContextPriority => State != DialogueState.Inactive ? 3 : -1;
 
     public Control GetDefaultFocus() => ContinueButton;
-
-    //public Control GetNextFocus(InputManager.FocusDirection direction, int childIndex) => GetDefaultFocus();
 }

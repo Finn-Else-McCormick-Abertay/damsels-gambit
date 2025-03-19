@@ -42,7 +42,7 @@ public partial class PauseMenu : Control, IFocusContext, IBackContext
 
 	public virtual Control GetDefaultFocus(InputManager.FocusDirection direction) => direction switch {
 		InputManager.FocusDirection.Up => QuitButton,
-		_ => ResumeButton
+		InputManager.FocusDirection.Down or _ => ResumeButton
 	};
 
     public bool UseBackInput() {

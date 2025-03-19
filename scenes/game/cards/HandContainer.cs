@@ -99,6 +99,13 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
         return null;
     }
 
+    public Control TryGainFocus(InputManager.FocusDirection direction) =>
+        InputManager.FindFocusableWithin(direction switch {
+            _ when GetChildCount() == 0 => null,
+            InputManager.FocusDirection.Down or InputManager.FocusDirection.Left => GetChildren().Last(),
+            InputManager.FocusDirection.Right or _ => GetChildren().First()
+        }, direction);
+
     private void OnAccept() {
         if (Engine.IsEditorHint()) return;
         
