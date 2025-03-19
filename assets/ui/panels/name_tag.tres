@@ -1,7 +1,7 @@
 [gd_resource type="StyleBox" script_class="StyleBoxScaledTexture" load_steps=3 format=3 uid="uid://ltnwechipltc"]
 
 [ext_resource type="Texture2D" uid="uid://deobtkte2lfye" path="res://assets/ui/dialogue/name_tag.png" id="1_bfwfv"]
-[ext_resource type="Script" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="2_kdasn"]
+[ext_resource type="Script" uid="uid://bgveruq6sb3li" path="res://util/resources/StyleBoxScaledTexture.cs" id="2_kdasn"]
 
 [resource]
 resource_local_to_scene = false

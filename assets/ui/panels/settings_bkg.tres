@@ -1,6 +1,6 @@
 [gd_resource type="StyleBox" script_class="StyleBoxScaledTexture" load_steps=3 format=3 uid="uid://bl211cx2n64ww"]
 
-[ext_resource type="Script" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="1_41y7h"]
+[ext_resource type="Script" uid="uid://bgveruq6sb3li" path="res://util/resources/StyleBoxScaledTexture.cs" id="1_41y7h"]
 [ext_resource type="Texture2D" uid="uid://dekqq3msnexr3" path="res://assets/ui/panels/setting_tab_bkg.png" id="1_cjcv4"]
 
 [resource]

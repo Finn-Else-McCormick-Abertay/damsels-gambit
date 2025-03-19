@@ -6,7 +6,7 @@ using System;
 namespace DamselsGambit;
 
 [Tool]
-public partial class SuitorProfile : Control
+public partial class NotebookMenu : Control
 {
 	[Export] public string SuitorName { get; set { field = value; UpdateDialogueViewNode(); } }
 

@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://cq1ndckdbfugt" path="res://scenes/game/cards/HandContainer.cs" id="4_xg83y"]
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/theme/default_theme.tres" id="6_7wss3"]
 [ext_resource type="PackedScene" uid="uid://c8warv5k2winh" path="res://scenes/game/round_meter/round_meter.tscn" id="8_oypvw"]
-[ext_resource type="PackedScene" uid="uid://q1kh0whg1g0g" path="res://scenes/game/suitor_profile/suitor_profile.tscn" id="9_6xg5x"]
+[ext_resource type="PackedScene" uid="uid://q1kh0whg1g0g" path="res://scenes/game/notebook/notebook.tscn" id="9_6xg5x"]
 
 [sub_resource type="Gradient" id="Gradient_xf1xp"]
 offsets = PackedFloat32Array(0.171141, 1)

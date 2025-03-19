@@ -55,7 +55,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	[Export] public HandContainer ActionHand { get; set { field = value; this.OnReady(EditorUpdateHands); } }
 	[Export] public HandContainer TopicHand { get; set { field = value; this.OnReady(EditorUpdateHands); } }
 	[Export] public Button PlayButton { get; set; }
-	[Export] public SuitorProfile SuitorProfile { get; set; }
+	[Export] public NotebookMenu SuitorProfile { get; set; }
 
 	public override void _Ready() {
 		EditorUpdateHands();

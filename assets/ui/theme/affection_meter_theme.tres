@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://167ba70o2tv0" path="res://assets/ui/panels/affection_bar/affection_bar_war.png" id="1_784mg"]
 [ext_resource type="Texture2D" uid="uid://bbr57lg3tj7ia" path="res://assets/ui/panels/affection_bar/crossed_swords_thick_outline.png" id="1_gt3fw"]
 [ext_resource type="Texture2D" uid="uid://b880wr14b14cs" path="res://assets/ui/panels/affection_bar/linked_rings_thick_outline.png" id="2_tcigj"]
-[ext_resource type="Script" uid="uid://bgveruq6sb3li" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="2_vjwo0"]
+[ext_resource type="Script" uid="uid://bgveruq6sb3li" path="res://util/resources/StyleBoxScaledTexture.cs" id="2_vjwo0"]
 [ext_resource type="Texture2D" uid="uid://kmxj3n8p2cjr" path="res://assets/ui/panels/affection_bar/affection_bar_marriage.png" id="5_latk2"]
 [ext_resource type="Texture2D" uid="uid://dnrv3cmcvfwux" path="res://assets/ui/panels/affection_bar/affection_bar_seperator_ninerect.png" id="7_altxn"]
 [ext_resource type="Texture2D" uid="uid://dliw2ranfsodq" path="res://assets/ui/panels/affection_bar/affection_bar_base_ninerect.png" id="7_ylt25"]

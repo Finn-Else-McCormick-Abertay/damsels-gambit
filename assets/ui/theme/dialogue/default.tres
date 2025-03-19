@@ -1,6 +1,6 @@
 [gd_resource type="Theme" load_steps=13 format=3 uid="uid://cj01ghso8eli6"]
 
-[ext_resource type="StyleBox" uid="uid://da8adt55nihca" path="res://assets/ui/panels/dailogue_box.tres" id="1_51q1c"]
+[ext_resource type="StyleBox" uid="uid://da8adt55nihca" path="res://assets/ui/panels/dialogue_box.tres" id="1_51q1c"]
 [ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_ui_dynamic_font.tres" id="2_tin7u"]
 [ext_resource type="StyleBox" uid="uid://ltnwechipltc" path="res://assets/ui/panels/name_tag.tres" id="3_fmvm6"]
 
