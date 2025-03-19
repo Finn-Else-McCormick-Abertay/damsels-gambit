@@ -1,5 +1,6 @@
 title: frostholm__intro
 ---
+<<scene none>>
 <<fade in library 1.5>>
 <<emote frostholm neutral>>
 <<hide frostholm>>

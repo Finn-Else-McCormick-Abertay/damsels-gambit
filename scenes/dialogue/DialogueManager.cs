@@ -110,9 +110,7 @@ public partial class DialogueManager : Node
     }
     
     public static void Pop(bool ignoreEmpty = false) {
-        if (_dialogueStack.TryPop(out string node)) {
-            /*_completesToIgnore++;*/ TryRun(node).InspectErr(err => Console.Error($"Error while popping from dialogue stack: {err}"));
-        }
+        if (_dialogueStack.TryPop(out string node)) TryRun(node).InspectErr(err => Console.Error($"Error while popping from dialogue stack: {err}"));
         else if (!ignoreEmpty) Console.Warning("Attempted to pop from dialogue stack while empty.");
     }
 
@@ -120,26 +118,26 @@ public partial class DialogueManager : Node
     private static readonly Queue<Callable> _onCompleteQueue = [];
 
     private void OnRunnerDialogueStart() {
-        Console.Info("OnStart");
+        //Console.Info("OnStart");
     }
 
     private void OnRunnerDialogueComplete() {
-        Console.Info($"OnComplete {_completesToIgnore}");
+        //Console.Info($"OnComplete {_completesToIgnore}");
         if (_completesToIgnore > 0) { _completesToIgnore--; return; }
 
         while (_onCompleteQueue.Count > 0) {
-            Console.Info($" - dequeue {_onCompleteQueue.Peek()}");
+            //Console.Info($" - dequeue {_onCompleteQueue.Peek()}");
             var callable = _onCompleteQueue.Dequeue();
             if (callable.Target.IsValid()) callable.CallDeferred();
         }
     }
 
     private void OnRunnerNodeStart(string nodeName) {
-        Console.Info($"OnNodeStart {nodeName}");
+        //Console.Info($"OnNodeStart {nodeName}");
     }
 
     private void OnRunnerNodeComplete(string nodeName) {
-        Console.Info($"OnNodeComplete {nodeName}");
+        //Console.Info($"OnNodeComplete {nodeName}");
     }
 
     public static void OnComplete(Callable callable) {
