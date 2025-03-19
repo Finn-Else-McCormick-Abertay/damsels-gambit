@@ -30,9 +30,10 @@ public sealed partial class GameManager : Node
 		_layers.Add(name, layer); Instance.AddOwnedChild(layer, true);
 		return layer;
 	}
-	private static CanvasLayer AddLayer(string name, int layer, bool force = false) => AddLayer(name, new CanvasLayer() { Layer = layer, Name = Case.ToPascal($"{name.Trim()}_layer") }, force);
+	public static CanvasLayer AddLayer(string name, int layer, bool force = false) => AddLayer(name, new CanvasLayer() { Layer = layer, Name = Case.ToPascal($"{name.Trim()}_layer") }, force);
 
-	private static CanvasLayer GetLayer(string name) => _layers.GetValueOrDefault(Case.ToSnake(name));
+	public static CanvasLayer GetLayer(string name) => _layers.GetValueOrDefault(Case.ToSnake(name));
+	public static void SetLayer(string name, int layer) { var canvasLayer = GetLayer(name); if (canvasLayer.IsValid()) canvasLayer.Layer = layer; else Console.Error($"No such layer '{name}'"); }
 	
 	private static readonly PackedScene
 		_dialogueLayerScene = ResourceLoader.Load<PackedScene>("res://scenes/dialogue/dialogue_layer.tscn"),

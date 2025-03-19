@@ -75,12 +75,14 @@ title: lady_in_waiting__explain_profile
 ---
 <<if !visited("lady_in_waiting__explain_profile")>>
     <<emote lady_in_waiting explaining_gesture_right>>
-    <<open_profile>>
+    <<profile under>>
+    <<profile open>>
     <<move lady_in_waiting -200 0 0.28>>
     Lady in Waiting: Notice the suitor profile over on the right? That'll update to show all the information you've gathered.
     <<emote lady_in_waiting explaining_point>>
     Lady in Waiting: Question cards won't affect his feelings as much, but they help you gather information about him, so you can learn to push his buttons.
-    <<close_profile>>
+    <<profile close>>
+    <<profile over>>
     <<after 0.08>>
     <<move lady_in_waiting 200 0 0.28>>
     <<emote lady_in_waiting neutral>>

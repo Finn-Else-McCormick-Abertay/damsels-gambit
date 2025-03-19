@@ -62,7 +62,6 @@ static class AnimationDialogueCommands
         else if (action.MatchN("show") || action.MatchN("hide"))
             (sceneName.MatchN("all") ? EnvironmentManager.GetEnvironmentNames()?.SelectMany(EnvironmentManager.GetEnvironmentLayers) : EnvironmentManager.GetEnvironmentLayers(sceneName))?.ForEach(x => x.Visible = action.MatchN("show"));
     });
-        //EnvironmentManager.GetEnvironmentNames()?.ForEach(name => EnvironmentManager.GetEnvironmentLayers(name)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, name == sceneName))));
 
     [YarnCommand("show")]
     public static void Show(string itemName) => RunCommandDeferred(() => EnvironmentManager.GetAllItems(itemName)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, true)));
@@ -73,6 +72,12 @@ static class AnimationDialogueCommands
     [YarnCommand("hide_box")]
     public static void HideBox() => RunCommandDeferred(() => DialogueManager.DialogueViews?.ForEach(x => x.HideBox()));
 
+    [YarnCommand("profile")]
+    public static void Profile(string action) => RunCommandDeferred(() => {
+        if (action.MatchN("open") || action.MatchN("close")) GameManager.NotebookMenu.Open = action.MatchN("open");
+        if (action.MatchN("under") || action.MatchN("over")) GameManager.SetLayer("notebook", action.MatchN("under") ? 22 : 24);
+    });
+
     [YarnCommand("open_profile")]
     public static void OpenProfile() => RunCommandDeferred(() => GameManager.NotebookMenu.Open = true);
 
@@ -80,14 +85,11 @@ static class AnimationDialogueCommands
     public static void CloseProfile() => RunCommandDeferred(() => GameManager.NotebookMenu.Open = false);
 
     [YarnCommand("emote")]
-    public static void Emote(string characterName, string emotionName, string from = "", string revertFrom = "") {
-        RunCommandDeferred(() =>
-            EnvironmentManager.GetCharacterDisplays(characterName).ForEach(display => {
-                if (from == "from" && !string.IsNullOrWhiteSpace(revertFrom) && display.SpriteName != revertFrom) return;
-                display.Show(); display.SpriteName = emotionName;
-            })
-        );
-    }
+    public static void Emote(string characterName, string emotionName, string from = "", string revertFrom = "") => RunCommandDeferred(() =>
+        EnvironmentManager.GetCharacterDisplays(characterName).ForEach(display => {
+            if (from == "from" && !string.IsNullOrWhiteSpace(revertFrom) && display.SpriteName != revertFrom) return;
+            display.Show(); display.SpriteName = emotionName;
+        }));
 
     [YarnCommand("move")]
     public static void Move(string itemName, float x, float y, float time = 0f) => RunCommandDeferred(()
@@ -102,46 +104,44 @@ static class AnimationDialogueCommands
         }));
 
     [YarnCommand("fade")]
-    public static void Fade(string inOut, string itemName, float time) {
-        RunCommandDeferred(() => {
-            var affectedLayers = EnvironmentManager.GetEnvironmentLayers(itemName);
-            var affectedItems =
-                affectedLayers.Aggregate((IEnumerable<CanvasItem>)[], (items, layer) => items.Concat(layer.GetChildren().Cast<CanvasItem>().WhereExists()))
-                .Concat(EnvironmentManager.GetCharacterDisplays(itemName).Cast<CanvasItem>())
-                .Concat(EnvironmentManager.GetPropDisplays(itemName).Cast<CanvasItem>())
-                .Distinct();
+    public static void Fade(string inOut, string itemName, float time) => RunCommandDeferred(() => {
+        var affectedLayers = EnvironmentManager.GetEnvironmentLayers(itemName);
+        var affectedItems =
+            affectedLayers.Aggregate((IEnumerable<CanvasItem>)[], (items, layer) => items.Concat(layer.GetChildren().Cast<CanvasItem>().WhereExists()))
+            .Concat(EnvironmentManager.GetCharacterDisplays(itemName).Cast<CanvasItem>())
+            .Concat(EnvironmentManager.GetPropDisplays(itemName).Cast<CanvasItem>())
+            .Distinct();
 
-            if (time <= 0f) {
-                foreach (var item in affectedItems) if (inOut == "in") item.Show(); else if (inOut == "out") item.Hide();
-                foreach (var layer in affectedLayers) if (inOut == "in") layer.Show(); else if (inOut == "out") layer.Hide();
-                return;
+        if (time <= 0f) {
+            foreach (var item in affectedItems) if (inOut == "in") item.Show(); else if (inOut == "out") item.Hide();
+            foreach (var layer in affectedLayers) if (inOut == "in") layer.Show(); else if (inOut == "out") layer.Hide();
+            return;
+        }
+
+        foreach (var item in affectedItems) {
+            float target;
+            if (inOut == "in") { item.Modulate = item.Modulate with { A = 0f }; target = 1f; }
+            else if (inOut == "out") {
+                item.Modulate = item.Modulate with { A = item.Modulate.A }; target = 0f;
+                if (!item.Visible) continue;
             }
-
-            foreach (var item in affectedItems) {
-                float target;
-                if (inOut == "in") { item.Modulate = item.Modulate with { A = 0f }; target = 1f; }
-                else if (inOut == "out") {
-                    item.Modulate = item.Modulate with { A = item.Modulate.A }; target = 0f;
-                    if (!item.Visible) continue;
-                }
-                else continue;
-                
-                item.Show();
-
-                var tween = item.CreateTween();
-                tween.TweenProperty(item, "modulate:a", target, time);
-
-                //if (inOut == "out") tween.TweenCallback(Callable.From(item.Hide));
-            }
+            else continue;
             
-            foreach (var layer in affectedLayers) {
-                layer.Show();
-                if (inOut == "out") {
-                    var tween = layer.CreateTween();
-                    tween.TweenInterval(time);
-                    tween.TweenCallback(Callable.From(layer.Hide));
-                }
+            item.Show();
+
+            var tween = item.CreateTween();
+            tween.TweenProperty(item, "modulate:a", target, time);
+
+            //if (inOut == "out") tween.TweenCallback(Callable.From(item.Hide));
+        }
+        
+        foreach (var layer in affectedLayers) {
+            layer.Show();
+            if (inOut == "out") {
+                var tween = layer.CreateTween();
+                tween.TweenInterval(time);
+                tween.TweenCallback(Callable.From(layer.Hide));
             }
-        });
-    }
+        }
+    });
 }
