@@ -74,10 +74,10 @@ static class AnimationDialogueCommands
     public static void HideBox() => RunCommandDeferred(() => DialogueManager.DialogueViews?.ForEach(x => x.HideBox()));
 
     [YarnCommand("open_profile")]
-    public static void OpenProfile() => RunCommandDeferred(() => GameManager.CardGameController?.SuitorProfile?.Set(NotebookMenu.PropertyName.Open, true));
+    public static void OpenProfile() => RunCommandDeferred(() => GameManager.NotebookMenu.Open = true);
 
     [YarnCommand("close_profile")]
-    public static void CloseProfile() => RunCommandDeferred(() => GameManager.CardGameController?.SuitorProfile?.Set(NotebookMenu.PropertyName.Open, false));
+    public static void CloseProfile() => RunCommandDeferred(() => GameManager.NotebookMenu.Open = false);
 
     [YarnCommand("emote")]
     public static void Emote(string characterName, string emotionName, string from = "", string revertFrom = "") {

@@ -19,7 +19,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	[Signal] public delegate void RoundStartEventHandler(int round);
 	[Signal] public delegate void RoundEndEventHandler(int round);
 
-	[Export] public string SuitorName { get; set { field = value; _suitorId = Case.ToSnake(SuitorName); SuitorProfile?.OnReady(x => x.SuitorName = SuitorName); } }
+	[Export] public string SuitorName { get; set { field = value; _suitorId = Case.ToSnake(SuitorName); GameManager.NotebookMenu?.OnReady(x => x.SuitorName = SuitorName); } }
 	private string _suitorId;
 
 	[Export(PropertyHint.Range, "0,20,")] public int NumRounds { get; private set { field = value; RoundMeter?.OnReady(() => RoundMeter.NumRounds = NumRounds); } } = 8;
@@ -55,7 +55,6 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	[Export] public HandContainer ActionHand { get; set { field = value; this.OnReady(EditorUpdateHands); } }
 	[Export] public HandContainer TopicHand { get; set { field = value; this.OnReady(EditorUpdateHands); } }
 	[Export] public Button PlayButton { get; set; }
-	[Export] public NotebookMenu SuitorProfile { get; set; }
 
 	public override void _Ready() {
 		EditorUpdateHands();
@@ -134,17 +133,12 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	private void TriggerGameEnd() {
 		if (Engine.IsEditorHint()) return;
 
-		/*AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide(); SuitorProfile.Hide(); PlayButton.Hide();
-		
-		DialogueManager
-			.TryRun($"{_suitorId}__ending__{Score switch { _ when Score >= LoveThreshold => "love", _ when Score <= HateThreshold => "hate", _ => "neutral" }}")
-			.AndThen(() => EmitSignal(SignalName.GameEnd));*/
 		PlayButton.Hide();
 
 		DialogueManager
 			.TryRun($"{_suitorId}__pre_ending")
 			.AndThen(() => {
-				AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide(); SuitorProfile.Hide(); 
+				AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide();
 				DialogueManager
 					.TryRun($"{_suitorId}__ending__{Score switch { _ when Score >= LoveThreshold => "love", _ when Score <= HateThreshold => "hate", _ => "neutral" }}")
 					.AndThen(() => EmitSignal(SignalName.GameEnd));

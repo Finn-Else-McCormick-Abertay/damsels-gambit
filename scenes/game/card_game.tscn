@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dipd7bv4d85ws"]
+[gd_scene load_steps=15 format=3 uid="uid://dipd7bv4d85ws"]
 
 [ext_resource type="Script" uid="uid://fhn7dbryyxai" path="res://scenes/game/CardGameController.cs" id="1_4k8rw"]
 [ext_resource type="Theme" uid="uid://jf72vigx3i2b" path="res://assets/ui/theme/card_theme.tres" id="1_eci5x"]
@@ -7,7 +7,6 @@
 [ext_resource type="Script" uid="uid://cq1ndckdbfugt" path="res://scenes/game/cards/HandContainer.cs" id="4_xg83y"]
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/theme/default_theme.tres" id="6_7wss3"]
 [ext_resource type="PackedScene" uid="uid://c8warv5k2winh" path="res://scenes/game/round_meter/round_meter.tscn" id="8_oypvw"]
-[ext_resource type="PackedScene" uid="uid://q1kh0whg1g0g" path="res://scenes/menu/notebook/notebook.tscn" id="9_6xg5x"]
 
 [sub_resource type="Gradient" id="Gradient_xf1xp"]
 offsets = PackedFloat32Array(0.171141, 1)
@@ -45,7 +44,7 @@ _limits = [-90.0, 90.0, 0.0, 1.0]
 _data = [Vector2(0, 5.12277), 0.0, 0.0, 0, 0, Vector2(0.502959, 9.04018), 20.9715, 20.9715, 0, 0, Vector2(1, 15.5692), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "RoundMeter", "ActionHand", "TopicHand", "PlayButton", "SuitorProfile")]
+[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "RoundMeter", "ActionHand", "TopicHand", "PlayButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -78,7 +77,6 @@ RoundMeter = NodePath("RoundMeter")
 ActionHand = NodePath("LeftHandContainer")
 TopicHand = NodePath("RightHandContainer")
 PlayButton = NodePath("PlayHandButton")
-SuitorProfile = NodePath("SuitorProfile")
 
 [node name="Vignette" type="TextureRect" parent="."]
 layout_mode = 1
@@ -146,7 +144,6 @@ offset_bottom = -40.0
 grow_horizontal = 2
 grow_vertical = 2
 focus_neighbor_left = NodePath("../LeftHandContainer")
-focus_neighbor_top = NodePath("../SuitorProfile/Root/TabButton")
 focus_neighbor_bottom = NodePath("../PlayHandButton")
 script = ExtResource("4_xg83y")
 Alignment = 2
@@ -192,22 +189,3 @@ offset_right = 293.0
 offset_bottom = 0.103996
 grow_vertical = 1
 CurrentRound = 2
-
-[node name="SuitorProfile" parent="." instance=ExtResource("9_6xg5x")]
-layout_mode = 1
-anchor_left = 1.0
-anchor_top = 0.012
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -16.0
-offset_top = 16.224
-offset_right = 488.0
-offset_bottom = -16.0
-HighlightOffset = Vector2(-50, 0)
-OpenOffset = Vector2(-500, 0)
-OpenDuration = 0.25
-
-[node name="TabButton" parent="SuitorProfile/Root" index="5"]
-focus_neighbor_bottom = NodePath("../../../RightHandContainer")
-
-[editable path="SuitorProfile"]
