@@ -16,21 +16,25 @@ public partial class SkipIntroController : Button
 
     public override void _ExitTree() {
         GameManager.CardGameChanged -= UpdateToNewController;
-        _controller?.TryDisconnect(CardGameController.SignalName.GameStart, new Callable(this, MethodName.Show));
-        _controller?.TryDisconnect(CardGameController.SignalName.RoundStart, new Callable(this, MethodName.OnRoundStart));
+        DisconnectFromController();
         this.TryDisconnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnPressed));
     }
 
-    private void UpdateToNewController() {
+    private void DisconnectFromController() {
         Hide();
         if (_controller.IsValid()) {
-            _controller.TryDisconnect(CardGameController.SignalName.GameStart, new Callable(this, MethodName.Show));
+            _controller.TryDisconnect(CardGameController.SignalName.GameStart, new Callable(this, CanvasItem.MethodName.Show));
             _controller.TryDisconnect(CardGameController.SignalName.RoundStart, new Callable(this, MethodName.OnRoundStart));
         }
+        _controller = null;
+    }
+
+    private void UpdateToNewController() {
+        DisconnectFromController();
         _controller = GameManager.CardGameController;
         if (_controller.IsValid()) {
-            Visible = !_controller.Started;
-            _controller.TryConnect(CardGameController.SignalName.GameStart, new Callable(this, MethodName.Show));
+            Visible = !_controller.Started && _controller.IntroSkippable;
+            _controller.TryConnect(CardGameController.SignalName.GameStart, new Callable(this, CanvasItem.MethodName.Show));
             _controller.TryConnect(CardGameController.SignalName.RoundStart, new Callable(this, MethodName.OnRoundStart));
         }
     }
