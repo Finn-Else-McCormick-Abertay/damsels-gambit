@@ -26,11 +26,11 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_gcq7h")
 script = ExtResource("1_ly6k8")
-SettingsMenuScene = ExtResource("6_f1uj7")
 StartButton = NodePath("HBoxContainer/VBoxContainer/Start")
 SettingsButton = NodePath("HBoxContainer/VBoxContainer2/Settings")
 ExitButton = NodePath("HBoxContainer/VBoxContainer3/Exit")
 ButtonRoot = NodePath("HBoxContainer")
+SettingsMenuScene = ExtResource("6_f1uj7")
 
 [node name="Background" type="NinePatchRect" parent="."]
 layout_mode = 1
