@@ -1,3 +1,7 @@
-/GodotSharp
-/Godot*.exe
-/Godot*.zip
+#Ignore everything
+*
+#Except:
+!.gitignore
+!.gdignore
+!*.sh
+!*.bat
