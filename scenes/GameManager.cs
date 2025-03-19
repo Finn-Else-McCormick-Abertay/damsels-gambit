@@ -46,6 +46,7 @@ public sealed partial class GameManager : Node
 		GetTree().Root.Connect(Node.SignalName.Ready, new Callable(this, MethodName.OnTreeReady), (uint)ConnectFlags.OneShot);
 	}
 	private void OnTreeReady() {
+		RenderingServer.SetDefaultClearColor(Colors.Black);
 		GetTree().Connect(SceneTree.SignalName.NodeAdded, Callable.From((Node node) => { if (node is PopupMenu popup) { popup.TransparentBg = true; } }));
 
 		var gameLayer = AddLayer("game", 20);
