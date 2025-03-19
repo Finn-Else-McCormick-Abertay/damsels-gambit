@@ -110,9 +110,9 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	public Control GetDefaultFocus(InputManager.FocusDirection direction) =>
 		InputManager.FindFocusableWithin(direction switch {
 			_ when DialogueManager.Runner.IsDialogueRunning => null,
-			InputManager.FocusDirection.Up => PlayButton,
-			InputManager.FocusDirection.Right => TopicHand,
-			InputManager.FocusDirection.Left or _ => ActionHand
+			InputManager.FocusDirection.Down => PlayButton,
+			InputManager.FocusDirection.Left => TopicHand,
+			InputManager.FocusDirection.Right or _ => ActionHand
 		}, direction);
 
 	private void PlayHand() {

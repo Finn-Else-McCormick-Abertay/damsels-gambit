@@ -256,13 +256,11 @@ public sealed partial class InputManager : Node
 		};
 		
 		var focused = _focusedViewport.GuiGetFocusOwner();
-		if (focused is null) {
-			foreach (var focusContext in GetTree().Root.FindChildrenWhere(x => x is IFocusContext).Select(x => x as IFocusContext).Where(x => x.FocusContextPriority > 0).OrderBy(x => x.FocusContextPriority)) {
+		if (focused is null || !focused.IsVisibleInTree()) {
+			foreach (var focusContext in GetTree().Root.FindChildrenWhere(x => x is IFocusContext).Select(x => x as IFocusContext)
+					.Where(x => x.FocusContextPriority >= 0 && ((x as CanvasItem)?.IsVisibleInTree() ?? true)).OrderBy(x => x.FocusContextPriority)) {
 				var contextDefaultFocus = FindFocusableWithin(focusContext?.GetDefaultFocus(direction));
-				if (contextDefaultFocus is not null) {
-					contextDefaultFocus?.GrabFocus();
-					return;
-				}
+				if (contextDefaultFocus is not null) { contextDefaultFocus?.GrabFocus(); return; }
 			}
 		}
 
