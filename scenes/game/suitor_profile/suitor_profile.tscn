@@ -1,21 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://q1kh0whg1g0g"]
+[gd_scene load_steps=5 format=3 uid="uid://q1kh0whg1g0g"]
 
 [ext_resource type="Theme" uid="uid://db11aw5aoqnpw" path="res://assets/ui/theme/suitor_profile_theme.tres" id="1_yh5ad"]
 [ext_resource type="Script" uid="uid://c5bi6sq63upok" path="res://scenes/game/suitor_profile/SuitorProfile.cs" id="2_eweoj"]
 [ext_resource type="Script" uid="uid://dxgjxwnt0yhqf" path="res://scenes/dialogue/views/ProfileDialogueView.cs" id="3_c4ias"]
 [ext_resource type="Texture2D" uid="uid://bgp5yt38gueut" path="res://assets/ui/panels/paper_texture_white_bkg.png" id="3_eweoj"]
-[ext_resource type="Texture2D" uid="uid://cmu14c5q6gcpv" path="res://assets/ui/buttons/flag_pull_tab_focused_fnl.png" id="5_w334g"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uwmdn"]
-texture = ExtResource("5_w334g")
-texture_margin_left = 22.0
-texture_margin_top = 16.0
-texture_margin_bottom = 16.0
-expand_margin_left = 90.0
-expand_margin_right = 11.0
-axis_stretch_horizontal = 2
-axis_stretch_vertical = 2
-region_rect = Rect2(3.26001, -5.36249, 2411.41, 592.41)
 
 [node name="SuitorProfile" type="Control" node_paths=PackedStringArray("DialogueView", "Root", "TabButton")]
 layout_mode = 3
@@ -132,5 +120,4 @@ offset_top = -40.8915
 offset_right = 5.0
 offset_bottom = 40.1085
 theme_type_variation = &"TabBanner"
-theme_override_styles/focus = SubResource("StyleBoxTexture_uwmdn")
 text = "Suitor Profile"

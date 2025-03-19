@@ -1,7 +1,7 @@
 [gd_resource type="Theme" load_steps=10 format=3 uid="uid://db11aw5aoqnpw"]
 
 [ext_resource type="FontVariation" uid="uid://66hx5icc5cmq" path="res://assets/fonts/header_dynamic_font.tres" id="1_j2jn3"]
-[ext_resource type="Texture2D" uid="uid://do13dnmq5qx1r" path="res://assets/ui/buttons/flag_pull_tab_focused.png" id="2_7gvq2"]
+[ext_resource type="Texture2D" uid="uid://cmu14c5q6gcpv" path="res://assets/ui/buttons/flag_pull_tab_focused_fnl.png" id="2_7gvq2"]
 [ext_resource type="Texture2D" uid="uid://dm3f3umnfllxf" path="res://assets/ui/buttons/flag_pull_tab.png" id="2_pr86b"]
 [ext_resource type="Script" uid="uid://bgveruq6sb3li" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="3_6pnow"]
 [ext_resource type="Texture2D" uid="uid://n02r77r4mt87" path="res://assets/ui/buttons/flag_pull_tab_hovered_pressed.png" id="4_icdy8"]
