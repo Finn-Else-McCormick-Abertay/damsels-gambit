@@ -265,11 +265,12 @@ public sealed partial class InputManager : Node
 		}
 
 		if (direction != FocusDirection.None && !UseDirectionalInput(focused, direction)) {
+			Control focusNext = GetNextFocus(direction, focused);
+
 			foreach (var focusableContainer in focused?.FindParentsWhere(x => x is IFocusableContainer).OrderBy(x => x.FindDistanceToChild(focused)).Select(x => x as IFocusableContainer) ?? []) {
-				if (!focusableContainer.TryLoseFocus(direction)) return;
+				if (!(focusableContainer as Node).IsAncestorOf(focusNext) && !focusableContainer.TryLoseFocus(direction)) return;
 			}
 
-			Control focusNext = GetNextFocus(direction, focused);
 			Instance._prevFocus = focused;
 			if (ShouldDisplayFocusDebugInfo) Console.Info(focusNext is not null ? $"Shifted focus {Enum.GetName(direction)} to {focusNext}." : $"Could not shift focus {Enum.GetName(direction)} from {focused}.");
 			focusNext?.GrabFocus();
