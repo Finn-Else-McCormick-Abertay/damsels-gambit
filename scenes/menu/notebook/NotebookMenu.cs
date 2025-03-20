@@ -13,17 +13,18 @@ public partial class NotebookMenu : Control, IFocusableContainer
 	[ExportGroup("States")]
 
 	[ExportSubgroup("Closed", "Closed")]
-	[Export(PropertyHint.Range, "-90,90,0.001,radians")] public double ClosedCoverAngle { get; set { field = value; if (!Open) CoverPivot?.OnReady(x => x.Rotation = x.Rotation with { Y = (float)value }); } } = 0f;
+	[Export] public Vector2 ClosedOffset { get; set { field = value; if (State == AnimationState.Closed) Root?.OnReady(x => x.SetPosition(value)); } }
+	[Export(PropertyHint.Range, "-90,90,0.001,radians")] public double ClosedCoverAngle { get; set { field = value; if (!Open) CoverPivot?.OnReady(x => x.Rotation = x.Rotation with { Y = (float)value }); } } = 0.0;
 	
 	[ExportSubgroup("Highlight", "Highlight")]
-	[Export] public Vector2 HighlightOffset { get; set; }
-	[Export] private double HighlightDuration { get; set; } = 0.2;
-	[Export(PropertyHint.Range, "-90,90,0.001,radians")] public double HighlightCoverAngle { get; set { field = value; if (Highlighted && !Open) CoverPivot?.OnReady(x => x.Rotation = x.Rotation with { Y = (float)value }); } } = 0f;
+	[Export] public Vector2 HighlightOffset { get; set { field = value; if (State == AnimationState.Highlighted) Root?.OnReady(x => x.SetPosition(value)); } }
+	[Export(PropertyHint.Range, "-90,90,0.001,radians")] public double HighlightCoverAngle { get; set { field = value; if (State == AnimationState.Highlighted) CoverPivot?.OnReady(x => x.Rotation = x.Rotation with { Y = (float)value }); } } = 0.0;
+	[Export(PropertyHint.Range, "0,1,or_greater,suffix:s")] private double HighlightDuration { get; set; } = 0.2;
 	
 	[ExportSubgroup("Open", "Open")]
-	[Export] public Vector2 OpenOffset { get; set; }
-	[Export] private double OpenDuration { get; set; } = 0.3;
-	[Export(PropertyHint.Range, "-90,90,0.001,radians")] public double OpenCoverAngle { get; set { field = value; if (Open) CoverPivot?.OnReady(x => x.Rotation = x.Rotation with { Y = (float)value }); } } = 0f;
+	[Export] public Vector2 OpenOffset { get; set { field = value; if (State == AnimationState.Open) Root?.OnReady(x => x.SetPosition(value)); } }
+	[Export(PropertyHint.Range, "-90,90,0.001,radians")] public double OpenCoverAngle { get; set { field = value; if (State == AnimationState.Open) CoverPivot?.OnReady(x => x.Rotation = x.Rotation with { Y = (float)value }); } } = 0.0;
+	[Export(PropertyHint.Range, "0,1,or_greater,suffix:s")] private double OpenDuration { get; set; } = 0.3;
 
 	[ExportGroup("Nodes")]
 	[Export] private Control Root { get; set; }
@@ -34,47 +35,44 @@ public partial class NotebookMenu : Control, IFocusableContainer
 	[Export] private Node3D CoverPivot { get; set; }
 
 	[ExportGroup("Debug", "Debug")]
-	[Export] private bool DebugOpen { get => Open; set => Open = value; }
-	[Export] private bool DebugHighlighted { get => Highlighted; set => Highlighted = value; }
+	[Export] private AnimationState DebugState { get => State; set => State = value; }
+	
+	public enum AnimationState { Closed, Highlighted, Open };
+	public AnimationState State { get; private set { AnimateStateChange(State, value); field = value; } }
+
+	public bool Open { get; set { field = value; State = State switch { _ when Open => AnimationState.Open, AnimationState.Open when !Open && Highlighted => AnimationState.Highlighted, _ => AnimationState.Closed }; } } = false;
+	public bool Highlighted { get; set { field = value; State = State switch { AnimationState.Open => AnimationState.Open, _ when Highlighted => AnimationState.Highlighted, _ => AnimationState.Closed }; } } = false;
 	
 	private Tween _moveTween, _rotateTween;
-	private void TweenPosition(Vector2 to, double duration) => this.OnReady(() => { _moveTween?.Kill(); _moveTween = CreateTween(); _moveTween.TweenProperty(Root, "position", to, duration); });
-	private void TweenRotation(double to, double duration) => this.OnReady(() => { _rotateTween?.Kill(); _rotateTween = CreateTween(); _rotateTween.TweenProperty(CoverPivot, "rotation:y", to, duration); });
+	private void AnimateStateChange(AnimationState oldState, AnimationState newState) {
+		if (oldState == newState) return;
 
-	public bool Open {
-		get; set {
-			if (Open != value) {
-				TweenPosition(value switch {true => OpenOffset, false when Highlighted => HighlightOffset, false => new Vector2()}, OpenDuration);
-				TweenRotation(value switch {true => OpenCoverAngle, false when Highlighted => HighlightCoverAngle, false => ClosedCoverAngle}, OpenDuration);
-			}
-			field = value;
-		}
-	} = false;
-	public bool Highlighted {
-		get; set {
-			if (Highlighted != value && !Open) {
-				TweenPosition(value switch {true => HighlightOffset, false => new Vector2()}, HighlightDuration);
-				TweenRotation(value switch {true => HighlightCoverAngle, false => ClosedCoverAngle}, HighlightDuration);
-			}
-			field = value;
-		}
-	} = false;
+		double duration = newState switch {
+			AnimationState.Open => OpenDuration,
+			AnimationState.Highlighted => oldState switch { AnimationState.Open => OpenDuration, AnimationState.Closed => HighlightDuration, _ => 0 },
+			AnimationState.Closed => oldState switch { AnimationState.Open => OpenDuration, AnimationState.Highlighted => HighlightDuration, _ => 0 }
+		};
+
+		var position = newState switch { AnimationState.Open => OpenOffset, AnimationState.Highlighted => HighlightOffset, AnimationState.Closed => ClosedOffset };
+		var angle = newState switch { AnimationState.Open => OpenCoverAngle, AnimationState.Highlighted => HighlightCoverAngle, AnimationState.Closed => ClosedCoverAngle };
+
+		this.OnReady(() => { _moveTween?.Kill(); _moveTween = CreateTween(); _moveTween.TweenProperty(Root, "position", position, duration); });
+		this.OnReady(() => { _rotateTween?.Kill(); _rotateTween = CreateTween(); _rotateTween.TweenProperty(CoverPivot, "rotation:y", angle, duration); });
+	}
 
 	public override void _Ready() {
 		if (Engine.IsEditorHint()) return;
 
 		Open = false; Highlighted = false;
 
-		ProfileButton?.Connect(Control.SignalName.MouseEntered, new Callable(this, MethodName.TriggerHighlight));
-		ProfileButton?.Connect(Control.SignalName.MouseExited, new Callable(this, MethodName.TriggerUnhighlight));
-		ProfileButton?.Connect(Control.SignalName.FocusEntered, new Callable(this, MethodName.TriggerHighlight));
-		ProfileButton?.Connect(Control.SignalName.FocusExited, new Callable(this, MethodName.TriggerUnhighlight));
+		ProfileButton?.Connect(Control.SignalName.MouseEntered, new Callable(this, MethodName.OnFocus)); ProfileButton?.Connect(Control.SignalName.MouseExited, new Callable(this, MethodName.OnUnfocus));
+		ProfileButton?.Connect(Control.SignalName.FocusEntered, new Callable(this, MethodName.OnFocus)); ProfileButton?.Connect(Control.SignalName.FocusExited, new Callable(this, MethodName.OnUnfocus));
 		ProfileButton?.Connect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.ToggleOpen));
 	}
 
-	private void TriggerHighlight() { Highlighted = true; }
-	private void TriggerUnhighlight() { Highlighted = false; }
-	private void ToggleOpen() { Open = !Open; }
+	private void OnFocus() => Highlighted = true;
+	private void OnUnfocus() => Highlighted = false;
+	private void ToggleOpen() => Open = !Open;
 
 	public void UpdateDialogueViewNode() {
 		if (Engine.IsEditorHint() || !DialogueView.IsValid() || string.IsNullOrEmpty(SuitorName)) return;

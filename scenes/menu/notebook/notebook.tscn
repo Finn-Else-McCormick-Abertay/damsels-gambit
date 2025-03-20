@@ -24,8 +24,8 @@ script = ExtResource("2_eweoj")
 HighlightOffset = Vector2(-50, 0)
 HighlightCoverAngle = 0.0380831
 OpenOffset = Vector2(-500, 0)
-OpenDuration = 0.25
 OpenCoverAngle = 1.39626
+OpenDuration = 0.25
 Root = NodePath("Root")
 DialogueView = NodePath("ProfileView")
 ProfileButton = NodePath("Root/Profile Button")
@@ -160,19 +160,18 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -169.0
 offset_top = -137.0
-offset_right = 169.0
+offset_right = 168.0
 offset_bottom = 137.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="Root/Cover"]
 world_3d = SubResource("World3D_bl6mr")
 transparent_bg = true
 handle_input_locally = false
 msaa_3d = 3
-size = Vector2i(859, 894)
+size = Vector2i(859, 895)
 render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="Root/Cover/SubViewport"]
