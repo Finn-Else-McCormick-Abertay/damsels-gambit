@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DamselsGambit.Util;
@@ -11,10 +12,10 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
     [Export] private PackedScene[] Scenes { get; set { field = value; this.OnReady(UpdateViewports); } } = [];
 
     [ExportGroup("Padding", "Padding")]
-    [Export] public int PaddingLeft { get; set { field = value; this.OnReady(UpdateViewports); } } = 0;
-    [Export] public int PaddingTop { get; set { field = value; this.OnReady(UpdateViewports); } } = 0;
-    [Export] public int PaddingRight { get; set { field = value; this.OnReady(UpdateViewports); } } = 0;
-    [Export] public int PaddingBottom { get; set { field = value; this.OnReady(UpdateViewports); } } = 0;
+    [Export(PropertyHint.None, "suffix:px")] public int PaddingLeft { get; set { field = Math.Max(0, value); this.OnReady(UpdateViewports); } } = 0;
+    [Export(PropertyHint.None, "suffix:px")] public int PaddingTop { get; set { field = Math.Max(0, value); this.OnReady(UpdateViewports); } } = 0;
+    [Export(PropertyHint.None, "suffix:px")] public int PaddingRight { get; set { field = Math.Max(0, value); this.OnReady(UpdateViewports); } } = 0;
+    [Export(PropertyHint.None, "suffix:px")] public int PaddingBottom { get; set { field = Math.Max(0, value); this.OnReady(UpdateViewports); } } = 0;
 
 	private Node _viewportsRoot; private Control _textureRectRoot;
     private readonly Dictionary<string, (Control Layer, Control Root, SubViewport Viewport, TextureRect TextureRect, ViewportTexture Texture)> _layers = [];
@@ -35,7 +36,6 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
     public void PreScriptReload() => ClearViewports();
 
     private void UpdateViewports() {
-        // For reasons unclear to me, when the scene is first opened in the editor _EnterTree seems to run before it's actually in the tree.
         if (!IsInsideTree()) return;
 
         if (!_viewportsRoot.IsValid()) { _viewportsRoot = new() { Name = "ViewportsRoot" }; AddChild(_viewportsRoot); }
@@ -58,7 +58,7 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
                 if (tuple.Root.IsValid()) { tuple.Root.Size = Size; tuple.Root.Position = rootOffset; }
                 if (tuple.Layer.IsValid()) { tuple.Layer.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect); }
                 if (tuple.Viewport.IsValid()) tuple.Viewport.Size = viewportSize;
-                if (tuple.TextureRect.IsValid()) { tuple.TextureRect.Position = rootOffset * -1; tuple.TextureRect.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect); tuple.TextureRect.ZIndex = index; }
+                if (tuple.TextureRect.IsValid()) { tuple.TextureRect.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect); tuple.TextureRect.Position = -rootOffset; tuple.TextureRect.ZIndex = index; }
             }
             else {
 		        var viewport2d = new SubViewport() { Msaa2D = Viewport.Msaa.Msaa8X, TransparentBg = true, Disable3D = true, Size = viewportSize }; _viewportsRoot.AddChild(viewport2d);
@@ -67,7 +67,8 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
                 var layer = layerScene.Instantiate() as Control; layerRoot.AddChild(layer); layer.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 
                 var viewportTexture = new ViewportTexture() { ViewportPath = viewport2d.GetPath() };
-                var textureRect = new TextureRect() { Position = rootOffset * -1, Texture = viewportTexture }; _textureRectRoot.AddChild(textureRect); textureRect.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+                var textureRect = new TextureRect() { Texture = viewportTexture }; _textureRectRoot.AddChild(textureRect);
+                textureRect.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect); textureRect.Position = -rootOffset;
                 textureRect.ZIndex = index;
 
                 _layers.Add(layerScene.ResourcePath, (layer, layerRoot, viewport2d, textureRect, viewportTexture));

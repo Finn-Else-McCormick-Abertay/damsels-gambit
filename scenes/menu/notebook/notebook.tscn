@@ -247,4 +247,5 @@ offset_right = 932.0
 offset_bottom = 581.0
 script = ExtResource("6_s6j4j")
 Scenes = [ExtResource("8_aa6wo"), ExtResource("7_43gqe")]
+PaddingLeft = 190
 metadata/_custom_type_script = "uid://biqqbrij8l0km"
