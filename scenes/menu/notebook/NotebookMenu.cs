@@ -6,7 +6,7 @@ using System;
 namespace DamselsGambit;
 
 [Tool]
-public partial class NotebookMenu : Control, IFocusableContainer
+public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToolScript
 {
 	[Export] public string SuitorName { get; set { field = value; UpdateDialogueViewNode(); } }
 

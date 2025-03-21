@@ -2,7 +2,7 @@ using Godot;
 
 namespace DamselsGambit;
 
-[Tool, GlobalClass]
+[Tool, GlobalClass, Icon("res://assets/editor/icons/stylebox_scaled_texture.svg")]
 public partial class StyleBoxScaledTexture : StyleBox
 {
 	[Export] Texture2D Texture { get; set { field = value; EmitChanged(); } }

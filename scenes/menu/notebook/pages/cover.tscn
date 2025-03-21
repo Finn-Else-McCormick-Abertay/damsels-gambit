@@ -1,0 +1,40 @@
+[gd_scene load_steps=3 format=3 uid="uid://dajkw7w45mh4c"]
+
+[ext_resource type="Texture2D" uid="uid://bgp5yt38gueut" path="res://assets/ui/panels/paper_texture_white_bkg.png" id="1_l1sy0"]
+[ext_resource type="Texture2D" uid="uid://cnmux17p4b1od" path="res://assets/ui/buttons/pause_icon_alt.png" id="2_gfsyx"]
+
+[node name="Cover" type="Control"]
+layout_mode = 3
+anchor_right = 0.432292
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Background" type="TextureRect" parent="."]
+modulate = Color(0.721876, 0.565272, 0.381291, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(229, 197)
+texture = ExtResource("1_l1sy0")
+expand_mode = 1
+
+[node name="Pause Button" type="Button" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.039
+anchor_bottom = 0.039
+offset_left = 77.475
+offset_top = -2.524
+offset_right = 230.475
+offset_bottom = 109.622
+grow_vertical = 0
+theme_type_variation = &"PauseButton"
+text = "Pause"
+icon = ExtResource("2_gfsyx")
+alignment = 0

@@ -1,10 +1,13 @@
-[gd_scene load_steps=8 format=3 uid="uid://q1kh0whg1g0g"]
+[gd_scene load_steps=11 format=3 uid="uid://q1kh0whg1g0g"]
 
 [ext_resource type="Theme" uid="uid://db11aw5aoqnpw" path="res://assets/ui/theme/suitor_profile_theme.tres" id="1_yh5ad"]
 [ext_resource type="Script" uid="uid://c5bi6sq63upok" path="res://scenes/menu/notebook/NotebookMenu.cs" id="2_eweoj"]
 [ext_resource type="Script" uid="uid://dxgjxwnt0yhqf" path="res://scenes/dialogue/views/ProfileDialogueView.cs" id="3_c4ias"]
 [ext_resource type="Texture2D" uid="uid://bgp5yt38gueut" path="res://assets/ui/panels/paper_texture_white_bkg.png" id="3_eweoj"]
 [ext_resource type="Texture2D" uid="uid://cnmux17p4b1od" path="res://assets/ui/buttons/pause_icon_alt.png" id="5_bl6mr"]
+[ext_resource type="Script" uid="uid://biqqbrij8l0km" path="res://scenes/menu/notebook/ViewportLayerContainer.cs" id="6_s6j4j"]
+[ext_resource type="PackedScene" uid="uid://2010mmkoekfk" path="res://scenes/menu/notebook/pages/profile.tscn" id="7_43gqe"]
+[ext_resource type="PackedScene" uid="uid://dajkw7w45mh4c" path="res://scenes/menu/notebook/pages/cover.tscn" id="8_aa6wo"]
 
 [sub_resource type="World3D" id="World3D_bl6mr"]
 
@@ -39,6 +42,7 @@ Label = NodePath("../Root/Info")
 Portrait = NodePath("../Root/Portrait")
 
 [node name="Root" type="Control" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -172,7 +176,7 @@ transparent_bg = true
 handle_input_locally = false
 msaa_3d = 3
 size = Vector2i(859, 895)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="Camera3D" type="Camera3D" parent="Root/Cover/SubViewport"]
 keep_aspect = 0
@@ -235,3 +239,11 @@ theme_type_variation = &"PauseButton"
 text = "Pause"
 icon = ExtResource("5_bl6mr")
 alignment = 0
+
+[node name="ViewportLayerContainer" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 459.0
+offset_bottom = 561.0
+script = ExtResource("6_s6j4j")
+Scenes = [ExtResource("8_aa6wo"), ExtResource("7_43gqe")]
+metadata/_custom_type_script = "uid://biqqbrij8l0km"

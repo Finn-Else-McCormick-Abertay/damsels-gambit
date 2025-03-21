@@ -22,7 +22,7 @@ static class NodeExtensions
 
     public static void AddOwnedChild(this Node self, Node child, bool force = false) {
         if (force && child.GetParent() is Node parent) parent.RemoveChild(child);
-        self.AddChild(child); child.Owner = self;
+        self.AddChild(child); child.Owner = Engine.IsEditorHint() ? EditorInterface.Singleton.GetEditedSceneRoot() : self;
     }
 
     public static Godot.Collections.Array<Node> GetInternalChildren(this Node self) {
