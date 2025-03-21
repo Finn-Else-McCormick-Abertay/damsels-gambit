@@ -42,7 +42,6 @@ Label = NodePath("../Root/Info")
 Portrait = NodePath("../Root/Portrait")
 
 [node name="Root" type="Control" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -176,7 +175,7 @@ transparent_bg = true
 handle_input_locally = false
 msaa_3d = 3
 size = Vector2i(859, 895)
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="Root/Cover/SubViewport"]
 keep_aspect = 0
@@ -242,8 +241,10 @@ alignment = 0
 
 [node name="ViewportLayerContainer" type="Control" parent="."]
 anchors_preset = 0
-offset_right = 459.0
-offset_bottom = 561.0
+offset_left = 431.0
+offset_top = 20.0
+offset_right = 932.0
+offset_bottom = 581.0
 script = ExtResource("6_s6j4j")
 Scenes = [ExtResource("8_aa6wo"), ExtResource("7_43gqe")]
 metadata/_custom_type_script = "uid://biqqbrij8l0km"

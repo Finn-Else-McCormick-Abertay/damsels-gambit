@@ -3,6 +3,8 @@ using DamselsGambit.Util;
 using Godot;
 using System;
 
+namespace DamselsGambit;
+
 public partial class EndScreen : Control
 {
 	[Export] public Label MessageLabel { get; set; }
