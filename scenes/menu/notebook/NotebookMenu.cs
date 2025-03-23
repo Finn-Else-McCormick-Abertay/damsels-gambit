@@ -14,25 +14,24 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 
 	[ExportSubgroup("Closed", "Closed")]
 	[Export] public Vector2 ClosedOffset { get; set { field = value; if (State == AnimationState.Closed) Root?.OnReady(x => x.SetPosition(value)); } }
-	[Export(PropertyHint.Range, "-90,90,0.001,radians")] public double ClosedCoverAngle { get; set { field = value; if (!Open) CoverPivot?.OnReady(x => x.Rotation = x.Rotation with { Y = (float)value }); } } = 0.0;
+	[Export(PropertyHint.Range, "-90,90,0.001,radians")] public double ClosedCoverAngle { get; set { field = value; RestoreAnimationState(); } } = 0.0;
 	
 	[ExportSubgroup("Highlight", "Highlight")]
 	[Export] public Vector2 HighlightOffset { get; set { field = value; if (State == AnimationState.Highlighted) Root?.OnReady(x => x.SetPosition(value)); } }
-	[Export(PropertyHint.Range, "-90,90,0.001,radians")] public double HighlightCoverAngle { get; set { field = value; if (State == AnimationState.Highlighted) CoverPivot?.OnReady(x => x.Rotation = x.Rotation with { Y = (float)value }); } } = 0.0;
+	[Export(PropertyHint.Range, "-90,90,0.001,radians")] public double HighlightCoverAngle { get; set { field = value; RestoreAnimationState(); } } = 0.0;
 	[Export(PropertyHint.Range, "0,1,or_greater,suffix:s")] private double HighlightDuration { get; set; } = 0.2;
 	
 	[ExportSubgroup("Open", "Open")]
 	[Export] public Vector2 OpenOffset { get; set { field = value; if (State == AnimationState.Open) Root?.OnReady(x => x.SetPosition(value)); } }
-	[Export(PropertyHint.Range, "-90,90,0.001,radians")] public double OpenCoverAngle { get; set { field = value; if (State == AnimationState.Open) CoverPivot?.OnReady(x => x.Rotation = x.Rotation with { Y = (float)value }); } } = 0.0;
+	[Export(PropertyHint.Range, "-90,90,0.001,radians")] public double OpenCoverAngle { get; set { field = value; RestoreAnimationState(); } } = 0.0;
 	[Export(PropertyHint.Range, "0,1,or_greater,suffix:s")] private double OpenDuration { get; set; } = 0.3;
 
 	[ExportGroup("Nodes")]
 	[Export] private Control Root { get; set; }
+	[Export] private ViewportLayerContainer LayerContainer { get; set; }
 	[ExportSubgroup("Profile")]
 	[Export] private Node DialogueView { get; set { field = value; UpdateDialogueViewNode(); } }
 	[Export] private Button ProfileButton { get; set; }
-	[ExportSubgroup("Cover")]
-	[Export] private Node3D CoverPivot { get; set; }
 
 	[ExportGroup("Debug", "Debug")]
 	[Export] private AnimationState DebugState { get => State; set => State = value; }
@@ -57,7 +56,23 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 		var angle = newState switch { AnimationState.Open => OpenCoverAngle, AnimationState.Highlighted => HighlightCoverAngle, AnimationState.Closed => ClosedCoverAngle };
 
 		this.OnReady(() => { _moveTween?.Kill(); _moveTween = CreateTween(); _moveTween.TweenProperty(Root, "position", position, duration); });
-		this.OnReady(() => { _rotateTween?.Kill(); _rotateTween = CreateTween(); _rotateTween.TweenProperty(CoverPivot, "rotation:y", angle, duration); });
+
+		this.OnReady(() => {
+			_rotateTween?.Kill();
+			var coverPivot = LayerContainer.GetPivot(LayerContainer.Scenes.Length - 1);
+			if (coverPivot.IsValid()) { _rotateTween = CreateTween(); _rotateTween.TweenProperty(coverPivot, "rotation:y", angle, duration); }
+		});
+	}
+
+	private void RestoreAnimationState() {
+		if (!IsNodeReady()) return;
+		
+		var angle = State switch { AnimationState.Open => OpenCoverAngle, AnimationState.Highlighted => HighlightCoverAngle, AnimationState.Closed => ClosedCoverAngle };
+
+		LayerContainer?.OnReady(() => {
+			var coverPivot = LayerContainer.GetPivot(LayerContainer.Scenes.Length - 1);
+			if (coverPivot.IsValid()) coverPivot.Rotation = coverPivot.Rotation with { Y = (float)angle };
+		});
 	}
 
 	public override void _Ready() {
@@ -68,6 +83,11 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 		ProfileButton?.Connect(Control.SignalName.MouseEntered, new Callable(this, MethodName.OnFocus)); ProfileButton?.Connect(Control.SignalName.MouseExited, new Callable(this, MethodName.OnUnfocus));
 		ProfileButton?.Connect(Control.SignalName.FocusEntered, new Callable(this, MethodName.OnFocus)); ProfileButton?.Connect(Control.SignalName.FocusExited, new Callable(this, MethodName.OnUnfocus));
 		ProfileButton?.Connect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.ToggleOpen));
+	}
+	public override void _EnterTree() { RestoreAnimationState(); }
+	public override void _ExitTree() {
+		_moveTween?.Kill(); _moveTween = null;
+		_rotateTween?.Kill(); _rotateTween = null;
 	}
 
 	private void OnFocus() => Highlighted = true;

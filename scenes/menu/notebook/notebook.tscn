@@ -1,20 +1,12 @@
-[gd_scene load_steps=11 format=3 uid="uid://q1kh0whg1g0g"]
+[gd_scene load_steps=6 format=3 uid="uid://q1kh0whg1g0g"]
 
-[ext_resource type="Theme" uid="uid://db11aw5aoqnpw" path="res://assets/ui/theme/suitor_profile_theme.tres" id="1_yh5ad"]
 [ext_resource type="Script" uid="uid://c5bi6sq63upok" path="res://scenes/menu/notebook/NotebookMenu.cs" id="2_eweoj"]
 [ext_resource type="Script" uid="uid://dxgjxwnt0yhqf" path="res://scenes/dialogue/views/ProfileDialogueView.cs" id="3_c4ias"]
-[ext_resource type="Texture2D" uid="uid://bgp5yt38gueut" path="res://assets/ui/panels/paper_texture_white_bkg.png" id="3_eweoj"]
-[ext_resource type="Texture2D" uid="uid://cnmux17p4b1od" path="res://assets/ui/buttons/pause_icon_alt.png" id="5_bl6mr"]
 [ext_resource type="Script" uid="uid://biqqbrij8l0km" path="res://scenes/menu/notebook/ViewportLayerContainer.cs" id="6_s6j4j"]
 [ext_resource type="PackedScene" uid="uid://2010mmkoekfk" path="res://scenes/menu/notebook/pages/profile.tscn" id="7_43gqe"]
 [ext_resource type="PackedScene" uid="uid://dajkw7w45mh4c" path="res://scenes/menu/notebook/pages/cover.tscn" id="8_43gqe"]
 
-[sub_resource type="World3D" id="World3D_bl6mr"]
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_bl6mr"]
-viewport_path = NodePath("Root/Cover/SubViewport/CoverViewport")
-
-[node name="NotebookMenu" type="Control" node_paths=PackedStringArray("Root", "DialogueView", "ProfileButton", "CoverPivot")]
+[node name="NotebookMenu" type="Control" node_paths=PackedStringArray("Root", "LayerContainer", "DialogueView")]
 layout_mode = 3
 anchor_right = 0.45
 anchor_bottom = 0.958
@@ -22,236 +14,26 @@ offset_right = 3.59998
 offset_bottom = 0.215942
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_yh5ad")
 script = ExtResource("2_eweoj")
 HighlightOffset = Vector2(-50, 0)
 HighlightCoverAngle = 0.0380831
 OpenOffset = Vector2(-500, 0)
 OpenCoverAngle = 1.39626
 OpenDuration = 0.25
-Root = NodePath("Root")
+Root = NodePath("ViewportLayerContainer")
+LayerContainer = NodePath("ViewportLayerContainer")
 DialogueView = NodePath("ProfileView")
-ProfileButton = NodePath("Root/Profile Button")
-CoverPivot = NodePath("Root/Cover/SubViewport/CoverPivot")
 
-[node name="ProfileView" type="Node" parent="." node_paths=PackedStringArray("Title", "Subtitle", "Label", "Portrait")]
+[node name="ProfileView" type="Node" parent="."]
 script = ExtResource("3_c4ias")
-Title = NodePath("../Root/Title")
-Subtitle = NodePath("../Root/Subtitle")
-Label = NodePath("../Root/Info")
-Portrait = NodePath("../Root/Portrait")
-
-[node name="Root" type="Control" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Background" type="TextureRect" parent="Root"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset = Vector2(229, 197)
-texture = ExtResource("3_eweoj")
-expand_mode = 1
-
-[node name="Portrait" type="TextureRect" parent="Root"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.019
-anchor_top = 0.025
-anchor_right = 0.5
-anchor_bottom = 0.615
-offset_left = 10.158
-offset_top = -0.525001
-offset_right = -38.0
-offset_bottom = -68.915
-pivot_offset = Vector2(207, 183)
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Title" type="Label" parent="Root"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.446
-anchor_top = 0.045
-anchor_right = 0.953
-anchor_bottom = 0.198
-offset_left = -0.0279999
-offset_top = 0.0549984
-offset_right = 10.346
-offset_bottom = -17.958
-pivot_offset = Vector2(-24.9999, 162)
-theme_type_variation = &"HeaderLarge"
-text = "Profile Title"
-autowrap_mode = 2
-
-[node name="Subtitle" type="RichTextLabel" parent="Root"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.454
-anchor_top = 0.196
-anchor_right = 0.885
-anchor_bottom = 0.202
-offset_left = -0.172012
-offset_top = -14.716
-offset_right = -73.43
-offset_bottom = 11.558
-pivot_offset = Vector2(-28.9999, 84)
-theme_type_variation = &"PronounciationGuide"
-bbcode_enabled = true
-text = "[i]subtitle line[/i]"
-
-[node name="Info" type="RichTextLabel" parent="Root"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.45
-anchor_top = 0.211
-anchor_right = 0.923
-anchor_bottom = 0.573
-offset_left = -0.100006
-offset_top = -0.0310059
-offset_right = 10.886
-offset_bottom = -0.833008
-pivot_offset = Vector2(-31, 47)
-bbcode_enabled = true
-text = "Profile main body text.
-This will extend over multiple lines.
-[i]Italics[/i] [b]bold[/b] [i][b]bold italics[/b][/i]"
-tab_size = 12
-
-[node name="Pause Button" type="Button" parent="Root"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.039
-anchor_bottom = 0.039
-offset_left = -76.0
-offset_top = -32.219
-offset_right = 5.0
-offset_bottom = 32.781
-grow_vertical = 0
-focus_neighbor_bottom = NodePath("../Profile Button")
-theme_type_variation = &"PauseButton"
-text = "Pause"
-icon = ExtResource("5_bl6mr")
-alignment = 0
-
-[node name="Profile Button" type="Button" parent="Root"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.122
-anchor_bottom = 0.122
-offset_left = -122.0
-offset_top = -40.762
-offset_right = 5.0
-offset_bottom = 40.238
-grow_vertical = 0
-focus_neighbor_top = NodePath("../Pause Button")
-theme_type_variation = &"TabBanner"
-text = "Suitor Profile"
-alignment = 0
-
-[node name="Cover" type="SubViewportContainer" parent="Root"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -169.0
-offset_top = -137.0
-offset_right = 168.0
-offset_bottom = 137.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="SubViewport" type="SubViewport" parent="Root/Cover"]
-world_3d = SubResource("World3D_bl6mr")
-transparent_bg = true
-handle_input_locally = false
-msaa_3d = 3
-size = Vector2i(859, 895)
-render_target_update_mode = 4
-
-[node name="Camera3D" type="Camera3D" parent="Root/Cover/SubViewport"]
-keep_aspect = 0
-current = true
-
-[node name="CoverPivot" type="Node3D" parent="Root/Cover/SubViewport"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.446, -1.01, -5.445)
-
-[node name="CoverSprite" type="Sprite3D" parent="Root/Cover/SubViewport/CoverPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.981, 0, 0)
-cast_shadow = 0
-alpha_cut = 1
-alpha_scissor_threshold = 0.927
-alpha_antialiasing_mode = 1
-texture = SubResource("ViewportTexture_bl6mr")
-
-[node name="CoverViewport" type="SubViewport" parent="Root/Cover/SubViewport"]
-disable_3d = true
-transparent_bg = true
-msaa_2d = 3
-size = Vector2i(860, 895)
-
-[node name="Root" type="Control" parent="Root/Cover/SubViewport/CoverViewport"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 126.57
-offset_top = 30.85
-offset_right = -211.43
-offset_bottom = -243.15
-grow_horizontal = 2
-grow_vertical = 2
-theme = ExtResource("1_yh5ad")
-
-[node name="Background" type="TextureRect" parent="Root/Cover/SubViewport/CoverViewport/Root"]
-modulate = Color(0.721876, 0.565272, 0.381291, 1)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset = Vector2(229, 197)
-texture = ExtResource("3_eweoj")
-expand_mode = 1
-
-[node name="Pause Button" type="Button" parent="Root/Cover/SubViewport/CoverViewport/Root"]
-visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.039
-anchor_bottom = 0.039
-offset_left = -49.095
-offset_top = -22.688
-offset_right = 31.905
-offset_bottom = 42.312
-grow_vertical = 0
-theme_type_variation = &"PauseButton"
-text = "Pause"
-icon = ExtResource("5_bl6mr")
-alignment = 0
-
-[node name="ColorRect" type="ColorRect" parent="."]
-layout_mode = 0
-offset_left = -768.0
-offset_top = -378.0
-offset_right = 2015.0
-offset_bottom = 1026.0
 
 [node name="ViewportLayerContainer" type="Control" parent="."]
-anchors_preset = 0
-offset_left = 289.0
-offset_top = 53.0
-offset_right = 750.0
-offset_bottom = 652.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("6_s6j4j")
 Scenes = [ExtResource("7_43gqe"), ExtResource("8_43gqe")]
 PaddingCamera = 415
