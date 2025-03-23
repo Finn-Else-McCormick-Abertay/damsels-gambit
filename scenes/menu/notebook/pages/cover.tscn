@@ -1,17 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://dajkw7w45mh4c"]
+[gd_scene load_steps=4 format=3 uid="uid://dajkw7w45mh4c"]
 
 [ext_resource type="Texture2D" uid="uid://bgp5yt38gueut" path="res://assets/ui/panels/paper_texture_white_bkg.png" id="1_l1sy0"]
 [ext_resource type="Texture2D" uid="uid://cnmux17p4b1od" path="res://assets/ui/buttons/pause_icon_alt.png" id="2_gfsyx"]
+[ext_resource type="Script" uid="uid://cbqc0snx0l0pi" path="res://scenes/menu/notebook/PivotPoint.cs" id="3_3tu7u"]
 
 [node name="Cover" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -23.0
-offset_top = -25.0
-offset_right = 23.0
-offset_bottom = 25.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -21,6 +18,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -48.0
+offset_top = -43.0
+offset_right = 48.0
+offset_bottom = 43.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(229, 197)
@@ -42,3 +43,13 @@ theme_type_variation = &"PauseButton"
 text = "Pause"
 icon = ExtResource("2_gfsyx")
 alignment = 0
+
+[node name="PivotPoint" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+script = ExtResource("3_3tu7u")

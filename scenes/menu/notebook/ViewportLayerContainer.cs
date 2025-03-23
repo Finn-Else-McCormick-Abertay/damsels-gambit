@@ -9,6 +9,16 @@ namespace DamselsGambit;
 [Tool, GlobalClass, Icon("res://assets/editor/icons/viewport_layer_container.svg")]
 public partial class ViewportLayerContainer : Control, IReloadableToolScript
 {
+    public IEnumerable<string> LoadedScenes => Scenes.Select(x => x?.ResourcePath).Where(x => !string.IsNullOrEmpty(x));
+
+    public Control GetLayer(string scenePath) => _layers.GetValueOrDefault(scenePath).Layer;
+    public Control GetLayer(int index) => index >= 0 && index < Scenes.Length ? GetLayer(Scenes[index]?.ResourcePath) : null;
+    
+    public Node3D GetPivot(string scenePath) => _layers.GetValueOrDefault(scenePath).SpritePivot;
+    public Node3D GetPivot(int index) => index >= 0 && index < Scenes.Length ? GetPivot(Scenes[index]?.ResourcePath) : null;
+
+    public Node3D SharedPivot => _sharedRoot;
+
     [Export] public PackedScene[] Scenes { get; set { field = value; this.OnReady(() => UpdateViewports()); } } = [];
 
     [Export] public int FocusedLayer { get; set { field = value; this.OnReady(() => UpdateViewports()); } } = 0;
@@ -22,10 +32,11 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
     [Export(PropertyHint.None, "suffix:px")] public int PaddingLayer { get; set { field = Math.Max(0, value); this.OnReady(UpdateDelayed); } }
 
     private readonly Dictionary<string, (Control Layer, Control Root, SubViewport Viewport, Node3D SpritePivot, Sprite3D Sprite)> _layers = [];
-	private Node _viewportsRoot; private SubViewport _viewport3d; private Camera3D _camera; private TextureRect _textureRect;
+	private Node _viewportsRoot; private TextureRect _textureRect;
+    private SubViewport _viewport3d; private Camera3D _camera; private Node3D _sharedRoot;
 
     public override void _ValidateProperty(Godot.Collections.Dictionary prop) {
-        if (prop["name"].IsAnyOf(PropertyName._viewportsRoot, PropertyName._viewport3d, PropertyName._camera, PropertyName._textureRect))
+        if (prop["name"].IsAnyOf(PropertyName._viewportsRoot, PropertyName._viewport3d, PropertyName._camera, PropertyName._sharedRoot, PropertyName._textureRect, PropertyName._updateDelayTimer, PropertyName.SharedPivot))
             prop["usage"] = prop["usage"].SetFlags(PropertyUsageFlags.NoInstanceState, PropertyUsageFlags.NeverDuplicate, PropertyUsageFlags.Internal).UnsetFlags(PropertyUsageFlags.Storage);
     }
 
@@ -63,6 +74,7 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
             _textureRect.Texture ??= new ViewportTexture() { ViewportPath = _viewport3d.GetPath() };
         }
         if (!_camera.IsValid()) { _camera = new() { KeepAspect = Camera3D.KeepAspectEnum.Width }; _viewport3d.AddChild(_camera); }
+        if (!_sharedRoot.IsValid()) { _sharedRoot = new(); _viewport3d.AddChild(_sharedRoot); }
 
         float spritePixelSize = 0.01f;
 
@@ -80,8 +92,13 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
         var layerRootOffset = new Vector2(PaddingLayer, PaddingLayer);
         var layerSize = Size;
 
-        void UpdateSpritePivot(Node3D pivot, int index) {
+        void UpdateSpritePivot(Node3D pivot, Node3D sprite, Control layer, int index) {
             pivot.Position = new(0f, 0f, -distanceToPlane + (index - FocusedLayer) * LayerSeparation);
+            if (layer is not null && layer.FindChildOfType<PivotPoint>() is PivotPoint layerLogicalPivot) {
+                var layerPivotOffset = (layerLogicalPivot.GlobalPosition - viewport2dSize / 2) * spritePixelSize;
+                pivot.Position = pivot.Position with { X = layerPivotOffset.X, Y = layerPivotOffset.Y };
+                sprite.Position = sprite.Position with { X = -layerPivotOffset.X, Y = -layerPivotOffset.Y };
+            }
         }
 
         foreach (var (index, layerScene) in Scenes.Index()) {
@@ -93,7 +110,7 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
                     if (lowImpact) tuple.Root.Position -= new Vector2(viewport2dSize.X - tuple.Viewport.Size.X, viewport2dSize.Y - tuple.Viewport.Size.Y) / 2;
                 }
                 if (tuple.Viewport.IsValid() && !lowImpact) { tuple.Viewport.Size = viewport2dSize; }
-                if (tuple.SpritePivot.IsValid()) UpdateSpritePivot(tuple.SpritePivot, index);
+                if (tuple.SpritePivot.IsValid()) UpdateSpritePivot(tuple.SpritePivot, tuple.Sprite, tuple.Layer, index);
                 if (tuple.Sprite.IsValid()) tuple.Sprite.SortingOffset = index * 0.01f;
             }
             else {
@@ -103,11 +120,11 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
                 var layerRoot = new Control() { Position = layerRootOffset, Size = layerSize }; viewport.AddChild(layerRoot);
                 var layer = layerScene.Instantiate() as Control; layerRoot.AddChild(layer);
 
-                var spritePivot = new Node3D(); _viewport3d.AddChild(spritePivot);
+                var spritePivot = new Node3D(); _sharedRoot.AddChild(spritePivot);
                 var sprite = new Sprite3D() { Texture = new ViewportTexture() { ViewportPath = viewport.GetPath() }, PixelSize = spritePixelSize }; spritePivot.AddChild(sprite);
                 sprite.AlphaCut = SpriteBase3D.AlphaCutMode.Discard; sprite.AlphaAntialiasingMode = BaseMaterial3D.AlphaAntiAliasing.AlphaToCoverage; sprite.AlphaScissorThreshold = 0.93f;
                 sprite.SortingOffset = index * 0.01f;
-                UpdateSpritePivot(spritePivot, index);
+                UpdateSpritePivot(spritePivot, sprite, layer, index);
 
                 _layers.Add(layerScene.ResourcePath, (layer, layerRoot, viewport, spritePivot, sprite));
             }
@@ -123,7 +140,7 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
 
         // Final sanity check (mainly clears up things left over by reloading after the script has changed)
         foreach (var badViewport in _viewportsRoot.GetChildren().Where(x => !x.IsAnyOf(_layers.Select(x => x.Value.Viewport)))) badViewport.Free();
-        foreach (var badChild in GetChildren().Where(x => !x.IsAnyOf(_viewportsRoot, _viewport3d, _camera, _textureRect, _updateDelayTimer))) badChild.Free();
+        foreach (var badChild in GetChildren().Where(x => !x.IsAnyOf(_viewportsRoot, _viewport3d, _textureRect, _updateDelayTimer))) badChild.Free();
     }
 
     private void ClearViewports() {
@@ -135,7 +152,7 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
         }
         _layers.Clear();
         if (_textureRect.IsValid()) _textureRect.Free(); _textureRect = null;
-        if (_viewport3d.IsValid()) _viewport3d.Free(); _viewport3d = null; _camera = null;
+        if (_viewport3d.IsValid()) _viewport3d.Free(); _viewport3d = null; _camera = null; _sharedRoot = null;
         if (_viewportsRoot.IsValid()) _viewportsRoot.Free(); _viewportsRoot = null;
         if (_updateDelayTimer.IsValid()) { _updateDelayTimer.Stop(); _updateDelayTimer.QueueFree(); _updateDelayTimer = null; }
     }

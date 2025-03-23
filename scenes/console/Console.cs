@@ -95,9 +95,9 @@ public sealed partial class Console : Node
     public static void Warning(string msg, bool pushToStdOut = true) { string richMsg = $"[color=#ffde66]{msg}[/color]"; Print(richMsg); if (pushToStdOut) GD.PrintRich(richMsg); }
     public static void Error(string msg, bool pushToStdOut = true) { Print($"[color=red]{msg}[/color]"); if (pushToStdOut) GD.PrintErr(msg); }
 
-    public static void Info(params Variant[] args) => Info(string.Join("", args));
-    public static void Warning(params Variant[] args) => Warning(string.Join("", args));
-    public static void Error(params Variant[] args) => Error(string.Join("", args));
+    public static void Info(params object[] args) => Info(string.Join("", args.Select(ToStringExtensions.ToPrettyString)));
+    public static void Warning(params object[] args) => Warning(string.Join("", args.Select(ToStringExtensions.ToPrettyString)));
+    public static void Error(params object[] args) => Error(string.Join("", args.Select(ToStringExtensions.ToPrettyString)));
 
     public static void ParseCommand(string inputString) {
         if (Instance is null) return;

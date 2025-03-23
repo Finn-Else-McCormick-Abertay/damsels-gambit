@@ -16,8 +16,7 @@ internal partial class ToPrettyStringInternal
 		null => "null",
         string str => $"\"{str}\"",
 		NodePath nodePath => nodePath switch { _ when nodePath.IsEmpty => "orphan", _ => nodePath.ToString() },
-		//Node node => $"{node.GetType().Name}({ToPrettyString((Engine.IsEditorHint() ? EditorInterface.Singleton.GetEditedSceneRoot() : node.GetTree().Root).GetPathTo(node))})",
-		Node node => $"{ToPrettyString(node.Name)}({node.GetType().Name})",
+		Node node => $"{node.GetType().Name}(\"{node.Name}\")",
 		Resource resource => $"{resource.ResourcePath}({resource.GetType().Name})",
 		GodotObject obj => $"{obj.GetType().Name}<{obj.GetInstanceId()}>",
 		Type type when type.IsEnum => $"enum{{{string.Join(", ", type.GetEnumNames())}}}",
@@ -40,6 +39,8 @@ internal partial class ToPrettyStringInternal
 
 public static class ToStringExtensions
 {
+	public static string ToPrettyString<T>(this T self) => ToPrettyStringInternal.ToPrettyString(self);
+
     public static string ToPrettyString<T>(this IEnumerable<T> self, bool inline = false) =>
         $"{{{(inline ? "" : "\n")}{string.Join(inline ? ", " : ",\n", self.Select(x => $"{(inline ? "" : "\t")}{ToPrettyStringInternal.ToPrettyString(x)}"))}{(inline || !self.Any() ? "" : "\n")}}}";
 }
