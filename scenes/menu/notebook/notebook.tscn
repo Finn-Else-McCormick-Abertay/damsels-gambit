@@ -35,6 +35,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("6_s6j4j")
 Scenes = [ExtResource("8_43gqe"), ExtResource("7_43gqe")]
+ScaleFactor = 2.4
 PaddingCamera = 193
 PaddingLayer = 215
 CameraBackgroundTransparent = false

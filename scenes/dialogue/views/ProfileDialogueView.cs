@@ -63,6 +63,6 @@ public partial class ProfileDialogueView : Node, DialogueViewBase
 
 	public void RunOptions(DialogueOption[] dialogueOptions, Action<int> onOptionSelected) => Console.Error("Profile view encountered dialogue options.");
 	
-	public void DialogueComplete() { Label.Text = _stringBuilder?.ToString(); }
+	public void DialogueComplete() { if (Label.IsValid()) Label.Text = _stringBuilder?.ToString(); }
 
 }
