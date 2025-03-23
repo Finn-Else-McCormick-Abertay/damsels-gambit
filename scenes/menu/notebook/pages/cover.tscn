@@ -5,11 +5,15 @@
 
 [node name="Cover" type="Control"]
 layout_mode = 3
-anchor_right = 0.432292
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -23.0
+offset_top = -25.0
+offset_right = 23.0
+offset_bottom = 25.0
 grow_horizontal = 2
 grow_vertical = 2
-metadata/_edit_use_anchors_ = true
 
 [node name="Background" type="TextureRect" parent="."]
 modulate = Color(0.721876, 0.565272, 0.381291, 1)
