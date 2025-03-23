@@ -248,12 +248,13 @@ offset_bottom = 1027.0
 
 [node name="ViewportLayerContainer" type="Control" parent="."]
 anchors_preset = 0
-offset_left = 396.0
-offset_top = -165.0
-offset_right = 1022.0
-offset_bottom = 846.0
+offset_left = 162.0
+offset_top = -197.0
+offset_right = 998.0
+offset_bottom = 814.0
 script = ExtResource("6_s6j4j")
-Scenes = [ExtResource("7_43gqe"), ExtResource("8_43gqe")]
-PaddingCamera = 590
-PaddingLayer = 200
+Scenes = [ExtResource("8_43gqe"), ExtResource("7_43gqe")]
+Fov = 76.0
+PaddingCamera = 725
+PaddingLayer = 215
 metadata/_custom_type_script = "uid://biqqbrij8l0km"

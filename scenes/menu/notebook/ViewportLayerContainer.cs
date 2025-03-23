@@ -9,17 +9,13 @@ namespace DamselsGambit;
 [Tool, GlobalClass, Icon("res://assets/editor/icons/viewport_layer_container.svg")]
 public partial class ViewportLayerContainer : Control, IReloadableToolScript
 {
-    [Export] private PackedScene[] Scenes { get; set { field = value; this.OnReady(UpdateViewports); } } = [];
+    [Export] private PackedScene[] Scenes { get; set { field = value; this.OnReady(() => UpdateViewports()); } } = [];
 
-    [Export(PropertyHint.Range, "1,179,0.1,degrees")] public float Fov { get; set { field = value; this.OnReady(UpdateViewports); } } = 75f;
+    [Export(PropertyHint.Range, "1,179,0.1,degrees")] public float Fov { get; set { field = value; this.OnReady(() => UpdateViewports()); } } = 75f;
 
     [ExportGroup("Padding", "Padding")]
-    [Export(PropertyHint.None, "suffix:px")] public int PaddingCamera { get; set { field = Math.Min(Math.Max(0, value), 1500); this.OnReady(UpdateViewports); } }
-    [Export(PropertyHint.None, "suffix:px")] public int PaddingLayer { get; set { field = Math.Max(0, value); this.OnReady(UpdateViewports); } }
-    
-    [ExportGroup("Debug")]
-    [Export] private bool CameraBackgroundTransparent { get; set { field = value; this.OnReady(UpdateViewports); } } = true;
-    [Export] private bool LayerBackgroundTransparent { get; set { field = value; this.OnReady(UpdateViewports); } } = true;
+    [Export(PropertyHint.None, "suffix:px")] public int PaddingCamera { get; set { field = Math.Min(Math.Max(0, value), 1500); this.OnReady(() => UpdateViewports()); } }
+    [Export(PropertyHint.None, "suffix:px")] public int PaddingLayer { get; set { field = Math.Max(0, value); this.OnReady(UpdateDelayed); } }
 
     private readonly Dictionary<string, (Control Layer, Control Root, SubViewport Viewport, Node3D SpritePivot, Sprite3D Sprite)> _layers = [];
 	private Node _viewportsRoot; private SubViewport _viewport3d; private Camera3D _camera; private TextureRect _textureRect;
@@ -31,34 +27,38 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
 
     public override void _EnterTree() {
         UpdateViewports();
-        this.TryConnect(Control.SignalName.Resized, new Callable(this, MethodName.UpdateViewports));
+        this.TryConnect(Control.SignalName.Resized, new Callable(this, MethodName.UpdateDelayed));
     }
     public override void _ExitTree() {
         ClearViewports();
-        this.TryDisconnect(Control.SignalName.Resized, new Callable(this, MethodName.UpdateViewports));
+        this.TryDisconnect(Control.SignalName.Resized, new Callable(this, MethodName.UpdateDelayed));
     }
     public void PreScriptReload() => ClearViewports();
 
-    private void UpdateViewports() {
+    private Timer _updateDelayTimer = null;
+    private void UpdateDelayed() {
+        if (!IsInsideTree()) return;
+        if (!Engine.IsEditorHint()) { UpdateViewports(); return; }
+
+        UpdateViewports(true);
+        if (!_updateDelayTimer.IsValid()) {
+            _updateDelayTimer = new Timer() { OneShot = true, IgnoreTimeScale = true }; AddChild(_updateDelayTimer);
+            _updateDelayTimer.Connect(Timer.SignalName.Timeout, () => UpdateViewports());
+        }
+        _updateDelayTimer.Start(0.2);
+    }
+
+    private void UpdateViewports(bool lowImpact = false) {
         if (!IsInsideTree()) return;
 
         if (!_viewportsRoot.IsValid()) { _viewportsRoot = new() { Name = "ViewportsRoot" }; AddChild(_viewportsRoot); }
 
         if (!_textureRect.IsValid()) { _textureRect = new() { Name = "TextureRectRoot" }; AddChild(_textureRect); }
         if (!_viewport3d.IsValid()) {
-            _viewport3d = new() { Name = "Viewport3D", Msaa3D = Viewport.Msaa.Msaa8X, TransparentBg = true }; AddChild(_viewport3d);
+            _viewport3d = new() { Name = "Viewport3D", Msaa3D = Viewport.Msaa.Msaa8X, TransparentBg = true, RenderTargetUpdateMode = SubViewport.UpdateMode.WhenParentVisible }; AddChild(_viewport3d);
             _textureRect.Texture ??= new ViewportTexture() { ViewportPath = _viewport3d.GetPath() };
         }
         if (!_camera.IsValid()) { _camera = new() { KeepAspect = Camera3D.KeepAspectEnum.Width }; _viewport3d.AddChild(_camera); }
-
-        // Cleanup anything which has become invalid for one reason or another
-        foreach (var (name, (layer, root, viewport, spritePivot, sprite)) in _layers) {
-            if (layer.IsValid() && root.IsValid() && viewport.IsValid() && spritePivot.IsValid() && sprite.IsValid() && sprite.Texture.IsValid()) continue;
-            Console.Warning($"Invalid Layer '{name}'");
-            if (root.IsValid()) root.QueueFree(); if (viewport.IsValid()) viewport.QueueFree();
-            if (spritePivot.IsValid()) spritePivot.QueueFree(); if (sprite.IsValid()) sprite.QueueFree();
-            _layers.Remove(name);
-        }
 
         float spritePixelSize = 0.01f;
 
@@ -82,16 +82,17 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
             if (!layerScene.IsValid()) continue;
 
             if (_layers.TryGetValue(layerScene.ResourcePath, out var tuple)) {
-                if (tuple.Root.IsValid()) { tuple.Root.Size = Size; tuple.Root.Position = layerRootOffset; }
-                if (tuple.Layer.IsValid()) { tuple.Layer.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect); }
-                if (tuple.Viewport.IsValid()) tuple.Viewport.Size = viewport2dSize;
-                if (tuple.SpritePivot.IsValid()) {
-                    tuple.SpritePivot.Position = new(spriteOffset.X, spriteOffset.Y, -distanceToPlane);
-                    //tuple.SpritePivot.RotationDegrees = tuple.SpritePivot.RotationDegrees with { Y = 45 };
+                if (tuple.Root.IsValid()) {
+                    tuple.Root.Size = Size; tuple.Root.Position = layerRootOffset;
+                    if (lowImpact) tuple.Root.Position -= new Vector2(viewport2dSize.X - tuple.Viewport.Size.X, viewport2dSize.Y - tuple.Viewport.Size.Y) / 2;
                 }
+                if (tuple.Layer.IsValid()) { tuple.Layer.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect); }
+                if (tuple.Viewport.IsValid() && !lowImpact) { tuple.Viewport.Size = viewport2dSize; }
+                if (tuple.SpritePivot.IsValid()) { tuple.SpritePivot.Position = new(spriteOffset.X, spriteOffset.Y, -distanceToPlane); }
             }
             else {
-		        var viewport = new SubViewport() { Msaa2D = Viewport.Msaa.Msaa8X, TransparentBg = true, Disable3D = true, Size = viewport2dSize }; _viewportsRoot.AddChild(viewport);
+		        var viewport = new SubViewport() { Msaa2D = Viewport.Msaa.Msaa8X, TransparentBg = true, Disable3D = true, Size = viewport2dSize, RenderTargetUpdateMode = SubViewport.UpdateMode.WhenParentVisible };
+                _viewportsRoot.AddChild(viewport);
 
                 var layerRoot = new Control() { Position = layerRootOffset, Size = layerSize }; viewport.AddChild(layerRoot);
                 var layer = layerScene.Instantiate() as Control; layerRoot.AddChild(layer); layer.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
@@ -115,7 +116,7 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
 
         // Final sanity check (mainly clears up things left over by reloading after the script has changed)
         foreach (var badViewport in _viewportsRoot.GetChildren().Where(x => !x.IsAnyOf(_layers.Select(x => x.Value.Viewport)))) badViewport.Free();
-        foreach (var badChild in GetChildren().Where(x => !x.IsAnyOf(_viewportsRoot, _viewport3d, _camera, _textureRect))) badChild.Free();
+        foreach (var badChild in GetChildren().Where(x => !x.IsAnyOf(_viewportsRoot, _viewport3d, _camera, _textureRect, _updateDelayTimer))) badChild.Free();
     }
 
     private void ClearViewports() {
@@ -128,5 +129,6 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
         if (_textureRect.IsValid()) _textureRect.Free(); _textureRect = null;
         if (_viewport3d.IsValid()) _viewport3d.Free(); _viewport3d = null; _camera = null;
         if (_viewportsRoot.IsValid()) _viewportsRoot.Free(); _viewportsRoot = null;
+        if (_updateDelayTimer.IsValid()) { _updateDelayTimer.Stop(); _updateDelayTimer.QueueFree(); _updateDelayTimer = null; }
     }
 }
