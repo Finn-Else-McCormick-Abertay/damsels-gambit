@@ -121,7 +121,7 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
         void UpdateSpritePivot(Node3D pivot, Node3D sprite, Control layer, int index) {
             pivot.Position = new(0f, 0f, -distanceToPlane + (index - FocusedLayer) * LayerSeparation);
             if (layer is not null && layer.FindChildOfType<PivotPoint>() is PivotPoint layerLogicalPivot) {
-                var layerPivotOffset = (layerLogicalPivot.GlobalPosition - viewport2dSize / 2) * spritePixelSize;
+                var layerPivotOffset = (layerLogicalPivot.GlobalPosition - viewport2dSize / 2) * spritePixelSize * viewportScaleFactor;
                 pivot.Position = pivot.Position with { X = layerPivotOffset.X, Y = layerPivotOffset.Y };
                 sprite.Position = sprite.Position with { X = -layerPivotOffset.X, Y = -layerPivotOffset.Y };
             }
