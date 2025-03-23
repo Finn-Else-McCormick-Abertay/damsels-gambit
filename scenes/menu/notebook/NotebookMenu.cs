@@ -68,11 +68,10 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 		if (!IsNodeReady()) return;
 		
 		var angle = State switch { AnimationState.Open => OpenCoverAngle, AnimationState.Highlighted => HighlightCoverAngle, AnimationState.Closed => ClosedCoverAngle };
-
-		LayerContainer?.OnReady(() => {
+		LayerContainer?.OnReady(() => CallableUtils.CallDeferred(() => {
 			var coverPivot = LayerContainer.GetPivot(LayerContainer.Scenes.Length - 1);
 			if (coverPivot.IsValid()) coverPivot.Rotation = coverPivot.Rotation with { Y = (float)angle };
-		});
+		}));
 	}
 
 	public override void _Ready() {

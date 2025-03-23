@@ -21,7 +21,7 @@ public partial class ProfileDialogueView : Node, DialogueViewBase
 	private StringBuilder _stringBuilder;
 
 	public override void _EnterTree() {
-		Title.Text = ""; Subtitle.Text = ""; Label.Text = ""; Portrait.Texture = null;
+		if (Title.IsValid()) Title.Text = ""; if (Subtitle.IsValid()) Subtitle.Text = ""; if (Label.IsValid()) Label.Text = ""; if (Portrait.IsValid()) Portrait.Texture = null;
 		DialogueManager.Register(this);
 		DialogueManager.Knowledge.OnChanged += Update;
 		this.OnReady(Update);
@@ -48,6 +48,8 @@ public partial class ProfileDialogueView : Node, DialogueViewBase
 	}
 
 	public void RunLine(LocalizedLine line, Action onLineFinished) {
+		if (!Title.IsValid() || !Subtitle.IsValid() || !Label.IsValid() || !Portrait.IsValid()) return;
+
 		bool HasTag(string tag) => line.Metadata?.Any(x => x.MatchN(tag)) ?? false;
 
 		var lineText = line.Text.AsBBCode();

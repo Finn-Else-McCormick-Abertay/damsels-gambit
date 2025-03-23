@@ -8,10 +8,9 @@
 
 [node name="NotebookMenu" type="Control" node_paths=PackedStringArray("Root", "LayerContainer", "DialogueView")]
 layout_mode = 3
-anchor_right = 0.45
-anchor_bottom = 0.958
-offset_right = 3.59998
-offset_bottom = 0.215942
+anchor_right = 0.392
+anchor_bottom = 1.0
+offset_right = 0.415985
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_eweoj")
@@ -35,7 +34,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("6_s6j4j")
-Scenes = [ExtResource("7_43gqe"), ExtResource("8_43gqe")]
-PaddingCamera = 415
+Scenes = [ExtResource("8_43gqe"), ExtResource("7_43gqe")]
+PaddingCamera = 193
 PaddingLayer = 215
+CameraBackgroundTransparent = false
+LayerBackgroundTransparent = false
 metadata/_custom_type_script = "uid://biqqbrij8l0km"
