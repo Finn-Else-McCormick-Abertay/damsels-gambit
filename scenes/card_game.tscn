@@ -58,7 +58,7 @@ _limits = [-90.0, 90.0, 0.0, 1.0]
 _data = [Vector2(0, 5.12277), 0.0, 0.0, 0, 0, Vector2(0.502959, 9.04018), 20.9715, 20.9715, 0, 0, Vector2(1, 15.5692), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[node name="CardGame" type="Control"]
+[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "RoundMeter", "TopicHand", "ActionHand", "PlayButton", "SuitorProfile")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -70,6 +70,12 @@ theme = SubResource("Theme_ouffm")
 script = ExtResource("1_4k8rw")
 TopicDeck = {}
 ActionDeck = {}
+AffectionMeter = NodePath("AffectionMeter")
+RoundMeter = NodePath("RoundMeter")
+TopicHand = NodePath("RightHandContainer")
+ActionHand = NodePath("LeftHandContainer")
+PlayButton = NodePath("PlayHandButton")
+SuitorProfile = NodePath("SuitorProfile")
 
 [node name="Vignette" type="TextureRect" parent="."]
 layout_mode = 1
