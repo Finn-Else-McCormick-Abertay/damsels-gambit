@@ -68,8 +68,23 @@ grow_vertical = 2
 mouse_filter = 1
 theme = SubResource("Theme_ouffm")
 script = ExtResource("1_4k8rw")
-TopicDeck = {}
-ActionDeck = {}
+TopicDeck = {
+"topic/animals": 1,
+"topic/art": 1,
+"topic/children": 1,
+"topic/family": 1,
+"topic/food": 1,
+"topic/hobbies": 1,
+"topic/religion": 1,
+"topic/weather": 1,
+"topic/witchcraft": 1
+}
+ActionDeck = {
+"action/give": 2,
+"action/question": 3,
+"action/secret": 2,
+"action/want": 2
+}
 AffectionMeter = NodePath("AffectionMeter")
 RoundMeter = NodePath("RoundMeter")
 TopicHand = NodePath("RightHandContainer")
