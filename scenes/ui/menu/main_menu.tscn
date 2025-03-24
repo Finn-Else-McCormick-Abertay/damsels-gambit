@@ -148,8 +148,3 @@ metadata/_edit_use_anchors_ = true
 [node name="Padding" type="Control" parent="HBoxContainer/VBoxContainer3"]
 editor_description = "If I don't put a padding node at the bottom, the bottom edge of the button texture gets noticably cut off at certain screen resolutions"
 layout_mode = 2
-
-[connection signal="mouse_entered" from="HBoxContainer/VBoxContainer/Start" to="." method="_on_start_mouse_entered"]
-[connection signal="mouse_exited" from="HBoxContainer/VBoxContainer/Start" to="." method="_on_start_mouse_exited"]
-[connection signal="mouse_entered" from="HBoxContainer/VBoxContainer2/Settings" to="." method="_on_settings_mouse_entered"]
-[connection signal="mouse_exited" from="HBoxContainer/VBoxContainer2/Settings" to="." method="_on_settings_mouse_exited"]

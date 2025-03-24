@@ -73,6 +73,7 @@ grow_vertical = 2
 [node name="Play Again" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 25
 text = "Play Again
 "
@@ -80,5 +81,6 @@ text = "Play Again
 [node name="Quit To Title" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 25
 text = "Quit To Title"
