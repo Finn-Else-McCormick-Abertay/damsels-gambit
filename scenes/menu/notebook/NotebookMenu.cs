@@ -13,25 +13,36 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 	[ExportGroup("States")]
 
 	[ExportSubgroup("Closed", "Closed")]
-	[Export] public Vector2 ClosedOffset { get; set { field = value; if (State == AnimationState.Closed) Root?.OnReady(x => x.SetPosition(value)); } }
+	[Export] public Vector2 ClosedOffset { get; set { field = value; RestoreAnimationState(); } }
 	[Export(PropertyHint.Range, "-90,90,0.001,radians")] public double ClosedCoverAngle { get; set { field = value; RestoreAnimationState(); } } = 0.0;
 	
 	[ExportSubgroup("Highlight", "Highlight")]
-	[Export] public Vector2 HighlightOffset { get; set { field = value; if (State == AnimationState.Highlighted) Root?.OnReady(x => x.SetPosition(value)); } }
+	[Export] public Vector2 HighlightOffset { get; set { field = value; RestoreAnimationState(); } }
 	[Export(PropertyHint.Range, "-90,90,0.001,radians")] public double HighlightCoverAngle { get; set { field = value; RestoreAnimationState(); } } = 0.0;
 	[Export(PropertyHint.Range, "0,1,or_greater,suffix:s")] private double HighlightDuration { get; set; } = 0.2;
 	
 	[ExportSubgroup("Open", "Open")]
-	[Export] public Vector2 OpenOffset { get; set { field = value; if (State == AnimationState.Open) Root?.OnReady(x => x.SetPosition(value)); } }
+	[Export] public Vector2 OpenOffset { get; set { field = value; RestoreAnimationState(); } }
 	[Export(PropertyHint.Range, "-90,90,0.001,radians")] public double OpenCoverAngle { get; set { field = value; RestoreAnimationState(); } } = 0.0;
 	[Export(PropertyHint.Range, "0,1,or_greater,suffix:s")] private double OpenDuration { get; set; } = 0.3;
 
 	[ExportGroup("Nodes")]
-	[Export] private Control Root { get; set; }
 	[Export] private ViewportLayerContainer LayerContainer { get; set; }
-	[ExportSubgroup("Profile")]
-	[Export] private Node DialogueView { get; set { field = value; UpdateDialogueViewNode(); } }
-	[Export] private Button ProfileButton { get; set; }
+
+	public Notebook.ProfilePage ProfilePage {
+		get; private set {
+			ProfilePage?.ProfileButton?.TryDisconnect(Control.SignalName.FocusEntered, new Callable(this, MethodName.OnFocus));
+			ProfilePage?.ProfileButton?.TryDisconnect(Control.SignalName.FocusExited, new Callable(this, MethodName.OnUnfocus));
+			ProfilePage?.ProfileButton?.TryDisconnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.ToggleOpen));
+			field = value;
+			ProfilePage?.OnReady(page => {
+				UpdateDialogueViewNode();
+				page.ProfileButton?.Connect(Control.SignalName.FocusEntered, new Callable(this, MethodName.OnFocus));
+				page.ProfileButton?.Connect(Control.SignalName.FocusExited, new Callable(this, MethodName.OnUnfocus));
+				page.ProfileButton?.Connect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.ToggleOpen));
+			});
+		}
+	}
 
 	[ExportGroup("Debug", "Debug")]
 	[Export] private AnimationState DebugState { get => State; set => State = value; }
@@ -55,7 +66,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 		var position = newState switch { AnimationState.Open => OpenOffset, AnimationState.Highlighted => HighlightOffset, AnimationState.Closed => ClosedOffset };
 		var angle = newState switch { AnimationState.Open => OpenCoverAngle, AnimationState.Highlighted => HighlightCoverAngle, AnimationState.Closed => ClosedCoverAngle };
 
-		this.OnReady(() => { _moveTween?.Kill(); _moveTween = CreateTween(); _moveTween.TweenProperty(Root, "position", position, duration); });
+		this.OnReady(() => { _moveTween?.Kill(); _moveTween = CreateTween(); _moveTween.TweenProperty(LayerContainer, "position", position, duration); });
 
 		this.OnReady(() => {
 			_rotateTween?.Kill();
@@ -67,10 +78,12 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 	private void RestoreAnimationState() {
 		if (!IsNodeReady()) return;
 		
+		var position = State switch { AnimationState.Open => OpenOffset, AnimationState.Highlighted => HighlightOffset, AnimationState.Closed => ClosedOffset };
 		var angle = State switch { AnimationState.Open => OpenCoverAngle, AnimationState.Highlighted => HighlightCoverAngle, AnimationState.Closed => ClosedCoverAngle };
 		LayerContainer?.OnReady(() => CallableUtils.CallDeferred(() => {
+			LayerContainer.Position = position;
 			var coverPivot = LayerContainer.GetPivot(LayerContainer.Scenes.Length - 1);
-			if (coverPivot.IsValid()) coverPivot.Rotation = coverPivot.Rotation with { Y = (float)angle };
+			if (coverPivot.IsValid()) { coverPivot.Rotation = coverPivot.Rotation with { Y = (float)angle }; }
 		}));
 	}
 
@@ -79,9 +92,9 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 
 		Open = false; Highlighted = false;
 
-		ProfileButton?.Connect(Control.SignalName.MouseEntered, new Callable(this, MethodName.OnFocus)); ProfileButton?.Connect(Control.SignalName.MouseExited, new Callable(this, MethodName.OnUnfocus));
-		ProfileButton?.Connect(Control.SignalName.FocusEntered, new Callable(this, MethodName.OnFocus)); ProfileButton?.Connect(Control.SignalName.FocusExited, new Callable(this, MethodName.OnUnfocus));
-		ProfileButton?.Connect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.ToggleOpen));
+		LayerContainer.OnReady(() => {
+			ProfilePage = LayerContainer.GetLayer("res://scenes/menu/notebook/pages/profile.tscn") as Notebook.ProfilePage;
+		});
 	}
 	public override void _EnterTree() { RestoreAnimationState(); }
 	public override void _ExitTree() {
@@ -94,8 +107,8 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 	private void ToggleOpen() => Open = !Open;
 
 	public void UpdateDialogueViewNode() {
-		if (Engine.IsEditorHint() || !DialogueView.IsValid() || string.IsNullOrEmpty(SuitorName)) return;
-		(DialogueView as ProfileDialogueView).ProfileNode = $"{Case.ToSnake(SuitorName)}__profile";
+		if (Engine.IsEditorHint() || string.IsNullOrEmpty(SuitorName) || ProfilePage?.DialogueView is not ProfileDialogueView dialogueView) return;
+		dialogueView.ProfileNode = $"{Case.ToSnake(SuitorName)}__profile";
 	}
 
     public (Control, Viewport) TryGainFocus(InputManager.FocusDirection direction, Viewport fromViewport) => direction switch {
