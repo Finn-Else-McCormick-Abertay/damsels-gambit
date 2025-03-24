@@ -100,7 +100,16 @@ public sealed partial class InputManager : Node
 
 	public static Control FindFocusableWithin(Node root, FocusDirection direction = FocusDirection.Right) {
 		if (root is null) return null;
-		if (root is IFocusableContainer focusableContainer && focusableContainer.TryGainFocus(direction) is Control newFocus) return newFocus;
+		if (root is IFocusableContainer focusableContainer) {
+			var (newFocus, viewport) = focusableContainer.TryGainFocus(direction, Instance._focusedViewport);
+			if (newFocus is not null) {
+				if (viewport is not null) {
+					if (ShouldDisplayFocusDebugInfo) Console.Info($"Switched focus to viewport {viewport.ToPrettyString()}.");
+					Instance._focusedViewport = viewport;
+				}
+				return newFocus;
+			}
+		}
 		if (root is Control control && control.FocusMode == Control.FocusModeEnum.All && control.IsVisibleInTree()) return control;
 		var validChildren = root.FindChildrenWhere<Control>(x => x.FocusMode == Control.FocusModeEnum.All && x.IsVisibleInTree());
 		if (direction == FocusDirection.Left || direction == FocusDirection.Up) validChildren.Reverse();
@@ -268,11 +277,20 @@ public sealed partial class InputManager : Node
 			Control focusNext = GetNextFocus(direction, focused);
 
 			foreach (var focusableContainer in focused?.FindParentsWhere(x => x is IFocusableContainer).OrderBy(x => x.FindDistanceToChild(focused)).Select(x => x as IFocusableContainer) ?? []) {
-				if (!(focusableContainer as Node).IsAncestorOf(focusNext) && !focusableContainer.TryLoseFocus(direction)) return;
+				if (!(focusableContainer as Node).IsAncestorOf(focusNext)) {
+					if (focusableContainer.TryLoseFocus(direction, out bool popViewport)) {
+						if (ShouldDisplayFocusDebugInfo) Console.Info(focusableContainer, " lose focus.");
+						if (popViewport) {
+							if (ShouldDisplayFocusDebugInfo) Console.Info("Switched focus back to root viewport.");
+							_focusedViewport = _rootViewport;
+						}
+					}
+					else return;
+				}
 			}
 
 			Instance._prevFocus = focused;
-			if (ShouldDisplayFocusDebugInfo) Console.Info(focusNext is not null ? $"Shifted focus {Enum.GetName(direction)} to {focusNext}." : $"Could not shift focus {Enum.GetName(direction)} from {focused}.");
+			if (ShouldDisplayFocusDebugInfo) Console.Info(focusNext is not null ? $"Shifted focus {Enum.GetName(direction)} to {focusNext.ToPrettyString()}." : $"Could not shift focus {Enum.GetName(direction)} from {focused.ToPrettyString()}.");
 			focusNext?.GrabFocus();
 		}
 	}

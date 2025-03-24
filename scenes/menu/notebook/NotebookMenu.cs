@@ -98,13 +98,17 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 		(DialogueView as ProfileDialogueView).ProfileNode = $"{Case.ToSnake(SuitorName)}__profile";
 	}
 
-    public Control TryGainFocus(InputManager.FocusDirection direction) => direction switch {
-		InputManager.FocusDirection.Up or InputManager.FocusDirection.Right => ProfileButton,
-		_ => null
+    public (Control, Viewport) TryGainFocus(InputManager.FocusDirection direction, Viewport fromViewport) => direction switch {
+		InputManager.FocusDirection.Up or InputManager.FocusDirection.Right => (LayerContainer?.GetLayer(0)?.GetNode<Control>("Profile Button"), LayerContainer?.GetViewport(0)),
+		_ => (null, null)
 	};
 
-	public bool TryLoseFocus(InputManager.FocusDirection direction) => direction switch {
-		InputManager.FocusDirection.Left or InputManager.FocusDirection.Down when Open => false,
-		_ => true
-	};
+	public bool TryLoseFocus(InputManager.FocusDirection direction, out bool popViewport) {
+		popViewport = true;
+		if (Open && direction.IsAnyOf(InputManager.FocusDirection.Left, InputManager.FocusDirection.Down)) {
+			popViewport = false;
+			return false;
+		}
+		return true;
+	}
 }

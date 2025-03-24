@@ -14,6 +14,9 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
 
     public Control GetLayer(string scenePath) => _layers.GetValueOrDefault(scenePath).Layer;
     public Control GetLayer(int index) => index >= 0 && index < Scenes.Length ? GetLayer(Scenes[index]?.ResourcePath) : null;
+
+    public SubViewport GetViewport(string scenePath) => _layers.GetValueOrDefault(scenePath).Viewport;
+    public SubViewport GetViewport(int index) => index >= 0 && index < Scenes.Length ? GetViewport(Scenes[index]?.ResourcePath) : null;
     
     public Node3D GetPivot(string scenePath) => _layers.GetValueOrDefault(scenePath).SpritePivot;
     public Node3D GetPivot(int index) => index >= 0 && index < Scenes.Length ? GetPivot(Scenes[index]?.ResourcePath) : null;
@@ -29,6 +32,8 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
     [Export(PropertyHint.Range, "1,179,0.1,degrees")] public float Fov { get; set { field = value; this.OnReady(() => UpdateViewports()); } } = 75f;
 
     [Export] float ScaleFactor { get; set { field = value; this.OnReady(() => UpdateViewports()); } } = 2f;
+
+    [Export] float AlphaScissorThreshold { get; set { field = value; this.OnReady(() => UpdateViewports()); } } = 0.93f;
 
     [ExportGroup("Padding", "Padding")]
     [Export(PropertyHint.None, "suffix:px")] public int PaddingCamera { get; set { field = Math.Min(Math.Max(0, value), 1500); this.OnReady(() => UpdateViewports()); } }
@@ -137,7 +142,10 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
                 }
                 if (tuple.Viewport.IsValid() && !lowImpact) { UpdateViewportSize(tuple.Viewport); }
                 if (tuple.SpritePivot.IsValid()) UpdateSpritePivot(tuple.SpritePivot, tuple.Sprite, tuple.Layer, index);
-                if (tuple.Sprite.IsValid()) tuple.Sprite.SortingOffset = index * 0.01f;
+                if (tuple.Sprite.IsValid()) {
+                    tuple.Sprite.SortingOffset = index * 0.01f;
+                    tuple.Sprite.AlphaScissorThreshold = AlphaScissorThreshold;
+                }
             }
             else {
                 var debugDisplayName = Case.ToPascal(Path.GetFileNameWithoutExtension(layerScene.ResourcePath));
@@ -150,7 +158,7 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
 
                 var spritePivot = new Node3D() { Name = $"{debugDisplayName}Pivot" }; _sharedRoot.AddChild(spritePivot);
                 var sprite = new Sprite3D() { Texture = viewport.GetTexture(), PixelSize = spritePixelSize }; spritePivot.AddChild(sprite);
-                sprite.AlphaCut = SpriteBase3D.AlphaCutMode.Discard; sprite.AlphaAntialiasingMode = BaseMaterial3D.AlphaAntiAliasing.AlphaToCoverage; sprite.AlphaScissorThreshold = 0.93f;
+                sprite.AlphaCut = SpriteBase3D.AlphaCutMode.Discard; sprite.AlphaAntialiasingMode = BaseMaterial3D.AlphaAntiAliasing.AlphaToCoverage; sprite.AlphaScissorThreshold = AlphaScissorThreshold;
                 sprite.SortingOffset = index * 0.01f;
                 UpdateSpritePivot(spritePivot, sprite, layer, index);
 

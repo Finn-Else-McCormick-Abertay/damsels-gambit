@@ -36,6 +36,7 @@ grow_vertical = 2
 script = ExtResource("6_s6j4j")
 Scenes = [ExtResource("7_43gqe"), ExtResource("8_43gqe")]
 ScaleFactor = 2.4
+AlphaScissorThreshold = 0.69
 PaddingCamera = 193
 PaddingLayer = 215
 metadata/_custom_type_script = "uid://biqqbrij8l0km"
