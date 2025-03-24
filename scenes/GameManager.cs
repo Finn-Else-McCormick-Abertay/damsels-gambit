@@ -85,7 +85,7 @@ public sealed partial class GameManager : Node
 	public static void SwitchToMainMenu() {
 		if (!Instance.IsValid()) return;
 
-		InputManager.Instance.ClearFocus();
+		InputManager.ClearFocus();
 		ClearLoadedScenes();
 
 		MainMenu = _mainMenuScene.Instantiate<Control>();
@@ -105,7 +105,7 @@ public sealed partial class GameManager : Node
 			return;
 		}
 
-		InputManager.Instance.ClearFocus();
+		InputManager.ClearFocus();
 		ClearLoadedScenes();
 
 		var cardGameScene = ResourceLoader.Load<PackedScene>(cardGameScenePath).Instantiate();

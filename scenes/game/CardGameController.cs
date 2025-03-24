@@ -108,12 +108,12 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		PlayButton.Disabled = TopicHand.GetSelected().Count() != 1 || ActionHand.GetSelected().Count() != 1;
 	}
 	
-	public Control GetDefaultFocus(InputManager.FocusDirection direction) =>
+	public Control GetDefaultFocus(FocusDirection direction) =>
 		InputManager.FindFocusableWithin(direction switch {
 			_ when DialogueManager.Runner.IsDialogueRunning => null,
-			InputManager.FocusDirection.Down => PlayButton,
-			InputManager.FocusDirection.Left => TopicHand,
-			InputManager.FocusDirection.Right or _ => ActionHand
+			FocusDirection.Down => PlayButton,
+			FocusDirection.Left => TopicHand,
+			FocusDirection.Right or _ => ActionHand
 		}, direction);
 
 	private void PlayHand() {

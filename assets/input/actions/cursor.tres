@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="GUIDEAction" load_steps=2 format=3 uid="uid://dm6nkc4k72pve"]
+
+[ext_resource type="Script" uid="uid://brymgl3anvhxo" path="res://addons/guide/guide_action.gd" id="1_4wyo8"]
+
+[resource]
+script = ExtResource("1_4wyo8")
+name = &"Cursor"
+action_value_type = 2
+block_lower_priority_actions = false
+emit_as_godot_actions = false
+is_remappable = false
+display_name = ""
+display_category = ""
+metadata/_custom_type_script = "uid://brymgl3anvhxo"

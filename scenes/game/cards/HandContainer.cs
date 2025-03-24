@@ -89,22 +89,21 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
         }
     }
 
-    public Control GetNextFocus(InputManager.FocusDirection direction, int childIndex) {
+    public Node GetNextFocus(FocusDirection direction, Node child) {
         var nextIndex = direction switch {
-            InputManager.FocusDirection.Left => childIndex - 1,
-            InputManager.FocusDirection.Right => childIndex + 1,
+            FocusDirection.Left => child.GetIndex() - 1,
+            FocusDirection.Right => child.GetIndex() + 1,
             _ => -1
         };
-        if (nextIndex >= 0 && nextIndex < GetChildCount()) return InputManager.FindFocusableWithin(GetChild(nextIndex), direction);
-        return null;
+        return nextIndex >= 0 && nextIndex < GetChildCount() ? GetChild<Control>(nextIndex) : null;
     }
 
-    public Control TryGainFocus(InputManager.FocusDirection direction) =>
-        InputManager.FindFocusableWithin(direction switch {
+    public Node TryGainFocus(FocusDirection direction) =>
+        direction switch {
             _ when GetChildCount() == 0 => null,
-            InputManager.FocusDirection.Down or InputManager.FocusDirection.Left => GetChildren().Last(),
-            InputManager.FocusDirection.Right or _ => GetChildren().First()
-        }, direction);
+            FocusDirection.Down or FocusDirection.Left => GetChildren().Last(),
+            FocusDirection.Right or _ => GetChildren().First()
+        };
 
     private void OnAccept() {
         if (Engine.IsEditorHint()) return;

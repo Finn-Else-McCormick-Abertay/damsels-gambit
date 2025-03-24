@@ -70,7 +70,7 @@ public partial class CardDisplay : Control, IReloadableToolScript
 		return new();
 	}
 
-	public CardDisplay() { MouseFilter = MouseFilterEnum.Pass; FocusMode = FocusModeEnum.All; }
+	public CardDisplay() { MouseFilter = MouseFilterEnum.Pass; FocusMode = FocusModeEnum.All; MouseDefaultCursorShape = CursorShape.PointingHand; }
 
 	public bool IsMousedOver { get; private set; } = false;
 	private void OnMouseEntered() { IsMousedOver = true; QueueRedraw(); }

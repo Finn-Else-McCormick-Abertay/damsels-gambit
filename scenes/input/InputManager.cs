@@ -7,223 +7,134 @@ using DamselsGambit.Util;
 
 namespace DamselsGambit;
 
+public enum FocusDirection { Up, Down, Left, Right, None }
+
 // This is an autoload singleton. Because of how Godot works, you can technically instantiate it yourself. Don't.
 public sealed partial class InputManager : Node
 {
-    public static InputManager Instance { get; set; }
-
 	public static class Contexts
 	{
-		private static GUIDEMappingContext LoadContext(string contextName) => GUIDEMappingContext.From(ResourceLoader.Load($"res://assets/input/context_{Case.ToSnake(contextName)}.tres"));
+		public static readonly GUIDEMappingContext Mouse, Keyboard, Controller;
 
-		public static readonly GUIDEMappingContext Mouse = LoadContext(nameof(Mouse));
-		public static readonly GUIDEMappingContext Keyboard = LoadContext(nameof(Keyboard));
-		public static readonly GUIDEMappingContext Controller = LoadContext(nameof(Controller));
+		public static IEnumerable<GUIDEMappingContext> All => typeof(Contexts).GetFields().Select(x => x.GetValue(null) as GUIDEMappingContext);
+
+		static Contexts() => typeof(Contexts).GetFields().ForEach(field => field.SetValue(null, GUIDEMappingContext.From(ResourceLoader.Load($"res://assets/input/context_{Case.ToSnake(field.Name)}.tres"))));
 	}
 
 	public static class Actions
 	{
-		private static GUIDEAction LoadAction(string actionName) => GUIDEAction.From(ResourceLoader.Load($"res://assets/input/actions/{Case.ToSnake(actionName)}.tres"));
+    	public static readonly GUIDEAction Accept, Back, UIDirection, Pause, SelectAt, Cursor, CursorRelative, Drag, Click, ClickHold;
 
-    	public static readonly GUIDEAction Accept = LoadAction(nameof(Accept));
-    	public static readonly GUIDEAction Back = LoadAction(nameof(Back));
-    	public static readonly GUIDEAction SelectAt = LoadAction(nameof(SelectAt));
-    	public static readonly GUIDEAction UIDirection = LoadAction(nameof(UIDirection));
-    	public static readonly GUIDEAction Pause = LoadAction(nameof(Pause));
+		static Actions() => typeof(Actions).GetFields().ForEach(field => field.SetValue(null, GUIDEAction.From(ResourceLoader.Load($"res://assets/input/actions/{Case.ToSnake(field.Name)}.tres"))));
 	}
 	
+    public static InputManager Instance { get; set; }
+	public override void _EnterTree() { if (Instance is not null) throw AutoloadException.For(this); Instance = this; GetTree().Root.Connect(Node.SignalName.Ready, new Callable(this, MethodName.OnTreeReady), (uint)ConnectFlags.OneShot); }
+	
 	public static bool ShouldOverrideGuiInput { get; set; } = true;
-
 	public static bool ShouldDisplayFocusDebugInfo { get; set; } = OS.HasFeature("debug");
 	
-	public override void _EnterTree() {
-        if (Instance is not null) throw AutoloadException.For(this);
-        Instance = this; GetTree().Root.Connect(Node.SignalName.Ready, new Callable(this, MethodName.OnTreeReady), (uint)ConnectFlags.OneShot);
-    }
+	private IEnumerable<GUIDEMappingContext> _enabledContexts = [];
+
+	public static bool IsContextEnabled(GUIDEMappingContext context) => Instance._enabledContexts.Contains(context);
+	public static void EnableContext(GUIDEMappingContext context) => GUIDE.EnableMappingContext(context);
+	public static void DisableContext(GUIDEMappingContext context) { if (IsContextEnabled(context)) GUIDE.DisableMappingContext(context); }
 
 	private void OnTreeReady() {
 		_rootViewport = GetViewport();
-		_focusedViewport = _rootViewport;
 
 		GUIDE.Initialise(GetTree().Root.GetNode("GUIDE"));
-        GUIDE.Connect(GUIDE.SignalName.InputMappingsChanged, new Callable(this, MethodName.OnInputMappingsChanged));
+		GUIDE.InputMappingsChanged += static () => Instance._enabledContexts = Contexts.All.Where(GUIDE.IsMappingContextEnabled);
 
-		Actions.UIDirection.Connect(GUIDEAction.SignalName.Triggered, new Callable(this, MethodName.OnUIDirectionTriggered), 0);
-		Actions.Accept.Connect(GUIDEAction.SignalName.Triggered, new Callable(this, MethodName.OnAcceptTriggered), 0);
-		Actions.Accept.Connect(GUIDEAction.SignalName.Completed, new Callable(this, MethodName.OnAcceptCompleted), 0);
+		Input.JoyConnectionChanged += static (device, connected) => { if (connected) EnableContext(Contexts.Controller); };
 
-		Actions.Back.Connect(GUIDEAction.SignalName.Triggered, new Callable(this, MethodName.OnBackTriggered), 0);
-		
-        GetTree().Connect(SceneTree.SignalName.NodeAdded, new Callable(this, MethodName.OnNodeAddedToTree));
-        GetTree().Connect(SceneTree.SignalName.NodeRemoved, new Callable(this, MethodName.OnNodeRemovedFromTree));
+		//Actions.Click.Started += static () => Instance._rootViewport.PushInput(new InputEventMouseButton { ButtonIndex = MouseButton.Left, Pressed = true });
+		//Actions.Click.Completed += static () => Instance._rootViewport.PushInput(new InputEventMouseButton { ButtonIndex = MouseButton.Left, Pressed = false });
+
+		Actions.UIDirection.Triggered += OnUIDirectionTriggered;
+		Actions.Accept.Triggered += OnAcceptTriggered;
+		Actions.Accept.Completed += OnAcceptCompleted;
+		Actions.Back.Triggered += OnBackTriggered;
+
+		// Popup window support
+		GetTree().NodeAdded += static node => {
+			if (node is not Popup popup || Instance._popups.ContainsKey(popup)) return;
+			
+			Instance._popups.Add(popup, []);
+			Instance._popups[popup].Add(Window.SignalName.FocusEntered, () => Instance._viewportStack.Push(popup));
+			Instance._popups[popup].Add(Window.SignalName.FocusExited, () => Instance._viewportStack.TryPop(out var _));
+			
+			foreach (var (signal, action) in Instance._popups[popup]) popup.Connect(signal, action);
+		};
+		GetTree().NodeAdded += static node => {
+			if (node is not Popup popup || Instance._popups.ContainsKey(popup)) return;
+			foreach (var (signal, action) in Instance._popups[popup]) popup.Disconnect(signal, action);
+			Instance._popups.Remove(popup);
+		};
 	}
 
-	private Viewport _rootViewport = null;
-	private Viewport _focusedViewport = null;
 	private readonly Dictionary<Popup, Dictionary<StringName, Action>> _popups = [];
 
-	private void OnNodeAddedToTree(Node node) {
-		if (node is not Popup popup || _popups.ContainsKey(popup)) return;
-
-		_popups.Add(popup, []);
-		_popups[popup].Add(Window.SignalName.FocusEntered, () => _focusedViewport = popup);
-		_popups[popup].Add(Window.SignalName.FocusExited, () => _focusedViewport = _rootViewport);
-
-		foreach (var (signal, action) in _popups[popup]) popup.Connect(signal, Callable.From(action));
-	}
-	private void OnNodeRemovedFromTree(Node node) {
-		if (node is not Popup popup || !_popups.ContainsKey(popup)) return;
-
-		foreach (var (signal, action) in _popups[popup]) popup.Disconnect(signal, Callable.From(action));
-		_popups.Remove(popup);
-	}
-
 	private Control _prevFocus = null;
-
 	private readonly Stack<NodePath> _focusStack = [];
-	public void PushToFocusStack() {
-		var focused = _focusedViewport.GuiGetFocusOwner();
-		if (focused is not null) { _focusStack.Push(focused.GetPath()); }
-	}
-	public void PopFromFocusStack() {
-		if (_focusStack.TryPop(out NodePath path)) {
-			var restoredFocus = GetNode(path) as Control;
-			restoredFocus?.GrabFocus();
-		}
-	}
+	
+	private Viewport _rootViewport = null;
+	private readonly Stack<Viewport> _viewportStack = [];
+	public static Viewport FocusedViewport => Instance._viewportStack.TryPeek(out var viewport) ? viewport : Instance._rootViewport;
 
-	public void ClearFocus() {
-		_focusedViewport?.GuiGetFocusOwner()?.ReleaseFocus();
-	}
+	public static void PushToFocusStack()  { if (FocusedViewport?.GuiGetFocusOwner() is Control focused) Instance._focusStack.Push(focused.GetPath()); }
+	public static void PopFromFocusStack() { if (Instance._focusStack.TryPop(out NodePath restoredFocusPath)) (Instance.GetNode(restoredFocusPath) as Control)?.GrabFocus(); }
 
-	public enum FocusDirection { Up, Down, Left, Right, None }
+	public static void ClearFocus() { FocusedViewport?.GuiGetFocusOwner()?.ReleaseFocus(); }
+
+	private static bool IsFocusable(Control control) => control.FocusMode == Control.FocusModeEnum.All && control.IsVisibleInTree();
 
 	public static Control FindFocusableWithin(Node root, FocusDirection direction = FocusDirection.Right) {
-		if (root is null) return null;
-		if (root is IFocusableContainer focusableContainer) {
-			var (newFocus, viewport) = focusableContainer.TryGainFocus(direction, Instance._focusedViewport);
-			if (newFocus is not null) {
-				if (viewport is not null) {
-					if (ShouldDisplayFocusDebugInfo) Console.Info($"Switched focus to viewport {viewport.ToPrettyString()}.");
-					Instance._focusedViewport = viewport;
-				}
-				return newFocus;
-			}
+		if (root is IFocusableContainer container && container.TryGainFocus(direction, FocusedViewport) is (Control, Viewport) tuple && tuple.Focus is Node nodeNext && FindFocusableWithin(nodeNext, direction) is Control focusNext) {
+			if (tuple.Viewport is Viewport viewport && viewport != FocusedViewport) Instance._viewportStack.Push(viewport);
+			return focusNext;
 		}
-		if (root is Control control && control.FocusMode == Control.FocusModeEnum.All && control.IsVisibleInTree()) return control;
-		var validChildren = root.FindChildrenWhere<Control>(x => x.FocusMode == Control.FocusModeEnum.All && x.IsVisibleInTree());
-		if (direction == FocusDirection.Left || direction == FocusDirection.Up) validChildren.Reverse();
-		return validChildren.FirstOrDefault();
+		if (root is Control controlRoot && IsFocusable(controlRoot)) return controlRoot;
+		if (root?.FindChildrenWhere<Control>(x => x.FocusMode == Control.FocusModeEnum.All && x.IsVisibleInTree())?.AsEnumerable() is IEnumerable<Control> validChildren) {
+			foreach (var child in direction.IsAnyOf(FocusDirection.Left, FocusDirection.Up) ? validChildren.Reverse() : validChildren)
+				if (FindFocusableWithin(child) is Control childFocusNext) return childFocusNext;
+		}
+		return null;
 	}
-
-	private static bool IsHorizontal(FocusDirection direction) => direction switch { FocusDirection.Left or FocusDirection.Right => true, _ => false };
-	private static bool IsVertical(FocusDirection direction) => direction switch { FocusDirection.Up or FocusDirection.Down => true, _ => false };
-	
-	private static bool IsHorizontalAnd<T>(Control control, FocusDirection direction) => direction switch { FocusDirection.Left or FocusDirection.Right when control is T => true, _ => false };
-	private static bool IsVerticalAnd<T>(Control control, FocusDirection direction) => direction switch { FocusDirection.Up or FocusDirection.Down when control is T => true, _ => false };
-
-	private static bool IsAxisAnd<LeftRightType, UpDownType>(Control control, FocusDirection direction) =>
-		direction switch { FocusDirection.Left or FocusDirection.Right when control is LeftRightType => true, FocusDirection.Up or FocusDirection.Down when control is UpDownType => true, _ => false };
 
 	public static Control GetNextFocus(FocusDirection direction, Control root) {
 		if (!root.IsValid()) return null;
 
 		var nextPath = direction switch {
-			FocusDirection.Up => root.FocusNeighborTop,
-			FocusDirection.Down => root.FocusNeighborBottom,
-			FocusDirection.Left => root.FocusNeighborLeft,
-			FocusDirection.Right => root.FocusNeighborRight,
-			_ => throw new IndexOutOfRangeException()
+			FocusDirection.Up => root.FocusNeighborTop, FocusDirection.Down => root.FocusNeighborBottom,
+			FocusDirection.Left => root.FocusNeighborLeft, FocusDirection.Right => root.FocusNeighborRight,
+			FocusDirection.None => root.FocusNext
 		};
-		if (nextPath == "!return") return Instance._prevFocus;
+		
+		IEnumerable<string> tags = []; Dictionary<string, string> meta = [];
+		bool HasTag(string tag, bool caseSensitive = false) => tags.Any(x => x.Match(tag, caseSensitive)) || meta.Any(x => x.Key.Match(tag, caseSensitive) && bool.Parse(x.Value) == true);
+
+		if (nextPath.ToString() is string pathString && pathString.Contains('!')) {
+			var bangIndex = pathString.Find('!'); string beforeBang = pathString[..bangIndex]; string afterBang = bangIndex == pathString.Length - 1 ? "" : pathString[(bangIndex+1)..];
+			nextPath = beforeBang; tags = afterBang.Split(',').Select(x => x.Trim());
+			meta = tags.Where(x => x.Contains('=')).Select(x => { var equalsIndex = x.Find('='); return KeyValuePair.Create(x[..equalsIndex].Trim(), equalsIndex == x.Length - 1 ? "" : x[(equalsIndex+1)..].Trim()); }).ToDictionary();
+		}
+
+		if (HasTag("return")) return Instance._prevFocus;
 
 		if (!nextPath.IsEmpty && FindFocusableWithin(root.GetNode(nextPath), direction) is Control focusable) return focusable;
 
-		foreach (var container in root.FindParentsWhere<Control>(x => x is Container || x is IFocusableContainer)) {
-			var chain = container.FindChildChainTo(root);
-
-			if (IsAxisAnd<HBoxContainer, VBoxContainer>(container, direction)) {
-				var index = chain.First().GetIndex();
-				var indexDirection = direction switch {
-					FocusDirection.Left or FocusDirection.Up => -1,
-					FocusDirection.Right or FocusDirection.Down => 1,
-					_ => throw new IndexOutOfRangeException()
-				};
-
-				index += indexDirection;
-				while (index >= 0 && index < container.GetChildCount()) {
-					var nextFocus = FindFocusableWithin(container.GetChild(index), direction);
-					if (nextFocus is not null) return nextFocus;
-					index += indexDirection;
-				}
-			}
-
-			if (container is GridContainer gridContainer && gridContainer.Columns > 0) {
-				var originalIndex = chain.First().GetIndex();
-				var index = originalIndex;
-				var indexJump = direction switch {
-					FocusDirection.Up => -gridContainer.Columns, FocusDirection.Down => gridContainer.Columns,
-					FocusDirection.Left => -1, FocusDirection.Right => 1,
-					_ => throw new IndexOutOfRangeException()
-				};
-				index += indexJump;
-				while (index >= 0 && index < container.GetChildCount() && direction switch { FocusDirection.Left => (index + 1) % gridContainer.Columns != 0, FocusDirection.Right => index % gridContainer.Columns != 0, _ => true }) {
-					var nextFocus = FindFocusableWithin(container.GetChild(index), direction);
-					if (nextFocus is not null) return nextFocus;
-					index += indexJump;
-				}
-				if (index >= container.GetChildCount() && originalIndex < container.GetChildCount() - (container.GetChildCount() % gridContainer.Columns)) {
-					var nextFocus = FindFocusableWithin(container.GetChildren().Last(), direction);
-					if (nextFocus is not null) return nextFocus;
-				}
-			}
-
-			if (container is TabContainer tabContainer) {
-				if (direction == FocusDirection.Down && root is TabBar) {
-					var nextFocus = FindFocusableWithin(tabContainer.GetCurrentTabControl(), direction);
-					if (nextFocus is not null) return nextFocus;
-				}
-				if (direction == FocusDirection.Up) return tabContainer.GetTabBar();
-			}
-
-			if (container is IFocusableContainer focusableContainer) {
-				var index = chain.First().GetIndex();
-				var nextFocus = focusableContainer.GetNextFocus(direction, index);
-				if (nextFocus is not null) return nextFocus;
-			}
-
-			var containerNextFocus = GetNextFocus(direction, container);
-			if (containerNextFocus is not null) return containerNextFocus;
+		foreach (var parent in root.FindParentsWhere(x => x is Container || x is IFocusableContainer)) {
+			var child = parent.FindChildChainTo(root).FirstOrDefault();
+			if (parent is IFocusableContainer container && container.GetNextFocus(direction, child) is Control nextNode && FindFocusableWithin(nextNode, direction) is Control nextFocus) return nextFocus;
+			if (StandardContainerFocusLogic.GetNextFocus(root, parent, direction, child) is Node standardNextNode && FindFocusableWithin(standardNextNode, direction) is Control standardNextFocus) return standardNextFocus;
+			if (parent is Control && GetNextFocus(direction, parent as Control) is Control controlNextFocus) return controlNextFocus;
 		}
 		return null;
 	}
 
-	private static bool UseDirectionalInput(Control control, FocusDirection direction) {
-		if (control is IFocusOverride focusOverride && focusOverride.UseDirectionalInput(direction)) return true;
-
-		if (control is Slider slider && slider.Editable && slider.Value >= slider.MinValue && slider.Value <= slider.MaxValue && IsAxisAnd<HSlider, VSlider>(control, direction)) {
-			var step = slider.Step * direction switch {
-				FocusDirection.Left or FocusDirection.Down => -1f,
-				FocusDirection.Right or FocusDirection.Up => 1f,
-				_ => throw new IndexOutOfRangeException()
-			};
-			slider.Value += step;
-			return true;
-		}
-
-		if (control is TabBar tabBar && IsHorizontal(direction)) {
-			bool tabSelectSuccessful = direction switch {
-				FocusDirection.Left => tabBar.SelectPreviousAvailable(), FocusDirection.Right => tabBar.SelectNextAvailable(),
-				_ => throw new IndexOutOfRangeException()
-			};
-			if (tabSelectSuccessful) return true;
-		}
-
-		return false;
-	}
-
 	private void OnAcceptTriggered() {
-		var focused = _focusedViewport.GuiGetFocusOwner();
+		var focused = FocusedViewport?.GuiGetFocusOwner();
 		if (focused is null) return;
 
 		if (focused is BaseButton button && !button.Disabled) {
@@ -235,7 +146,7 @@ public sealed partial class InputManager : Node
 		}
 	}
 	private void OnAcceptCompleted() {
-		var focused = _focusedViewport.GuiGetFocusOwner();
+		var focused = FocusedViewport?.GuiGetFocusOwner();
 		if (focused is null) return;
 
 		if (focused is BaseButton button && !button.Disabled) {
@@ -257,37 +168,25 @@ public sealed partial class InputManager : Node
 		const float threshold = 0.5f;
 		var axis = Actions.UIDirection.ValueAxis2d;
 		FocusDirection direction = axis switch {
-			_ when axis.X > threshold => FocusDirection.Right,
-			_ when axis.X < -threshold => FocusDirection.Left,
-			_ when axis.Y > threshold => FocusDirection.Up,
-			_ when axis.Y < -threshold => FocusDirection.Down,
+			_ when axis.X > threshold => FocusDirection.Right, _ when axis.X < -threshold => FocusDirection.Left,
+			_ when axis.Y > threshold => FocusDirection.Up, _ when axis.Y < -threshold => FocusDirection.Down,
 			_ => FocusDirection.None
 		};
 		
-		var focused = _focusedViewport.GuiGetFocusOwner();
+		var focused = FocusedViewport?.GuiGetFocusOwner();
 		if (focused is null || !focused.IsVisibleInTree()) {
 			foreach (var focusContext in GetTree().Root.FindChildrenWhere(x => x is IFocusContext).Select(x => x as IFocusContext)
 					.Where(x => x.FocusContextPriority >= 0 && ((x as CanvasItem)?.IsVisibleInTree() ?? true)).OrderBy(x => x.FocusContextPriority)) {
-				var contextDefaultFocus = FindFocusableWithin(focusContext?.GetDefaultFocus(direction));
-				if (contextDefaultFocus is not null) { contextDefaultFocus?.GrabFocus(); return; }
+				if (FindFocusableWithin(focusContext?.GetDefaultFocus(direction)) is Control contextDefaultFocus) { contextDefaultFocus?.GrabFocus(); return; }
 			}
 		}
 
-		if (direction != FocusDirection.None && !UseDirectionalInput(focused, direction)) {
+		if (direction != FocusDirection.None && !((focused is IFocusOverride focusOverride && focusOverride.UseDirectionalInput(direction)) || StandardContainerFocusLogic.UseDirectionalInput(focused, direction))) {
 			Control focusNext = GetNextFocus(direction, focused);
 
-			foreach (var focusableContainer in focused?.FindParentsWhere(x => x is IFocusableContainer).OrderBy(x => x.FindDistanceToChild(focused)).Select(x => x as IFocusableContainer) ?? []) {
-				if (!(focusableContainer as Node).IsAncestorOf(focusNext)) {
-					if (focusableContainer.TryLoseFocus(direction, out bool popViewport)) {
-						if (ShouldDisplayFocusDebugInfo) Console.Info(focusableContainer, " lose focus.");
-						if (popViewport) {
-							if (ShouldDisplayFocusDebugInfo) Console.Info("Switched focus back to root viewport.");
-							_focusedViewport = _rootViewport;
-						}
-					}
-					else return;
-				}
-			}
+			if (focused is not null) { foreach (var focusableContainer in focused?.FindParentsWhere(x => x is IFocusableContainer).OrderBy(x => x.FindDistanceToChild(focused)).Select(x => x as IFocusableContainer) ?? []) {
+				if (focusNext is not null && !(focusableContainer as Node).IsAncestorOf(focusNext)) { if (!focusableContainer.TryLoseFocus(direction, out bool popViewport)) return; if (popViewport) _viewportStack.TryPop(out var poppedViewport); }
+			}}
 
 			Instance._prevFocus = focused;
 			if (ShouldDisplayFocusDebugInfo) Console.Info(focusNext is not null ? $"Shifted focus {Enum.GetName(direction)} to {focusNext.ToPrettyString()}." : $"Could not shift focus {Enum.GetName(direction)} from {focused.ToPrettyString()}.");
@@ -295,44 +194,27 @@ public sealed partial class InputManager : Node
 		}
 	}
 
-	private readonly Dictionary<GUIDEMappingContext, bool> _contextEnabled = [];
-
-    private void OnInputMappingsChanged() {
-		foreach (var context in new GUIDEMappingContext[]{ Contexts.Controller, Contexts.Keyboard, Contexts.Mouse })
-			_contextEnabled[context] = GUIDE.IsMappingContextEnabled(context);
-	}
+	private static readonly IEnumerable<StringName> _uiActionsToCatch = [ "ui_left", "ui_right", "ui_up", "ui_down", "ui_select", "ui_accept" ];
 
     public override void _Input(InputEvent @event) {
-		if (ShouldOverrideGuiInput && new List<StringName>{ UIInput.UiLeft, UIInput.UiRight, UIInput.UiUp, UIInput.UiDown, UIInput.UiSelect, UIInput.UiAccept }.Any(x => @event.IsAction(x))) {
-			_focusedViewport.SetInputAsHandled(); if (_focusedViewport != _rootViewport) _rootViewport.SetInputAsHandled();
+		if (ShouldOverrideGuiInput && _uiActionsToCatch.Any(action => @event.IsAction(action))) {
+			_rootViewport.SetInputAsHandled(); foreach (var viewport in _viewportStack) viewport?.SetInputAsHandled();
 			GUIDE.InjectInput(@event);
 		}
 
-        if (!_contextEnabled.GetValueOrDefault(Contexts.Keyboard) && @event is InputEventKey) {
-            GUIDE.EnableMappingContext(Contexts.Keyboard);
-            if (_contextEnabled.GetValueOrDefault(Contexts.Controller)) GUIDE.DisableMappingContext(Contexts.Controller);
-			GUIDE.InjectInput(@event);
-        }
-
-        if (!_contextEnabled.GetValueOrDefault(Contexts.Controller) && (@event is InputEventJoypadButton || @event is InputEventJoypadMotion)) {
-            GUIDE.EnableMappingContext(Contexts.Controller);
-            if (_contextEnabled.GetValueOrDefault(Contexts.Keyboard)) GUIDE.DisableMappingContext(Contexts.Keyboard);
-			GUIDE.InjectInput(@event);
-        }
-
-		if (!_contextEnabled.GetValueOrDefault(Contexts.Mouse) && @event is InputEventMouse) {
-            GUIDE.EnableMappingContext(Contexts.Mouse);
-			GUIDE.InjectInput(@event);
+		switch (@event) {
+			case InputEventKey when !IsContextEnabled(Contexts.Keyboard): {
+				EnableContext(Contexts.Keyboard); DisableContext(Contexts.Controller);
+				GUIDE.InjectInput(@event);
+			} break;
+			case InputEventJoypadButton or InputEventJoypadMotion when !IsContextEnabled(Contexts.Controller): {
+				EnableContext(Contexts.Controller); DisableContext(Contexts.Keyboard);
+				GUIDE.InjectInput(@event);
+			} break;
+			case InputEventMouse when !IsContextEnabled(Contexts.Mouse): {
+				EnableContext(Contexts.Mouse);
+				GUIDE.InjectInput(@event);
+			} break;
 		}
     }
-
-	private static class UIInput
-	{
-		public static readonly StringName UiLeft = "ui_left";
-		public static readonly StringName UiRight = "ui_right";
-		public static readonly StringName UiUp = "ui_up";
-		public static readonly StringName UiDown = "ui_down";
-		public static readonly StringName UiSelect = "ui_select";
-		public static readonly StringName UiAccept = "ui_accept";
-	}
 }
