@@ -6,9 +6,13 @@ extends Control
 @export var button_root: Control
 @export var settings_menu_scene: PackedScene
 
+
 var settings_menu: Control
 
+const HAND_POINT = preload("res://assets/ui/cursor/cursor_pointing_hand.png")
+
 func _ready():
+	Input.set_custom_mouse_cursor(HAND_POINT, Input.CURSOR_POINTING_HAND)
 	start_button.button_down.connect(_on_start_pressed)
 	settings_button.button_down.connect(_on_settings_pressed)
 	exit_button.button_down.connect(_on_exit_pressed)

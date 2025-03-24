@@ -78,6 +78,7 @@ stretch_mode = 5
 custom_minimum_size = Vector2(0, 105)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
 texture_normal = ExtResource("7_pfbq2")
 texture_pressed = ExtResource("8_rvobj")
 texture_hover = ExtResource("8_rvobj")
@@ -106,6 +107,7 @@ stretch_mode = 5
 custom_minimum_size = Vector2(0, 105)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
 texture_normal = ExtResource("5_vu7x7")
 texture_pressed = ExtResource("6_p1i6k")
 texture_hover = ExtResource("6_p1i6k")
@@ -134,6 +136,7 @@ stretch_mode = 5
 custom_minimum_size = Vector2(0, 105)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
 texture_normal = ExtResource("3_t0cfi")
 texture_pressed = ExtResource("4_wup3t")
 texture_hover = ExtResource("4_wup3t")
@@ -145,3 +148,8 @@ metadata/_edit_use_anchors_ = true
 [node name="Padding" type="Control" parent="HBoxContainer/VBoxContainer3"]
 editor_description = "If I don't put a padding node at the bottom, the bottom edge of the button texture gets noticably cut off at certain screen resolutions"
 layout_mode = 2
+
+[connection signal="mouse_entered" from="HBoxContainer/VBoxContainer/Start" to="." method="_on_start_mouse_entered"]
+[connection signal="mouse_exited" from="HBoxContainer/VBoxContainer/Start" to="." method="_on_start_mouse_exited"]
+[connection signal="mouse_entered" from="HBoxContainer/VBoxContainer2/Settings" to="." method="_on_settings_mouse_entered"]
+[connection signal="mouse_exited" from="HBoxContainer/VBoxContainer2/Settings" to="." method="_on_settings_mouse_exited"]
