@@ -56,6 +56,7 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
     public override void _EnterTree() {
         UpdateViewports();
         this.TryConnect(Control.SignalName.Resized, new Callable(this, MethodName.UpdateDelayed));
+        this.TryConnect(CanvasItem.SignalName.VisibilityChanged, new Callable(this, MethodName.UpdateDelayed));
         if (!Engine.IsEditorHint()) {
             CameraBackgroundTransparent = true;
             LayerBackgroundTransparent = true;
@@ -64,6 +65,7 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
     public override void _ExitTree() {
         ClearViewports();
         this.TryDisconnect(Control.SignalName.Resized, new Callable(this, MethodName.UpdateDelayed));
+        this.TryDisconnect(CanvasItem.SignalName.VisibilityChanged, new Callable(this, MethodName.UpdateDelayed));
     }
     public void PreScriptReload() => ClearViewports();
 
@@ -81,7 +83,7 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
     }
 
     private void UpdateViewports(bool lowImpact = false) {
-        if (!IsInsideTree()) return;
+        if (!IsInsideTree() || !Visible) return;
 
         if (!_viewportsRoot.IsValid()) { _viewportsRoot = new() { Name = "ViewportsRoot" }; AddChild(_viewportsRoot); }
 
@@ -97,7 +99,10 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
         var viewportSize = GetViewportRect().Size;
         var windowSize = DisplayServer.WindowGetSize();
 
-        var viewportScaleFactor = (DownResInEditor && Engine.IsEditorHint() ? 1 : ScaleFactor) * (viewportSize.Y <= 2 ? 1 : windowSize.Y / viewportSize.Y);
+        var windowScaleFactor = viewportSize.Y <= 2 ? 1 : windowSize.X / viewportSize.X;
+        Console.Info("Window Scale Factor: ", windowScaleFactor, " Scale Factor: ", ScaleFactor);
+
+        var viewportScaleFactor = (DownResInEditor && Engine.IsEditorHint() ? 1 : ScaleFactor) * windowScaleFactor;
 
         float spritePixelSize = 0.01f;
 
@@ -110,7 +115,8 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
         var planeTrueDiameter = _viewport3d.Size.X * spritePixelSize;
         var distanceToPlane = (float)(planeTrueDiameter / (2 * Math.Tan(Angle.ToRadians(Fov)/2d)));
         
-        var viewport2dSize = new Vector2I((int)Size.X + 2 * PaddingLayer, (int)Size.Y + 2 * PaddingLayer);
+        var viewport2dSizeOverride = new Vector2I((int)Size.X + 2 * PaddingLayer, (int)Size.Y + 2 * PaddingLayer);
+        var viewport2dSize = new Vector2I((int)(viewport2dSizeOverride.X * viewportScaleFactor), (int)(viewport2dSizeOverride.Y * viewportScaleFactor));
 
         var layerRootOffset = new Vector2(PaddingLayer, PaddingLayer);
         var layerSize = Size;
@@ -118,15 +124,15 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
         //Console.Info("Viewport Size: ", GetViewportRect().Size, " | Window Size: ", DisplayServer.WindowGetSize(), " | ", viewportScaleFactor, " | ", _viewport3d.Size);
         
         void UpdateViewportSize(SubViewport viewport) {
-            viewport.Size = new((int)(viewport2dSize.X * viewportScaleFactor), (int)(viewport2dSize.Y * viewportScaleFactor));
-            viewport.Size2DOverride = viewport2dSize;
+            viewport.Size = viewport2dSize;
+            viewport.Size2DOverride = viewport2dSizeOverride;
             viewport.Size2DOverrideStretch = true; 
         }
 
         void UpdateSpritePivot(Node3D pivot, Node3D sprite, Control layer, int index) {
             pivot.Position = new(0f, 0f, -distanceToPlane + (index - FocusedLayer) * LayerSeparation);
             if (layer is not null && layer.FindChildOfType<PivotPoint>() is PivotPoint layerLogicalPivot) {
-                var layerPivotOffset = (layerLogicalPivot.GlobalPosition - viewport2dSize / 2) * spritePixelSize * viewportScaleFactor;
+                var layerPivotOffset = (layerLogicalPivot.GlobalPosition - viewport2dSizeOverride / 2) * spritePixelSize * viewportScaleFactor;
                 pivot.Position = pivot.Position with { X = layerPivotOffset.X, Y = layerPivotOffset.Y };
                 sprite.Position = sprite.Position with { X = -layerPivotOffset.X, Y = -layerPivotOffset.Y };
             }
