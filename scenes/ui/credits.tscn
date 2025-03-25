@@ -1,0 +1,64 @@
+[gd_scene load_steps=2 format=3 uid="uid://ccmhxutm5bcmr"]
+
+[ext_resource type="Script" uid="uid://bonisd2egs36k" path="res://scenes/ui/credits.gd" id="1_oap8i"]
+
+[node name="Credits" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_oap8i")
+
+[node name="CreditsText" type="RichTextLabel" parent="."]
+layout_mode = 1
+offset_right = 1158.0
+offset_bottom = 980.0
+text = "sldkhfvb
+alkfh
+aifug
+;[aiuwrgrfpaoitg
+ap[oe;tuhbn[f9va
+apgeiurhb'ALEG#G
+gpweou rag
+b'aWOEIUHRTA
+
+
+AWERUIAHEFFG
+
+JGNAERKGNA
+SOETGJASEG
+JAHSE
+GnA
+RGOJA
+SErTK#[pqwr
+[OADFG
+JSERHTA9]W3J45R
+SDFHAGE
+ROTNSHJRTDIOGS
+rnyW
+SERTJWROHN]SDRF
+SErTK#[pqwr
+[OADFG
+JSERHTA9]W3J45R
+SDFHAGE
+ROTNSHJRTDIOGS
+SErTK#[pqwr
+[OADFG
+JSERHTA9]W3J45R
+SDFHAGE
+ROTNSHJRTDIOGS
+SErTK#[pqwr
+[OADFG
+JSERHTA9]W3J45R
+SDFHAGE
+ROTNSHJRTDIOGS
+SErTK#[pqwr
+[OADFG
+JSERHTA9]W3J45R
+SDFHAGE
+ROTNSHJRTDIOGS
+SErTK#[pqwr
+[OADFG
+JSERHTA9]W3J45R
+SDFHAGE
+ROTNSHJRTDIOGS"
+fit_content = true
+scroll_following = true
