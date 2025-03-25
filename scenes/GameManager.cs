@@ -114,7 +114,7 @@ public sealed partial class GameManager : Node
 		var cardGameScene = ResourceLoader.Load<PackedScene>(cardGameScenePath).Instantiate();
 		GetLayer("game").AddOwnedChild(cardGameScene);
 		CardGameController = cardGameScene as CardGameController ?? cardGameScene.FindChildOfType<CardGameController>();
-		CardGameController.OnReady(BeginGame);
+		CardGameController.OnReady(x => x.BeginGame());
 		CardGameChanged?.Invoke();
 
 		PauseMenu = _pauseMenuScene.Instantiate<PauseMenu>();
