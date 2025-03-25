@@ -5,9 +5,22 @@ using Godot;
 
 namespace DamselsGambit.Util;
 
+// Helper methods for common actions related to nodes, such as checking whether an instance is valid or deferring until the node is ready
 static class NodeExtensions
 {
+    /// <summary>
+    /// Returns true if instance is a valid <see cref="GodotObject"/> (e.g. has not been deleted from memory).
+    /// <para> Shorthand for <see cref="GodotObject.IsInstanceValid(GodotObject?)"/>  </para>
+    /// </summary>
+    /// <returns>If the instance is a valid object.</returns>
     public static bool IsValid(this GodotObject self) => GodotObject.IsInstanceValid(self);
+
+    /// <summary>
+    /// Returns true if instance is not a valid <see cref="GodotObject"/> (e.g. has been deleted from memory).
+    /// <para> Shorthand for !<see cref="GodotObject.IsInstanceValid(GodotObject?)"/>  </para>
+    /// </summary>
+    /// <returns>If the instance is not a valid object.</returns>
+    public static bool IsInvalid(this GodotObject self) => !GodotObject.IsInstanceValid(self);
 
     /// <summary> If node ready, call immediately. Otherwise defer call until node is ready. </summary>
     /// <param name="callable">Callable to be run.</param>
@@ -26,7 +39,7 @@ static class NodeExtensions
     public static void OnReady<TNode>(this TNode self, Action<TNode> action) where TNode : Node => self.OnReady(Callable.From(() => action?.Invoke(self)));
 
     /// <summary>
-    /// <para>Add child which is owned by the current scene.</para>
+    /// <para>Add child which is owned by the current scene (or the parent if used at runtime).</para>
     /// <para>If node already has parent and <paramref name="force"/> is <see langword="true"/>, node will first be removed from parent.</para>
     /// </summary>
     public static void AddOwnedChild(this Node self, Node child, bool force = false) {
@@ -77,7 +90,7 @@ static class NodeExtensions
     /// </summary>
     /// <returns>First valid descendant, or <see langword="null"/> if none exist.</returns>
     public static TNode FindChildWhere<TNode>(this Node self, Func<TNode, bool> predicate, bool recursive = true) where TNode : Node {
-        foreach (var child in self.GetChildren()) if (child is TNode && predicate(child as TNode)) return child as TNode;
+        foreach (var child in self.GetChildren()) if (child is TNode tChild && predicate(tChild)) return tChild;
         if (recursive) {
             foreach (var child in self.GetChildren()) {
                 var result = child.FindChildWhere(predicate, recursive);
@@ -97,7 +110,7 @@ static class NodeExtensions
     public static Godot.Collections.Array<TNode> FindChildrenWhere<[MustBeVariant]TNode>(this Node self, Func<TNode, bool> predicate, bool recursive = true) where TNode : Node {
         var validChildren = new List<TNode>();
         foreach (var child in self.GetChildren()) {
-            if (child is TNode && predicate(child as TNode)) validChildren.Add(child as TNode);
+            if (child is TNode tChild && predicate(tChild)) validChildren.Add(tChild);
             if (recursive) validChildren.AddRange(child.FindChildrenWhere(predicate, recursive));
         }
         return [..validChildren];
@@ -109,7 +122,7 @@ static class NodeExtensions
     /// <returns>First ancestor of type <typeparamref name="TNode"/>, or <see langword="null"/> if none exist.</returns>
     public static TNode FindParentOfType<TNode>(this Node self) where TNode : Node {
         var parent = self.GetParent();
-        if (parent is TNode) { return parent as TNode; }
+        if (parent is TNode tParent) { return tParent; }
         return parent?.FindParentOfType<TNode>();
     }
 
@@ -118,7 +131,7 @@ static class NodeExtensions
     public static Godot.Collections.Array<TNode> FindParentsOfType<[MustBeVariant]TNode>(this Node self) where TNode : Node {
         var validParents = new List<TNode>();
         var parent = self.GetParent();
-        if (parent is TNode) validParents.Add(parent as TNode);
+        if (parent is TNode tParent) validParents.Add(tParent);
         if (parent is not null) validParents.AddRange(parent.FindParentsOfType<TNode>());
         return [.. validParents];
     }
@@ -127,7 +140,7 @@ static class NodeExtensions
     /// <returns>First valid ancestor of type <typeparamref name="TNode"/>, or <see langword="null"/> if none exist.</returns>
     public static TNode FindParentWhere<TNode>(this Node self, Func<TNode, bool> predicate) where TNode : Node {
         var parent = self.GetParent();
-        if (parent is TNode && predicate(parent as TNode)) return parent as TNode;
+        if (parent is TNode tParent && predicate(tParent)) return tParent;
         return parent?.FindParentWhere(predicate);
     }
     /// <<inheritdoc cref="FindParentWhere<TNode>(Node, Func<Node,bool>)"/> 
@@ -136,55 +149,52 @@ static class NodeExtensions
     /// <summary> Find all <typeparamref name="TNode"/> nodes above this node in the hierarchy for which <paramref name="predicate"/> returns true. </summary>
     /// <returns><see cref="Godot.Collections.Array"/> of <typeparamref name="TNode"/></returns>
     public static Godot.Collections.Array<TNode> FindParentsWhere<[MustBeVariant]TNode>(this Node self, Func<TNode, bool> predicate) where TNode : Node {
-        var validParents = new List<TNode>();
+        List<TNode> validParents = [];
         var parent = self.GetParent();
-        if (parent is TNode && predicate(parent as TNode)) validParents.Add(parent as TNode);
+        if (self.GetParent() is TNode tParent && predicate(tParent)) validParents.Add(tParent);
         if (parent is not null) validParents.AddRange(parent.FindParentsWhere(predicate));
         return [.. validParents];
     }
     /// <<inheritdoc cref="FindParentsWhere<TNode>(Node, Func<Node,bool>)"/> 
     public static Godot.Collections.Array<Node> FindParentsWhere(this Node self, Func<Node, bool> predicate) => self.FindParentsWhere<Node>(predicate);
 
+    /// <summary> Find number of nodes from self to <paramref name="ancestor"/> in tree, including self but not <paramref name="ancestor"/>. <para>Eg: if <paramref name="ancestor"/> is direct parent, returns 1.</para> </summary>
+    /// <returns>Distance from this node to <paramref name="ancestor"/>, or -1 if it cannot be reached.</returns>
     public static int FindDistanceToParent(this Node self, Node ancestor) {
         var root = self.GetTree().Root;
-        int working = 0;
-        Node workingNode = self;
+        int runningCount = 0; Node workingNode = self;
         while (workingNode != ancestor) {
             if (workingNode == root || workingNode is null) return -1;
-            working++;
+            runningCount++;
             workingNode = workingNode.GetParent();
         }
-        return working;
+        return runningCount;
     }
+
+    /// <summary> Find number of nodes from self to <paramref name="child"/> in tree, including <paramref name="child"/> but not self. <para>Eg: if <paramref name="child"/> is direct child, returns 1.</para> </summary>
+    /// <returns>Distance from this node to <paramref name="child"/>, or -1 if it cannot be reached.</returns>
     public static int FindDistanceToChild(this Node self, Node child) => child.FindDistanceToParent(self);
 
+    /// <summary> Get chain of nodes connecting self to <paramref name="ancestor"/> in tree, or empty array if cannot be reached. </summary>
+    /// <returns><see cref="Godot.Collections.Array"/> of <see cref="Node"/></returns>
     public static Godot.Collections.Array<Node> FindAncestorChainTo(this Node self, Node ancestor, bool includeSelf = true, bool includeTarget = false) {
-        var ancestorChain = new List<Node>();
-        if (includeSelf) ancestorChain.Add(self);
+        List<Node> ancestorChain = includeSelf ? [self] : [];
         bool ancestorFound = false;
         void FindChainRecursive(Node current) {
             var parent = current.GetParent();
             ancestorFound |= parent == ancestor;
             if (parent is null) return;
-            if (parent != ancestor) {
-                ancestorChain.Add(parent);
-                FindChainRecursive(parent);
-            }
-            else if (includeTarget) ancestorChain.Add(parent);
+            if (parent != ancestor) { ancestorChain.Add(parent); FindChainRecursive(parent); } else if (includeTarget) ancestorChain.Add(parent);
         }
         FindChainRecursive(self);
-        if (ancestorFound) return [..ancestorChain];
-        return [];
+        return ancestorFound ? [..ancestorChain] : [];
     }
-    public static Godot.Collections.Array<Node> FindChildChainTo(this Node self, Node child, bool includeSelf = false, bool includeTarget = true) {
-        var ancestorChain = child.FindAncestorChainTo(self, includeTarget, includeSelf);
-        ancestorChain.Reverse();
-        return ancestorChain;
-    }
+    
+    /// <summary> Get chain of nodes connecting self to <paramref name="descendant"/> in tree, or empty array if cannot be reached. </summary>
+    /// <returns><see cref="Godot.Collections.Array"/> of <see cref="Node"/></returns>
+    public static Godot.Collections.Array<Node> FindChildChainTo(this Node self, Node descendant, bool includeSelf = false, bool includeTarget = true) => [..descendant.FindAncestorChainTo(self, includeTarget, includeSelf).Reversed()];
 
-    public static Godot.Collections.Array<Node> GetSelfAndChildren(this Node self) {
-        var array = new Godot.Collections.Array<Node> { self };
-        array.AddRange(self.GetChildren());
-        return array;
-    }
+    /// <summary> Get array containing self and direct children, for convenience. </summary>
+    /// <returns><see cref="Godot.Collections.Array"/> of <see cref="Node"/></returns>
+    public static Godot.Collections.Array<Node> GetSelfAndChildren(this Node self) => [self, ..self.GetChildren()];
 }
