@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://2010mmkoekfk"]
+[gd_scene load_steps=7 format=3 uid="uid://2010mmkoekfk"]
 
 [ext_resource type="Theme" uid="uid://db11aw5aoqnpw" path="res://assets/ui/theme/suitor_profile_theme.tres" id="1_eqs5j"]
 [ext_resource type="Script" uid="uid://drk6opts1ja02" path="res://scenes/menu/notebook/pages/ProfilePage.cs" id="2_scbxg"]
@@ -7,22 +7,17 @@
 [ext_resource type="Script" uid="uid://dxgjxwnt0yhqf" path="res://scenes/dialogue/views/ProfileDialogueView.cs" id="3_a4plf"]
 [ext_resource type="Script" uid="uid://cbqc0snx0l0pi" path="res://scenes/menu/notebook/PivotPoint.cs" id="4_bpofr"]
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_a4plf"]
-size = Vector2(50, 50)
-
-[node name="Profile" type="Control" node_paths=PackedStringArray("DialogueView", "ProfileButton", "MouseIndicator")]
+[node name="Profile" type="Control" node_paths=PackedStringArray("DialogueView", "ProfileButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 1
 theme = ExtResource("1_eqs5j")
 script = ExtResource("2_scbxg")
 DialogueView = NodePath("ProfileView")
 ProfileButton = NodePath("Profile Button")
-MouseIndicator = NodePath("Indicator")
 metadata/_edit_use_anchors_ = true
 
 [node name="ProfileView" type="Node" parent="." node_paths=PackedStringArray("Title", "Subtitle", "Label", "Portrait")]
@@ -149,10 +144,3 @@ grow_horizontal = 0
 grow_vertical = 2
 script = ExtResource("4_bpofr")
 metadata/_custom_type_script = "uid://cbqc0snx0l0pi"
-
-[node name="Indicator" type="TextureRect" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-texture = SubResource("PlaceholderTexture2D_a4plf")
-stretch_mode = 2

@@ -187,32 +187,4 @@ static class NodeExtensions
         array.AddRange(self.GetChildren());
         return array;
     }
-
-    // Signal helper functions
-
-    public static Error Connect(this GodotObject self, StringName signal, Action action) {
-        return self.Connect(signal, Callable.From(action));
-    }
-    public static void Disconnect(this GodotObject self, StringName signal, Action action) {
-        self.Disconnect(signal, Callable.From(action));
-    }
-
-    public static Error TryConnect(this GodotObject self, StringName signal, Callable callable, uint flags = 0) {
-        if (!self.IsValid()) return Error.Failed;
-        if (self.IsConnected(signal, callable)) return Error.AlreadyExists;
-        return self.Connect(signal, callable, flags);
-    }
-    public static Error TryDisconnect(this GodotObject self, StringName signal, Callable callable) {
-        if (!self.IsValid()) return Error.Failed;
-        if (!self.IsConnected(signal, callable)) return Error.DoesNotExist;
-        self.Disconnect(signal, callable);
-        return Error.Ok;
-    }
-
-    public static Error TryConnect(this GodotObject self, StringName signal, Action action, uint flags = 0) {
-        return self.TryConnect(signal, Callable.From(action), flags);
-    }
-    public static Error TryDisconnect(this GodotObject self, StringName signal, Action action) {
-        return self.TryDisconnect(signal, Callable.From(action));
-    }
 }

@@ -11,21 +11,21 @@ public partial class ProfilePage : Control
 
     [Export] public Control MouseIndicator { get; set; }
 
-    public override void _Input(InputEvent @event) {
+    /*public override void _Input(InputEvent @event) {
         Console.Info("Profile page input: ", @event);
         if (@event is InputEventMouse mouseEvent) {
             if (MouseIndicator is not null) {
                 MouseIndicator.Position = mouseEvent.Position;
             }
         }
-    }
+    }*/
 
     public override void _GuiInput(InputEvent @event) {
         Console.Info("Profile page gui input: ", @event);
-        /*if (@event is InputEventMouse mouseEvent) {
+        if (@event is InputEventMouse mouseEvent) {
             if (MouseIndicator is not null) {
                 MouseIndicator.Position = mouseEvent.Position;
             }
-        }*/
+        }
     }
 }

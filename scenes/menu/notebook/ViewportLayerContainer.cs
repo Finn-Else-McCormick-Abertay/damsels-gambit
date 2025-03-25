@@ -94,6 +94,7 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
         if (!_viewport3d.IsValid()) {
             _viewport3d = new() { Name = "Viewport3D", Msaa3D = Viewport.Msaa.Disabled, TransparentBg = CameraBackgroundTransparent, RenderTargetUpdateMode = SubViewport.UpdateMode.WhenParentVisible }; AddChild(_viewport3d);
             _textureRect.Texture ??= _viewport3d.GetTexture();
+            _textureRect.MouseFilter = MouseFilter;
         }
         if (!_camera.IsValid()) { _camera = new() { Name = "Camera", KeepAspect = Camera3D.KeepAspectEnum.Width }; _viewport3d.AddChild(_camera); }
         if (!_sharedRoot.IsValid()) { _sharedRoot = new() { Name = "Root" }; _viewport3d.AddChild(_sharedRoot); }
@@ -199,21 +200,25 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
         if (_updateDelayTimer.IsValid()) { _updateDelayTimer.Stop(); _updateDelayTimer.QueueFree(); _updateDelayTimer = null; }
     }
 
-    public override void _GuiInput(InputEvent @event) {
+    /*public override void _GuiInput(InputEvent @event) {
         if (@event is InputEventMouse mouseEvent) {
-            var rect = _textureRect.GetRect();
-            var camSpacePosition = mouseEvent.Position - rect.Position;
-            camSpacePosition = new(camSpacePosition.X / rect.Size.X, camSpacePosition.Y / rect.Size.Y);
-            //Console.Info(" --- ", mouseEvent, " --- ", camSpacePosition);
+            var rect = _textureRect.GetGlobalRect();
+            var camSpacePosition = mouseEvent.GlobalPosition - rect.Position;
+            camSpacePosition = new(camSpacePosition.X / rect.Size.X * _viewport3d.Size.X, camSpacePosition.Y / rect.Size.Y * _viewport3d.Size.Y);
+            Console.Info(" --- ", mouseEvent, " --- ", mouseEvent.GlobalPosition, " : ", camSpacePosition);
             foreach (var (name, (layer, root, viewport, spritePivot, sprite)) in _layers) {
-                var positionInSpritePlane = _camera.ProjectPosition(camSpacePosition, spritePivot.GlobalPosition.Z) - spritePivot.GlobalPosition;
-                var spritespacePosition = new Vector2(positionInSpritePlane.X, positionInSpritePlane.Y) / _spritePixelSize;
-                var viewportspacePosition = new Vector2(spritespacePosition.X * viewport.Size.X, spritespacePosition.Y * viewport.Size.Y);
+                var positionInSpritePlane = _camera.ProjectPosition(camSpacePosition, -spritePivot.GlobalPosition.Z);
+                var spriteSize = new Vector2(viewport.Size2DOverride.X * _spritePixelSize, viewport.Size2DOverride.Y * _spritePixelSize);
+                var spritespacePosition = new Vector2(
+                    (positionInSpritePlane.X - sprite.GlobalPosition.X) / spriteSize.X,
+                    (positionInSpritePlane.Y - sprite.GlobalPosition.Y) / spriteSize.Y);
+                var viewportspacePosition = new Vector2(spritespacePosition.X * viewport.Size.X, -spritespacePosition.Y * viewport.Size.Y);
+                //root.GlobalPosition = viewportspacePosition;
                 mouseEvent.Position = viewportspacePosition;
-                //Console.Info(name, " : ", positionInSpritePlane, " -> ", spritespacePosition, " -> ", viewportspacePosition);
+                Console.Info(name, " : ", positionInSpritePlane, " -> ", spritespacePosition, " -> ", viewportspacePosition);
                 viewport.PushInput(mouseEvent);
             }
-            //Console.Info(" --- ");
+            Console.Info(" --- ");
         }
-    }
+    }*/
 }

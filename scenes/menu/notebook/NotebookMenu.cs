@@ -2,6 +2,7 @@ using DamselsGambit.Dialogue;
 using DamselsGambit.Util;
 using Godot;
 using System;
+using System.Collections.Generic;
 
 namespace DamselsGambit;
 
@@ -27,19 +28,29 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 	[Export(PropertyHint.Range, "0,1,or_greater,suffix:s")] private double OpenDuration { get; set; } = 0.3;
 
 	[ExportGroup("Nodes")]
-	[Export] private ViewportLayerContainer LayerContainer { get; set; }
+	[Export] private ViewportLayerContainer LayerContainer { get; set { field = value; UpdateLayerReferences(); } }
+	[ExportSubgroup("Fallback", "Fallback")]
+	[Export] private Control FallbackRoot { get; set { field = value; UpdateLayerReferences(); } }
+	[Export] private Control FallbackProfilePage { get; set { field = value; UpdateLayerReferences(); } }
+	[Export] private Node3D FallbackCoverPivot { get; set { field = value; UpdateLayerReferences(); } }
+
+	public Control Root { get; private set; }
 
 	public Notebook.ProfilePage ProfilePage {
 		get; private set {
-			ProfilePage?.ProfileButton?.TryDisconnect(Control.SignalName.FocusEntered, new Callable(this, MethodName.OnFocus));
-			ProfilePage?.ProfileButton?.TryDisconnect(Control.SignalName.FocusExited, new Callable(this, MethodName.OnUnfocus));
-			ProfilePage?.ProfileButton?.TryDisconnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.ToggleOpen));
+			ProfilePage?.ProfileButton?.TryDisconnectAll(
+				(Control.SignalName.FocusEntered, OnFocus),
+				(Control.SignalName.FocusExited, OnUnfocus),
+				(BaseButton.SignalName.Pressed, ToggleOpen)
+			);
 			field = value;
 			ProfilePage?.OnReady(page => {
 				UpdateDialogueViewNode();
-				page.ProfileButton?.Connect(Control.SignalName.FocusEntered, new Callable(this, MethodName.OnFocus));
-				page.ProfileButton?.Connect(Control.SignalName.FocusExited, new Callable(this, MethodName.OnUnfocus));
-				page.ProfileButton?.Connect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.ToggleOpen));
+				page.ProfileButton?.ConnectAll(
+					(Control.SignalName.FocusEntered, OnFocus),
+					(Control.SignalName.FocusExited, OnUnfocus),
+					(BaseButton.SignalName.Pressed, ToggleOpen)
+				);
 			});
 		}
 	}
@@ -68,12 +79,8 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 		var position = newState switch { AnimationState.Open => OpenOffset, AnimationState.Highlighted => HighlightOffset, AnimationState.Closed => ClosedOffset };
 		var angle = newState switch { AnimationState.Open => OpenCoverAngle, AnimationState.Highlighted => HighlightCoverAngle, AnimationState.Closed => ClosedCoverAngle };
 
-		this.OnReady(() => { _moveTween?.Kill(); _moveTween = CreateTween(); _moveTween.TweenProperty(LayerContainer, "position", position, duration); });
-
-		this.OnReady(() => {
-			_rotateTween?.Kill();
-			if (CoverPivot.IsValid()) { _rotateTween = CreateTween(); _rotateTween.TweenProperty(CoverPivot, "rotation:y", angle, duration); }
-		});
+		Root?.OnReady(() => { _moveTween?.Kill(); _moveTween = CreateTween(); _moveTween.TweenProperty(Root, "position", position, duration); });
+		CoverPivot?.OnReady(() => { _rotateTween?.Kill(); _rotateTween = CreateTween(); _rotateTween.TweenProperty(CoverPivot, "rotation:y", angle, duration); });
 	}
 
 	private void RestoreAnimationState() {
@@ -81,10 +88,18 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 		
 		var position = State switch { AnimationState.Open => OpenOffset, AnimationState.Highlighted => HighlightOffset, AnimationState.Closed => ClosedOffset };
 		var angle = State switch { AnimationState.Open => OpenCoverAngle, AnimationState.Highlighted => HighlightCoverAngle, AnimationState.Closed => ClosedCoverAngle };
-		LayerContainer?.OnReady(() => CallableUtils.CallDeferred(() => {
-			LayerContainer.Position = position;
-			if (CoverPivot.IsValid()) { CoverPivot.Rotation = CoverPivot.Rotation with { Y = (float)angle }; }
-		}));
+		CallableUtils.CallDeferred(() => { if (Root.IsValid()) Root.Position = position; if (CoverPivot.IsValid()) CoverPivot.Rotation = CoverPivot.Rotation with { Y = (float)angle }; });
+	}
+
+	private void UpdateLayerReferences() {
+		void InternalUpdateLayerReferences() {
+			Root = FallbackRoot ?? LayerContainer;
+            ProfilePage = LayerContainer.GetLayer("res://scenes/menu/notebook/pages/profile.tscn") as Notebook.ProfilePage ?? FallbackProfilePage as Notebook.ProfilePage;
+            ProfileViewport = LayerContainer.GetViewport("res://scenes/menu/notebook/pages/profile.tscn");
+            CoverPivot = LayerContainer.GetPivot("res://scenes/menu/notebook/pages/cover.tscn") ?? FallbackCoverPivot;
+        }
+		// If LayerContainer exists, defer until it is ready.
+		if (LayerContainer.IsValid()) LayerContainer.OnReady(InternalUpdateLayerReferences); else InternalUpdateLayerReferences();
 	}
 
 	public override void _Ready() {
@@ -92,11 +107,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 
 		Open = false; Highlighted = false;
 
-		LayerContainer.OnReady(() => {
-			ProfilePage = LayerContainer.GetLayer("res://scenes/menu/notebook/pages/profile.tscn") as Notebook.ProfilePage;
-			ProfileViewport = LayerContainer.GetViewport("res://scenes/menu/notebook/pages/profile.tscn");
-			CoverPivot = LayerContainer.GetPivot("res://scenes/menu/notebook/pages/cover.tscn");
-		});
+		UpdateLayerReferences();
 	}
 	public override void _EnterTree() { RestoreAnimationState(); }
 	public override void _ExitTree() {
@@ -114,7 +125,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 	}
 
     public (Node, Viewport) TryGainFocus(FocusDirection direction, Viewport fromViewport) => direction switch {
-		FocusDirection.Up or FocusDirection.Right => (ProfilePage.ProfileButton, ProfileViewport),
+		FocusDirection.Up or FocusDirection.Right => (ProfilePage?.ProfileButton, ProfileViewport),
 		_ => (null, null)
 	};
 

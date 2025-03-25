@@ -1,10 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://q1kh0whg1g0g"]
+[gd_scene load_steps=5 format=3 uid="uid://q1kh0whg1g0g"]
 
 [ext_resource type="Script" uid="uid://c5bi6sq63upok" path="res://scenes/menu/notebook/NotebookMenu.cs" id="2_eweoj"]
+[ext_resource type="PackedScene" uid="uid://dajkw7w45mh4c" path="res://scenes/menu/notebook/pages/cover.tscn" id="4_53q5r"]
 [ext_resource type="Script" uid="uid://biqqbrij8l0km" path="res://scenes/menu/notebook/ViewportLayerContainer.cs" id="6_s6j4j"]
 [ext_resource type="PackedScene" uid="uid://2010mmkoekfk" path="res://scenes/menu/notebook/pages/profile.tscn" id="7_43gqe"]
 
-[node name="NotebookMenu" type="Control" node_paths=PackedStringArray("LayerContainer")]
+[node name="NotebookMenu" type="Control" node_paths=PackedStringArray("LayerContainer", "FallbackRoot", "FallbackProfilePage")]
 layout_mode = 3
 anchor_right = 0.392
 anchor_bottom = 1.0
@@ -17,17 +18,31 @@ HighlightCoverAngle = 0.0380831
 OpenOffset = Vector2(-500, 0)
 OpenCoverAngle = 1.39626
 OpenDuration = 0.25
-LayerContainer = NodePath("ViewportLayerContainer")
+LayerContainer = NodePath("Root/ViewportLayerContainer")
+FallbackRoot = NodePath("Root")
+FallbackProfilePage = NodePath("Root/Profile")
 
-[node name="ViewportLayerContainer" type="Control" parent="."]
+[node name="Root" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Profile" parent="Root" instance=ExtResource("7_43gqe")]
+layout_mode = 1
+
+[node name="ViewportLayerContainer" type="Control" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("6_s6j4j")
-Scenes = [ExtResource("7_43gqe")]
+Scenes = [ExtResource("4_53q5r")]
 AlphaScissorThreshold = 0.69
 PaddingCamera = 210
 PaddingLayer = 210
