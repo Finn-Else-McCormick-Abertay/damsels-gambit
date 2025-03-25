@@ -11,13 +11,10 @@ public partial class SettingsMenu : Control, IFocusContext, IBackContext
 
 	public event Action OnExit;
 
-	public override void _EnterTree() {
-		ExitButton?.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnExitPressed));
-	}
-	public override void _ExitTree() {
-		ExitButton?.TryDisconnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnExitPressed));
-	}
+	public override void _EnterTree() { ExitButton?.TryConnect(BaseButton.SignalName.Pressed, OnExitPressed); }
+	public override void _ExitTree() { ExitButton?.TryDisconnect(BaseButton.SignalName.Pressed, OnExitPressed); }
 
+	// Connected to Exit button Pressed signal
 	private void OnExitPressed() => OnExit?.Invoke();
 	
 	public virtual int FocusContextPriority => 10;

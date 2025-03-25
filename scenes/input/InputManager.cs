@@ -29,7 +29,7 @@ public sealed partial class InputManager : Node
 	}
 	
     public static InputManager Instance { get; set; }
-	public override void _EnterTree() { if (Instance is not null) throw AutoloadException.For(this); Instance = this; GetTree().Root.Connect(Node.SignalName.Ready, new Callable(this, MethodName.OnTreeReady), (uint)ConnectFlags.OneShot); }
+	public override void _EnterTree() { if (Instance is not null) throw AutoloadException.For(this); Instance = this; GetTree().Root.Connect(Node.SignalName.Ready, OnTreeReady, (uint)ConnectFlags.OneShot); }
 	
 	public static bool ShouldOverrideGuiInput { get; set; } = true;
 	public static bool ShouldDisplayFocusDebugInfo { get; set; } = OS.HasFeature("debug");
