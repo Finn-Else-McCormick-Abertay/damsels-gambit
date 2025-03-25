@@ -12,28 +12,31 @@ public enum FocusDirection { Up, Down, Left, Right, None }
 // This is an autoload singleton. Because of how Godot works, you can technically instantiate it yourself. Don't.
 public sealed partial class InputManager : Node
 {
+    public static InputManager Instance { get; set; }
+	public override void _EnterTree() { if (Instance is not null) throw AutoloadException.For(this); Instance = this; GetTree().Root.Connect(Node.SignalName.Ready, OnTreeReady, (uint)ConnectFlags.OneShot); }
+	
+	public static bool ShouldOverrideGuiInput { get; set; } = true;
+	public static bool ShouldDisplayFocusDebugInfo { get; set; } = OS.HasFeature("debug");
+
+	public static class Actions
+	{
+    	public static readonly GUIDEAction Accept, Back, UIDirection, Pause, SelectAt, Cursor, CursorRelative, Drag, Click, ClickHold;
+
+		// Load all actions during static construction
+		static Actions() => typeof(Actions).GetFields().ForEach(field => field.SetValue(null, GUIDEAction.From(ResourceLoader.Load($"res://assets/input/actions/{Case.ToSnake(field.Name)}.tres"))));
+	}
+
 	public static class Contexts
 	{
 		public static readonly GUIDEMappingContext Mouse, Keyboard, Controller;
 
 		public static IEnumerable<GUIDEMappingContext> All => typeof(Contexts).GetFields().Select(x => x.GetValue(null) as GUIDEMappingContext);
 
+		// Load all contexts during static construction
 		static Contexts() => typeof(Contexts).GetFields().ForEach(field => field.SetValue(null, GUIDEMappingContext.From(ResourceLoader.Load($"res://assets/input/context_{Case.ToSnake(field.Name)}.tres"))));
 	}
-
-	public static class Actions
-	{
-    	public static readonly GUIDEAction Accept, Back, UIDirection, Pause, SelectAt, Cursor, CursorRelative, Drag, Click, ClickHold;
-
-		static Actions() => typeof(Actions).GetFields().ForEach(field => field.SetValue(null, GUIDEAction.From(ResourceLoader.Load($"res://assets/input/actions/{Case.ToSnake(field.Name)}.tres"))));
-	}
 	
-    public static InputManager Instance { get; set; }
-	public override void _EnterTree() { if (Instance is not null) throw AutoloadException.For(this); Instance = this; GetTree().Root.Connect(Node.SignalName.Ready, OnTreeReady, (uint)ConnectFlags.OneShot); }
-	
-	public static bool ShouldOverrideGuiInput { get; set; } = true;
-	public static bool ShouldDisplayFocusDebugInfo { get; set; } = OS.HasFeature("debug");
-	
+	// Cache of loaded contexts (so we don't have to constantly query GUIDE through the interop)
 	private IEnumerable<GUIDEMappingContext> _enabledContexts = [];
 
 	public static bool IsContextEnabled(GUIDEMappingContext context) => Instance._enabledContexts.Contains(context);
@@ -68,13 +71,14 @@ public sealed partial class InputManager : Node
 			
 			foreach (var (signal, action) in Instance._popups[popup]) popup.Connect(signal, action);
 		};
-		GetTree().NodeAdded += static node => {
+		GetTree().NodeRemoved += static node => {
 			if (node is not Popup popup || Instance._popups.ContainsKey(popup)) return;
 			foreach (var (signal, action) in Instance._popups[popup]) popup.Disconnect(signal, action);
 			Instance._popups.Remove(popup);
 		};
 	}
 
+	// Active popups, and the signals of theirs we need to disconnect when they die
 	private readonly Dictionary<Popup, Dictionary<StringName, Action>> _popups = [];
 
 	private Control _prevFocus = null;
@@ -90,11 +94,10 @@ public sealed partial class InputManager : Node
 	// Release focus for current focused viewport
 	public static void ClearFocus() => FocusedViewport?.GuiGetFocusOwner()?.ReleaseFocus();
 
-	private static bool IsFocusable(Control control) => control.FocusMode == Control.FocusModeEnum.All && control.IsVisibleInTree();
-
 	// Find focusable control within given node, coming from given direction
 	// (eg: HBoxContainer from left gives its first child, from right gives its last child; a button from any direction gives itself; etc.)
 	public static Control FindFocusableWithin(Node root, FocusDirection direction = FocusDirection.None) {
+		static bool IsFocusable(Control control) => control.FocusMode == Control.FocusModeEnum.All && control.IsVisibleInTree();
 		if (root is IFocusableContainer container) {
 			var (nodeNext, viewport) = container.TryGainFocus(direction, FocusedViewport);
 			if (FindFocusableWithin(nodeNext, direction) is Control focusNext) {
@@ -107,7 +110,7 @@ public sealed partial class InputManager : Node
 		}
 		if (root is Control controlRoot && IsFocusable(controlRoot)) return controlRoot;
 		var viewportChildren = root?.FindChildrenOfType<Viewport>();
-		if (root?.FindChildrenWhere<Control>(x => x.FocusMode == Control.FocusModeEnum.All && x.IsVisibleInTree() && !viewportChildren.Any(viewport => viewport.IsAncestorOf(x)))?.AsEnumerable() is IEnumerable<Control> validChildren) {
+		if (root?.FindChildrenWhere<Control>(x => IsFocusable(x) && !viewportChildren.Any(viewport => viewport.IsAncestorOf(x)))?.AsEnumerable() is IEnumerable<Control> validChildren) {
 			foreach (var child in direction.IsAnyOf(FocusDirection.Left, FocusDirection.Up) ? validChildren.Reverse() : validChildren)
 				if (FindFocusableWithin(child) is Control childFocusNext) return childFocusNext;
 		}
