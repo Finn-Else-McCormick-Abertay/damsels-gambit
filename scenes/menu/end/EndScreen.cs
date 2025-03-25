@@ -3,6 +3,8 @@ using DamselsGambit.Util;
 using Godot;
 using System;
 
+namespace DamselsGambit;
+
 public partial class EndScreen : Control
 {
 	[Export] public Label MessageLabel { get; set; }
@@ -13,9 +15,22 @@ public partial class EndScreen : Control
 		RetryButton?.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnRetry));
 		QuitButton?.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnQuit));
 		RetryButton?.GrabFocus();
+		this.TryConnect(CanvasItem.SignalName.VisibilityChanged, new Callable(this, MethodName.OnVisibilityChanged));
+		OnVisibilityChanged();
 	}
 
-	private void OnRetry() { GameManager.SwitchToCardGameScene("res://scenes/dates/frostholm_date.tscn"); QueueFree(); }
+	private void OnVisibilityChanged() {
+		GameManager.NotebookMenu.Visible = !Visible;
+	}
 
-	private static void OnQuit() { GameManager.SwitchToMainMenu(); }
+	private void OnRetry() {
+		GameManager.NotebookMenu.Visible = true;
+		GameManager.SwitchToCardGameScene("res://scenes/dates/frostholm_date.tscn");
+		QueueFree();
+	}
+
+	private static void OnQuit() {
+		GameManager.NotebookMenu.Visible = true;
+		GameManager.SwitchToMainMenu();
+	}
 }
