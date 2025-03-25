@@ -82,6 +82,8 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
         _updateDelayTimer.Start(0.2);
     }
 
+    private const float _spritePixelSize = 0.01f;
+
     private void UpdateViewports(bool lowImpact = false) {
         if (!IsInsideTree() || !Visible) return;
 
@@ -104,15 +106,13 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
 
         var viewportScaleFactor = (DownResInEditor && Engine.IsEditorHint() ? 1 : ScaleFactor) * windowScaleFactor;
 
-        float spritePixelSize = 0.01f;
-
         _textureRect.Position = new (-PaddingCamera, -PaddingCamera);
         _textureRect.Size = new (Size.X + 2 * PaddingCamera, Size.Y + 2 * PaddingCamera);
 
         _viewport3d.Size = new((int)((Size.X + 2 * PaddingCamera) * viewportScaleFactor), (int)((Size.Y + 2 * PaddingCamera) * viewportScaleFactor));
         _camera.Fov = Fov;
 
-        var planeTrueDiameter = _viewport3d.Size.X * spritePixelSize;
+        var planeTrueDiameter = _viewport3d.Size.X * _spritePixelSize;
         var distanceToPlane = (float)(planeTrueDiameter / (2 * Math.Tan(Angle.ToRadians(Fov)/2d)));
         
         var viewport2dSizeOverride = new Vector2I((int)Size.X + 2 * PaddingLayer, (int)Size.Y + 2 * PaddingLayer);
@@ -132,7 +132,7 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
         void UpdateSpritePivot(Node3D pivot, Node3D sprite, Control layer, int index) {
             pivot.Position = new(0f, 0f, -distanceToPlane + (index - FocusedLayer) * LayerSeparation);
             if (layer is not null && layer.FindChildOfType<PivotPoint>() is PivotPoint layerLogicalPivot) {
-                var layerPivotOffset = (layerLogicalPivot.GlobalPosition - viewport2dSizeOverride / 2) * spritePixelSize * viewportScaleFactor;
+                var layerPivotOffset = (layerLogicalPivot.GlobalPosition - viewport2dSizeOverride / 2) * _spritePixelSize * viewportScaleFactor;
                 pivot.Position = pivot.Position with { X = layerPivotOffset.X, Y = layerPivotOffset.Y };
                 sprite.Position = sprite.Position with { X = -layerPivotOffset.X, Y = -layerPivotOffset.Y };
             }
@@ -159,11 +159,11 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
 		        var viewport = new SubViewport() { Name = $"{debugDisplayName}Viewport", Msaa2D = Viewport.Msaa.Msaa8X, TransparentBg = LayerBackgroundTransparent, Disable3D = true, RenderTargetUpdateMode = SubViewport.UpdateMode.WhenParentVisible };
                 _viewportsRoot.AddChild(viewport); UpdateViewportSize(viewport);
 
-                var layerRoot = new Control() { Name = $"{debugDisplayName}LayerRoot", Position = layerRootOffset, Size = layerSize }; viewport.AddChild(layerRoot);
+                var layerRoot = new Control() { Name = $"{debugDisplayName}LayerRoot", Position = layerRootOffset, Size = layerSize, MouseFilter = MouseFilterEnum.Pass }; viewport.AddChild(layerRoot);
                 var layer = layerScene.Instantiate() as Control; layerRoot.AddChild(layer);
 
                 var spritePivot = new Node3D() { Name = $"{debugDisplayName}Pivot" }; _sharedRoot.AddChild(spritePivot);
-                var sprite = new Sprite3D() { Texture = viewport.GetTexture(), PixelSize = spritePixelSize }; spritePivot.AddChild(sprite);
+                var sprite = new Sprite3D() { Texture = viewport.GetTexture(), PixelSize = _spritePixelSize }; spritePivot.AddChild(sprite);
                 sprite.AlphaCut = SpriteBase3D.AlphaCutMode.Discard; sprite.AlphaAntialiasingMode = BaseMaterial3D.AlphaAntiAliasing.AlphaToCoverage; sprite.AlphaScissorThreshold = AlphaScissorThreshold;
                 sprite.SortingOffset = index * 0.01f;
                 UpdateSpritePivot(spritePivot, sprite, layer, index);
@@ -197,5 +197,23 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
         if (_viewport3d.IsValid()) _viewport3d.Free(); _viewport3d = null; _camera = null; _sharedRoot = null;
         if (_viewportsRoot.IsValid()) _viewportsRoot.Free(); _viewportsRoot = null;
         if (_updateDelayTimer.IsValid()) { _updateDelayTimer.Stop(); _updateDelayTimer.QueueFree(); _updateDelayTimer = null; }
+    }
+
+    public override void _GuiInput(InputEvent @event) {
+        if (@event is InputEventMouse mouseEvent) {
+            var rect = _textureRect.GetRect();
+            var camSpacePosition = mouseEvent.Position - rect.Position;
+            camSpacePosition = new(camSpacePosition.X / rect.Size.X, camSpacePosition.Y / rect.Size.Y);
+            //Console.Info(" --- ", mouseEvent, " --- ", camSpacePosition);
+            foreach (var (name, (layer, root, viewport, spritePivot, sprite)) in _layers) {
+                var positionInSpritePlane = _camera.ProjectPosition(camSpacePosition, spritePivot.GlobalPosition.Z) - spritePivot.GlobalPosition;
+                var spritespacePosition = new Vector2(positionInSpritePlane.X, positionInSpritePlane.Y) / _spritePixelSize;
+                var viewportspacePosition = new Vector2(spritespacePosition.X * viewport.Size.X, spritespacePosition.Y * viewport.Size.Y);
+                mouseEvent.Position = viewportspacePosition;
+                //Console.Info(name, " : ", positionInSpritePlane, " -> ", spritespacePosition, " -> ", viewportspacePosition);
+                viewport.PushInput(mouseEvent);
+            }
+            //Console.Info(" --- ");
+        }
     }
 }

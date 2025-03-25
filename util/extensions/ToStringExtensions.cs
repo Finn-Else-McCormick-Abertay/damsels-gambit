@@ -14,8 +14,8 @@ internal partial class ToPrettyStringInternal
 {
     public static string ToPrettyString<T>(T val) => val switch {
 		null => "null",
-        string str => $"\"{str}\"",
-		NodePath nodePath => nodePath switch { _ when nodePath.IsEmpty => "orphan", _ => nodePath.ToString() },
+        string str => str,
+		NodePath nodePath => nodePath switch { _ when nodePath.IsEmpty => "(Empty)", _ => nodePath.ToString() },
 		Node node => $"{node.GetType().Name}(\"{node.Name}\")",
 		Resource resource => $"{resource.ResourcePath}({resource.GetType().Name})",
 		GodotObject obj => $"{obj.GetType().Name}<{obj.GetInstanceId()}>",

@@ -43,6 +43,8 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 			});
 		}
 	}
+	public Viewport ProfileViewport { get; private set; }
+	public Node3D CoverPivot { get; private set; }
 
 	[ExportGroup("Debug", "Debug")]
 	[Export] private AnimationState DebugState { get => State; set => State = value; }
@@ -70,8 +72,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 
 		this.OnReady(() => {
 			_rotateTween?.Kill();
-			var coverPivot = LayerContainer.GetPivot(LayerContainer.Scenes.Length - 1);
-			if (coverPivot.IsValid()) { _rotateTween = CreateTween(); _rotateTween.TweenProperty(coverPivot, "rotation:y", angle, duration); }
+			if (CoverPivot.IsValid()) { _rotateTween = CreateTween(); _rotateTween.TweenProperty(CoverPivot, "rotation:y", angle, duration); }
 		});
 	}
 
@@ -82,8 +83,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 		var angle = State switch { AnimationState.Open => OpenCoverAngle, AnimationState.Highlighted => HighlightCoverAngle, AnimationState.Closed => ClosedCoverAngle };
 		LayerContainer?.OnReady(() => CallableUtils.CallDeferred(() => {
 			LayerContainer.Position = position;
-			var coverPivot = LayerContainer.GetPivot(LayerContainer.Scenes.Length - 1);
-			if (coverPivot.IsValid()) { coverPivot.Rotation = coverPivot.Rotation with { Y = (float)angle }; }
+			if (CoverPivot.IsValid()) { CoverPivot.Rotation = CoverPivot.Rotation with { Y = (float)angle }; }
 		}));
 	}
 
@@ -94,6 +94,8 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 
 		LayerContainer.OnReady(() => {
 			ProfilePage = LayerContainer.GetLayer("res://scenes/menu/notebook/pages/profile.tscn") as Notebook.ProfilePage;
+			ProfileViewport = LayerContainer.GetViewport("res://scenes/menu/notebook/pages/profile.tscn");
+			CoverPivot = LayerContainer.GetPivot("res://scenes/menu/notebook/pages/cover.tscn");
 		});
 	}
 	public override void _EnterTree() { RestoreAnimationState(); }
@@ -111,17 +113,14 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 		dialogueView.ProfileNode = $"{Case.ToSnake(SuitorName)}__profile";
 	}
 
-    public (Control, Viewport) TryGainFocus(FocusDirection direction, Viewport fromViewport) => direction switch {
-		FocusDirection.Up or FocusDirection.Right => (LayerContainer?.GetLayer(0)?.GetNode<Control>("Profile Button"), LayerContainer?.GetViewport(0)),
+    public (Node, Viewport) TryGainFocus(FocusDirection direction, Viewport fromViewport) => direction switch {
+		FocusDirection.Up or FocusDirection.Right => (ProfilePage.ProfileButton, ProfileViewport),
 		_ => (null, null)
 	};
 
 	public bool TryLoseFocus(FocusDirection direction, out bool popViewport) {
 		popViewport = true;
-		if (Open && direction.IsAnyOf(FocusDirection.Left, FocusDirection.Down)) {
-			popViewport = false;
-			return false;
-		}
+		if (Open && direction.IsAnyOf(FocusDirection.Left, FocusDirection.Down)) return false;
 		return true;
 	}
 }

@@ -90,12 +90,19 @@ public sealed partial class InputManager : Node
 	private static bool IsFocusable(Control control) => control.FocusMode == Control.FocusModeEnum.All && control.IsVisibleInTree();
 
 	public static Control FindFocusableWithin(Node root, FocusDirection direction = FocusDirection.Right) {
-		if (root is IFocusableContainer container && container.TryGainFocus(direction, FocusedViewport) is (Control, Viewport) tuple && tuple.Focus is Node nodeNext && FindFocusableWithin(nodeNext, direction) is Control focusNext) {
-			if (tuple.Viewport is Viewport viewport && viewport != FocusedViewport) Instance._viewportStack.Push(viewport);
-			return focusNext;
+		if (root is IFocusableContainer container) {
+			var (nodeNext, viewport) = container.TryGainFocus(direction, FocusedViewport);
+			if (FindFocusableWithin(nodeNext, direction) is Control focusNext) {
+				if (viewport is not null && viewport != FocusedViewport) {
+					Instance._viewportStack.Push(viewport);
+					if (ShouldDisplayFocusDebugInfo) Console.Info("Push viewport ", viewport);
+				}
+				return focusNext;
+			}
 		}
 		if (root is Control controlRoot && IsFocusable(controlRoot)) return controlRoot;
-		if (root?.FindChildrenWhere<Control>(x => x.FocusMode == Control.FocusModeEnum.All && x.IsVisibleInTree())?.AsEnumerable() is IEnumerable<Control> validChildren) {
+		var viewportChildren = root?.FindChildrenOfType<Viewport>();
+		if (root?.FindChildrenWhere<Control>(x => x.FocusMode == Control.FocusModeEnum.All && x.IsVisibleInTree() && !viewportChildren.Any(viewport => viewport.IsAncestorOf(x)))?.AsEnumerable() is IEnumerable<Control> validChildren) {
 			foreach (var child in direction.IsAnyOf(FocusDirection.Left, FocusDirection.Up) ? validChildren.Reverse() : validChildren)
 				if (FindFocusableWithin(child) is Control childFocusNext) return childFocusNext;
 		}
@@ -119,14 +126,18 @@ public sealed partial class InputManager : Node
 			nextPath = beforeBang; tags = afterBang.Split(',').Select(x => x.Trim());
 			meta = tags.Where(x => x.Contains('=')).Select(x => { var equalsIndex = x.Find('='); return KeyValuePair.Create(x[..equalsIndex].Trim(), equalsIndex == x.Length - 1 ? "" : x[(equalsIndex+1)..].Trim()); }).ToDictionary();
 		}
+		
+		if (ShouldDisplayFocusDebugInfo) Console.Info($"Next path: {nextPath.ToPrettyString()}, Tags: {string.Join(", ", tags)}");
 
 		if (HasTag("return")) return Instance._prevFocus;
+
+		if (HasTag("left")) direction = FocusDirection.Left; if (HasTag("right")) direction = FocusDirection.Right; if (HasTag("up")) direction = FocusDirection.Up; if (HasTag("down")) direction = FocusDirection.Down;
 
 		if (!nextPath.IsEmpty && FindFocusableWithin(root.GetNode(nextPath), direction) is Control focusable) return focusable;
 
 		foreach (var parent in root.FindParentsWhere(x => x is Container || x is IFocusableContainer)) {
 			var child = parent.FindChildChainTo(root).FirstOrDefault();
-			if (parent is IFocusableContainer container && container.GetNextFocus(direction, child) is Control nextNode && FindFocusableWithin(nextNode, direction) is Control nextFocus) return nextFocus;
+			if (parent is IFocusableContainer container && container.GetNextFocus(direction, child) is Node nextNode && FindFocusableWithin(nextNode, direction) is Control nextFocus) return nextFocus;
 			if (StandardContainerFocusLogic.GetNextFocus(root, parent, direction, child) is Node standardNextNode && FindFocusableWithin(standardNextNode, direction) is Control standardNextFocus) return standardNextFocus;
 			if (parent is Control && GetNextFocus(direction, parent as Control) is Control controlNextFocus) return controlNextFocus;
 		}
@@ -184,12 +195,20 @@ public sealed partial class InputManager : Node
 		if (direction != FocusDirection.None && !((focused is IFocusOverride focusOverride && focusOverride.UseDirectionalInput(direction)) || StandardContainerFocusLogic.UseDirectionalInput(focused, direction))) {
 			Control focusNext = GetNextFocus(direction, focused);
 
-			if (focused is not null) { foreach (var focusableContainer in focused?.FindParentsWhere(x => x is IFocusableContainer).OrderBy(x => x.FindDistanceToChild(focused)).Select(x => x as IFocusableContainer) ?? []) {
-				if (focusNext is not null && !(focusableContainer as Node).IsAncestorOf(focusNext)) { if (!focusableContainer.TryLoseFocus(direction, out bool popViewport)) return; if (popViewport) _viewportStack.TryPop(out var poppedViewport); }
-			}}
+			if (focused is not null) {
+				foreach (var focusableContainer in focused?.FindParentsWhere(x => x is IFocusableContainer).OrderBy(x => x.FindDistanceToChild(focused)).Select(x => x as IFocusableContainer) ?? []) {
+					if (focusNext is not null && !(focusableContainer as Node).IsAncestorOf(focusNext)) {
+						if (!focusableContainer.TryLoseFocus(direction, out bool popViewport)) return;
+						if (popViewport) {
+							_viewportStack.TryPop(out var poppedViewport);
+							if (ShouldDisplayFocusDebugInfo) Console.Info($"Pop viewport {poppedViewport}");
+						}
+					}
+				}
+			}
 
 			Instance._prevFocus = focused;
-			if (ShouldDisplayFocusDebugInfo) Console.Info(focusNext is not null ? $"Shifted focus {Enum.GetName(direction)} to {focusNext.ToPrettyString()}." : $"Could not shift focus {Enum.GetName(direction)} from {focused.ToPrettyString()}.");
+			if (ShouldDisplayFocusDebugInfo) Console.Info(focusNext is not null ? $"Shifted focus {Enum.GetName(direction)} to {focusNext.ToPrettyString()} in {FocusedViewport.ToPrettyString()}." : $"Could not shift focus {Enum.GetName(direction)} from {focused.ToPrettyString()}.");
 			focusNext?.GrabFocus();
 		}
 	}

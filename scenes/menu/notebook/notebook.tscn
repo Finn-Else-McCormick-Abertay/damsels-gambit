@@ -1,9 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://q1kh0whg1g0g"]
+[gd_scene load_steps=4 format=3 uid="uid://q1kh0whg1g0g"]
 
 [ext_resource type="Script" uid="uid://c5bi6sq63upok" path="res://scenes/menu/notebook/NotebookMenu.cs" id="2_eweoj"]
 [ext_resource type="Script" uid="uid://biqqbrij8l0km" path="res://scenes/menu/notebook/ViewportLayerContainer.cs" id="6_s6j4j"]
 [ext_resource type="PackedScene" uid="uid://2010mmkoekfk" path="res://scenes/menu/notebook/pages/profile.tscn" id="7_43gqe"]
-[ext_resource type="PackedScene" uid="uid://dajkw7w45mh4c" path="res://scenes/menu/notebook/pages/cover.tscn" id="8_43gqe"]
 
 [node name="NotebookMenu" type="Control" node_paths=PackedStringArray("LayerContainer")]
 layout_mode = 3
@@ -28,9 +27,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("6_s6j4j")
-Scenes = [ExtResource("7_43gqe"), ExtResource("8_43gqe")]
-ScaleFactor = 2.4
+Scenes = [ExtResource("7_43gqe")]
 AlphaScissorThreshold = 0.69
 PaddingCamera = 210
 PaddingLayer = 210
+DownResInEditor = true
 metadata/_custom_type_script = "uid://biqqbrij8l0km"
