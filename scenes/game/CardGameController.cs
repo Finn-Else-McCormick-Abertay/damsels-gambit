@@ -92,12 +92,16 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 			if (tag.MatchN("skippable")) IntroSkippable = true; else if (tag.MatchN("unskippable")) IntroSkippable = false;
 			else if (args.Length == 2 && args[0].Trim().ToLower().IsAnyOf([ "skip", "skippable" ]) && bool.TryParse(args[1].Trim(), out bool val)) IntroSkippable = val;
 		}
+
+		GameManager.NotebookMenu.Hide();
 		
-		DialogueManager.TryRun(skipIntro ? $"{_suitorId}__skip_setup" : $"{_suitorId}__intro").AndThen(() => {
-			Started = true;
-			Round = 1; Show(); Deal();
-			EmitSignal(SignalName.RoundStart, Round);
-		});
+		DialogueManager.TryRun(skipIntro ? $"{_suitorId}__skip_setup" : $"{_suitorId}__intro")
+			.AndThen(() => {
+				Show(); GameManager.NotebookMenu.Show();
+				Started = true;
+				Round = 1; Deal();
+				EmitSignal(SignalName.RoundStart, Round);
+			});
 	}
 
 	public void ForceSkipIntro() { if (!Started) DialogueManager.Run($"{_suitorId}__skip_setup", true); }
