@@ -37,6 +37,7 @@ internal partial class ToPrettyStringInternal
 	}
 }
 
+// Convert to string in a way that's good for output. Displays nodes, enumerables etc in an actually helpful way
 public static class ToStringExtensions
 {
 	public static string ToPrettyString<T>(this T self) => ToPrettyStringInternal.ToPrettyString(self);
