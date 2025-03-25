@@ -97,6 +97,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
             ProfilePage = LayerContainer.GetLayer("res://scenes/menu/notebook/pages/profile.tscn") as Notebook.ProfilePage ?? FallbackProfilePage as Notebook.ProfilePage;
             ProfileViewport = LayerContainer.GetViewport("res://scenes/menu/notebook/pages/profile.tscn");
             CoverPivot = LayerContainer.GetPivot("res://scenes/menu/notebook/pages/cover.tscn") ?? FallbackCoverPivot;
+			RestoreAnimationState();
         }
 		// If LayerContainer exists, defer until it is ready.
 		if (LayerContainer.IsValid()) LayerContainer.OnReady(InternalUpdateLayerReferences); else InternalUpdateLayerReferences();
@@ -109,11 +110,16 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 
 		UpdateLayerReferences();
 	}
-	public override void _EnterTree() { RestoreAnimationState(); }
+	public override void _EnterTree() { RestoreAnimationState(); if (Engine.IsEditorHint()) CallableUtils.CallDeferred(UpdateLayerReferences); }
 	public override void _ExitTree() {
 		_moveTween?.Kill(); _moveTween = null;
 		_rotateTween?.Kill(); _rotateTween = null;
 	}
+	
+    public override void _ValidateProperty(Godot.Collections.Dictionary prop) {
+        if (prop["name"].IsAnyOf(PropertyName._moveTween, PropertyName._rotateTween, PropertyName.Root, PropertyName.ProfileViewport, PropertyName.CoverPivot, PropertyName.State))
+            prop["usage"] = prop["usage"].SetFlags(PropertyUsageFlags.NoInstanceState).UnsetFlags(PropertyUsageFlags.Storage);
+    }
 
 	private void OnFocus() => Highlighted = true;
 	private void OnUnfocus() => Highlighted = false;
@@ -126,7 +132,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 
     public (Node, Viewport) TryGainFocus(FocusDirection direction, Viewport fromViewport) => direction switch {
 		FocusDirection.Up or FocusDirection.Right => (ProfilePage?.ProfileButton, ProfileViewport),
-		_ => (null, null)
+		_ => (null, null) 
 	};
 
 	public bool TryLoseFocus(FocusDirection direction, out bool popViewport) {
