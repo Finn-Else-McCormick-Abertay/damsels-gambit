@@ -14,11 +14,6 @@ public partial class EnvironmentManager : Node
     public static EnvironmentManager Instance { get; private set; }
     public override void _EnterTree() { if (Instance is not null) throw AutoloadException.For(this); Instance = this; GetTree().Root.Connect(Node.SignalName.Ready, OnTreeReady, (uint)ConnectFlags.OneShot); AddChild(_environmentRoot); }
     private void OnTreeReady() => ReloadEnvironments(true);
-    
-    private readonly Node _environmentRoot = new() { Name = "EnvironmentRoot" };
-    private readonly Dictionary<string, Node> _environments = [];
-    private readonly Dictionary<string, List<CharacterDisplay>> _characterDisplays = [];
-    private readonly Dictionary<string, List<PropDisplay>> _propDisplays = [];
 
     // Get names of all loaded CharacterDisplays
     public static IEnumerable<string> GetCharacterNames() => Instance?._characterDisplays?.Where(x => x.Value.Count > 0)?.Select(x => x.Key);
@@ -40,6 +35,11 @@ public partial class EnvironmentManager : Node
 
     // Get all possible items for a given item name, including CharacterDisplays, PropDisplays and environment items.
     public static IEnumerable<Node> GetAllItems(string itemName) => GetEnvironmentItems(itemName)?.Concat(GetCharacterDisplays(itemName))?.Concat(GetPropDisplays(itemName))?.Distinct() ?? [];
+    
+    private readonly Node _environmentRoot = new() { Name = "EnvironmentRoot" };
+    private readonly Dictionary<string, Node> _environments = [];
+    private readonly Dictionary<string, List<CharacterDisplay>> _characterDisplays = [];
+    private readonly Dictionary<string, List<PropDisplay>> _propDisplays = [];
     
     // Called by CharacterDisplay. Automatically updates our dictionary when CharacterDisplays enter or exit tree.
     public static void Register(CharacterDisplay display) => Instance?._characterDisplays?.GetOrAdd(display.CharacterName, [])?.Add(display);
