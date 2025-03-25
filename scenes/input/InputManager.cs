@@ -40,16 +40,18 @@ public sealed partial class InputManager : Node
 	public static void EnableContext(GUIDEMappingContext context) => GUIDE.EnableMappingContext(context);
 	public static void DisableContext(GUIDEMappingContext context) { if (IsContextEnabled(context)) GUIDE.DisableMappingContext(context); }
 
+	// Runs when full tree is ready
 	private void OnTreeReady() {
 		_rootViewport = GetViewport();
 
+		// Initialise the C# wrapper for the GUIDE autoload
 		GUIDE.Initialise(GetTree().Root.GetNode("GUIDE"));
+
+		// Cache the loaded input mappings when input mappings change so we don't have to do four expensive cross-language calls during every input event
 		GUIDE.InputMappingsChanged += static () => Instance._enabledContexts = Contexts.All.Where(GUIDE.IsMappingContextEnabled);
 
+		// Enable controller context when conteroller connects
 		Input.JoyConnectionChanged += static (device, connected) => { if (connected) EnableContext(Contexts.Controller); };
-
-		//Actions.Click.Started += static () => Instance._rootViewport.PushInput(new InputEventMouseButton { ButtonIndex = MouseButton.Left, Pressed = true });
-		//Actions.Click.Completed += static () => Instance._rootViewport.PushInput(new InputEventMouseButton { ButtonIndex = MouseButton.Left, Pressed = false });
 
 		Actions.UIDirection.Triggered += OnUIDirectionTriggered;
 		Actions.Accept.Triggered += OnAcceptTriggered;
@@ -85,11 +87,14 @@ public sealed partial class InputManager : Node
 	public static void PushToFocusStack()  { if (FocusedViewport?.GuiGetFocusOwner() is Control focused) Instance._focusStack.Push(focused.GetPath()); }
 	public static void PopFromFocusStack() { if (Instance._focusStack.TryPop(out NodePath restoredFocusPath)) (Instance.GetNode(restoredFocusPath) as Control)?.GrabFocus(); }
 
-	public static void ClearFocus() { FocusedViewport?.GuiGetFocusOwner()?.ReleaseFocus(); }
+	// Release focus for current focused viewport
+	public static void ClearFocus() => FocusedViewport?.GuiGetFocusOwner()?.ReleaseFocus();
 
 	private static bool IsFocusable(Control control) => control.FocusMode == Control.FocusModeEnum.All && control.IsVisibleInTree();
 
-	public static Control FindFocusableWithin(Node root, FocusDirection direction = FocusDirection.Right) {
+	// Find focusable control within given node, coming from given direction
+	// (eg: HBoxContainer from left gives its first child, from right gives its last child; a button from any direction gives itself; etc.)
+	public static Control FindFocusableWithin(Node root, FocusDirection direction = FocusDirection.None) {
 		if (root is IFocusableContainer container) {
 			var (nodeNext, viewport) = container.TryGainFocus(direction, FocusedViewport);
 			if (FindFocusableWithin(nodeNext, direction) is Control focusNext) {
@@ -109,6 +114,9 @@ public sealed partial class InputManager : Node
 		return null;
 	}
 
+	// Find next focus to jump to in given direction from given control
+	// Starts by checking node's FocusNeighbor for the given direction (including extracting special meta info from the NodePath, to enable things like returning to the previous node)
+	// Then falls back to ascending up the tree, following input logic from IFocusableContainer or default logic for Godot containers
 	public static Control GetNextFocus(FocusDirection direction, Control root) {
 		if (!root.IsValid()) return null;
 
@@ -144,37 +152,35 @@ public sealed partial class InputManager : Node
 		return null;
 	}
 
+	// Connected to Accept action's Triggered signal
 	private void OnAcceptTriggered() {
 		var focused = FocusedViewport?.GuiGetFocusOwner();
 		if (focused is null) return;
 
 		if (focused is BaseButton button && !button.Disabled) {
 			button.EmitSignal(BaseButton.SignalName.ButtonDown);
-			if (button.ActionMode == BaseButton.ActionModeEnum.Press) {
-				button.EmitSignal(BaseButton.SignalName.Pressed);
-				if (button is OptionButton optionButton) optionButton.ShowPopup();
-			}
+			if (button.ActionMode == BaseButton.ActionModeEnum.Press) { button.EmitSignal(BaseButton.SignalName.Pressed); if (button is OptionButton optionButton) optionButton.ShowPopup(); }
 		}
 	}
+	// Connected to Accept action's Completed signal
 	private void OnAcceptCompleted() {
 		var focused = FocusedViewport?.GuiGetFocusOwner();
 		if (focused is null) return;
 
 		if (focused is BaseButton button && !button.Disabled) {
 			button.EmitSignal(BaseButton.SignalName.ButtonUp);
-			if (button.ActionMode == BaseButton.ActionModeEnum.Release) {
-				button.EmitSignal(BaseButton.SignalName.Pressed);
-				if (button is OptionButton optionButton) optionButton.ShowPopup();
-			}
+			if (button.ActionMode == BaseButton.ActionModeEnum.Release) { button.EmitSignal(BaseButton.SignalName.Pressed); if (button is OptionButton optionButton) optionButton.ShowPopup(); }
 		}
 	}
 	
+	// Connected to Back action
 	private void OnBackTriggered() {
 		foreach (var backContext in GetTree().Root.FindChildrenWhere(x => x is IBackContext).Select(x => x as IBackContext).Where(x => x.BackContextPriority > 0).OrderBy(x => x.BackContextPriority)) {
 			if (backContext.UseBackInput()) return;
 		}
 	}
 
+	// Connected to UIDirection action
 	private void OnUIDirectionTriggered() {
 		const float threshold = 0.5f;
 		var axis = Actions.UIDirection.ValueAxis2d;
@@ -195,15 +201,10 @@ public sealed partial class InputManager : Node
 		if (direction != FocusDirection.None && !((focused is IFocusOverride focusOverride && focusOverride.UseDirectionalInput(direction)) || StandardContainerFocusLogic.UseDirectionalInput(focused, direction))) {
 			Control focusNext = GetNextFocus(direction, focused);
 
-			if (focused is not null) {
-				foreach (var focusableContainer in focused?.FindParentsWhere(x => x is IFocusableContainer).OrderBy(x => x.FindDistanceToChild(focused)).Select(x => x as IFocusableContainer) ?? []) {
-					if (focusNext is not null && !(focusableContainer as Node).IsAncestorOf(focusNext)) {
-						if (!focusableContainer.TryLoseFocus(direction, out bool popViewport)) return;
-						if (popViewport) {
-							_viewportStack.TryPop(out var poppedViewport);
-							if (ShouldDisplayFocusDebugInfo) Console.Info($"Pop viewport {poppedViewport}");
-						}
-					}
+			foreach (var focusableContainer in focused?.FindParentsWhere(x => x is IFocusableContainer)?.OrderBy(x => x.FindDistanceToChild(focused))?.Select(x => x as IFocusableContainer) ?? []) {
+				if (focusNext is not null && !(focusableContainer as Node).IsAncestorOf(focusNext)) {
+					if (!focusableContainer.TryLoseFocus(direction, out bool popViewport)) return;
+					if (popViewport) { _viewportStack.TryPop(out var poppedViewport); if (ShouldDisplayFocusDebugInfo) Console.Info($"Pop viewport {poppedViewport}"); }
 				}
 			}
 
@@ -216,11 +217,14 @@ public sealed partial class InputManager : Node
 	private static readonly IEnumerable<StringName> _uiActionsToCatch = [ "ui_left", "ui_right", "ui_up", "ui_down", "ui_select", "ui_accept" ];
 
     public override void _Input(InputEvent @event) {
+		// If currently overriding gui input, handle any inputs which constitute relevant ui actions (so we can handle them via GUIDE)
+		// Input is overriden in game, but not in console window
 		if (ShouldOverrideGuiInput && _uiActionsToCatch.Any(action => @event.IsAction(action))) {
 			_rootViewport.SetInputAsHandled(); foreach (var viewport in _viewportStack) viewport?.SetInputAsHandled();
 			GUIDE.InjectInput(@event);
 		}
 
+		// Enable context for event type if not already enabled. We inject the input to GUIDE afterwards to avoid the initial input which enables the context being eaten
 		switch (@event) {
 			case InputEventKey when !IsContextEnabled(Contexts.Keyboard): {
 				EnableContext(Contexts.Keyboard); DisableContext(Contexts.Controller);
