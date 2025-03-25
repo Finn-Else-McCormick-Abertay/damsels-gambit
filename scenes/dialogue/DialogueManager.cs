@@ -13,6 +13,7 @@ namespace DamselsGambit.Dialogue;
 public partial class DialogueManager : Node
 {
     public static DialogueManager Instance { get; private set; }
+    public override void _EnterTree() { if (Instance is not null) throw AutoloadException.For(this); Instance = this; InitRunner(); }
 
     public static DialogueRunner Runner { get; private set; }
     public static DialogueRunner ProfileRunner { get; private set; }
@@ -29,11 +30,6 @@ public partial class DialogueManager : Node
 
     public static void Register<TView>(TView view) where TView : Node, DialogueViewBase { Instance?._dialogueViews?.Add(view); (view switch { ProfileDialogueView => ProfileRunner, _ => Runner })?.OnReady(x => x.dialogueViews.Add(view)); }
     public static void Deregister<TView>(TView view) where TView : Node, DialogueViewBase { Instance?._dialogueViews?.Remove(view); (view switch { ProfileDialogueView => ProfileRunner, _ => Runner })?.OnReady(x => x.dialogueViews.Remove(view)); }
-
-    public override void _EnterTree() {
-        if (Instance is not null) throw AutoloadException.For(this);
-        Instance = this; InitRunner();
-    }
 
     public void Reset() {
         Runner?.Stop();
