@@ -51,6 +51,8 @@ public partial class AffectionMeter : Control, IReloadableToolScript
 
 		var valuePercent = 1f - (Value / barLength + Math.Abs(MinValue) / barLength);
 
+		valuePercent = Math.Max(0f, Math.Min(1f, valuePercent));
+
 		Theme theme = Theme;
 		Control node = this;
 		while (theme is null && node is not null) {
