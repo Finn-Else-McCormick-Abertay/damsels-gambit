@@ -45,6 +45,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 
 	public Notebook.ProfilePage ProfilePage {
 		get; private set {
+			ProfilePage?.PauseButton?.TryDisconnectAll((BaseButton.SignalName.Pressed, TogglePauseMenu));
 			ProfilePage?.ProfileButton?.TryDisconnectAll(
 				(Control.SignalName.MouseEntered, OnFocus), (Control.SignalName.MouseExited, OnUnfocus),
 				(Control.SignalName.FocusEntered, OnFocus), (Control.SignalName.FocusExited, OnUnfocus),
@@ -53,6 +54,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 			field = value;
 			ProfilePage?.OnReady(page => {
 				UpdateDialogueViewNode();
+				ProfilePage?.PauseButton?.TryConnectAll((BaseButton.SignalName.Pressed, TogglePauseMenu));
 				page.ProfileButton?.ConnectAll(
 					(Control.SignalName.MouseEntered, OnFocus), (Control.SignalName.MouseExited, OnUnfocus),
 					(Control.SignalName.FocusEntered, OnFocus), (Control.SignalName.FocusExited, OnUnfocus),
@@ -72,6 +74,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 
 	public bool Open { get; set { field = value; State = State switch { _ when Open => AnimationState.Open, AnimationState.Open when !Open && Highlighted => AnimationState.Highlighted, _ => AnimationState.Closed }; } } = false;
 	public bool Highlighted { get; set { field = value; State = State switch { AnimationState.Open => AnimationState.Open, _ when Highlighted => AnimationState.Highlighted, _ => AnimationState.Closed }; } } = false;
+	public bool InPauseMenu { get; set { field = value; State = State switch { _ when InPauseMenu => AnimationState.PauseMenu, AnimationState.PauseMenu when Open => AnimationState.Open, AnimationState.PauseMenu when Highlighted => AnimationState.Highlighted, _ => AnimationState.Closed }; } } = false;
 	
 	private readonly Dictionary<Node, Tween> _tweens = [];
 	private Tween CreateTweenFor(Node node) {
@@ -156,6 +159,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 	private void OnFocus() => Highlighted = true;
 	private void OnUnfocus() => Highlighted = false;
 	private void ToggleOpen() => Open = !Open;
+	private void TogglePauseMenu() => InPauseMenu = !InPauseMenu;
 
 	public void UpdateDialogueViewNode() {
 		if (Engine.IsEditorHint() || string.IsNullOrEmpty(SuitorName) || ProfilePage?.DialogueView is not ProfileDialogueView dialogueView) return;
