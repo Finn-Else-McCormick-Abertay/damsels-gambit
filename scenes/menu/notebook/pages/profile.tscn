@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://2010mmkoekfk"]
+[gd_scene load_steps=10 format=3 uid="uid://2010mmkoekfk"]
 
 [ext_resource type="Theme" uid="uid://db11aw5aoqnpw" path="res://assets/ui/theme/suitor_profile_theme.tres" id="1_eqs5j"]
 [ext_resource type="Script" uid="uid://drk6opts1ja02" path="res://scenes/menu/notebook/pages/ProfilePage.cs" id="2_scbxg"]
@@ -6,8 +6,18 @@
 [ext_resource type="Texture2D" uid="uid://cnmux17p4b1od" path="res://assets/ui/buttons/pause_icon_alt.png" id="3_54un2"]
 [ext_resource type="Script" uid="uid://dxgjxwnt0yhqf" path="res://scenes/dialogue/views/ProfileDialogueView.cs" id="3_a4plf"]
 [ext_resource type="Script" uid="uid://cbqc0snx0l0pi" path="res://scenes/menu/notebook/PivotPoint.cs" id="4_bpofr"]
+[ext_resource type="Texture2D" uid="uid://bfoqt200g8dkj" path="res://assets/characters/frostholm/suitor_card.png" id="5_n3mgi"]
 
-[node name="Profile" type="Control" node_paths=PackedStringArray("DialogueView", "ProfileButton")]
+[sub_resource type="Gradient" id="Gradient_fkj1o"]
+interpolation_mode = 2
+interpolation_color_space = 2
+offsets = PackedFloat32Array(0, 0.387879, 1)
+colors = PackedColorArray(0, 0, 0, 0.545098, 0, 0, 0, 0.276534, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_n3mgi"]
+gradient = SubResource("Gradient_fkj1o")
+
+[node name="Profile" type="Control" node_paths=PackedStringArray("DialogueView", "PauseButton", "ProfileButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,6 +27,7 @@ grow_vertical = 2
 theme = ExtResource("1_eqs5j")
 script = ExtResource("2_scbxg")
 DialogueView = NodePath("ProfileView")
+PauseButton = NodePath("Pause Button")
 ProfileButton = NodePath("Profile Button")
 metadata/_edit_use_anchors_ = true
 
@@ -43,13 +54,14 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.019
 anchor_top = 0.025
-anchor_right = 0.5
+anchor_right = 0.449
 anchor_bottom = 0.615
-offset_left = 10.158
-offset_top = -0.525001
-offset_right = -38.0
-offset_bottom = -68.915
+offset_left = 10.112
+offset_top = -0.200001
+offset_right = -14.248
+offset_bottom = -68.52
 pivot_offset = Vector2(207, 183)
+texture = ExtResource("5_n3mgi")
 expand_mode = 1
 stretch_mode = 5
 
@@ -104,6 +116,7 @@ This will extend over multiple lines.
 tab_size = 12
 
 [node name="Pause Button" type="Button" parent="."]
+clip_children = 2
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.039
@@ -114,12 +127,32 @@ offset_right = 5.0
 offset_bottom = 32.728
 grow_vertical = 0
 focus_neighbor_bottom = NodePath("../Profile Button")
+mouse_default_cursor_shape = 2
 theme_type_variation = &"PauseButton"
 text = "Pause"
 icon = ExtResource("3_54un2")
 alignment = 0
 
+[node name="Shadow" type="TextureRect" parent="Pause Button"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.123
+anchor_right = 1.0
+anchor_bottom = 0.908
+offset_left = 12.0
+offset_top = 51.005
+offset_right = 67.0
+offset_bottom = 50.98
+grow_horizontal = 2
+grow_vertical = 2
+rotation = 3.14159
+mouse_filter = 2
+texture = SubResource("GradientTexture1D_n3mgi")
+expand_mode = 1
+
 [node name="Profile Button" type="Button" parent="."]
+clip_children = 2
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.122
@@ -130,9 +163,28 @@ offset_right = 5.0
 offset_bottom = 39.944
 grow_vertical = 0
 focus_neighbor_top = NodePath("../Pause Button")
+mouse_default_cursor_shape = 2
 theme_type_variation = &"TabBanner"
 text = "Suitor Profile"
 alignment = 0
+
+[node name="Shadow" type="TextureRect" parent="Profile Button"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.123
+anchor_right = 1.0
+anchor_bottom = 0.908
+offset_left = 12.0
+offset_top = 63.037
+offset_right = 67.0
+offset_bottom = 63.012
+grow_horizontal = 2
+grow_vertical = 2
+rotation = 3.14159
+mouse_filter = 2
+texture = SubResource("GradientTexture1D_n3mgi")
+expand_mode = 1
 
 [node name="PivotPoint" type="Control" parent="."]
 layout_mode = 1

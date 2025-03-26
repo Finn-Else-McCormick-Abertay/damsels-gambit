@@ -39,19 +39,19 @@ public static class SignalExtensions
     
     /// <summary>Shorthand for connecting to <see cref="Callable"/> to method denoted by given MethodName on self. <inheritdoc cref="GodotObject.Connect(StringName, Callable, uint)"/> </summary>
     /// <param name="method">Name of method to connect.</param>
-    public static Error Connect(this GodotObject self, StringName signal, StringName method, uint flags = 0) => self.Connect(signal, new Callable(self, method), flags);
+    public static Error Connect(this GodotObject self, StringName signal, GodotObject target, StringName method, uint flags = 0) => self.Connect(signal, new Callable(target, method), flags);
 
     /// <summary>Shorthand for attempting to connect to <see cref="Callable"/> to method denoted by given MethodName on self. <inheritdoc cref="TryConnect(GodotObject, StringName, Callable, uint)"/> </summary>
     /// <param name="method">Name of method to connect.</param>
-    public static bool TryConnect(this GodotObject self, StringName signal, StringName method, uint flags = 0) => self.TryConnect(signal, new Callable(self, method), flags);
+    public static bool TryConnect(this GodotObject self, StringName signal, GodotObject target, StringName method, uint flags = 0) => self.TryConnect(signal, new Callable(target, method), flags);
 
     /// <summary>Shorthand for disconnecting from <see cref="Callable"/> to method denoted by given MethodName on self. <inheritdoc cref="GodotObject.Disconnect(StringName, Callable)"/> </summary>
     /// <param name="method">Name of method to discconnect.</param>
-    public static void Disconnect(this GodotObject self, StringName signal, StringName method) => self.Disconnect(signal, new Callable(self, method));
+    public static void Disconnect(this GodotObject self, StringName signal, GodotObject target, StringName method) => self.Disconnect(signal, new Callable(target, method));
 
     /// <summary>Shorthand for attempting to discconnect from <see cref="Callable"/> to method denoted by given MethodName on self. <inheritdoc cref="TryDisconnect(GodotObject, StringName, Callable)"/> </summary>
     /// <param name="method">Name of method to discconnect.</param>
-    public static bool TryDisconnect(this GodotObject self, StringName signal, StringName method) => self.TryDisconnect(signal, new Callable(self, method));
+    public static bool TryDisconnect(this GodotObject self, StringName signal, GodotObject target, StringName method) => self.TryDisconnect(signal, new Callable(target, method));
 
     // Versions of all of the above which accept arrays of tuples each containing a signal name and a callable, to make the code more readable when having to change multiple signals in one go
     // The array of tuples ones don't accept flags as we then wouldn't be able to use params, so you have to connect them separately if you need flags.
@@ -61,7 +61,9 @@ public static class SignalExtensions
     /// <inheritdoc cref="Connect(GodotObject, StringName, Action, uint)"/>
     public static void ConnectAll(this GodotObject self, params IEnumerable<(StringName Signal, Action Action)> signals) => signals.ForEach(x => self.Connect(x.Signal, x.Action));
     /// <inheritdoc cref="Connect(GodotObject, StringName, StringName, uint)"/>
-    public static void ConnectAll(this GodotObject self, params IEnumerable<(StringName Signal, StringName Method)> signals) => signals.ForEach(x => self.Connect(x.Signal, x.Method));
+    public static void ConnectAll(this GodotObject self, params IEnumerable<(StringName Signal, GodotObject Target, StringName Method)> signals) => signals.ForEach(x => self.Connect(x.Signal, x.Target, x.Method));
+    /// <inheritdoc cref="Connect(GodotObject, StringName, StringName, uint)"/>
+    public static void ConnectAll(this GodotObject self, GodotObject target, params IEnumerable<(StringName Signal, StringName Method)> signals) => signals.ForEach(x => self.Connect(x.Signal, target, x.Method));
     /// <inheritdoc cref="GodotObject.Connect(StringName, Callable, uint)"/>
     public static void ConnectAll(this GodotObject self, Dictionary<StringName, Callable> signals, uint flags = 0) => signals.ForEach(x => self.Connect(x.Key, x.Value, flags));
     
@@ -69,8 +71,10 @@ public static class SignalExtensions
     public static void TryConnectAll(this GodotObject self, params IEnumerable<(StringName Signal, Callable Callable)> signals) => signals.ForEach(x => self.TryConnect(x.Signal, x.Callable));
     /// <summary><inheritdoc cref="TryConnect(GodotObject, StringName, Action, uint)"/></summary>
     public static void TryConnectAll(this GodotObject self, params IEnumerable<(StringName Signal, Action Action)> signals) => signals.ForEach(x => self.TryConnect(x.Signal, x.Action));
+    /// <inheritdoc cref="TryConnect(GodotObject, StringName, StringName, uint)"/>
+    public static void TryConnectAll(this GodotObject self, params IEnumerable<(StringName Signal, GodotObject Target, StringName Method)> signals) => signals.ForEach(x => self.TryConnect(x.Signal, x.Target, x.Method));
     /// <summary><inheritdoc cref="TryConnect(GodotObject, StringName, StringName, uint)"/></summary>
-    public static void TryConnectAll(this GodotObject self, params IEnumerable<(StringName Signal, StringName Method)> signals) => signals.ForEach(x => self.TryConnect(x.Signal, x.Method));
+    public static void TryConnectAll(this GodotObject self, GodotObject target, params IEnumerable<(StringName Signal, StringName Method)> signals) => signals.ForEach(x => self.TryConnect(x.Signal, target, x.Method));
     /// <summary><inheritdoc cref="TryConnect(GodotObject, StringName, Callable, uint)"/></summary>
     public static void TryConnectAll(this GodotObject self, Dictionary<StringName, Callable> signals, uint flags = 0) => signals.ForEach(x => self.TryConnect(x.Key, x.Value, flags));
     
@@ -79,7 +83,9 @@ public static class SignalExtensions
     /// <inheritdoc cref="Disconnect(GodotObject, StringName, Action)"/>
     public static void DisconnectAll(this GodotObject self, params IEnumerable<(StringName Signal, Action Action)> signals) => signals.ForEach(x => self.Disconnect(x.Signal, x.Action));
     /// <inheritdoc cref="Disconnect(GodotObject, StringName, StringName)"/>
-    public static void DisconnectAll(this GodotObject self, params IEnumerable<(StringName Signal, StringName Method)> signals) => signals.ForEach(x => self.Disconnect(x.Signal, x.Method));
+    public static void DisconnectAll(this GodotObject self, params IEnumerable<(StringName Signal, GodotObject Target, StringName Method)> signals) => signals.ForEach(x => self.Disconnect(x.Signal, x.Target, x.Method));
+    /// <inheritdoc cref="Disconnect(GodotObject, StringName, StringName)"/>
+    public static void DisconnectAll(this GodotObject self, GodotObject target, params IEnumerable<(StringName Signal, StringName Method)> signals) => signals.ForEach(x => self.Disconnect(x.Signal, target, x.Method));
     /// <inheritdoc cref="GodotObject.Disconnect(StringName, Callable)"/>
     public static void DisconnectAll(this GodotObject self, Dictionary<StringName, Callable> signals) => signals.ForEach(x => self.Disconnect(x.Key, x.Value));
     
@@ -88,7 +94,9 @@ public static class SignalExtensions
     /// <summary><inheritdoc cref="TryDisconnect(GodotObject, StringName, Action)"/></summary>
     public static void TryDisconnectAll(this GodotObject self, params IEnumerable<(StringName Signal, Action Action)> signals) => signals.ForEach(x => self.TryDisconnect(x.Signal, x.Action));
     /// <summary><inheritdoc cref="TryDisconnect(GodotObject, StringName, StringName)"/></summary>
-    public static void TryDisconnectAll(this GodotObject self, params IEnumerable<(StringName Signal, StringName Method)> signals) => signals.ForEach(x => self.TryDisconnect(x.Signal, x.Method));
+    public static void TryDisconnectAll(this GodotObject self, params IEnumerable<(StringName Signal, GodotObject Target, StringName Method)> signals) => signals.ForEach(x => self.TryDisconnect(x.Signal, x.Target, x.Method));
+    /// <summary><inheritdoc cref="TryDisconnect(GodotObject, StringName, StringName)"/></summary>
+    public static void TryDisconnectAll(this GodotObject self, GodotObject target, params IEnumerable<(StringName Signal, StringName Method)> signals) => signals.ForEach(x => self.TryDisconnect(x.Signal, target, x.Method));
     /// <summary><inheritdoc cref="TryDisconnect(GodotObject, StringName, Callable)"/></summary>
     public static void TryDisconnectAll(this GodotObject self, Dictionary<StringName, Callable> signals) => signals.ForEach(x => self.TryDisconnect(x.Key, x.Value));
 }
