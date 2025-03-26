@@ -32,7 +32,7 @@ public partial class ConsoleWindow : Control
 
 	public override void _Ready() {
 		TextEdit.Text = ""; OutputLabel.Text = ""; Autofill.Text = "";
-		TextEdit.ConnectAll((Control.SignalName.GuiInput, MethodName.OnTextEditGuiInput), (TextEdit.SignalName.CaretChanged, MethodName.UpdateAutofillSuggestion));
+		TextEdit.ConnectAll((Control.SignalName.GuiInput, Callable.From<InputEvent>(OnTextEditGuiInput)), (TextEdit.SignalName.CaretChanged, Callable.From(UpdateAutofillSuggestion)));
 		var editMenu = TextEdit.GetMenu();
 		for (int i = 13; i > 8; --i) editMenu.RemoveItem(i);
 
