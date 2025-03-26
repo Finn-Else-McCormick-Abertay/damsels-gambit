@@ -11,20 +11,17 @@ public partial class SettingsMenu : Control, IFocusContext, IBackContext
 
 	public event Action OnExit;
 
-	public override void _EnterTree() {
-		ExitButton?.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnExitPressed));
-	}
-	public override void _ExitTree() {
-		ExitButton?.TryDisconnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnExitPressed));
-	}
+	public override void _EnterTree() { ExitButton?.TryConnect(BaseButton.SignalName.Pressed, OnExitPressed); }
+	public override void _ExitTree() { ExitButton?.TryDisconnect(BaseButton.SignalName.Pressed, OnExitPressed); }
 
+	// Connected to Exit button Pressed signal
 	private void OnExitPressed() => OnExit?.Invoke();
 	
 	public virtual int FocusContextPriority => 10;
 
 	public Control GetDefaultFocus() => TabContainer.GetTabBar();
-	public Control GetDefaultFocus(InputManager.FocusDirection direction) => direction switch {
-		InputManager.FocusDirection.Up => ExitButton,
+	public Control GetDefaultFocus(FocusDirection direction) => direction switch {
+		FocusDirection.Up => ExitButton,
 		_ => InputManager.FindFocusableWithin(TabContainer.GetTabBar(), direction)
 	};
 

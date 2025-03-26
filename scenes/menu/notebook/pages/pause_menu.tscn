@@ -1,0 +1,64 @@
+[gd_scene load_steps=3 format=3 uid="uid://83tks4i67hdo"]
+
+[ext_resource type="Theme" uid="uid://db11aw5aoqnpw" path="res://assets/ui/theme/suitor_profile_theme.tres" id="1_fkj1o"]
+[ext_resource type="Texture2D" uid="uid://cnmux17p4b1od" path="res://assets/ui/buttons/pause_icon_alt.png" id="2_dsfxk"]
+
+[node name="PauseMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_fkj1o")
+
+[node name="Resume" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.851
+anchor_right = 0.851
+offset_left = -91.352
+offset_top = -47.0
+offset_right = 11.648
+offset_bottom = 18.0
+grow_vertical = 0
+rotation = 1.5708
+pivot_offset = Vector2(90, 34)
+focus_neighbor_bottom = NodePath("../Profile Button")
+theme_type_variation = &"PauseButton"
+text = "Resume"
+icon = ExtResource("2_dsfxk")
+alignment = 0
+
+[node name="Settings" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.851
+anchor_right = 0.851
+offset_left = -141.352
+offset_top = -47.0
+offset_right = -38.352
+offset_bottom = 18.0
+grow_vertical = 0
+rotation = 1.5708
+pivot_offset = Vector2(90, 34)
+focus_neighbor_bottom = NodePath("../Profile Button")
+theme_type_variation = &"PauseButton"
+text = "Settings"
+
+[node name="Quit" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.851
+anchor_right = 0.851
+offset_left = -193.352
+offset_top = -52.0
+offset_right = -85.352
+offset_bottom = 13.0
+grow_vertical = 0
+rotation = 1.5708
+pivot_offset = Vector2(90, 34)
+focus_neighbor_bottom = NodePath("../Profile Button")
+theme_type_variation = &"PauseButton"
+text = "Quit to Title"
+alignment = 0

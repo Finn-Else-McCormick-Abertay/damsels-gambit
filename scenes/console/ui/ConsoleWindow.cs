@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DamselsGambit.Util;
 
 namespace DamselsGambit;
 
@@ -15,7 +16,7 @@ public partial class ConsoleWindow : Control
 	private IEnumerable<string> _autofillSuggestions;
 	private string _autofillSuggestion = "";
 
-	private List<string> _history = [ "" ];
+	private readonly List<string> _history = [ "" ];
 	private int _historyIndex = 0;
 
 	public override void _EnterTree() {
@@ -31,10 +32,9 @@ public partial class ConsoleWindow : Control
 
 	public override void _Ready() {
 		TextEdit.Text = ""; OutputLabel.Text = ""; Autofill.Text = "";
-		TextEdit.Connect(Control.SignalName.GuiInput, new Callable(this, MethodName.OnTextEditGuiInput));
-		TextEdit.Connect(TextEdit.SignalName.CaretChanged, new Callable(this, MethodName.UpdateAutofillSuggestion));
+		TextEdit.ConnectAll((Control.SignalName.GuiInput, MethodName.OnTextEditGuiInput), (TextEdit.SignalName.CaretChanged, MethodName.UpdateAutofillSuggestion));
 		var editMenu = TextEdit.GetMenu();
-		for (int i = 13; i > 8; --i) { editMenu.RemoveItem(i); }
+		for (int i = 13; i > 8; --i) editMenu.RemoveItem(i);
 
 		_fontHeight = Theme.GetFont("normal_font", "RichTextLabel").GetHeight(Theme.GetFontSize("normal_font_size", "RichTextLabel")) + Theme.GetConstant("line_padding", "RichTextLabel");
 	}
@@ -56,6 +56,7 @@ public partial class ConsoleWindow : Control
 	private void OnVisibilityChanged() {
 		if (!Visible) return;
 		OutputLabel.Text = Console.LogText;
+		OutputLabel.GetVScrollBar().Value = OutputLabel.GetContentHeight();
 		UpdateAutofillSuggestion();
 	}
 

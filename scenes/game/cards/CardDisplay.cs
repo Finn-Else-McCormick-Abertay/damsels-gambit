@@ -10,6 +10,8 @@ namespace DamselsGambit;
 [Tool, GlobalClass, Icon("res://assets/editor/icons/card.svg")]
 public partial class CardDisplay : Control, IReloadableToolScript
 {
+	// Card Id in the form '{type}/{name}', eg: topic/witchcraft. Corresponds to the files in 'assets/cards'
+	// Automatically sets texture, as well as CardType, CardName, Score, etc
 	[Export] public StringName CardId {
 		get; set {
 			field = value;
@@ -26,12 +28,9 @@ public partial class CardDisplay : Control, IReloadableToolScript
 				Score = string.IsNullOrEmpty(cardInfo.Score) ? null : cardInfo.Score;
 			}
 
-			if (ResourceLoader.Exists($"{textureRoot}/{CardName}.png")) {
-				Texture = ResourceLoader.Load<Texture2D>($"{textureRoot}/{CardName}.png");
-			}
-			else {
-				if (ResourceLoader.Exists($"{textureRoot}/template.png")) Texture = ResourceLoader.Load<Texture2D>($"{textureRoot}/template.png"); else Texture = ThemeDB.FallbackIcon;
-			}
+			if (ResourceLoader.Exists($"{textureRoot}/{CardName}.png")) Texture = ResourceLoader.Load<Texture2D>($"{textureRoot}/{CardName}.png");
+			else if (ResourceLoader.Exists($"{textureRoot}/template.png")) Texture = ResourceLoader.Load<Texture2D>($"{textureRoot}/template.png");
+			else Texture = ThemeDB.FallbackIcon;
 		}
 	}
 	public string CardType { get; private set { field = value; DisplayType = CardType.Capitalize(); } }
@@ -50,15 +49,19 @@ public partial class CardDisplay : Control, IReloadableToolScript
 	public Texture2D Texture { get; private set { field = value; RebuildMeshes(); UpdatePivot(); (GetParent() as Container)?.QueueSort(); } }
 	private static readonly GradientTexture1D s_shadowGradientTexture;
 	
+	// Create shared static gradient texture used for shadows
 	static CardDisplay() {
 		var gradient = new Gradient{ InterpolationColorSpace = Gradient.ColorSpace.Oklab };
 		gradient.SetColor(0, Colors.Black); gradient.SetColor(1, new Color(Colors.Black, 0f));
 		s_shadowGradientTexture = new GradientTexture1D { Gradient = gradient };
 	}
 	
-	private static CardSharedParams SharedParams { get { if (!field.IsValid()) field = ResourceLoader.Load<CardSharedParams>("res://assets/cards/card_shared.tres") ?? new(); return field; } }
+	// Shared static CardSharedParams resource. Determines shared properties like corner radius
+	private static CardSharedParams SharedParams { get { if (field.IsInvalid()) field = ResourceLoader.Load<CardSharedParams>("res://assets/cards/card_shared.tres") ?? new(); return field; } }
 	
+	// Static cache of CardTypeParams so we only have to load each once
 	private static readonly Dictionary<string, CardTypeParams> _typeParams = [];
+	// Get CardTypeParams resource for current card type. Determines type properties like name position and curvature.
 	private CardTypeParams GetTypeParams() {
 		if (_typeParams.TryGetValue(CardType, out var @params)) return @params;
 		var filePath = $"res://assets/cards/{CardType}/type_params.tres";
@@ -70,30 +73,31 @@ public partial class CardDisplay : Control, IReloadableToolScript
 		return new();
 	}
 
-	public CardDisplay() { MouseFilter = MouseFilterEnum.Pass; FocusMode = FocusModeEnum.All; }
+	// Set default focus mode & mouse cursor shape
+	public CardDisplay() { MouseFilter = MouseFilterEnum.Pass; FocusMode = FocusModeEnum.All; MouseDefaultCursorShape = CursorShape.PointingHand; }
 
 	public bool IsMousedOver { get; private set; } = false;
 	private void OnMouseEntered() { IsMousedOver = true; QueueRedraw(); }
 	private void OnMouseExited() { IsMousedOver = false; QueueRedraw(); }
 
 	public Rect2 CardRect { get => new(0f, 0f, _textureAspectRatio * Size.Y, Size.Y); }
+	public void UpdatePivot() => PivotOffset = Size / 2f;
 
 	public override void _EnterTree() {
 		RebuildMeshes(); UpdatePivot();
-		SharedParams?.TryConnect(Resource.SignalName.Changed, new Callable(this, MethodName.RebuildMeshes));
-		this.TryConnect(CanvasItem.SignalName.ItemRectChanged, new Callable(this, MethodName.UpdatePivot));
-		this.TryConnect(Control.SignalName.MouseEntered, new Callable(this, MethodName.OnMouseEntered));
-		this.TryConnect(Control.SignalName.MouseExited, new Callable(this, MethodName.OnMouseExited));
+		SharedParams?.TryConnect(Resource.SignalName.Changed, RebuildMeshes);
+		this.TryConnect(CanvasItem.SignalName.ItemRectChanged, UpdatePivot);
+		this.TryConnect(Control.SignalName.MouseEntered, OnMouseEntered);
+		this.TryConnect(Control.SignalName.MouseExited, OnMouseExited);
 	}
 	public override void _ExitTree() {
-		SharedParams?.TryDisconnect(Resource.SignalName.Changed, new Callable(this, MethodName.RebuildMeshes));
-		this.TryDisconnect(CanvasItem.SignalName.ItemRectChanged, new Callable(this, MethodName.UpdatePivot));
-		this.TryDisconnect(Control.SignalName.MouseEntered, new Callable(this, MethodName.OnMouseEntered));
-		this.TryDisconnect(Control.SignalName.MouseExited, new Callable(this, MethodName.OnMouseExited));
+		SharedParams?.TryDisconnect(Resource.SignalName.Changed, RebuildMeshes);
+		this.TryDisconnect(CanvasItem.SignalName.ItemRectChanged, UpdatePivot);
+		this.TryDisconnect(Control.SignalName.MouseEntered, OnMouseEntered);
+		this.TryDisconnect(Control.SignalName.MouseExited, OnMouseExited);
 	}
 
-	public void UpdatePivot() { PivotOffset = Size / 2f; }
-
+	// Cached StringNames for theme property names (StringNames are strings that store a hash, making them faster to compare, but only if you cache and reuse them)
 	private static readonly StringName ThemeClassName = nameof(CardDisplay);
 	public static class ThemeProperties
 	{
@@ -114,16 +118,17 @@ public partial class CardDisplay : Control, IReloadableToolScript
 		}
 	}
 	
+	// Draw method. Runs when CanvasItem is redrawn
 	public override void _Draw() {
-		if (Texture is null) { return; }
+		if (Texture is null) return;
 		var trans = Transform2D.Identity.Scaled(new Vector2(Size.Y, Size.Y)).Translated(new Vector2((Size.X - _textureAspectRatio * Size.Y) / 2f, 0f));
 
 		var canvasItem = GetCanvasItem();
 		
-		if (ShadowOpacity > 0) { DrawMesh(_shadowMesh, s_shadowGradientTexture, trans.Translated(ShadowOffset.Rotated(-Rotation)), new Color(Colors.White, ShadowOpacity)); }
+		if (ShadowOpacity > 0) DrawMesh(_shadowMesh, s_shadowGradientTexture, trans.Translated(ShadowOffset.Rotated(-Rotation)), new Color(Colors.White, ShadowOpacity));
 		DrawMesh(_cardMesh, Texture, trans);
 
-		var typeParams = GetTypeParams(); typeParams.TryConnect(Resource.SignalName.Changed, new Callable(this, CanvasItem.MethodName.QueueRedraw));
+		var typeParams = GetTypeParams(); typeParams.TryConnect(Resource.SignalName.Changed, QueueRedraw);
 
 		if (!string.IsNullOrEmpty(DisplayType)) {
 			var font = GetThemeFont(ThemeProperties.Font.Type, ThemeClassName);
@@ -140,44 +145,50 @@ public partial class CardDisplay : Control, IReloadableToolScript
 			var fontSize = typeParams.NameFontSize; if (fontSize < 0) fontSize = GetThemeFontSize(ThemeProperties.Font.Size.Name, ThemeClassName);
 			var fontColor = GetThemeColor(ThemeProperties.Color.NameFont, ThemeClassName);
 
-			var shapedText = textServer.CreateShapedText();
-			textServer.ShapedTextAddString(shapedText, DisplayName, font.GetRids(), fontSize, font.GetOpentypeFeatures(), OS.GetLocale());
+			if (font.IsValid()) {
+				var shapedText = textServer.CreateShapedText();
+				textServer.ShapedTextAddString(shapedText, DisplayName, font.GetRids(), fontSize, font.GetOpentypeFeatures(), OS.GetLocale());
 
-			var origin = new Vector2(Size.X / 2f - _textureAspectRatio * Size.Y / 2f * typeParams.NamePosition.X - (float)textServer.ShapedTextGetWidth(shapedText) / 2f, Size.Y * typeParams.NamePosition.Y);
-			
-			Vector2 nextCharacterOrigin = origin;
-
-			var glyphs = textServer.ShapedTextGetGlyphs(shapedText);
-			var glyphCount = textServer.ShapedTextGetGlyphCount(shapedText);
-
-			for (int i = 0; i < glyphCount; ++i) {
-				var fontId = glyphs[i]["font_rid"].AsRid();
-				var index = glyphs[i]["index"].AsInt64();
-				var offset = glyphs[i]["offset"].AsVector2();
-				var advance = glyphs[i]["advance"].AsDouble();
-
-				var drawPosition = nextCharacterOrigin + offset;
+				var origin = new Vector2(Size.X / 2f - _textureAspectRatio * Size.Y / 2f * typeParams.NamePosition.X - (float)textServer.ShapedTextGetWidth(shapedText) / 2f, Size.Y * typeParams.NamePosition.Y);
 				
-				if (typeParams.NameCurve is not null) {
-					var glyphSize = textServer.FontGetGlyphSize(fontId, new Vector2I(fontSize, fontSize), index);
-					var curveOffset = typeParams.NameCurve.Sample((drawPosition.X + glyphSize.X / 2f) / (_textureAspectRatio * Size.Y));
-					drawPosition.Y -= curveOffset;
+				Vector2 nextCharacterOrigin = origin;
+
+				var glyphs = textServer.ShapedTextGetGlyphs(shapedText);
+				var glyphCount = textServer.ShapedTextGetGlyphCount(shapedText);
+
+				for (int i = 0; i < glyphCount; ++i) {
+					var fontId = glyphs[i]["font_rid"].AsRid();
+					var index = glyphs[i]["index"].AsInt64();
+					var offset = glyphs[i]["offset"].AsVector2();
+					var advance = glyphs[i]["advance"].AsDouble();
+
+					var drawPosition = nextCharacterOrigin + offset;
+					
+					if (typeParams.NameCurve is not null) {
+						var glyphSize = textServer.FontGetGlyphSize(fontId, new Vector2I(fontSize, fontSize), index);
+						var curveOffset = typeParams.NameCurve.Sample((drawPosition.X + glyphSize.X / 2f) / (_textureAspectRatio * Size.Y));
+						drawPosition.Y -= curveOffset;
+					}
+
+					textServer.FontDrawGlyph(fontId, canvasItem, fontSize, drawPosition, index, fontColor);
+
+					if ((i + 1) < glyphCount) nextCharacterOrigin += textServer.FontGetKerning(fontId, fontSize, new Vector2I((int)index, (int)glyphs[i]["index"].AsInt64()));
+					nextCharacterOrigin.X += (float)advance;
 				}
-
-				textServer.FontDrawGlyph(fontId, canvasItem, fontSize, drawPosition, index, fontColor);
-
-				if ((i + 1) < glyphCount) nextCharacterOrigin += textServer.FontGetKerning(fontId, fontSize, new Vector2I((int)index, (int)glyphs[i]["index"].AsInt64()));
-				nextCharacterOrigin.X += (float)advance;
+				
+				textServer.FreeRid(shapedText);
 			}
-			
-			textServer.FreeRid(shapedText);
 		}
 
-		if (Score is not null) {
+		if (!string.IsNullOrEmpty(Score)) {
 			var font = GetThemeFont(ThemeProperties.Font.Score, ThemeClassName); var fontSize = GetThemeFontSize(ThemeProperties.Font.Size.Score, ThemeClassName); var fontColor = GetThemeColor(ThemeProperties.Color.ScoreFont, ThemeClassName);
 			DrawString(font, new Vector2(_textureAspectRatio * Size.Y / 2f * typeParams.ScorePosition.X, Size.Y * typeParams.ScorePosition.Y), Score, HorizontalAlignment.Center, _textureAspectRatio * Size.Y, fontSize, fontColor);
 		}
 	}
+
+	// Generate meshes for the card and shadow, using the shared corner radius settings
+	// (Now that the corner settings are shared, I should really move the shadow falloff to the shared settings and then have this only update when
+	// the shared settings change, keeping a single static instance of each mesh. I just haven't gotten round to it.)
 
 	private float _textureAspectRatio = 0f;
 	private Mesh _cardMesh, _shadowMesh;
@@ -239,10 +250,10 @@ public partial class CardDisplay : Control, IReloadableToolScript
 
 		// Create Card
 		AddRect(cardSt, 0, SharedParams.CornerRadius, 1, 1 - SharedParams.CornerRadius * 2); 																			// Centre quad
-		AddRect(cardSt, SharedParams.CornerRadius / _textureAspectRatio, 0f, 1 - SharedParams.CornerRadius / _textureAspectRatio * 2, SharedParams.CornerRadius); 				 	// Top quad
+		AddRect(cardSt, SharedParams.CornerRadius / _textureAspectRatio, 0f, 1 - SharedParams.CornerRadius / _textureAspectRatio * 2, SharedParams.CornerRadius); 		// Top quad
 		AddRect(cardSt, SharedParams.CornerRadius / _textureAspectRatio, 1 - SharedParams.CornerRadius, 1 - SharedParams.CornerRadius / _textureAspectRatio * 2, SharedParams.CornerRadius); 	// Bottom quad
 
-		AddCorner(cardSt, new(SharedParams.CornerRadius / _textureAspectRatio, SharedParams.CornerRadius), MathF.PI); 												// Top left corner
+		AddCorner(cardSt, new(SharedParams.CornerRadius / _textureAspectRatio, SharedParams.CornerRadius), MathF.PI); 													// Top left corner
 		AddCorner(cardSt, new(1 - SharedParams.CornerRadius / _textureAspectRatio, SharedParams.CornerRadius), MathF.PI * 1.5f); 										// Top right corner
 		AddCorner(cardSt, new(SharedParams.CornerRadius / _textureAspectRatio, 1 - SharedParams.CornerRadius), MathF.PI * 0.5f); 										// Bottom left corner
 		AddCorner(cardSt, new(1 - SharedParams.CornerRadius / _textureAspectRatio, 1 - SharedParams.CornerRadius), 0f); 												// Bottom right corner

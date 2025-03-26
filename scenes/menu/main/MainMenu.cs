@@ -28,7 +28,7 @@ public partial class MainMenu : Control, IFocusContext
     private void OnStartPressed() => GameManager.BeginGame();
 
     private void OnSettingsPressed() {
-	    InputManager.Instance.PushToFocusStack();
+	    InputManager.PushToFocusStack();
 
         if (_settingsMenu.IsValid()) {
 		    _settingsMenu.QueueFree();
@@ -52,7 +52,7 @@ public partial class MainMenu : Control, IFocusContext
         _settingsMenu.QueueFree();
         _settingsMenu = null;
         
-	    InputManager.Instance.PopFromFocusStack();
+	    InputManager.PopFromFocusStack();
     }
 
     private void OnExitPressed() => GetTree().Quit();
@@ -60,8 +60,8 @@ public partial class MainMenu : Control, IFocusContext
     public virtual int FocusContextPriority => 8;
 
     public Control GetDefaultFocus() => StartButton;
-    public Control GetDefaultFocus(InputManager.FocusDirection direction) => direction switch {
-        InputManager.FocusDirection.Left => ExitButton,
+    public Control GetDefaultFocus(FocusDirection direction) => direction switch {
+        FocusDirection.Left => ExitButton,
         _ => StartButton
     };
 }

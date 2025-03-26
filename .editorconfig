@@ -5,3 +5,6 @@ dotnet_style_namespace_match_folder = false
 
 # CA1822: Mark members as static
 dotnet_diagnostic.CA1822.severity = none
+
+# CS8524: The switch expression does not handle some values of its input type (it is not exhaustive) involving an unnamed enum value.
+dotnet_diagnostic.CS8524.severity = silent

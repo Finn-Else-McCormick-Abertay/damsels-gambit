@@ -13,6 +13,7 @@ namespace DamselsGambit.Dialogue;
 public partial class DialogueManager : Node
 {
     public static DialogueManager Instance { get; private set; }
+    public override void _EnterTree() { if (Instance is not null) throw AutoloadException.For(this); Instance = this; InitRunner(); }
 
     public static DialogueRunner Runner { get; private set; }
     public static DialogueRunner ProfileRunner { get; private set; }
@@ -27,13 +28,9 @@ public partial class DialogueManager : Node
 
     public static ReadOnlyCollection<DialogueView> DialogueViews => Instance?._dialogueViews?.Where(x => x is DialogueView)?.Select(x => x as DialogueView)?.ToList()?.AsReadOnly();
 
+    // Called by dialogue views. Automatically updates our list when views enter or exit tree, and registers view with corresponding runner.
     public static void Register<TView>(TView view) where TView : Node, DialogueViewBase { Instance?._dialogueViews?.Add(view); (view switch { ProfileDialogueView => ProfileRunner, _ => Runner })?.OnReady(x => x.dialogueViews.Add(view)); }
     public static void Deregister<TView>(TView view) where TView : Node, DialogueViewBase { Instance?._dialogueViews?.Remove(view); (view switch { ProfileDialogueView => ProfileRunner, _ => Runner })?.OnReady(x => x.dialogueViews.Remove(view)); }
-
-    public override void _EnterTree() {
-        if (Instance is not null) throw AutoloadException.For(this);
-        Instance = this; InitRunner();
-    }
 
     public void Reset() {
         Runner?.Stop();
@@ -49,58 +46,74 @@ public partial class DialogueManager : Node
 
         _yarnProject ??= ResourceLoader.Load<YarnProject>("res://assets/dialogue/DamselsGambit.yarnproject");
 
-        if (_textLineProvider is null) { _textLineProvider = new TextLineProvider(); this.AddOwnedChild(_textLineProvider); }
+        if (_textLineProvider is null) { _textLineProvider = new TextLineProvider(); AddChild(_textLineProvider); }
 
         if (_variableStorage.IsValid() && force) { _variableStorage.QueueFree(); _variableStorage = null; }
-        if (_variableStorage is null) { _variableStorage = new InMemoryVariableStorage(); this.AddOwnedChild(_variableStorage); }
+        if (_variableStorage is null) { _variableStorage = new InMemoryVariableStorage(); AddChild(_variableStorage); }
 
         Runner = new DialogueRunner { Name = "DialogueRunner", yarnProject = _yarnProject, lineProvider = _textLineProvider, variableStorage = _variableStorage, startAutomatically = false, verboseLogging = false };
         ProfileRunner = new DialogueRunner { Name = "ProfileRunner", yarnProject = _yarnProject, lineProvider = _textLineProvider, variableStorage = _variableStorage, startAutomatically = false, verboseLogging = false };
 
-        this.AddOwnedChild(Runner); this.AddOwnedChild(ProfileRunner);
+        AddChild(Runner); AddChild(ProfileRunner);
 
-        Runner.Connect(DialogueRunner.SignalName.onDialogueStart, new Callable(this, MethodName.OnRunnerDialogueStart));
-        Runner.Connect(DialogueRunner.SignalName.onDialogueComplete, new Callable(this, MethodName.OnRunnerDialogueComplete));
-        Runner.Connect(DialogueRunner.SignalName.onNodeStart, new Callable(this, MethodName.OnRunnerNodeStart));
-        Runner.Connect(DialogueRunner.SignalName.onNodeComplete, new Callable(this, MethodName.OnRunnerNodeComplete));
+        Runner.ConnectAll(
+            (DialogueRunner.SignalName.onDialogueStart, Callable.From(OnRunnerDialogueStart)),
+            (DialogueRunner.SignalName.onDialogueComplete, Callable.From(OnRunnerDialogueComplete)),
+            (DialogueRunner.SignalName.onNodeStart, Callable.From<string>(OnRunnerNodeStart)),
+            (DialogueRunner.SignalName.onNodeComplete, Callable.From<string>(OnRunnerNodeComplete))
+        );
 
         Runner.SetDialogueViews(_dialogueViews.Where(x => x is not ProfileDialogueView));
         ProfileRunner.SetDialogueViews(_dialogueViews.Where(x => x is ProfileDialogueView));
     }
 
+    // Yarn project contains dialogue node with given name
     public static bool DialogueExists(string nodeName) => _yarnProject?.Program?.Nodes?.ContainsKey(nodeName ?? "") ?? false;
 
-    public static DialogueResult Run(string nodeName, bool force = true, bool orErrorDialogue = true) {
-        if (Runner.IsDialogueRunning && !force) return new DialogueResult(nodeName, false, "Dialogue already running and force set to false.");
+    // Run given dialogue node. If force is true, will interrupt and overwrite whatever dialogue is already in progress
+    // If orErrorDialogue is true, will run the node 'error' (which displays the text 'Invalid node') if it can't find the node
+    public static DialogueResult Run(string nodeName, bool force = true, bool orErrorDialogue = true, bool autoPrintErr = true) {
+        if (Runner.IsDialogueRunning && !force) return DialogueResult.Err(nodeName, DialogueError.AlreadyRunning, autoPrintErr);
         if (Runner.IsDialogueRunning) { _completesToIgnore++; Runner.Stop(); }
 
-		if (DialogueExists(nodeName)) { Runner.StartDialogue(nodeName); return new DialogueResult(nodeName, true); }
-        var errorMsg = $"No such node '{nodeName}'";
-        Console.Warning(errorMsg);
-        if (orErrorDialogue) {
-            Runner.StartDialogue("error");
-            return new DialogueResult("error", false, errorMsg);
-        }
-        return new DialogueResult(nodeName, false, errorMsg);
+		if (DialogueExists(nodeName)) { Runner.StartDialogue(nodeName); return DialogueResult.Ok(nodeName); }
+        else if (orErrorDialogue) Runner.StartDialogue("error");
+        return DialogueResult.Err(nodeName, DialogueError.InvalidNode, autoPrintErr);
     }
 
-    public static DialogueResult TryRun(string nodeName, bool force = true) => Run(nodeName, force, false);
+    // Attempt to run dialogue node, doing nothing if it does not exist (cleaner wrapper for Run with orErrorDialogue set to false)
+    public static DialogueResult TryRun(string nodeName, bool force = true) => Run(nodeName, force, false, false);
+
+    public enum DialogueError { None, InvalidNode, AlreadyRunning }
 
     public class DialogueResult
     {
-        private readonly string _node;
-
         public bool Success { get; private set; }
-        public string Error { get; private set; }
+        public DialogueError Error { get; private set; }
 
-        public static implicit operator bool(DialogueResult result) => result.Success;
-        
-        internal DialogueResult(string node, bool success, string error = "") { _node = node; Success = success; Error = error; }
+        private readonly string _nodeName;
 
+        // Run callback on dialogue end (convenience wrapper for DialogueManager.OnComplete, just to make code neater)
         public void AndThen(Callable callable) => OnComplete(callable);
         public void AndThen(Action action) => OnComplete(Callable.From(action));
+        
+        public DialogueResult Inspect(Action<DialogueResult> inspect) { if (Success) inspect(this); return this; } // Run callback if successful
+        public DialogueResult InspectErr(Action<DialogueResult> inspect) { if (!Success) inspect(this); return this; } // Run callback if failure
+        
+        internal static DialogueResult Ok(string nodeName) => new(nodeName, true, DialogueError.None);
+        internal static DialogueResult Err(string nodeName, DialogueError error, bool autoPrint = true) { var result = new DialogueResult(nodeName, false, error); if (autoPrint) Console.Error(result); return result; }
 
-        public DialogueResult InspectErr(Action<string> inspect) { if (!Success) inspect(Error); return this; }
+        private DialogueResult(string nodeName, bool success, DialogueError error) { _nodeName = nodeName; Success = success; Error = error; }
+
+        public static implicit operator bool(DialogueResult result) => result.Success;
+        public override string ToString() => Success switch {
+            true => $"Successfully ran dialogue node '{_nodeName}'.",
+            false => $"Failed to run dialogue node '{_nodeName}': " + Error switch {
+                DialogueError.InvalidNode => "No such node.",
+                DialogueError.AlreadyRunning => "Dialogue already running and force set to false.",
+                _ => ""
+            }
+        };
     }
     
     private static readonly Stack<string> _dialogueStack = [];

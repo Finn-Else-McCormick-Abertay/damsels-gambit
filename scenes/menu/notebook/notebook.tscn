@@ -1,33 +1,27 @@
-[gd_scene load_steps=5 format=3 uid="uid://q1kh0whg1g0g"]
+[gd_scene load_steps=6 format=3 uid="uid://q1kh0whg1g0g"]
 
-[ext_resource type="Theme" uid="uid://db11aw5aoqnpw" path="res://assets/ui/theme/suitor_profile_theme.tres" id="1_yh5ad"]
 [ext_resource type="Script" uid="uid://c5bi6sq63upok" path="res://scenes/menu/notebook/NotebookMenu.cs" id="2_eweoj"]
-[ext_resource type="Script" uid="uid://dxgjxwnt0yhqf" path="res://scenes/dialogue/views/ProfileDialogueView.cs" id="3_c4ias"]
-[ext_resource type="Texture2D" uid="uid://bgp5yt38gueut" path="res://assets/ui/panels/paper_texture_white_bkg.png" id="3_eweoj"]
+[ext_resource type="PackedScene" uid="uid://83tks4i67hdo" path="res://scenes/menu/notebook/pages/pause_menu.tscn" id="3_bl6mr"]
+[ext_resource type="PackedScene" uid="uid://dajkw7w45mh4c" path="res://scenes/menu/notebook/pages/cover.tscn" id="4_53q5r"]
+[ext_resource type="Script" uid="uid://biqqbrij8l0km" path="res://scenes/menu/notebook/ViewportLayerContainer.cs" id="6_s6j4j"]
+[ext_resource type="PackedScene" uid="uid://2010mmkoekfk" path="res://scenes/menu/notebook/pages/profile.tscn" id="7_43gqe"]
 
-[node name="NotebookMenu" type="Control" node_paths=PackedStringArray("DialogueView", "Root", "TabButton")]
+[node name="NotebookMenu" type="Control" node_paths=PackedStringArray("LayerContainer", "FallbackRoot", "FallbackProfilePage")]
 layout_mode = 3
-anchor_right = 0.45
-anchor_bottom = 0.958
-offset_right = 3.59998
-offset_bottom = 0.215942
+anchor_right = 0.392
+anchor_bottom = 1.0
+offset_right = 0.415985
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_yh5ad")
 script = ExtResource("2_eweoj")
 HighlightOffset = Vector2(-50, 0)
+HighlightCoverAngle = 0.0380831
 OpenOffset = Vector2(-500, 0)
+OpenCoverAngle = 1.39626
 OpenDuration = 0.25
-DialogueView = NodePath("ProfileView")
-Root = NodePath("Root")
-TabButton = NodePath("Root/TabButton")
-
-[node name="ProfileView" type="Node" parent="." node_paths=PackedStringArray("Title", "Subtitle", "Label", "Portrait")]
-script = ExtResource("3_c4ias")
-Title = NodePath("../Root/Title")
-Subtitle = NodePath("../Root/Subtitle")
-Label = NodePath("../Root/Info")
-Portrait = NodePath("../Root/Portrait")
+LayerContainer = NodePath("Root/ViewportLayerContainer")
+FallbackRoot = NodePath("Root")
+FallbackProfilePage = NodePath("Root/Profile")
 
 [node name="Root" type="Control" parent="."]
 layout_mode = 1
@@ -37,90 +31,23 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Background" type="TextureRect" parent="Root"]
+[node name="Profile" parent="Root" instance=ExtResource("7_43gqe")]
+layout_mode = 1
+
+[node name="PauseMenu" parent="Root" instance=ExtResource("3_bl6mr")]
+layout_mode = 1
+
+[node name="ViewportLayerContainer" type="Control" parent="Root"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(229, 197)
-texture = ExtResource("3_eweoj")
-expand_mode = 1
-
-[node name="Portrait" type="TextureRect" parent="Root"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.019
-anchor_top = 0.025
-anchor_right = 0.5
-anchor_bottom = 0.615
-offset_left = 10.158
-offset_top = -0.525001
-offset_right = -38.0
-offset_bottom = -68.915
-pivot_offset = Vector2(207, 183)
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Title" type="Label" parent="Root"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.446
-anchor_top = 0.045
-anchor_right = 0.953
-anchor_bottom = 0.198
-offset_left = -0.0279999
-offset_top = 0.0549984
-offset_right = 10.346
-offset_bottom = -17.958
-pivot_offset = Vector2(-24.9999, 162)
-theme_type_variation = &"HeaderLarge"
-text = "Profile Title"
-autowrap_mode = 2
-
-[node name="Subtitle" type="RichTextLabel" parent="Root"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.454
-anchor_top = 0.196
-anchor_right = 0.885
-anchor_bottom = 0.202
-offset_left = -0.172012
-offset_top = -14.716
-offset_right = -73.43
-offset_bottom = 11.558
-pivot_offset = Vector2(-28.9999, 84)
-theme_type_variation = &"PronounciationGuide"
-bbcode_enabled = true
-text = "[i]subtitle line[/i]"
-
-[node name="Info" type="RichTextLabel" parent="Root"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.45
-anchor_top = 0.211
-anchor_right = 0.923
-anchor_bottom = 0.573
-offset_left = -0.100006
-offset_top = -0.0310059
-offset_right = 10.886
-offset_bottom = -0.833008
-pivot_offset = Vector2(-31, 47)
-bbcode_enabled = true
-text = "Profile main body text.
-This will extend over multiple lines.
-[i]Italics[/i] [b]bold[/b] [i][b]bold italics[/b][/i]"
-tab_size = 12
-
-[node name="TabButton" type="Button" parent="Root"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.059
-anchor_bottom = 0.059
-offset_left = -142.0
-offset_top = -40.8915
-offset_right = 5.0
-offset_bottom = 40.1085
-theme_type_variation = &"TabBanner"
-text = "Suitor Profile"
+script = ExtResource("6_s6j4j")
+Scenes = [ExtResource("4_53q5r")]
+AlphaScissorThreshold = 0.69
+PaddingCamera = 210
+PaddingLayer = 210
+DownResInEditor = true
+metadata/_custom_type_script = "uid://biqqbrij8l0km"

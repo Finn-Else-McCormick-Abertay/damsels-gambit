@@ -1,0 +1,146 @@
+[gd_scene load_steps=7 format=3 uid="uid://2010mmkoekfk"]
+
+[ext_resource type="Theme" uid="uid://db11aw5aoqnpw" path="res://assets/ui/theme/suitor_profile_theme.tres" id="1_eqs5j"]
+[ext_resource type="Script" uid="uid://drk6opts1ja02" path="res://scenes/menu/notebook/pages/ProfilePage.cs" id="2_scbxg"]
+[ext_resource type="Texture2D" uid="uid://bgp5yt38gueut" path="res://assets/ui/panels/paper_texture_white_bkg.png" id="2_w88ru"]
+[ext_resource type="Texture2D" uid="uid://cnmux17p4b1od" path="res://assets/ui/buttons/pause_icon_alt.png" id="3_54un2"]
+[ext_resource type="Script" uid="uid://dxgjxwnt0yhqf" path="res://scenes/dialogue/views/ProfileDialogueView.cs" id="3_a4plf"]
+[ext_resource type="Script" uid="uid://cbqc0snx0l0pi" path="res://scenes/menu/notebook/PivotPoint.cs" id="4_bpofr"]
+
+[node name="Profile" type="Control" node_paths=PackedStringArray("DialogueView", "ProfileButton")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_eqs5j")
+script = ExtResource("2_scbxg")
+DialogueView = NodePath("ProfileView")
+ProfileButton = NodePath("Profile Button")
+metadata/_edit_use_anchors_ = true
+
+[node name="ProfileView" type="Node" parent="." node_paths=PackedStringArray("Title", "Subtitle", "Label", "Portrait")]
+script = ExtResource("3_a4plf")
+Title = NodePath("../Title")
+Subtitle = NodePath("../Subtitle")
+Label = NodePath("../Info")
+Portrait = NodePath("../Portrait")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(229, 197)
+texture = ExtResource("2_w88ru")
+expand_mode = 1
+
+[node name="Portrait" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.019
+anchor_top = 0.025
+anchor_right = 0.5
+anchor_bottom = 0.615
+offset_left = 10.158
+offset_top = -0.525001
+offset_right = -38.0
+offset_bottom = -68.915
+pivot_offset = Vector2(207, 183)
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.446
+anchor_top = 0.045
+anchor_right = 0.953
+anchor_bottom = 0.198
+offset_left = -0.0279999
+offset_top = 0.0549984
+offset_right = 10.346
+offset_bottom = -17.958
+pivot_offset = Vector2(-24.9999, 162)
+theme_type_variation = &"HeaderLarge"
+text = "Profile Title"
+autowrap_mode = 2
+
+[node name="Subtitle" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.454
+anchor_top = 0.196
+anchor_right = 0.885
+anchor_bottom = 0.202
+offset_left = -0.172012
+offset_top = -14.716
+offset_right = -73.43
+offset_bottom = 11.558
+pivot_offset = Vector2(-28.9999, 84)
+theme_type_variation = &"PronounciationGuide"
+bbcode_enabled = true
+text = "[i]subtitle line[/i]"
+
+[node name="Info" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.45
+anchor_top = 0.211
+anchor_right = 0.923
+anchor_bottom = 0.573
+offset_left = -0.100006
+offset_top = -0.0310059
+offset_right = 10.886
+offset_bottom = -0.833008
+pivot_offset = Vector2(-31, 47)
+bbcode_enabled = true
+text = "Profile main body text.
+This will extend over multiple lines.
+[i]Italics[/i] [b]bold[/b] [i][b]bold italics[/b][/i]"
+tab_size = 12
+
+[node name="Pause Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.039
+anchor_bottom = 0.039
+offset_left = -90.0
+offset_top = -32.272
+offset_right = 5.0
+offset_bottom = 32.728
+grow_vertical = 0
+focus_neighbor_bottom = NodePath("../Profile Button")
+theme_type_variation = &"PauseButton"
+text = "Pause"
+icon = ExtResource("3_54un2")
+alignment = 0
+
+[node name="Profile Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.122
+anchor_bottom = 0.122
+offset_left = -139.0
+offset_top = -41.056
+offset_right = 5.0
+offset_bottom = 39.944
+grow_vertical = 0
+focus_neighbor_top = NodePath("../Pause Button")
+theme_type_variation = &"TabBanner"
+text = "Suitor Profile"
+alignment = 0
+
+[node name="PivotPoint" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+script = ExtResource("4_bpofr")
+metadata/_custom_type_script = "uid://cbqc0snx0l0pi"

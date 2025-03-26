@@ -4,9 +4,14 @@ namespace DamselsGambit;
 
 public interface IFocusableContainer
 {
-    public Control GetNextFocus(InputManager.FocusDirection direction, int childIndex) => null;
+    public Node GetNextFocus(FocusDirection direction, Node child) => null;
 
-    public Control TryGainFocus(InputManager.FocusDirection direction) => null;
+    public Node TryGainFocus(FocusDirection direction) => null;
     
-    public bool TryLoseFocus(InputManager.FocusDirection direction) => true;
+    public (Node Focus, Viewport Viewport) TryGainFocus(FocusDirection direction, Viewport fromViewport) => (TryGainFocus(direction), null);
+    
+    public bool TryLoseFocus(FocusDirection direction, out bool popViewport) {
+        popViewport = false;
+        return true;
+    }
 }

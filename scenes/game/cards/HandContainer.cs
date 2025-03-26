@@ -14,6 +14,8 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
     [Export] public BoxContainer.AlignmentMode Alignment { get; set { field = value; QueueSort(); } } = BoxContainer.AlignmentMode.Center;
     [Export] public bool Fill { get; set { field = value; QueueSort(); } } = false;
 
+    // Hand size. Doesn't limit the number of children which can be added, but does act as a minimum number of cards for it to treat as exisiting when calculating the layout,
+    // which avoids the cards all changing position when the card count drops below this value.
     [Export] public int HandSize { get; set { field = value; QueueSort(); } } = -1;
 
     [ExportGroup("Input")]
@@ -25,9 +27,9 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
     [Export] public double AnimationTimeHighlight { get; set; } = 0.0;
 
     [ExportGroup("Curves", "Curve")]
-    [Export] public Curve CurveSeparation { get; set { CurveSeparation?.TryDisconnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); field = value; QueueSort(); CurveSeparation?.TryConnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); } }
-    [Export] public Curve CurveOffset { get; set { CurveOffset?.TryDisconnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); field = value; QueueSort(); CurveOffset?.TryConnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); } }
-    [Export] public Curve CurveRotation { get; set { CurveRotation?.TryDisconnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); field = value; QueueSort(); CurveRotation?.TryConnect(Resource.SignalName.Changed, new Callable(this, MethodName.QueueSort)); } }
+    [Export] public Curve CurveSeparation { get; set { CurveSeparation?.TryDisconnect(Resource.SignalName.Changed, QueueSort); field = value; QueueSort(); CurveSeparation?.TryConnect(Resource.SignalName.Changed, QueueSort); } }
+    [Export] public Curve CurveOffset { get; set { CurveOffset?.TryDisconnect(Resource.SignalName.Changed, QueueSort); field = value; QueueSort(); CurveOffset?.TryConnect(Resource.SignalName.Changed, QueueSort); } }
+    [Export] public Curve CurveRotation { get; set { CurveRotation?.TryDisconnect(Resource.SignalName.Changed, QueueSort); field = value; QueueSort(); CurveRotation?.TryConnect(Resource.SignalName.Changed, QueueSort); } }
 
     private static readonly Curve s_defaultSeparationCurve, s_defaultOffsetCurve, s_defaultRotationCurve;
 
@@ -56,31 +58,29 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
     }
 
     public override void _Ready() {
-        InputManager.Actions.SelectAt.Connect(GUIDEAction.SignalName.Triggered, new Callable(this, MethodName.OnSelectAt), 0);
-        
-        InputManager.Actions.Accept.Connect(GUIDEAction.SignalName.Triggered, new Callable(this, MethodName.OnAccept), 0);
+        InputManager.Actions.SelectAt.InnerObject.Connect(GUIDEAction.SignalName.Triggered, OnSelectAt);
+        InputManager.Actions.Accept.InnerObject.Connect(GUIDEAction.SignalName.Triggered, OnAccept);
     }
 
     public override void _EnterTree() {
-        this.TryConnect(Node.SignalName.ChildEnteredTree, new Callable(this, MethodName.OnChildEnteredTree));
-        this.TryConnect(Node.SignalName.ChildExitingTree, new Callable(this, MethodName.OnChildExitingTree));
+        this.TryConnect(Node.SignalName.ChildEnteredTree, MethodName.OnChildEnteredTree);
+        this.TryConnect(Node.SignalName.ChildExitingTree, MethodName.OnChildEnteredTree);
     }
     private void OnChildEnteredTree(Node child) {
         if (!Engine.IsEditorHint()) {
-            child.TryConnect(Control.SignalName.MouseEntered, new Callable(this, MethodName.QueueSort));
-            child.TryConnect(Control.SignalName.MouseExited, new Callable(this, MethodName.QueueSort));
-            child.TryConnect(Control.SignalName.FocusEntered, new Callable(this, MethodName.QueueSort));
-            child.TryConnect(Control.SignalName.FocusExited, new Callable(this, MethodName.QueueSort));
-            
+            child.TryConnectAll(
+                (Control.SignalName.MouseEntered, QueueSort), (Control.SignalName.MouseExited, QueueSort),
+                (Control.SignalName.FocusEntered, QueueSort), (Control.SignalName.FocusExited, QueueSort)
+            );
             _newChildren.Add(child);
         }
     }
     private void OnChildExitingTree(Node child) {
         if (!Engine.IsEditorHint()) {
-            child.TryDisconnect(Control.SignalName.MouseEntered, new Callable(this, MethodName.QueueSort));
-            child.TryDisconnect(Control.SignalName.MouseExited, new Callable(this, MethodName.QueueSort));
-            child.TryDisconnect(Control.SignalName.FocusEntered, new Callable(this, MethodName.QueueSort));
-            child.TryDisconnect(Control.SignalName.FocusExited, new Callable(this, MethodName.QueueSort));
+            child.TryDisconnectAll(
+                (Control.SignalName.MouseEntered, QueueSort), (Control.SignalName.MouseExited, QueueSort),
+                (Control.SignalName.FocusEntered, QueueSort), (Control.SignalName.FocusExited, QueueSort)
+            );
             _newChildren.Remove(child);
             _selectedCards.Remove(child);
             _prevHighlightedState.Remove(child);
@@ -89,23 +89,23 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
         }
     }
 
-    public Control GetNextFocus(InputManager.FocusDirection direction, int childIndex) {
+    public Node GetNextFocus(FocusDirection direction, Node child) {
         var nextIndex = direction switch {
-            InputManager.FocusDirection.Left => childIndex - 1,
-            InputManager.FocusDirection.Right => childIndex + 1,
+            FocusDirection.Left => child.GetIndex() - 1,
+            FocusDirection.Right => child.GetIndex() + 1,
             _ => -1
         };
-        if (nextIndex >= 0 && nextIndex < GetChildCount()) return InputManager.FindFocusableWithin(GetChild(nextIndex), direction);
-        return null;
+        return nextIndex >= 0 && nextIndex < GetChildCount() ? GetChild<Control>(nextIndex) : null;
     }
 
-    public Control TryGainFocus(InputManager.FocusDirection direction) =>
-        InputManager.FindFocusableWithin(direction switch {
+    public Node TryGainFocus(FocusDirection direction) =>
+        direction switch {
             _ when GetChildCount() == 0 => null,
-            InputManager.FocusDirection.Down or InputManager.FocusDirection.Left => GetChildren().Last(),
-            InputManager.FocusDirection.Right or _ => GetChildren().First()
-        }, direction);
+            FocusDirection.Down or FocusDirection.Left => GetChildren().Last(),
+            FocusDirection.Right or _ => GetChildren().First()
+        };
 
+    // Connected to Accept action
     private void OnAccept() {
         if (Engine.IsEditorHint()) return;
         
@@ -120,6 +120,7 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
         }
     }
 
+    // Connected to SelectAt action
     private void OnSelectAt() {
         if (Engine.IsEditorHint()) return;
 
@@ -142,8 +143,10 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
         }
     }
 
-    public IEnumerable<CardDisplay> GetSelected() => _selectedCards.Select(x => x as CardDisplay);
+    // Get card children which have been selected
+    public IEnumerable<CardDisplay> GetSelected() => _selectedCards.Select(x => x as CardDisplay).Where(x => x.IsValid());
 
+    // Used by the sort logic to determine which cards are selected, which are highlighted, which animation length to use for a given movement, etc
     private readonly HashSet<Node> _newChildren = [];
     private readonly HashSet<Node> _selectedCards = [];
     private readonly Dictionary<Node, bool> _prevHighlightedState = [];
@@ -151,6 +154,8 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
     private readonly Dictionary<Node, int> _prevIndex = [];
     private readonly Dictionary<Node, Tween> _tweens = [];
 
+    // Runs on recieving Container's SortChildren notification
+    // Finds the positions and rotations for all children following the exported curves, then tweens them to those positions according to the exported 'time' properties
     private void OnSortChildren() {
         var childCount = GetChildCount();
 
@@ -175,8 +180,7 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
         var startPoint = Alignment switch {
             BoxContainer.AlignmentMode.Center => (Size.X / 2f) - (Size.X > maxCardWidth ? totalWidth : maxCardWidth) / 2f,
             BoxContainer.AlignmentMode.Begin => 0,
-            BoxContainer.AlignmentMode.End => Size.X - (Size.X > maxCardWidth ? totalWidth : maxCardWidth),
-            _ => throw new NotImplementedException()
+            BoxContainer.AlignmentMode.End => Size.X - (Size.X > maxCardWidth ? totalWidth : maxCardWidth)
         };
 
         var _ = GetChildren().Index().Aggregate(startPoint,
@@ -210,13 +214,13 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
                 if (hasTween) {
                     if (oldTween.IsRunning() && prevIndex == pair.Index) {
                         skipAnimation = true;
-                        oldTween.TryConnect(Tween.SignalName.Finished, new Callable(this, MethodName.QueueSort));
+                        oldTween.TryConnect(Tween.SignalName.Finished, QueueSort);
                     }
                     else { oldTween.Kill(); _tweens.Remove(card); }
                 }
                 
                 if (!skipAnimation) {
-                    var isNew = _newChildren.Contains(card); if (isNew) { _newChildren.Remove(card); }
+                    var isNew = _newChildren.Contains(card); if (isNew) _newChildren.Remove(card);
                     var animationTime = isNew ? AnimationTimeAdd : (highlighted != prevHighlighted || selected != wasSelected) ? AnimationTimeHighlight : AnimationTimeReorder;
 
                     if (animationTime > 0.0 && !Engine.IsEditorHint()) {
@@ -237,7 +241,7 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
     protected void OnScriptReload() => QueueSort();
     public override void _Notification(int what) {
         switch ((long)what) {
-            case NotificationSortChildren: { OnSortChildren(); } break;
+            case NotificationSortChildren: OnSortChildren(); break;
         }
         base._Notification(what);
     }

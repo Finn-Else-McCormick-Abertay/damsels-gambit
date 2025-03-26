@@ -2,7 +2,7 @@ using Godot;
 
 namespace DamselsGambit;
 
-[Tool, GlobalClass]
+[Tool, GlobalClass, Icon("res://assets/editor/icons/stylebox_layered.svg")]
 public partial class StyleBoxLayered : StyleBox
 {
     [Export] public StyleBox[] StyleBoxes { get; set { field = value; EmitChanged(); } }

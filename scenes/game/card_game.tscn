@@ -118,6 +118,7 @@ grow_horizontal = 2
 grow_vertical = 2
 focus_neighbor_right = NodePath("../RightHandContainer")
 focus_neighbor_bottom = NodePath("../PlayHandButton")
+mouse_default_cursor_shape = 5
 script = ExtResource("4_xg83y")
 Alignment = 0
 HandSize = 3
