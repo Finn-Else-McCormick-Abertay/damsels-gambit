@@ -16,9 +16,11 @@ internal partial class ToPrettyStringInternal
 		null => "null",
         string str => str,
 		NodePath nodePath => nodePath switch { _ when nodePath.IsEmpty => "(Empty)", _ => nodePath.ToString() },
-		Node node => $"{node.GetType().Name}(\"{node.Name}\")",
-		Resource resource => $"{resource.ResourcePath}({resource.GetType().Name})",
-		GodotObject obj => $"{obj.GetType().Name}<{obj.GetInstanceId()}>",
+		GodotObject obj => $"{obj.GetType().Name}" + (obj.IsInvalid() ? "!INVALID" : '(' + obj switch {
+			Node node => $"'{node.Name}'",
+			Resource resource => resource.ResourcePath,
+			_ => $"{obj.GetInstanceId()}"
+		} + ')'),
 		Type type when type.IsEnum => $"enum{{{string.Join(", ", type.GetEnumNames())}}}",
         _ when typeof(T).Name == "KeyValuePair`2" && typeof(T).GenericTypeArguments is Type[] typeArgs && typeArgs.Length == 2
             => typeof(ToPrettyStringInternal).GetMethod(nameof(KeyValuePairToPrettyString))?.MakeGenericMethod(typeArgs)?.Invoke(null, [val]) as string,
