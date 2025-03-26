@@ -5,10 +5,15 @@ Princess Penelope: So what about...
         <<score 1>>
         King Ráðúlfr: My human parents or my wolf parents? I get along with both.
         King Ráðúlfr: Although my human parents and I can't seem to see eye to eye on a few issues. On account of how they lost me when I was 5.
+        <<learn lost_child>>
     -> Your relationship with your siblings?
         <<score -1>>
         King Ráðúlfr: I have only one younger brother. Our relationship is rather tense, since he was the heir to the throne until I came back. 
         King Ráðúlfr: He was the one who gave me this scar across my eye.
+    -> How were you lost? <<if knows("lost_child")>>
+        King Ráðúlfr: I was kidnapped by bounty hunters who had been told I was a bastard. 
+        King Ráðúlfr: During their escape, I lost in the woods.
+        King Ráðúlfr: I was found and adopted by wolfs.
 ===
 
 title: frostholm__question_food
