@@ -1,22 +1,36 @@
-[gd_scene load_steps=15 format=3 uid="uid://dipd7bv4d85ws"]
+[gd_scene load_steps=18 format=3 uid="uid://dipd7bv4d85ws"]
 
-[ext_resource type="Script" uid="uid://fhn7dbryyxai" path="res://scenes/game/CardGameController.cs" id="1_4k8rw"]
-[ext_resource type="Theme" uid="uid://jf72vigx3i2b" path="res://assets/ui/theme/card_theme.tres" id="1_eci5x"]
+[ext_resource type="Script" uid="uid://fhn7dbryyxai" path="res://scenes/CardGameController.cs" id="1_4k8rw"]
+[ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_ui_dynamic_font.tres" id="1_b7goe"]
+[ext_resource type="Script" uid="uid://c6fd25jlnt26l" path="res://scenes/ui/cards/CardDisplay.cs" id="2_kdxpq"]
 [ext_resource type="Theme" uid="uid://dhax3sfwm6isl" path="res://assets/ui/theme/affection_meter_theme.tres" id="2_ko4o6"]
-[ext_resource type="Script" uid="uid://dbwnt4443aqcc" path="res://scenes/game/AffectionMeter.cs" id="4_dw2x6"]
-[ext_resource type="Script" uid="uid://cq1ndckdbfugt" path="res://scenes/game/cards/HandContainer.cs" id="4_xg83y"]
+[ext_resource type="Script" uid="uid://dbwnt4443aqcc" path="res://scenes/ui/AffectionMeter.cs" id="4_dw2x6"]
+[ext_resource type="Script" uid="uid://cq1ndckdbfugt" path="res://scenes/ui/cards/HandContainer.cs" id="4_xg83y"]
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/theme/default_theme.tres" id="6_7wss3"]
-[ext_resource type="PackedScene" uid="uid://c8warv5k2winh" path="res://scenes/game/round_meter/round_meter.tscn" id="8_oypvw"]
+[ext_resource type="PackedScene" uid="uid://c8warv5k2winh" path="res://scenes/ui/round_meter.tscn" id="8_oypvw"]
+[ext_resource type="PackedScene" uid="uid://q1kh0whg1g0g" path="res://scenes/ui/suitor_profile.tscn" id="9_6xg5x"]
+
+[sub_resource type="Theme" id="Theme_ouffm"]
+CardDisplay/colors/name_font_color = Color(0.478431, 0.0117647, 0, 1)
+CardDisplay/colors/score_font_color = Color(0.478431, 0.0117647, 0, 1)
+CardDisplay/font_sizes/name_font_size = 18
+CardDisplay/font_sizes/score_font_size = 25
+CardDisplay/fonts/name_font = ExtResource("1_b7goe")
+CardDisplay/fonts/score_font = ExtResource("1_b7goe")
+RoundLabel/base_type = &"Label"
+RoundLabel/colors/font_color = Color(1, 0.270588, 0.243137, 1)
+RoundLabel/colors/font_outline_color = Color(0, 0, 0, 1)
+RoundLabel/constants/outline_size = 11
+RoundLabel/font_sizes/font_size = 25
 
 [sub_resource type="Gradient" id="Gradient_xf1xp"]
-offsets = PackedFloat32Array(0.171141, 1)
 colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_sfysy"]
 gradient = SubResource("Gradient_xf1xp")
 use_hdr = true
 fill = 1
-fill_from = Vector2(0.495726, 0.316239)
+fill_from = Vector2(0.478632, 0.290598)
 fill_to = Vector2(-1.25, 0)
 
 [sub_resource type="Curve" id="Curve_6espp"]
@@ -44,7 +58,7 @@ _limits = [-90.0, 90.0, 0.0, 1.0]
 _data = [Vector2(0, 5.12277), 0.0, 0.0, 0, 0, Vector2(0.502959, 9.04018), 20.9715, 20.9715, 0, 0, Vector2(1, 15.5692), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "RoundMeter", "ActionHand", "TopicHand", "PlayButton")]
+[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "RoundMeter", "TopicHand", "ActionHand", "PlayButton", "SuitorProfile")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -52,31 +66,31 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-theme = ExtResource("1_eci5x")
+theme = SubResource("Theme_ouffm")
 script = ExtResource("1_4k8rw")
 TopicDeck = {
 "topic/animals": 1,
 "topic/art": 1,
 "topic/children": 1,
+"topic/family": 1,
 "topic/food": 1,
 "topic/hobbies": 1,
-"topic/loyalty": 1,
-"topic/parents": 1,
 "topic/religion": 1,
 "topic/weather": 1,
 "topic/witchcraft": 1
 }
 ActionDeck = {
 "action/give": 2,
-"action/question": 4,
+"action/question": 3,
 "action/secret": 2,
 "action/want": 2
 }
 AffectionMeter = NodePath("AffectionMeter")
 RoundMeter = NodePath("RoundMeter")
-ActionHand = NodePath("LeftHandContainer")
 TopicHand = NodePath("RightHandContainer")
+ActionHand = NodePath("LeftHandContainer")
 PlayButton = NodePath("PlayHandButton")
+SuitorProfile = NodePath("SuitorProfile")
 
 [node name="Vignette" type="TextureRect" parent="."]
 layout_mode = 1
@@ -100,8 +114,6 @@ offset_bottom = -19.216
 grow_vertical = 2
 theme = ExtResource("2_ko4o6")
 script = ExtResource("4_dw2x6")
-LoveThreshold = 4.0
-HateThreshold = -4.0
 
 [node name="LeftHandContainer" type="Container" parent="."]
 layout_mode = 1
@@ -130,6 +142,33 @@ CurveOffset = SubResource("Curve_2cmp0")
 CurveRotation = SubResource("Curve_kxdyk")
 metadata/_edit_group_ = true
 
+[node name="CardDisplay2" type="Control" parent="LeftHandContainer"]
+layout_mode = 2
+focus_mode = 2
+mouse_filter = 1
+mouse_default_cursor_shape = 2
+script = ExtResource("2_kdxpq")
+CardId = &"action/question"
+ShadowOffset = Vector2(-6, 2.465)
+
+[node name="CardDisplay6" type="Control" parent="LeftHandContainer"]
+layout_mode = 2
+focus_mode = 2
+mouse_filter = 1
+mouse_default_cursor_shape = 2
+script = ExtResource("2_kdxpq")
+CardId = &"action/secret"
+ShadowOffset = Vector2(-6, 2.465)
+
+[node name="CardDisplay4" type="Control" parent="LeftHandContainer"]
+layout_mode = 2
+focus_mode = 2
+mouse_filter = 1
+mouse_default_cursor_shape = 2
+script = ExtResource("2_kdxpq")
+CardId = &"action/want"
+ShadowOffset = Vector2(-6, 2.465)
+
 [node name="RightHandContainer" type="Container" parent="."]
 layout_mode = 1
 anchors_preset = -1
@@ -144,6 +183,7 @@ offset_bottom = -40.0
 grow_horizontal = 2
 grow_vertical = 2
 focus_neighbor_left = NodePath("../LeftHandContainer")
+focus_neighbor_top = NodePath("../SuitorProfile/Root/TabButton")
 focus_neighbor_bottom = NodePath("../PlayHandButton")
 script = ExtResource("4_xg83y")
 Alignment = 2
@@ -156,6 +196,33 @@ CurveSeparation = SubResource("Curve_6espp")
 CurveOffset = SubResource("Curve_5nabb")
 CurveRotation = SubResource("Curve_mupma")
 metadata/_edit_group_ = true
+
+[node name="CardDisplay" type="Control" parent="RightHandContainer"]
+layout_mode = 2
+focus_mode = 2
+mouse_filter = 1
+mouse_default_cursor_shape = 2
+script = ExtResource("2_kdxpq")
+CardId = &"topic/animals"
+ShadowOffset = Vector2(-6, 2.465)
+
+[node name="CardDisplay5" type="Control" parent="RightHandContainer"]
+layout_mode = 2
+focus_mode = 2
+mouse_filter = 1
+mouse_default_cursor_shape = 2
+script = ExtResource("2_kdxpq")
+CardId = &"topic/witchcraft"
+ShadowOffset = Vector2(-6, 2.465)
+
+[node name="CardDisplay3" type="Control" parent="RightHandContainer"]
+layout_mode = 2
+focus_mode = 2
+mouse_filter = 1
+mouse_default_cursor_shape = 2
+script = ExtResource("2_kdxpq")
+CardId = &"topic/art"
+ShadowOffset = Vector2(-6, 2.465)
 
 [node name="PlayHandButton" type="Button" parent="."]
 layout_mode = 1
@@ -173,6 +240,7 @@ grow_vertical = 2
 focus_neighbor_left = NodePath("../LeftHandContainer")
 focus_neighbor_top = NodePath("!return")
 focus_neighbor_right = NodePath("../RightHandContainer")
+mouse_default_cursor_shape = 2
 theme = ExtResource("6_7wss3")
 text = "Play Hand"
 
@@ -189,3 +257,24 @@ offset_right = 293.0
 offset_bottom = 0.103996
 grow_vertical = 1
 CurrentRound = 2
+
+[node name="SuitorProfile" parent="." instance=ExtResource("9_6xg5x")]
+layout_mode = 1
+anchor_left = 1.0
+anchor_top = 0.012
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -16.0
+offset_top = 16.224
+offset_right = 488.0
+offset_bottom = -16.0
+HighlightOffset = Vector2(-50, 0)
+OpenOffset = Vector2(-500, 0)
+OpenDuration = 0.25
+
+[node name="TabButton" parent="SuitorProfile/Root" index="5"]
+focus_neighbor_bottom = NodePath("../../../RightHandContainer")
+
+[connection signal="mouse_entered" from="PlayHandButton" to="." method="_on_play_hand_button_mouse_entered"]
+
+[editable path="SuitorProfile"]

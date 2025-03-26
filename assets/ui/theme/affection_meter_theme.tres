@@ -3,11 +3,11 @@
 [ext_resource type="Texture2D" uid="uid://167ba70o2tv0" path="res://assets/ui/panels/affection_bar/affection_bar_war.png" id="1_784mg"]
 [ext_resource type="Texture2D" uid="uid://bbr57lg3tj7ia" path="res://assets/ui/panels/affection_bar/crossed_swords_thick_outline.png" id="1_gt3fw"]
 [ext_resource type="Texture2D" uid="uid://b880wr14b14cs" path="res://assets/ui/panels/affection_bar/linked_rings_thick_outline.png" id="2_tcigj"]
-[ext_resource type="Script" uid="uid://bgveruq6sb3li" path="res://util/resources/StyleBoxScaledTexture.cs" id="2_vjwo0"]
+[ext_resource type="Script" uid="uid://bgveruq6sb3li" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="2_vjwo0"]
 [ext_resource type="Texture2D" uid="uid://kmxj3n8p2cjr" path="res://assets/ui/panels/affection_bar/affection_bar_marriage.png" id="5_latk2"]
 [ext_resource type="Texture2D" uid="uid://dnrv3cmcvfwux" path="res://assets/ui/panels/affection_bar/affection_bar_seperator_ninerect.png" id="7_altxn"]
 [ext_resource type="Texture2D" uid="uid://dliw2ranfsodq" path="res://assets/ui/panels/affection_bar/affection_bar_base_ninerect.png" id="7_ylt25"]
-[ext_resource type="Texture2D" uid="uid://b5nbweyix2g6h" path="res://assets/ui/buttons/marker 3.png" id="8_y0esn"]
+[ext_resource type="Texture2D" uid="uid://fsyp8ma2q3ba" path="res://assets/ui/buttons/snail.png" id="8_y0esn"]
 
 [sub_resource type="StyleBox" id="StyleBox_ew2n2"]
 resource_local_to_scene = false
@@ -147,29 +147,12 @@ AxisStretchHorizontal = 0
 AxisStretchVertical = 0
 ModulateColor = Color(1, 1, 1, 1)
 
-[sub_resource type="StyleBox" id="StyleBox_4jbej"]
-resource_local_to_scene = false
-resource_name = ""
-content_margin_left = -1.0
-content_margin_top = -1.0
-content_margin_right = -1.0
-content_margin_bottom = -1.0
-script = ExtResource("2_vjwo0")
-Texture = ExtResource("8_y0esn")
-Scale = 1.0
-DrawCenter = true
-TextureMarginLeft = 0
-TextureMarginTop = 0
-TextureMarginRight = 0
-TextureMarginBottom = 0
-ExpandMarginLeft = 38.5
-ExpandMarginTop = 17.95
-ExpandMarginRight = 39.02
-ExpandMarginBottom = 18.36
-AxisStretchHorizontal = 1
-AxisStretchVertical = 1
-ModulateColor = Color(1, 1, 1, 1)
-metadata/_custom_type_script = "uid://bgveruq6sb3li"
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_4jbej"]
+texture = ExtResource("8_y0esn")
+expand_margin_left = 12.0
+expand_margin_top = 15.0
+expand_margin_right = 12.0
+expand_margin_bottom = 15.0
 
 [resource]
 AffectionMeter/constants/hate_icon_size = 48
@@ -184,5 +167,5 @@ AffectionMeter/styles/love_boundary = SubResource("StyleBox_3cc77")
 AffectionMeter/styles/middle_boundary = SubResource("StyleBox_mrr2j")
 AffectionMeter/styles/over = null
 AffectionMeter/styles/under = SubResource("StyleBox_5bunv")
-AffectionMeter/styles/value_boundary = SubResource("StyleBox_4jbej")
+AffectionMeter/styles/value_boundary = SubResource("StyleBoxTexture_4jbej")
 VSlider/icons/grabber_disabled = null

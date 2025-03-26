@@ -1,12 +1,12 @@
 [gd_scene load_steps=2 format=3 uid="uid://ds6loc3llepm4"]
 
-[ext_resource type="Texture2D" uid="uid://bhq508873xfue" path="res://assets/environment/endings/Bad_Ending_2.png" id="1_dn4w2"]
+[ext_resource type="Texture2D" uid="uid://b3q3djovua726" path="res://assets/environment/endings/bad_ending_war_fin.png" id="1_t4525"]
 
 [node name="War" type="CanvasLayer"]
 layer = 5
 follow_viewport_enabled = true
 
 [node name="WarEnding" type="Sprite2D" parent="."]
-position = Vector2(536, 320)
-scale = Vector2(0.335648, 0.335648)
-texture = ExtResource("1_dn4w2")
+position = Vector2(569.333, 338.75)
+scale = Vector2(0.318287, 0.318287)
+texture = ExtResource("1_t4525")

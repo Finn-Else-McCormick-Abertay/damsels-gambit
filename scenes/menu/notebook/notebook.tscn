@@ -122,5 +122,6 @@ offset_left = -142.0
 offset_top = -40.8915
 offset_right = 5.0
 offset_bottom = 40.1085
+mouse_default_cursor_shape = 2
 theme_type_variation = &"TabBanner"
 text = "Suitor Profile"
