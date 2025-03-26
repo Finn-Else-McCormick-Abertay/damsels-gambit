@@ -140,7 +140,11 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	private void PlayHand() {
 		if (Engine.IsEditorHint()) return;
 
-		CardDisplay selectedTopic = TopicHand.GetSelected().First(), selectedAction = ActionHand.GetSelected().First();
+		CardDisplay selectedTopic = TopicHand.GetSelected().SingleOrDefault();
+		CardDisplay selectedAction = ActionHand.GetSelected().SingleOrDefault();
+
+		// Verify that the correct number of cards were selected
+		if (selectedTopic.IsInvalid() || selectedAction.IsInvalid()) { Console.Error("Failed to play hand. Topic: ", selectedTopic, ", Action: ", selectedAction); return; }
 
 		var dialogueNode = $"{_suitorId}__{selectedAction.CardId.ToString().StripFront("action/")}_{selectedTopic.CardId.ToString().StripFront("topic/")}";
 

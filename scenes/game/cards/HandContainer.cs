@@ -144,7 +144,7 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
     }
 
     // Get card children which have been selected
-    public IEnumerable<CardDisplay> GetSelected() => _selectedCards.Select(x => x as CardDisplay);
+    public IEnumerable<CardDisplay> GetSelected() => _selectedCards.Select(x => x as CardDisplay).Where(x => x.IsValid());
 
     // Used by the sort logic to determine which cards are selected, which are highlighted, which animation length to use for a given movement, etc
     private readonly HashSet<Node> _newChildren = [];

@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://q1kh0whg1g0g"]
+[gd_scene load_steps=6 format=3 uid="uid://q1kh0whg1g0g"]
 
 [ext_resource type="Script" uid="uid://c5bi6sq63upok" path="res://scenes/menu/notebook/NotebookMenu.cs" id="2_eweoj"]
+[ext_resource type="PackedScene" uid="uid://83tks4i67hdo" path="res://scenes/menu/notebook/pages/pause_menu.tscn" id="3_bl6mr"]
 [ext_resource type="PackedScene" uid="uid://dajkw7w45mh4c" path="res://scenes/menu/notebook/pages/cover.tscn" id="4_53q5r"]
 [ext_resource type="Script" uid="uid://biqqbrij8l0km" path="res://scenes/menu/notebook/ViewportLayerContainer.cs" id="6_s6j4j"]
 [ext_resource type="PackedScene" uid="uid://2010mmkoekfk" path="res://scenes/menu/notebook/pages/profile.tscn" id="7_43gqe"]
@@ -31,6 +32,9 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Profile" parent="Root" instance=ExtResource("7_43gqe")]
+layout_mode = 1
+
+[node name="PauseMenu" parent="Root" instance=ExtResource("3_bl6mr")]
 layout_mode = 1
 
 [node name="ViewportLayerContainer" type="Control" parent="Root"]

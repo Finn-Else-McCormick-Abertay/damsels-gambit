@@ -250,10 +250,10 @@ public partial class CardDisplay : Control, IReloadableToolScript
 
 		// Create Card
 		AddRect(cardSt, 0, SharedParams.CornerRadius, 1, 1 - SharedParams.CornerRadius * 2); 																			// Centre quad
-		AddRect(cardSt, SharedParams.CornerRadius / _textureAspectRatio, 0f, 1 - SharedParams.CornerRadius / _textureAspectRatio * 2, SharedParams.CornerRadius); 				 	// Top quad
+		AddRect(cardSt, SharedParams.CornerRadius / _textureAspectRatio, 0f, 1 - SharedParams.CornerRadius / _textureAspectRatio * 2, SharedParams.CornerRadius); 		// Top quad
 		AddRect(cardSt, SharedParams.CornerRadius / _textureAspectRatio, 1 - SharedParams.CornerRadius, 1 - SharedParams.CornerRadius / _textureAspectRatio * 2, SharedParams.CornerRadius); 	// Bottom quad
 
-		AddCorner(cardSt, new(SharedParams.CornerRadius / _textureAspectRatio, SharedParams.CornerRadius), MathF.PI); 												// Top left corner
+		AddCorner(cardSt, new(SharedParams.CornerRadius / _textureAspectRatio, SharedParams.CornerRadius), MathF.PI); 													// Top left corner
 		AddCorner(cardSt, new(1 - SharedParams.CornerRadius / _textureAspectRatio, SharedParams.CornerRadius), MathF.PI * 1.5f); 										// Top right corner
 		AddCorner(cardSt, new(SharedParams.CornerRadius / _textureAspectRatio, 1 - SharedParams.CornerRadius), MathF.PI * 0.5f); 										// Bottom left corner
 		AddCorner(cardSt, new(1 - SharedParams.CornerRadius / _textureAspectRatio, 1 - SharedParams.CornerRadius), 0f); 												// Bottom right corner

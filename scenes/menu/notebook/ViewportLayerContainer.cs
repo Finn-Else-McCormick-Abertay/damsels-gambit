@@ -103,7 +103,7 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
         var windowSize = DisplayServer.WindowGetSize();
 
         var windowScaleFactor = viewportSize.Y <= 2 ? 1 : windowSize.X / viewportSize.X;
-        Console.Info("Window Scale Factor: ", windowScaleFactor, " Scale Factor: ", ScaleFactor);
+        //Console.Info("Window Scale Factor: ", windowScaleFactor, " Scale Factor: ", ScaleFactor);
 
         var viewportScaleFactor = (DownResInEditor && Engine.IsEditorHint() ? 1 : ScaleFactor) * windowScaleFactor;
 

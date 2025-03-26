@@ -17,7 +17,6 @@ public sealed partial class GameManager : Node
 	
 	public static CardGameController CardGameController { get; private set; }
 	public static MainMenu MainMenu { get; private set; }
-	public static PauseMenu PauseMenu { get; private set; }
 	public static NotebookMenu NotebookMenu { get; private set; }
 
 	public static event Action CardGameChanged;
@@ -40,8 +39,7 @@ public sealed partial class GameManager : Node
 	private static readonly PackedScene
 		_dialogueLayerScene = ResourceLoader.Load<PackedScene>("res://scenes/dialogue/dialogue_layer.tscn"),
 		_notebookLayerScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/notebook/notebook_layer.tscn"),
-		_mainMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/main/main_menu.tscn"),
-		_pauseMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/pause_menu.tscn");
+		_mainMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/main/main_menu.tscn");
 
 	// Runs when full tree is ready
 	private void OnTreeReady() {
@@ -60,9 +58,6 @@ public sealed partial class GameManager : Node
 
 		MainMenu = GetTree().Root.FindChildWhere<MainMenu>(x => x.SceneFilePath.Equals(_mainMenuScene.ResourcePath));
 		if (MainMenu.IsValid()) menuLayer.AddOwnedChild(MainMenu, true);
-
-		PauseMenu = GetTree().Root.FindChildWhere<PauseMenu>(x => x.SceneFilePath.Equals(_pauseMenuScene.ResourcePath));
-		if (PauseMenu.IsValid()) menuLayer.AddOwnedChild(MainMenu, true); PauseMenu?.Hide();
 		
 		CardGameController = GetTree().Root.FindChildOfType<CardGameController>();
 		if (CardGameController.IsValid()) {
@@ -116,9 +111,5 @@ public sealed partial class GameManager : Node
 		CardGameController = cardGameScene as CardGameController ?? cardGameScene.FindChildOfType<CardGameController>();
 		CardGameController.OnReady(x => x.BeginGame());
 		CardGameChanged?.Invoke();
-
-		PauseMenu = _pauseMenuScene.Instantiate<PauseMenu>();
-		GetLayer("menu").AddOwnedChild(PauseMenu);
-		PauseMenu.Hide();
 	}
 } 
