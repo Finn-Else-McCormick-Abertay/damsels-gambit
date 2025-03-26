@@ -209,20 +209,42 @@ Princess Penelope: I want...
 title: frostholm__want_weather
 ---
 Princess Penelope: I want...
-	-> Some warm summer weather!
-		<<score -3>>
-		<<emote frostholm sad_1>>
-		<<after 1.5>>
-		<<emote frostholm neutral from sad_1>>
-	-> Some cool autumn breeze.
+	-> To control the weather, I'd make it snow all the time!
 		<<score 3>>
+		King Ráðúlfr: I love the snow!
+	-> To control the weather, I'd make it extremely hot all the time.
+		<<score -3>>
+		King Ráðúlfr: I hate the heat, I get so sweaty in my furs...
+	-> To see the northern lights!
+		<<score 3>>
+		King Ráðúlfr: They truly are beautiful!
 ===
 
 title: frostholm__want_family
 ---
 Princess Penelope: I want...
-	-> To learn archery.
+	-> To give my mother a dress made of human teeth!
 		<<score -3>>
-	-> To learn swordsmanship.
+		King Ráðúlfr: ...Why?
+			-> You wouldn't question if it it were pearls...
+				<<score -3>>
+			-> It's a symbol of strength!
+				<<score 3>>
+	-> To get to know your family!
 		<<score 3>>
+		King Ráðúlfr: My human family or my wolf family?
+			-> Your wolf family! I can learn their hunting techniques.
+				<<score 3>>
+			-> Your human family! I can learn their hunting techniques.
+				<<score -3>>
+			-> Your wolf family! I love anthropomorphized animals!
+				<<score 3>>
+	-> To make your parent a set of snail necklaces
+		King Ráðúlfr: ...Why?
+			-> Silver snail necklaces! To honour the divine wisdom of the Snail Gods, of course.
+				<<score 3>>
+			-> Silver snail necklaces! Snails represent patience and endurance. Like our future marriage. *wink*
+				<<score 3>>
+			-> Because that's how I show my love!
+				<<score -3>>
 ===
