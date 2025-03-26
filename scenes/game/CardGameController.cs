@@ -24,7 +24,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	public int Round { get; set { field = value;  RoundMeter?.OnReady(x => x.CurrentRound = Round); if (Round > NumRounds) TriggerGameEnd(); } }
 
 	// Current score. Automatically tweens the displayed value of the AffectionMeter to itself whenever set
-	public int Score { get; set { field = value; AffectionMeter?.CreateTween()?.TweenProperty(AffectionMeter, AffectionMeter.PropertyName.Value.ToString(), Score, 1.0); } }
+	public int Score { get; set { field = value; AffectionMeter?.CreateTween()?.TweenProperty(AffectionMeter, AffectionMeter.PropertyName.Value.ToString(), Score, 1.0); if (Score <= ScoreMin || Score >= ScoreMax) CallableUtils.CallDeferred(TriggerGameEnd); } }
 
 	// Name of suitor. This converted to snake case will be used for generating dialogue node names, and for updating the profile
 	[Export] public string SuitorName { get; set { field = value; _suitorId = Case.ToSnake(SuitorName); GameManager.NotebookMenu?.OnReady(x => x.SuitorName = SuitorName); } }
@@ -173,7 +173,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		// Once that is finished, emit the game end signal.
 		DialogueManager.TryRun($"{_suitorId}__pre_ending")
 			.AndThen(() => {
-				AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide();
+				AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide(); PlayButton.Hide();
 				DialogueManager
 					.TryRun($"{_suitorId}__ending__{Score switch { _ when Score >= LoveThreshold => "love", _ when Score <= HateThreshold => "hate", _ => "neutral" }}")
 					.AndThen(() => EmitSignal(SignalName.GameEnd));
