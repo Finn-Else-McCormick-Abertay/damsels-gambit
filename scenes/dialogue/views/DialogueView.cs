@@ -114,6 +114,8 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
 		Control toFocus = null;
 
 		foreach (var option in dialogueOptions) {
+			if (!option.IsAvailable) continue;
+
 			var optionControl = OptionArchetype.Duplicate() as Control;
 			OptionRoot.AddChild(optionControl);
 
