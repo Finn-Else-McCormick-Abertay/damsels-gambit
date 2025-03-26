@@ -96,19 +96,3 @@ Princess Penelope: I've got a replica of a treasured family heirloom I can give 
 	-> Have this family's recipe on how to make a voodoo doll!
 		<<score -3>>
 ===
-
-title: frostholm__give_family
----
-Princess Penelope: I've got a replica of a treasured family heirloom I can give you! It's...
-	-> The wolf pentant of my late great-grandmother!
-		<<score 5>>
-		<<emote frostholm holding_heart_2>>
-		<<after 1.5>>
-		<<emote frostholm neutral from holding_heart_2>>
-	-> A step-by-step guide to hexing your enemies with a voodoo dool enfused with forbidden Snurch slime!
-		<<score -9>>
-		<<emote frostholm worried>>
-		<<after 3>>
-		<<emote frostholm sad_1 from worried>>
-
-===
