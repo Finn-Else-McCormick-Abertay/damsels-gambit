@@ -24,7 +24,8 @@ public partial class ProfilePage : Control
     public void FadeShadows(bool visible, double time) {
         foreach (var shadow in _shadows) {
             // Clean up existing tweens if any
-            if (_shadowFadeTweens.TryGetValue(shadow, out var existingTween) && existingTween.IsValid()) { existingTween.Stop(); existingTween.Free(); _shadowFadeTweens.Remove(shadow); }
+            if (_shadowFadeTweens.TryGetValue(shadow, out var oldTween) && oldTween.IsValid()) oldTween.Kill();
+             _shadowFadeTweens.Remove(shadow);
             if (shadow.IsInvalid()) continue;
 
             if (time <= 0 || shadow.Visible == visible) { shadow.Visible = visible; shadow.Modulate = shadow.Modulate with { A = 1f }; }

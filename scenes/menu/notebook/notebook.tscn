@@ -19,6 +19,11 @@ HighlightCoverAngle = 0.0380831
 OpenOffset = Vector2(-500, 0)
 OpenCoverAngle = 1.39626
 OpenDuration = 0.25
+PauseMenuOffset = Vector2(-232.405, 13.285)
+PauseMenuAngle = -0.998032
+PauseMenuScale = 1.32
+PauseMenuTurnDuration = 0.25
+PauseMenuTransitionType = 4
 LayerContainer = NodePath("Root/ViewportLayerContainer")
 FallbackRoot = NodePath("Root")
 FallbackProfilePage = NodePath("Root/Profile")
@@ -30,6 +35,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+pivot_offset = Vector2(453, 278)
 
 [node name="PauseMenu" parent="Root" instance=ExtResource("3_bl6mr")]
 layout_mode = 1

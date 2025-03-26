@@ -26,6 +26,13 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 	[Export] public Vector2 OpenOffset { get; set { field = value; RestoreAnimationState(); } }
 	[Export(PropertyHint.Range, "-90,90,0.001,radians")] public double OpenCoverAngle { get; set { field = value; RestoreAnimationState(); } } = 0.0;
 	[Export(PropertyHint.Range, "0,1,or_greater,suffix:s")] private double OpenDuration { get; set; } = 0.3;
+	
+	[ExportSubgroup("Pause Menu", "PauseMenu")]
+	[Export] public Vector2 PauseMenuOffset { get; set { field = value; RestoreAnimationState(); } }
+	[Export(PropertyHint.Range, "-90,90,0.001,radians")] public double PauseMenuAngle { get; set { field = value; RestoreAnimationState(); } } = 0.0;
+	[Export] public float PauseMenuScale { get; set { field = value; RestoreAnimationState(); } } = 1f;
+	[Export(PropertyHint.Range, "0,1,or_greater,suffix:s")] private double PauseMenuTurnDuration { get; set; } = 0.3;
+	[Export] private Tween.TransitionType PauseMenuTransitionType { get; set; } = Tween.TransitionType.Linear;
 
 	[ExportGroup("Nodes")]
 	[Export] private ViewportLayerContainer LayerContainer { get; set { field = value; UpdateLayerReferences(); } }
@@ -60,29 +67,48 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 	[ExportGroup("Debug", "Debug")]
 	[Export] private AnimationState DebugState { get => State; set => State = value; }
 	
-	public enum AnimationState { Closed, Highlighted, Open };
-	public AnimationState State { get; private set { AnimateStateChange(State, value); field = value; } }
+	public enum AnimationState { Closed, Highlighted, Open, PauseMenu };
+	public AnimationState State { get; private set { this.OnReady(() => AnimateStateChange(State, value)); field = value; } }
 
 	public bool Open { get; set { field = value; State = State switch { _ when Open => AnimationState.Open, AnimationState.Open when !Open && Highlighted => AnimationState.Highlighted, _ => AnimationState.Closed }; } } = false;
 	public bool Highlighted { get; set { field = value; State = State switch { AnimationState.Open => AnimationState.Open, _ when Highlighted => AnimationState.Highlighted, _ => AnimationState.Closed }; } } = false;
 	
-	private Tween _moveTween, _rotateTween;
+	private readonly Dictionary<Node, Tween> _tweens = [];
+	private Tween CreateTweenFor(Node node) {
+		CleanupTweenFor(node);
+		if (node.IsInvalid()) return null;
+		var tween = node.CreateTween(); _tweens.Add(node, tween);
+		return tween;
+	}
+	private void CleanupTweenFor(Node node) {
+		if (node is null) return;
+		if (_tweens.TryGetValue(node, out var oldTween) && oldTween.IsValid()) oldTween.Kill();
+		_tweens.Remove(node);
+	}
+
 	private void AnimateStateChange(AnimationState oldState, AnimationState newState) {
 		if (oldState == newState) return;
 
 		double duration = newState switch {
 			AnimationState.Open => OpenDuration,
-			AnimationState.Highlighted => oldState switch { AnimationState.Open => OpenDuration, AnimationState.Closed => HighlightDuration, _ => 0 },
-			AnimationState.Closed => oldState switch { AnimationState.Open => OpenDuration, AnimationState.Highlighted => HighlightDuration, _ => 0 }
+			AnimationState.Highlighted => oldState switch { AnimationState.Open => OpenDuration, AnimationState.Closed => HighlightDuration, AnimationState.PauseMenu => PauseMenuTurnDuration, _ => 0 },
+			AnimationState.Closed => oldState switch { AnimationState.Open => OpenDuration, AnimationState.Highlighted => HighlightDuration, AnimationState.PauseMenu => PauseMenuTurnDuration, _ => 0 },
+			AnimationState.PauseMenu => PauseMenuTurnDuration
 		};
 
-		var position = newState switch { AnimationState.Open => OpenOffset, AnimationState.Highlighted => HighlightOffset, AnimationState.Closed => ClosedOffset };
-		var angle = newState switch { AnimationState.Open => OpenCoverAngle, AnimationState.Highlighted => HighlightCoverAngle, AnimationState.Closed => ClosedCoverAngle };
+		var position = newState switch { AnimationState.Open => OpenOffset, AnimationState.Highlighted => HighlightOffset, AnimationState.Closed => ClosedOffset, AnimationState.PauseMenu => PauseMenuOffset };
+		var rootAngle = newState switch { AnimationState.PauseMenu => PauseMenuAngle, _ => 0 };
+		var coverAngle = newState switch { AnimationState.Open => OpenCoverAngle, AnimationState.Highlighted => HighlightCoverAngle, AnimationState.Closed or AnimationState.PauseMenu => ClosedCoverAngle };
+		var scale = newState switch { AnimationState.PauseMenu => PauseMenuScale, _ => 1 };
 
-		Root?.OnReady(() => { _moveTween?.Kill(); _moveTween = CreateTween(); _moveTween.TweenProperty(Root, "position", position, duration); });
-		CoverPivot?.OnReady(() => { _rotateTween?.Kill(); _rotateTween = CreateTween(); _rotateTween.TweenProperty(CoverPivot, "rotation:y", angle, duration); });
+		var rootTween = CreateTweenFor(Root)?.SetParallel();
+		rootTween?.TweenProperty(Root, Control.PropertyName.Position, position, duration);
+		rootTween?.TweenProperty(Root, Control.PropertyName.Rotation, rootAngle, duration)?.SetEase(Tween.EaseType.InOut)?.SetTrans(PauseMenuTransitionType);
+		rootTween?.TweenProperty(Root, Control.PropertyName.Scale, new Vector2(scale, scale), duration)?.SetTrans(PauseMenuTransitionType);
 
-		ProfilePage?.OnReady(() => ProfilePage.FadeShadows(newState switch { AnimationState.Open => false, _ => true }, duration));
+		CreateTweenFor(CoverPivot)?.TweenProperty(CoverPivot, Control.PropertyName.Rotation + ":y", coverAngle, duration);
+
+		ProfilePage?.FadeShadows(newState switch { AnimationState.Open => false, _ => true }, duration);
 	}
 
 	private void RestoreAnimationState() {
@@ -90,17 +116,22 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 		
 		ProfilePage?.SetShadows(State switch { AnimationState.Open => false, _ => true });
 		
-		var position = State switch { AnimationState.Open => OpenOffset, AnimationState.Highlighted => HighlightOffset, AnimationState.Closed => ClosedOffset };
-		var angle = State switch { AnimationState.Open => OpenCoverAngle, AnimationState.Highlighted => HighlightCoverAngle, AnimationState.Closed => ClosedCoverAngle };
-		CallableUtils.CallDeferred(() => { if (Root.IsValid()) Root.Position = position; if (CoverPivot.IsValid()) CoverPivot.Rotation = CoverPivot.Rotation with { Y = (float)angle }; });
+		var position = State switch { AnimationState.Open => OpenOffset, AnimationState.Highlighted => HighlightOffset, AnimationState.Closed => ClosedOffset, AnimationState.PauseMenu => PauseMenuOffset };
+		var rootAngle = State switch { AnimationState.PauseMenu => PauseMenuAngle, _ => 0 };
+		var coverAngle = State switch { AnimationState.Open => OpenCoverAngle, AnimationState.Highlighted => HighlightCoverAngle, AnimationState.Closed or AnimationState.PauseMenu => ClosedCoverAngle };
+		var scale = State switch { AnimationState.PauseMenu => PauseMenuScale, _ => 1 };
+		CallableUtils.CallDeferred(() => {
+			if (Root.IsValid()) { Root.Position = position; Root.Rotation = (float)rootAngle; Root.Scale = new(scale, scale); }
+			if (CoverPivot.IsValid()) CoverPivot.Rotation = CoverPivot.Rotation with { Y = (float)coverAngle };
+		});
 	}
 
 	private void UpdateLayerReferences() {
 		void InternalUpdateLayerReferences() {
 			Root = FallbackRoot ?? LayerContainer;
-            ProfilePage = LayerContainer.GetLayer("res://scenes/menu/notebook/pages/profile.tscn") as Notebook.ProfilePage ?? FallbackProfilePage as Notebook.ProfilePage;
-            ProfileViewport = LayerContainer.GetViewport("res://scenes/menu/notebook/pages/profile.tscn");
-            CoverPivot = LayerContainer.GetPivot("res://scenes/menu/notebook/pages/cover.tscn") ?? FallbackCoverPivot;
+            ProfilePage = LayerContainer?.GetLayer("res://scenes/menu/notebook/pages/profile.tscn") as Notebook.ProfilePage ?? FallbackProfilePage as Notebook.ProfilePage;
+            ProfileViewport = LayerContainer?.GetViewport("res://scenes/menu/notebook/pages/profile.tscn");
+            CoverPivot = LayerContainer?.GetPivot("res://scenes/menu/notebook/pages/cover.tscn") ?? FallbackCoverPivot;
 			RestoreAnimationState();
         }
 		// If LayerContainer exists, defer until it is ready.
@@ -116,15 +147,11 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 	}
 	public override void _EnterTree() { RestoreAnimationState(); if (Engine.IsEditorHint()) CallableUtils.CallDeferred(UpdateLayerReferences); }
 	public override void _ExitTree() {
-		_moveTween?.Kill(); _moveTween = null;
-		_rotateTween?.Kill(); _rotateTween = null;
+		foreach (var (_, tween) in _tweens) if (tween.IsValid()) tween.Kill();
+		_tweens.Clear();
 		if (Engine.IsEditorHint()) { Root = null; ProfilePage = null; ProfileViewport = null; CoverPivot = null; }
 	}
-	
-    public override void _ValidateProperty(Godot.Collections.Dictionary prop) {
-        if (prop["name"].IsAnyOf(PropertyName._moveTween, PropertyName._rotateTween, PropertyName.Root, PropertyName.ProfileViewport, PropertyName.CoverPivot, PropertyName.State))
-            prop["usage"] = prop["usage"].SetFlags(PropertyUsageFlags.NoInstanceState).UnsetFlags(PropertyUsageFlags.Storage);
-    }
+    protected virtual void PreScriptReload() { Root = null; ProfilePage = null; ProfileViewport = null; CoverPivot = null; }
 
 	private void OnFocus() => Highlighted = true;
 	private void OnUnfocus() => Highlighted = false;
