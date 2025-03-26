@@ -13,6 +13,7 @@ namespace DamselsGambit.Dialogue;
 public partial class DialogueManager : Node
 {
     public static DialogueManager Instance { get; private set; }
+    public override void _EnterTree() { if (Instance is not null) throw AutoloadException.For(this); Instance = this; InitRunner(); }
 
     public static DialogueRunner Runner { get; private set; }
     public static DialogueRunner ProfileRunner { get; private set; }
@@ -27,13 +28,9 @@ public partial class DialogueManager : Node
 
     public static ReadOnlyCollection<DialogueView> DialogueViews => Instance?._dialogueViews?.Where(x => x is DialogueView)?.Select(x => x as DialogueView)?.ToList()?.AsReadOnly();
 
+    // Called by dialogue views. Automatically updates our list when views enter or exit tree, and registers view with corresponding runner.
     public static void Register<TView>(TView view) where TView : Node, DialogueViewBase { Instance?._dialogueViews?.Add(view); (view switch { ProfileDialogueView => ProfileRunner, _ => Runner })?.OnReady(x => x.dialogueViews.Add(view)); }
     public static void Deregister<TView>(TView view) where TView : Node, DialogueViewBase { Instance?._dialogueViews?.Remove(view); (view switch { ProfileDialogueView => ProfileRunner, _ => Runner })?.OnReady(x => x.dialogueViews.Remove(view)); }
-
-    public override void _EnterTree() {
-        if (Instance is not null) throw AutoloadException.For(this);
-        Instance = this; InitRunner();
-    }
 
     public void Reset() {
         Runner?.Stop();
@@ -49,25 +46,28 @@ public partial class DialogueManager : Node
 
         _yarnProject ??= ResourceLoader.Load<YarnProject>("res://assets/dialogue/DamselsGambit.yarnproject");
 
-        if (_textLineProvider is null) { _textLineProvider = new TextLineProvider(); this.AddOwnedChild(_textLineProvider); }
+        if (_textLineProvider is null) { _textLineProvider = new TextLineProvider(); AddChild(_textLineProvider); }
 
         if (_variableStorage.IsValid() && force) { _variableStorage.QueueFree(); _variableStorage = null; }
-        if (_variableStorage is null) { _variableStorage = new InMemoryVariableStorage(); this.AddOwnedChild(_variableStorage); }
+        if (_variableStorage is null) { _variableStorage = new InMemoryVariableStorage(); AddChild(_variableStorage); }
 
         Runner = new DialogueRunner { Name = "DialogueRunner", yarnProject = _yarnProject, lineProvider = _textLineProvider, variableStorage = _variableStorage, startAutomatically = false, verboseLogging = false };
         ProfileRunner = new DialogueRunner { Name = "ProfileRunner", yarnProject = _yarnProject, lineProvider = _textLineProvider, variableStorage = _variableStorage, startAutomatically = false, verboseLogging = false };
 
-        this.AddOwnedChild(Runner); this.AddOwnedChild(ProfileRunner);
+        AddChild(Runner); AddChild(ProfileRunner);
 
-        Runner.Connect(DialogueRunner.SignalName.onDialogueStart, new Callable(this, MethodName.OnRunnerDialogueStart));
-        Runner.Connect(DialogueRunner.SignalName.onDialogueComplete, new Callable(this, MethodName.OnRunnerDialogueComplete));
-        Runner.Connect(DialogueRunner.SignalName.onNodeStart, new Callable(this, MethodName.OnRunnerNodeStart));
-        Runner.Connect(DialogueRunner.SignalName.onNodeComplete, new Callable(this, MethodName.OnRunnerNodeComplete));
+        Runner.ConnectAll(
+            (DialogueRunner.SignalName.onDialogueStart, Callable.From(OnRunnerDialogueStart)),
+            (DialogueRunner.SignalName.onDialogueComplete, Callable.From(OnRunnerDialogueComplete)),
+            (DialogueRunner.SignalName.onNodeStart, Callable.From<string>(OnRunnerNodeStart)),
+            (DialogueRunner.SignalName.onNodeComplete, Callable.From<string>(OnRunnerNodeComplete))
+        );
 
         Runner.SetDialogueViews(_dialogueViews.Where(x => x is not ProfileDialogueView));
         ProfileRunner.SetDialogueViews(_dialogueViews.Where(x => x is ProfileDialogueView));
     }
 
+    // Yarn project contains dialogue node with given name
     public static bool DialogueExists(string nodeName) => _yarnProject?.Program?.Nodes?.ContainsKey(nodeName ?? "") ?? false;
 
     public static DialogueResult Run(string nodeName, bool force = true, bool orErrorDialogue = true) {

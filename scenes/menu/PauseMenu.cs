@@ -8,28 +8,31 @@ namespace DamselsGambit;
 
 public partial class PauseMenu : Control, IFocusContext, IBackContext
 {
-	[Export] Button ResumeButton { get; set; }
-	[Export] Button QuitButton { get; set; }
+	[Export] public Button ResumeButton { get; set; }
+	[Export] public Button QuitButton { get; set; }
 
 	public override void _Ready() {
 		Hide();
-		ResumeButton.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnResume));
-		QuitButton.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnQuit));
+		ResumeButton.TryConnect(BaseButton.SignalName.Pressed, OnResume);
+		QuitButton.TryConnect(BaseButton.SignalName.Pressed, OnQuit);
 
-		InputManager.Actions.Pause.Connect(GUIDEAction.SignalName.Completed, new Callable(this, MethodName.TogglePaused), 0);
+		InputManager.Actions.Pause.InnerObject.Connect(GUIDEAction.SignalName.Completed, TogglePaused);
 	}
 
+	// Connected to Pause action
 	private void TogglePaused() {
 		GetTree().Paused = !GetTree().Paused;
 		Visible = GetTree().Paused;
 		if (Visible) ResumeButton.GrabFocus();
 	}
 
+	// Connected to Resume button Pressed signal
 	private void OnResume() {
 		GetTree().Paused = false;
 		Visible = false;
 	}
 
+	// Connected to Quit button Pressed signal
 	private void OnQuit() {
 		GetTree().Paused = false;
 		GameManager.SwitchToMainMenu();
@@ -45,11 +48,9 @@ public partial class PauseMenu : Control, IFocusContext, IBackContext
 		FocusDirection.Down or _ => ResumeButton
 	};
 
+	// Resume on back
     public bool UseBackInput() {
-		if (GetTree().Paused) {
-			OnResume();
-			return true;
-		}
+		if (GetTree().Paused) { OnResume(); return true; }
 		return false;
 	}
 }

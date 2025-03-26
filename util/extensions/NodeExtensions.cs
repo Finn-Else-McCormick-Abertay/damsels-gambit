@@ -9,14 +9,14 @@ namespace DamselsGambit.Util;
 static class NodeExtensions
 {
     /// <summary>
-    /// Returns true if instance is a valid <see cref="GodotObject"/> (e.g. has not been deleted from memory).
+    /// Returns <see langword="true"/> if instance is a valid <see cref="GodotObject"/> (e.g. has not been deleted from memory).
     /// <para> Shorthand for <see cref="GodotObject.IsInstanceValid(GodotObject?)"/>  </para>
     /// </summary>
     /// <returns>If the instance is a valid object.</returns>
     public static bool IsValid(this GodotObject self) => GodotObject.IsInstanceValid(self);
 
     /// <summary>
-    /// Returns true if instance is not a valid <see cref="GodotObject"/> (e.g. has been deleted from memory).
+    /// Returns <see langword="true"/> if instance is not a valid <see cref="GodotObject"/> (e.g. has been deleted from memory).
     /// <para> Shorthand for !<see cref="GodotObject.IsInstanceValid(GodotObject?)"/>  </para>
     /// </summary>
     /// <returns>If the instance is not a valid object.</returns>

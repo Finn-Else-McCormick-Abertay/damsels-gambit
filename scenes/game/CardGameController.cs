@@ -14,17 +14,23 @@ namespace DamselsGambit;
 [Tool]
 public partial class CardGameController : Control, IReloadableToolScript, IFocusContext
 {
+	// Signals which are emitted on start and end of game and round respectively
 	[Signal] public delegate void GameStartEventHandler();
 	[Signal] public delegate void GameEndEventHandler();
 	[Signal] public delegate void RoundStartEventHandler(int round);
 	[Signal] public delegate void RoundEndEventHandler(int round);
+	
+	// Current round. Triggers game end when it exceeds NumRounds
+	public int Round { get; set { field = value;  RoundMeter?.OnReady(x => x.CurrentRound = Round); if (Round > NumRounds) TriggerGameEnd(); } }
 
+	// Current score. Automatically tweens the displayed value of the AffectionMeter to itself whenever set
+	public int Score { get; set { field = value; AffectionMeter?.CreateTween()?.TweenProperty(AffectionMeter, AffectionMeter.PropertyName.Value.ToString(), Score, 1.0); } }
+
+	// Name of suitor. This converted to snake case will be used for generating dialogue node names, and for updating the profile
 	[Export] public string SuitorName { get; set { field = value; _suitorId = Case.ToSnake(SuitorName); GameManager.NotebookMenu?.OnReady(x => x.SuitorName = SuitorName); } }
 	private string _suitorId;
 
 	[Export(PropertyHint.Range, "0,20,")] public int NumRounds { get; private set { field = value; RoundMeter?.OnReady(() => RoundMeter.NumRounds = NumRounds); } } = 8;
-
-	public int Round { get; set { field = value;  RoundMeter?.OnReady(x => x.CurrentRound = Round); if (Round > NumRounds) TriggerGameEnd(); } }
 	
 	[ExportGroup("Score")]
 	[Export(PropertyHint.Range, "-30,30,")] public int ScoreMin { get; private set { field = value; AffectionMeter?.OnReady(x => x.MinValue = ScoreMin); } } = -10;
@@ -32,8 +38,6 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 
 	[Export(PropertyHint.Range, "-30,30,")] public int LoveThreshold { get; private set { field = value; AffectionMeter?.OnReady(x => x.LoveThreshold = LoveThreshold); } } = 4;
 	[Export(PropertyHint.Range, "-30,30,")] public int HateThreshold { get; private set { field = value; AffectionMeter?.OnReady(x => x.HateThreshold = HateThreshold); } } = -4;
-	
-	public int Score { get; set { field = value; AffectionMeter?.CreateTween()?.TweenProperty(AffectionMeter, AffectionMeter.PropertyName.Value.ToString(), Score, 1.0); } }
 
 	[ExportGroup("Deck")]
 	[Export] public Godot.Collections.Dictionary<string, int> TopicDeck { get; set { field = value; this.OnReady(EditorUpdateHands); } }
@@ -60,19 +64,26 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		EditorUpdateHands();
 		if (Engine.IsEditorHint()) return;
 
-		PlayButton?.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.PlayHand));
+		PlayButton?.TryConnect(BaseButton.SignalName.Pressed, PlayHand);
 		PlayButton.Disabled = true;
 
+		// Remove any cards remaining from the editor
 		foreach (var child in TopicHand.GetChildren()) { TopicHand.RemoveChild(child); child.QueueFree(); }
 		foreach (var child in ActionHand.GetChildren()) { ActionHand.RemoveChild(child); child.QueueFree(); }
 		
 		Hide(); Round = 1;
 	}
 
+	// Has intro ended and game started? Tracked for skip logic
 	public bool Started { get; private set; } = false;
+
+	// Should the skip intro button display? Set based on tags of intro node (cause it looks weird during an intro that's just a very short fade in)
 	public bool IntroSkippable { get; private set; } = false;
 
+	// Trigger the start of the game
+	// This doens't happen in ready so that GameManager is able to set whether the intro should be skipped (which it is when loading into the scene directly)
 	public void BeginGame(bool skipIntro = false) {
+		// Creating list of cards from exported dictionary of cards and their counts
 		static List<string> CreateWorkingDeck(Godot.Collections.Dictionary<string, int> deck) { List<string> working = []; foreach (var (card, count) in deck) for (int i = 0; i < count; ++i) working.Add(card); return working; }
 
 		// Create and shuffle deck
@@ -81,12 +92,13 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		
 		EmitSignal(SignalName.GameStart);
 
+		// Make NotebookMenu the focus neighbour of topic hand, so it can be accessed via keyboard controls
 		TopicHand.FocusNeighborTop = GameManager.NotebookMenu.GetPath();
 		TopicHand.FocusNeighborRight = GameManager.NotebookMenu.GetPath();
 		GameManager.NotebookMenu.FocusNeighborBottom = TopicHand.GetPath().ToString() + "!left";
 		GameManager.NotebookMenu.FocusNeighborLeft = TopicHand.GetPath().ToString() + "!right";
 
-		// Set intro skippable based on intro tags
+		// Set whether intro skippable based on intro tags
 		foreach (var tag in DialogueManager.Runner.GetTagsForNode($"{_suitorId}__intro")) {
 			var args = tag.Split('=');
 			if (tag.MatchN("skippable")) IntroSkippable = true; else if (tag.MatchN("unskippable")) IntroSkippable = false;
@@ -95,6 +107,8 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 
 		GameManager.NotebookMenu.Hide();
 		
+		// Run intro node or (skip_setup node, if skipping), then unhide and handle round start.
+		// (Due to how AndThen works, if this dialogue is interrupted by another then the callback will still run when that dialogue ends, which is why force-running the skip setup (see ForceSkipIntro) doesn't break everything)
 		DialogueManager.TryRun(skipIntro ? $"{_suitorId}__skip_setup" : $"{_suitorId}__intro")
 			.AndThen(() => {
 				Show(); GameManager.NotebookMenu.Show();
@@ -104,11 +118,13 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 			});
 	}
 
+	// If not yet started, force-run the skip_setup node, skipping to the start of gameplay even if currently in the intro
 	public void ForceSkipIntro() { if (!Started) DialogueManager.Run($"{_suitorId}__skip_setup", true); }
 
 	public override void _Process(double delta) {
 		if (Engine.IsEditorHint()) return;
 
+		// Set play button to be disabled based on whether the correct number of cards are selected
 		PlayButton.Disabled = TopicHand.GetSelected().Count() != 1 || ActionHand.GetSelected().Count() != 1;
 	}
 	
@@ -120,6 +136,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 			FocusDirection.Right or _ => ActionHand
 		}, direction);
 
+	// Connected to PlayButton's Pressed signal
 	private void PlayHand() {
 		if (Engine.IsEditorHint()) return;
 
@@ -131,20 +148,26 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		ActionHand.RemoveChild(selectedAction); selectedAction.QueueFree();
 		PlayButton.Hide();
 
-		DialogueManager.Run(dialogueNode).AndThen(() => {
-			EmitSignal(SignalName.RoundEnd, Round);
-			Round += 1;
-			if (Round <= NumRounds) { PlayButton.Show(); Deal(); EmitSignal(SignalName.RoundStart, Round); }
-		});
+		// Run dialogue node, or error dialogue if it does not exist.
+		// Then, emit round signal, increment round, and handle next round start
+		DialogueManager.Run(dialogueNode)
+			.AndThen(() => {
+				EmitSignal(SignalName.RoundEnd, Round);
+				Round += 1;
+				if (Round <= NumRounds) { PlayButton.Show(); Deal(); EmitSignal(SignalName.RoundStart, Round); }
+			});
 	}
 
+	// Called by the Round setter
 	private void TriggerGameEnd() {
 		if (Engine.IsEditorHint()) return;
 
 		PlayButton.Hide();
 
-		DialogueManager
-			.TryRun($"{_suitorId}__pre_ending")
+		// Trigger the pre ending node if it exists (the tutorial uses this to run the profile explanation, so the UI can't be hidden yet).
+		// Once it is finished (or if it didn't exist) then hide the UI and trigger the correct ending dialogue.
+		// Once that is finished, emit the game end signal.
+		DialogueManager.TryRun($"{_suitorId}__pre_ending")
 			.AndThen(() => {
 				AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide();
 				DialogueManager
@@ -153,6 +176,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 			});
 	}
 
+	// Deal up to each HandContainer's hand size, drawing from the working decks. Automatically handles tweens to animate them flying in from offscreen.
 	private void Deal() {
 		if (Engine.IsEditorHint()) return;
 
@@ -175,6 +199,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		DealToHand(TopicHand, TopicHandSize, _topicDeckWorking, new Vector2(500f, 100f), 30f);
 	}
 
+	// Equivalent of Deal, but deterministic and instant, for display in the editor
 	private void EditorUpdateHands() {
 		if (!Engine.IsEditorHint()) return;
 
