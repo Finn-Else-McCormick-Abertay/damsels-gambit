@@ -107,6 +107,7 @@ text = "Window Mode"
 [node name="OptionButton" type="OptionButton" parent="TabContainer/Graphics/VBoxContainer/WindowDropdown"]
 custom_minimum_size = Vector2(256, 64)
 layout_mode = 2
+mouse_default_cursor_shape = 2
 allow_reselect = true
 
 [node name="ResolutionDropdown" type="HBoxContainer" parent="TabContainer/Graphics/VBoxContainer"]
@@ -123,6 +124,7 @@ text = "Resolution"
 [node name="OptionButton" type="OptionButton" parent="TabContainer/Graphics/VBoxContainer/ResolutionDropdown"]
 custom_minimum_size = Vector2(256, 64)
 layout_mode = 2
+mouse_default_cursor_shape = 2
 allow_reselect = true
 
 [node name="Controls" type="Control" parent="TabContainer"]
@@ -173,6 +175,7 @@ text = "Font Selection"
 [node name="OptionButton2" type="OptionButton" parent="TabContainer/Accessibility/VBoxContainer/Font Selection"]
 custom_minimum_size = Vector2(256, 64)
 layout_mode = 2
+mouse_default_cursor_shape = 2
 allow_reselect = true
 
 [node name="ExitButton" type="Button" parent="."]
@@ -189,6 +192,7 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 focus_neighbor_left = NodePath("../SaveButton")
 focus_neighbor_top = NodePath("../TabContainer")
+mouse_default_cursor_shape = 2
 text = "Exit"
 
 [node name="SaveButton" type="Button" parent="."]
@@ -205,5 +209,6 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 focus_neighbor_top = NodePath("../TabContainer")
 focus_neighbor_right = NodePath("../ExitButton")
+mouse_default_cursor_shape = 2
 theme = ExtResource("2_k810m")
 text = "Save"

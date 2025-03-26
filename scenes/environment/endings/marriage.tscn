@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b72pm8ar4hme5"]
 
-[ext_resource type="Texture2D" uid="uid://dupffgcr2tla4" path="res://assets/environment/endings/Bad_Ending_1.png" id="1_mfxpy"]
+[ext_resource type="Texture2D" uid="uid://u26nipulqexe" path="res://assets/environment/endings/Bad Ending (Wedding) Fin.png" id="1_4khuq"]
 
 [node name="Marriage" type="CanvasLayer"]
 layer = 5
@@ -9,4 +9,4 @@ follow_viewport_enabled = true
 [node name="MarriageEnding" type="Sprite2D" parent="."]
 position = Vector2(536, 320)
 scale = Vector2(0.335648, 0.335648)
-texture = ExtResource("1_mfxpy")
+texture = ExtResource("1_4khuq")
