@@ -40,6 +40,9 @@ public sealed partial class GameManager : Node
 		_notebookLayerScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/notebook/notebook_layer.tscn"),
 		_mainMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/main/main_menu.tscn"),
 		_pauseMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/pause_menu.tscn");
+	
+	private static readonly Texture2D
+		_cursorPointing = ResourceLoader.Load<Texture2D>("res://assets/ui/cursor/cursor_pointing_hand.png");
 
 	public override void _EnterTree() {
 		if (Instance is not null) throw AutoloadException.For(this);
@@ -49,6 +52,8 @@ public sealed partial class GameManager : Node
 	private void OnTreeReady() {
 		RenderingServer.SetDefaultClearColor(Colors.Black);
 		GetTree().Connect(SceneTree.SignalName.NodeAdded, Callable.From((Node node) => { if (node is PopupMenu popup) { popup.TransparentBg = true; } }));
+
+		Input.SetCustomMouseCursor(_cursorPointing, Input.CursorShape.PointingHand);
 
 		var gameLayer = AddLayer("game", 20);
 		var menuLayer = AddLayer("menu", 25);
