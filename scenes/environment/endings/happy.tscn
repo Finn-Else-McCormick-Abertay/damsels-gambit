@@ -4,9 +4,13 @@
 
 [node name="Happy" type="CanvasLayer"]
 layer = 5
-follow_viewport_enabled = true
 
-[node name="GoodEndingFin" type="Sprite2D" parent="."]
-position = Vector2(576, 323)
-scale = Vector2(0.318518, 0.318518)
+[node name="TextureRect" type="TextureRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 texture = ExtResource("2_hvwgl")
+expand_mode = 5
+stretch_mode = 6
