@@ -44,7 +44,12 @@ static class NodeExtensions
     /// </summary>
     public static void AddOwnedChild(this Node self, Node child, bool force = false) {
         if (force && child.GetParent() is Node parent) parent.RemoveChild(child);
-        self.AddChild(child); child.Owner = Engine.IsEditorHint() ? EditorInterface.Singleton.GetEditedSceneRoot() : self;
+        self.AddChild(child);
+#if TOOLS
+        child.Owner = Engine.IsEditorHint() ? EditorInterface.Singleton.GetEditedSceneRoot() : self;
+#else
+        child.Owner = self;
+#endif
     }
 
     /// <summary> Returns all direct internal children of this node. </summary>
