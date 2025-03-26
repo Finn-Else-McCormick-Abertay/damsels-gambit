@@ -31,10 +31,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Profile" parent="Root" instance=ExtResource("7_43gqe")]
+[node name="PauseMenu" parent="Root" instance=ExtResource("3_bl6mr")]
 layout_mode = 1
 
-[node name="PauseMenu" parent="Root" instance=ExtResource("3_bl6mr")]
+[node name="Profile" parent="Root" instance=ExtResource("7_43gqe")]
 layout_mode = 1
 
 [node name="ViewportLayerContainer" type="Control" parent="Root"]

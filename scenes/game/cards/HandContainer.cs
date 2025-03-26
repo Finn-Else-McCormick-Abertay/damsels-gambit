@@ -62,10 +62,7 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
         InputManager.Actions.Accept.InnerObject.Connect(GUIDEAction.SignalName.Triggered, OnAccept);
     }
 
-    public override void _EnterTree() {
-        this.TryConnect(Node.SignalName.ChildEnteredTree, MethodName.OnChildEnteredTree);
-        this.TryConnect(Node.SignalName.ChildExitingTree, MethodName.OnChildEnteredTree);
-    }
+    public override void _EnterTree() => this.TryConnectAll((Node.SignalName.ChildEnteredTree, this, MethodName.OnChildEnteredTree),(Node.SignalName.ChildExitingTree, this, MethodName.OnChildExitingTree));
     private void OnChildEnteredTree(Node child) {
         if (!Engine.IsEditorHint()) {
             child.TryConnectAll(

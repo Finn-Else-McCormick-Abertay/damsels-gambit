@@ -72,8 +72,8 @@ public sealed partial class InputManager : Node
 			foreach (var (signal, action) in Instance._popups[popup]) popup.Connect(signal, action);
 		};
 		GetTree().NodeRemoved += static node => {
-			if (node is not Popup popup || Instance._popups.ContainsKey(popup)) return;
-			foreach (var (signal, action) in Instance._popups[popup]) popup.Disconnect(signal, action);
+			if (node is not Popup popup || !Instance._popups.TryGetValue(popup, out var signals)) return;
+			foreach (var (signal, action) in signals) popup.Disconnect(signal, action);
 			Instance._popups.Remove(popup);
 		};
 	}

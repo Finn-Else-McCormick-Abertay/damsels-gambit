@@ -39,16 +39,16 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 	public Notebook.ProfilePage ProfilePage {
 		get; private set {
 			ProfilePage?.ProfileButton?.TryDisconnectAll(
-				(Control.SignalName.FocusEntered, OnFocus),
-				(Control.SignalName.FocusExited, OnUnfocus),
+				(Control.SignalName.MouseEntered, OnFocus), (Control.SignalName.MouseExited, OnUnfocus),
+				(Control.SignalName.FocusEntered, OnFocus), (Control.SignalName.FocusExited, OnUnfocus),
 				(BaseButton.SignalName.Pressed, ToggleOpen)
 			);
 			field = value;
 			ProfilePage?.OnReady(page => {
 				UpdateDialogueViewNode();
 				page.ProfileButton?.ConnectAll(
-					(Control.SignalName.FocusEntered, OnFocus),
-					(Control.SignalName.FocusExited, OnUnfocus),
+					(Control.SignalName.MouseEntered, OnFocus), (Control.SignalName.MouseExited, OnUnfocus),
+					(Control.SignalName.FocusEntered, OnFocus), (Control.SignalName.FocusExited, OnUnfocus),
 					(BaseButton.SignalName.Pressed, ToggleOpen)
 				);
 			});
@@ -81,10 +81,14 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 
 		Root?.OnReady(() => { _moveTween?.Kill(); _moveTween = CreateTween(); _moveTween.TweenProperty(Root, "position", position, duration); });
 		CoverPivot?.OnReady(() => { _rotateTween?.Kill(); _rotateTween = CreateTween(); _rotateTween.TweenProperty(CoverPivot, "rotation:y", angle, duration); });
+
+		ProfilePage?.OnReady(() => ProfilePage.FadeShadows(newState switch { AnimationState.Open => false, _ => true }, duration));
 	}
 
 	private void RestoreAnimationState() {
 		if (!IsNodeReady()) return;
+		
+		ProfilePage?.SetShadows(State switch { AnimationState.Open => false, _ => true });
 		
 		var position = State switch { AnimationState.Open => OpenOffset, AnimationState.Highlighted => HighlightOffset, AnimationState.Closed => ClosedOffset };
 		var angle = State switch { AnimationState.Open => OpenCoverAngle, AnimationState.Highlighted => HighlightCoverAngle, AnimationState.Closed => ClosedCoverAngle };
@@ -114,6 +118,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 	public override void _ExitTree() {
 		_moveTween?.Kill(); _moveTween = null;
 		_rotateTween?.Kill(); _rotateTween = null;
+		if (Engine.IsEditorHint()) { Root = null; ProfilePage = null; ProfileViewport = null; CoverPivot = null; }
 	}
 	
     public override void _ValidateProperty(Godot.Collections.Dictionary prop) {
