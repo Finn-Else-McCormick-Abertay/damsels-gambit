@@ -1,0 +1,14 @@
+[remap]
+
+importer="yarnscript"
+type="Resource"
+uid="uid://ccuel8uj4f70u"
+path="res://.godot/imported/tutorial_cutscenes.yarn-9366cd149a5cfb51b965515edd9316cd.tres"
+
+[deps]
+
+source_file="res://assets/dialogue/lady_in_waiting/tutorial_cutscenes.yarn"
+dest_files=["res://.godot/imported/tutorial_cutscenes.yarn-9366cd149a5cfb51b965515edd9316cd.tres"]
+
+[params]
+

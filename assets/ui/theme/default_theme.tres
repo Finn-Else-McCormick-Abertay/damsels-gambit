@@ -1,9 +1,9 @@
-[gd_resource type="Theme" load_steps=19 format=3 uid="uid://bf1esp424fk84"]
+[gd_resource type="Theme" load_steps=21 format=3 uid="uid://bf1esp424fk84"]
 
 [ext_resource type="Texture2D" uid="uid://bldlvyy7r2k20" path="res://assets/ui/buttons/button_disabled.png" id="1_cw5gu"]
-[ext_resource type="Script" uid="uid://bgveruq6sb3li" path="res://scenes/ui/resources/StyleBoxScaledTexture.cs" id="2_0sphh"]
+[ext_resource type="Script" uid="uid://bgveruq6sb3li" path="res://util/resources/StyleBoxScaledTexture.cs" id="2_0sphh"]
 [ext_resource type="Texture2D" uid="uid://d8f3oiuwqyr8" path="res://assets/ui/buttons/button_hovered.png" id="3_h1lax"]
-[ext_resource type="Texture2D" uid="uid://ceeqqca5h4jr" path="res://assets/ui/buttons/button_focused.png" id="3_htmxt"]
+[ext_resource type="Texture2D" uid="uid://cyto35hwnqmhb" path="res://assets/ui/buttons/focused_state_button.png" id="3_tb5ir"]
 [ext_resource type="Texture2D" uid="uid://d4epgui5btlvd" path="res://assets/ui/buttons/button_normal.png" id="4_xnbey"]
 [ext_resource type="Texture2D" uid="uid://cpu0tegqhpu8o" path="res://assets/ui/buttons/button_pressed.png" id="5_xefd2"]
 [ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_ui_dynamic_font.tres" id="6_gfc0t"]
@@ -41,8 +41,8 @@ content_margin_top = 28.0
 content_margin_right = 24.0
 content_margin_bottom = 28.0
 script = ExtResource("2_0sphh")
-Texture = ExtResource("3_htmxt")
-Scale = 0.06
+Texture = ExtResource("3_tb5ir")
+Scale = 0.055
 DrawCenter = false
 TextureMarginLeft = 750
 TextureMarginTop = 670
@@ -153,6 +153,15 @@ corner_radius_bottom_left = 3
 color = Color(0.411765, 0.117647, 0.2, 1)
 thickness = 2
 
+[sub_resource type="FontVariation" id="FontVariation_tb5ir"]
+base_font = ExtResource("6_gfc0t")
+variation_embolden = 0.3
+
+[sub_resource type="FontVariation" id="FontVariation_0acjx"]
+base_font = ExtResource("6_gfc0t")
+variation_embolden = 0.3
+variation_transform = Transform2D(1, 0.19, 0, 1, 0, 0)
+
 [sub_resource type="FontVariation" id="FontVariation_ejujc"]
 base_font = ExtResource("6_gfc0t")
 variation_transform = Transform2D(1, 0.19, 0, 1, 0, 0)
@@ -194,5 +203,7 @@ PopupMenu/fonts/font = ExtResource("6_gfc0t")
 PopupMenu/styles/hover = SubResource("StyleBoxFlat_81gfx")
 PopupMenu/styles/panel = SubResource("StyleBoxFlat_4uxkm")
 PopupMenu/styles/separator = SubResource("StyleBoxLine_rd3vs")
+RichTextLabel/fonts/bold_font = SubResource("FontVariation_tb5ir")
+RichTextLabel/fonts/bold_italics_font = SubResource("FontVariation_0acjx")
 RichTextLabel/fonts/italics_font = SubResource("FontVariation_ejujc")
 RichTextLabel/fonts/mono_font = ExtResource("9_tb5ir")

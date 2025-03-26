@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3 uid="uid://csigl75jsygoi"]
+
+[ext_resource type="PackedScene" uid="uid://dipd7bv4d85ws" path="res://scenes/game/card_game.tscn" id="1_h8d8q"]
+[ext_resource type="Script" uid="uid://ctuqjanuymcai" path="res://scenes/dates/TutorialDate.cs" id="1_nn02b"]
+
+[node name="TutorialDate" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("1_nn02b")
+
+[node name="CardGame" parent="." instance=ExtResource("1_h8d8q")]
+layout_mode = 1
+SuitorName = "Lady in Waiting"
+NumRounds = 2
+TopicDeck = {
+"topic/animals": 2,
+"topic/children": 2,
+"topic/witchcraft": 2
+}
+ActionDeck = {
+"action/compliment": 2,
+"action/question": 1,
+"action/secret": 2
+}
+NoRepeatsInHand = true

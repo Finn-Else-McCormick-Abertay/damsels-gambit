@@ -1,0 +1,150 @@
+[gd_scene load_steps=15 format=3 uid="uid://c82q6rdj5f5ix"]
+
+[ext_resource type="Script" uid="uid://bxpg6bc10uwtc" path="res://scenes/menu/main/MainMenu.cs" id="1_ly6k8"]
+[ext_resource type="Texture2D" uid="uid://2cbl24t405i5" path="res://assets/ui/panels/Paper texture.png" id="1_mhvoi"]
+[ext_resource type="Texture2D" uid="uid://bkgkbvf4p5gh0" path="res://assets/ui/buttons/exit_blue.png" id="3_t0cfi"]
+[ext_resource type="Texture2D" uid="uid://c3v23lslssnol" path="res://assets/ui/panels/play_pic.png" id="4_juol1"]
+[ext_resource type="Texture2D" uid="uid://dgrr65og3fkig" path="res://assets/ui/buttons/exit_blue_pressed.png" id="4_wup3t"]
+[ext_resource type="Texture2D" uid="uid://bchk1ii6i201t" path="res://assets/ui/buttons/settings_blue.png" id="5_vu7x7"]
+[ext_resource type="PackedScene" uid="uid://cl108jysyilp" path="res://scenes/menu/settings/settings_menu.tscn" id="6_f1uj7"]
+[ext_resource type="Texture2D" uid="uid://dbeqdreuv87xm" path="res://assets/ui/buttons/settings_blue_pressed.png" id="6_p1i6k"]
+[ext_resource type="Texture2D" uid="uid://bcvwngssmfhiw" path="res://assets/ui/buttons/focused_state_main_menu.png" id="7_37fpn"]
+[ext_resource type="Texture2D" uid="uid://dxytanx1fosx4" path="res://assets/ui/buttons/play_blue.png" id="7_pfbq2"]
+[ext_resource type="Texture2D" uid="uid://bdvihifi6tym2" path="res://assets/ui/panels/settings_pic.png" id="8_3ve8a"]
+[ext_resource type="Texture2D" uid="uid://ck4yh7nnlftlr" path="res://assets/ui/buttons/play_blue_pressed.png" id="8_rvobj"]
+[ext_resource type="Texture2D" uid="uid://cotgccjpt6hd6" path="res://assets/ui/panels/exit_pic.png" id="11_a7lqt"]
+
+[sub_resource type="Theme" id="Theme_gcq7h"]
+VBoxContainer/constants/separation = 10
+
+[node name="MainMenu" type="Control" node_paths=PackedStringArray("StartButton", "SettingsButton", "ExitButton", "ButtonRoot")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_gcq7h")
+script = ExtResource("1_ly6k8")
+SettingsMenuScene = ExtResource("6_f1uj7")
+StartButton = NodePath("HBoxContainer/VBoxContainer/Start")
+SettingsButton = NodePath("HBoxContainer/VBoxContainer2/Settings")
+ExitButton = NodePath("HBoxContainer/VBoxContainer3/Exit")
+ButtonRoot = NodePath("HBoxContainer")
+
+[node name="Background" type="NinePatchRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_mhvoi")
+region_rect = Rect2(82.6887, 0, 1837.31, 1080)
+patch_margin_top = 74
+patch_margin_right = 77
+patch_margin_bottom = 60
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+clip_contents = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.091
+anchor_right = 0.91
+anchor_bottom = 1.0
+offset_left = 0.167992
+offset_top = 51.0
+offset_right = -0.320068
+offset_bottom = -41.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_stretch_ratio = 20.0
+alignment = 1
+metadata/_edit_group_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("4_juol1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Start" type="TextureButton" parent="HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 105)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("7_pfbq2")
+texture_pressed = ExtResource("8_rvobj")
+texture_hover = ExtResource("8_rvobj")
+texture_focused = ExtResource("7_37fpn")
+ignore_texture_size = true
+stretch_mode = 5
+metadata/_edit_use_anchors_ = true
+
+[node name="Padding" type="Control" parent="HBoxContainer/VBoxContainer"]
+editor_description = "If I don't put a padding node at the bottom, the bottom edge of the button texture gets noticably cut off at certain screen resolutions"
+layout_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 2
+
+[node name="TextureRect2" type="TextureRect" parent="HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("8_3ve8a")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Settings" type="TextureButton" parent="HBoxContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(0, 105)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("5_vu7x7")
+texture_pressed = ExtResource("6_p1i6k")
+texture_hover = ExtResource("6_p1i6k")
+texture_focused = ExtResource("7_37fpn")
+ignore_texture_size = true
+stretch_mode = 5
+metadata/_edit_use_anchors_ = true
+
+[node name="Padding" type="Control" parent="HBoxContainer/VBoxContainer2"]
+editor_description = "If I don't put a padding node at the bottom, the bottom edge of the button texture gets noticably cut off at certain screen resolutions"
+layout_mode = 2
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 2
+
+[node name="TextureRect3" type="TextureRect" parent="HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("11_a7lqt")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Exit" type="TextureButton" parent="HBoxContainer/VBoxContainer3"]
+custom_minimum_size = Vector2(0, 105)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("3_t0cfi")
+texture_pressed = ExtResource("4_wup3t")
+texture_hover = ExtResource("4_wup3t")
+texture_focused = ExtResource("7_37fpn")
+ignore_texture_size = true
+stretch_mode = 5
+metadata/_edit_use_anchors_ = true
+
+[node name="Padding" type="Control" parent="HBoxContainer/VBoxContainer3"]
+editor_description = "If I don't put a padding node at the bottom, the bottom edge of the button texture gets noticably cut off at certain screen resolutions"
+layout_mode = 2

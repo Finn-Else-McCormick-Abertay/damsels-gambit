@@ -1,0 +1,114 @@
+[gd_scene load_steps=16 format=3 uid="uid://bm5y6q0uo0hxy"]
+
+[ext_resource type="FontFile" uid="uid://cg4rbsp3717lg" path="res://assets/fonts/monaspace/MonaspaceNeon-SemiBold.otf" id="1_fjdct"]
+[ext_resource type="Script" uid="uid://ommop7xsqge2" path="res://scenes/console/ui/ConsoleWindow.cs" id="1_gcome"]
+[ext_resource type="FontFile" uid="uid://dlmf4yccm7huo" path="res://assets/fonts/monaspace/MonaspaceNeon-ExtraLight.otf" id="1_nm2kb"]
+[ext_resource type="FontFile" uid="uid://8tn1h46fobrd" path="res://assets/fonts/monaspace/MonaspaceNeon-Light.otf" id="1_qi8tp"]
+[ext_resource type="FontFile" uid="uid://bmqsfylmyhpa7" path="res://assets/fonts/monaspace/MonaspaceNeon-SemiBoldItalic.otf" id="2_0cliw"]
+[ext_resource type="FontFile" uid="uid://geqwvgugqsyy" path="res://assets/fonts/monaspace/MonaspaceNeon-Italic.otf" id="3_s72dg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8dvcl"]
+bg_color = Color(0.19, 0.19, 0.19, 0.843137)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qjeu0"]
+content_margin_left = 5.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
+bg_color = Color(0.151276, 0.151276, 0.151276, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m8bbi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r0jva"]
+content_margin_left = 5.0
+content_margin_right = 5.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_g6h7h"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uetvo"]
+content_margin_left = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 3.0
+draw_center = false
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1ufmj"]
+
+[sub_resource type="Theme" id="Theme_yl2s3"]
+default_font = ExtResource("1_qi8tp")
+default_font_size = 18
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_8dvcl")
+PopupMenu/fonts/font = ExtResource("1_nm2kb")
+PopupMenu/styles/panel = SubResource("StyleBoxFlat_qjeu0")
+RichTextLabel/fonts/bold_font = ExtResource("1_fjdct")
+RichTextLabel/fonts/bold_italics_font = ExtResource("2_0cliw")
+RichTextLabel/fonts/italics_font = ExtResource("3_s72dg")
+RichTextLabel/styles/focus = SubResource("StyleBoxEmpty_m8bbi")
+RichTextLabel/styles/normal = SubResource("StyleBoxEmpty_r0jva")
+TextEdit/colors/font_readonly_color = Color(0.88, 0.88, 0.88, 1)
+TextEdit/styles/focus = SubResource("StyleBoxEmpty_g6h7h")
+TextEdit/styles/normal = SubResource("StyleBoxFlat_uetvo")
+TextEdit/styles/read_only = SubResource("StyleBoxEmpty_1ufmj")
+TextEditAutofill/base_type = &"TextEdit"
+TextEditAutofill/colors/font_readonly_color = Color(0.699653, 0.699653, 0.699653, 0.619608)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dapig"]
+content_margin_left = 9.0
+content_margin_right = 5.0
+
+[node name="ConsoleWindow" type="PanelContainer" node_paths=PackedStringArray("OutputLabel", "TextEdit", "Autofill")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_yl2s3")
+script = ExtResource("1_gcome")
+OutputLabel = NodePath("VBoxContainer/RichTextLabel")
+TextEdit = NodePath("VBoxContainer/TextEdit")
+Autofill = NodePath("VBoxContainer/TextEdit/AutoFill")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 2
+bbcode_enabled = true
+text = "Nondescript message
+Error: <<Err msg>> -- line 19
+Warning: No such command 'lmao'"
+context_menu_enabled = true
+selection_enabled = true
+
+[node name="TextEdit" type="TextEdit" parent="VBoxContainer"]
+layout_mode = 2
+text = "scene switch ma"
+deselect_on_focus_loss_enabled = false
+wrap_mode = 1
+scroll_fit_content_height = true
+caret_blink = true
+draw_tabs = true
+
+[node name="AutoFill" type="TextEdit" parent="VBoxContainer/TextEdit"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+mouse_filter = 2
+theme_type_variation = &"TextEditAutofill"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_dapig")
+text = "         tch main.tscn"
+editable = false
+context_menu_enabled = false
+shortcut_keys_enabled = false
+selecting_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+virtual_keyboard_enabled = false
+wrap_mode = 1
+scroll_fit_content_height = true
+caret_blink = true

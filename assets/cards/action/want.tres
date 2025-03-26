@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="CardInfo" load_steps=2 format=3 uid="uid://dtf32kia1onjx"]
+
+[ext_resource type="Script" uid="uid://i6moy7lt0yef" path="res://scenes/game/cards/CardInfo.cs" id="1_wdhpj"]
+
+[resource]
+script = ExtResource("1_wdhpj")
+DisplayName = "I Want..."
+Score = ""
+metadata/_custom_type_script = "uid://i6moy7lt0yef"

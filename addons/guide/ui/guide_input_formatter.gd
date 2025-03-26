@@ -66,9 +66,20 @@ static func _ensure_readiness():
 	_is_ready = true
 
 
-static func _cleanup():
+## This will clean up the rendering infrastructure used for generating 
+## icons. Note that in a normal game you will have no need to call this
+## as the infrastructure is needed throughout the run of your game.
+## It might be useful in tests though, to get rid of spurious warnings
+## about orphaned nodes.
+static func cleanup():
 	_is_ready = false
+		
+	# free all the nodes to avoid memory leaks
+	for renderer in _icon_renderers:
+		renderer.queue_free()
+		
 	_icon_renderers.clear()
+	
 	_text_providers.clear()
 	if is_instance_valid(_icon_maker):
 		_icon_maker.queue_free()
@@ -77,7 +88,6 @@ static func _cleanup():
 func _init(icon_size:int = 32, resolver:Callable = func(action) -> GUIDEActionMapping: return null ):
 	_icon_size = icon_size
 	_action_resolver = resolver
-	_ensure_readiness()
 
 
 ## Adds an icon renderer for rendering icons.
@@ -148,6 +158,7 @@ func input_as_text(input:GUIDEInput, materialize_actions:bool = true) -> String:
 
 ## Renders materialized input as text.
 func _materialized_as_text(input:MaterializedInput) -> String:
+	_ensure_readiness()
 	if input is MaterializedSimpleInput:
 		var text:String = ""
 		for provider in _text_providers:
@@ -172,6 +183,7 @@ func _materialized_as_text(input:MaterializedInput) -> String:
 			
 ## Renders materialized input as rich text.
 func _materialized_as_richtext_async(input:MaterializedInput) -> String:
+	_ensure_readiness()	
 	if input is MaterializedSimpleInput:
 		var icon:Texture2D = null
 		for renderer in _icon_renderers:

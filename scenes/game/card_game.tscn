@@ -1,0 +1,191 @@
+[gd_scene load_steps=15 format=3 uid="uid://dipd7bv4d85ws"]
+
+[ext_resource type="Script" uid="uid://fhn7dbryyxai" path="res://scenes/game/CardGameController.cs" id="1_4k8rw"]
+[ext_resource type="Theme" uid="uid://jf72vigx3i2b" path="res://assets/ui/theme/card_theme.tres" id="1_eci5x"]
+[ext_resource type="Theme" uid="uid://dhax3sfwm6isl" path="res://assets/ui/theme/affection_meter_theme.tres" id="2_ko4o6"]
+[ext_resource type="Script" uid="uid://dbwnt4443aqcc" path="res://scenes/game/AffectionMeter.cs" id="4_dw2x6"]
+[ext_resource type="Script" uid="uid://cq1ndckdbfugt" path="res://scenes/game/cards/HandContainer.cs" id="4_xg83y"]
+[ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/theme/default_theme.tres" id="6_7wss3"]
+[ext_resource type="PackedScene" uid="uid://c8warv5k2winh" path="res://scenes/game/round_meter/round_meter.tscn" id="8_oypvw"]
+
+[sub_resource type="Gradient" id="Gradient_xf1xp"]
+offsets = PackedFloat32Array(0.171141, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_sfysy"]
+gradient = SubResource("Gradient_xf1xp")
+use_hdr = true
+fill = 1
+fill_from = Vector2(0.495726, 0.316239)
+fill_to = Vector2(-1.25, 0)
+
+[sub_resource type="Curve" id="Curve_6espp"]
+_limits = [-50.0, 50.0, 0.0, 1.0]
+_data = [Vector2(0, -16.0156), 0.0, 0.0, 0, 0]
+point_count = 1
+
+[sub_resource type="Curve" id="Curve_2cmp0"]
+_limits = [-50.0, 50.0, 0.0, 1.0]
+_data = [Vector2(0, -24.8256), 0.0, 144.798, 0, 0, Vector2(0.488166, 22.7907), 67.6231, 67.6231, 0, 0, Vector2(1, 38.6628), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_kxdyk"]
+_limits = [-90.0, 90.0, 0.0, 1.0]
+_data = [Vector2(0, -18.3817), 0.0, 0.0, 0, 0, Vector2(0.529586, -7.93526), 56.3441, 56.3441, 0, 0, Vector2(1, -4.01785), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_5nabb"]
+_limits = [-50.0, 50.0, 0.0, 1.0]
+_data = [Vector2(0, 38.6628), 0.0, 0.0, 0, 0, Vector2(0.535503, 20.5233), -41.4268, -41.4268, 0, 0, Vector2(1, -33.1395), -204.372, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_mupma"]
+_limits = [-90.0, 90.0, 0.0, 1.0]
+_data = [Vector2(0, 5.12277), 0.0, 0.0, 0, 0, Vector2(0.502959, 9.04018), 20.9715, 20.9715, 0, 0, Vector2(1, 15.5692), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "RoundMeter", "ActionHand", "TopicHand", "PlayButton")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme = ExtResource("1_eci5x")
+script = ExtResource("1_4k8rw")
+TopicDeck = {
+"topic/animals": 1,
+"topic/art": 1,
+"topic/children": 1,
+"topic/food": 1,
+"topic/hobbies": 1,
+"topic/loyalty": 1,
+"topic/parents": 1,
+"topic/religion": 1,
+"topic/weather": 1,
+"topic/witchcraft": 1
+}
+ActionDeck = {
+"action/give": 2,
+"action/question": 4,
+"action/secret": 2,
+"action/want": 2
+}
+AffectionMeter = NodePath("AffectionMeter")
+RoundMeter = NodePath("RoundMeter")
+ActionHand = NodePath("LeftHandContainer")
+TopicHand = NodePath("RightHandContainer")
+PlayButton = NodePath("PlayHandButton")
+
+[node name="Vignette" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_sfysy")
+
+[node name="AffectionMeter" type="Control" parent="."]
+layout_mode = 1
+anchor_left = 0.163
+anchor_right = 0.163
+anchor_bottom = 0.667
+offset_left = -145.776
+offset_top = 28.0
+offset_right = -125.776
+offset_bottom = -19.216
+grow_vertical = 2
+theme = ExtResource("2_ko4o6")
+script = ExtResource("4_dw2x6")
+LoveThreshold = 4.0
+HateThreshold = -4.0
+
+[node name="LeftHandContainer" type="Container" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.461
+anchor_top = 0.571
+anchor_right = 0.461
+anchor_bottom = 1.0
+offset_left = -429.072
+offset_top = 38.992
+offset_right = -0.0720215
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_neighbor_right = NodePath("../RightHandContainer")
+focus_neighbor_bottom = NodePath("../PlayHandButton")
+script = ExtResource("4_xg83y")
+Alignment = 0
+HandSize = 3
+MaxSelected = -1
+AnimationTimeAdd = 0.3
+AnimationTimeReorder = 0.1
+AnimationTimeHighlight = 0.1
+CurveSeparation = SubResource("Curve_6espp")
+CurveOffset = SubResource("Curve_2cmp0")
+CurveRotation = SubResource("Curve_kxdyk")
+metadata/_edit_group_ = true
+
+[node name="RightHandContainer" type="Container" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.539
+anchor_top = 0.57
+anchor_right = 0.539
+anchor_bottom = 1.0
+offset_left = 0.0719604
+offset_top = 39.64
+offset_right = 408.072
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_neighbor_left = NodePath("../LeftHandContainer")
+focus_neighbor_bottom = NodePath("../PlayHandButton")
+script = ExtResource("4_xg83y")
+Alignment = 2
+HandSize = 3
+MaxSelected = -1
+AnimationTimeAdd = 0.3
+AnimationTimeReorder = 0.1
+AnimationTimeHighlight = 0.1
+CurveSeparation = SubResource("Curve_6espp")
+CurveOffset = SubResource("Curve_5nabb")
+CurveRotation = SubResource("Curve_mupma")
+metadata/_edit_group_ = true
+
+[node name="PlayHandButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.472
+anchor_top = 0.853
+anchor_right = 0.528
+anchor_bottom = 1.0
+offset_left = -52.744
+offset_top = 0.255981
+offset_right = 52.744
+offset_bottom = -14.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_neighbor_left = NodePath("../LeftHandContainer")
+focus_neighbor_top = NodePath("!return")
+focus_neighbor_right = NodePath("../RightHandContainer")
+theme = ExtResource("6_7wss3")
+text = "Play Hand"
+
+[node name="RoundMeter" parent="." instance=ExtResource("8_oypvw")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.077
+anchor_right = 0.5
+anchor_bottom = 0.077
+offset_left = -292.0
+offset_top = 0.103996
+offset_right = 293.0
+offset_bottom = 0.103996
+grow_vertical = 1
+CurrentRound = 2

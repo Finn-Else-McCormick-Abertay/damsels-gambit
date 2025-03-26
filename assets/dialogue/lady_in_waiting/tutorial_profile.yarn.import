@@ -1,0 +1,14 @@
+[remap]
+
+importer="yarnscript"
+type="Resource"
+uid="uid://bmd8hkfgftnjj"
+path="res://.godot/imported/tutorial_profile.yarn-6482b0f691afcb9ac85deb9829266b68.tres"
+
+[deps]
+
+source_file="res://assets/dialogue/lady_in_waiting/tutorial_profile.yarn"
+dest_files=["res://.godot/imported/tutorial_profile.yarn-6482b0f691afcb9ac85deb9829266b68.tres"]
+
+[params]
+

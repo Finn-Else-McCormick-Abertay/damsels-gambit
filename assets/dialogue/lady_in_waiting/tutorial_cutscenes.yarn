@@ -1,0 +1,153 @@
+title: lady_in_waiting__intro
+tags: skippable
+---
+<<scene throne_room>>
+<<hide lady_in_waiting>>
+<<hide queen>>
+<<fade in queen 1>>
+<<wait 1>>
+Queen Helena: My daughter, the time is long overdue for you to be married.
+<<emote queen turn_right>>
+Queen Helena: I have arranged you a date with a suitor tonight. Prince Ráðúlfr is making his way from his kingdom of Frostholm as we speak.
+Queen Helena: Make yourself ready, and try not to disappoint him.
+<<hide_box>>
+<<move queen 300 0 1>>
+<<fade out queen 1>>
+<<wait 1>>
+<<move lady_in_waiting -300 0>>
+<<move lady_in_waiting 300 0 1>>
+<<fade in lady_in_waiting 1>>
+<<wait 1>>
+<<emote lady_in_waiting neutral_mouth_open>>
+Lady in Waiting: Don't worry, Princess, I'm sure you can get out of this.
+<<emote lady_in_waiting neutral>>
+Princess Penelope: How? He's already on his way, my mother's made her mind up.
+<<emote lady_in_waiting explaining_point>>
+Lady in Waiting: [i]You[/i] might not have a choice, but [i]he[/i] does. If you can make sure he doesn't take a liking to you, the wedding won't go ahead.
+<<emote lady_in_waiting sad_look_up>>
+<<after 1.8>>
+<<emote lady_in_waiting neutral_mouth_open>>
+Lady in Waiting: I'll tell you what, we still have time before he arrives. Why don't you practice with me first, just to get the hang of things?
+<<flush_command_queue>>
+<<hide_box>>
+<<emote lady_in_waiting neutral>>
+<<move lady_in_waiting -300 0 1>>
+<<fade out lady_in_waiting 1>>
+<<wait 1>>
+<<scene chamber>>
+<<move lady_in_waiting -300 0 0>>
+<<move lady_in_waiting 300 0 1>>
+<<fade in lady_in_waiting 1>>
+<<wait 1>>
+<<emote lady_in_waiting explaining_point>>
+Lady in Waiting: You can combine an [color=action]Action[/color] card with a [color=topic]Topic[/color] card to start a conversation.
+<<emote lady_in_waiting happy>>
+Lady in Waiting: Come on, let's see what you've got.
+<<after 1.5>>
+<<emote lady_in_waiting neutral>>
+===
+
+title: lady_in_waiting__skip_setup
+---
+<<scene chamber>>
+<<show lady_in_waiting>>
+<<hide queen>>
+===
+
+title: lady_in_waiting__after_score
+---
+<<if !visited("lady_in_waiting__after_score")>>
+    <<emote lady_in_waiting explaining_gesture_left>>
+    Lady in Waiting: Notice the effect that had on your [color=topic]Affection Score[/color].
+    <<emote lady_in_waiting explaining_point>>
+    Lady in Waiting: You'll want to stay neutral. If, at the end of the date, you are in the region marked in [color=love]pink[/color], you will be wed. Cause enough offence to end in the [color=hate]blue[/color] and our kingdoms may end up at war.
+    <<emote lady_in_waiting sad_look_forward_mouth_closed>>
+    Princess Penelope: At [i]war?![/i]
+    <<emote lady_in_waiting sad_look_forward>>
+    Lady in Waiting: These princes can be fickle, I don't know what to tell you.
+    <<emote lady_in_waiting sad_look_down>>
+    <<after 1.5>>
+    <<emote lady_in_waiting neutral>>
+<<endif>>
+===
+
+title: lady_in_waiting__explain_profile
+---
+<<if !visited("lady_in_waiting__explain_profile")>>
+    <<emote lady_in_waiting explaining_gesture_right>>
+    <<profile under>>
+    <<profile open>>
+    <<move lady_in_waiting -200 0 0.28>>
+    Lady in Waiting: Notice the suitor profile over on the right? That'll update to show all the information you've gathered.
+    <<emote lady_in_waiting explaining_point>>
+    Lady in Waiting: Question cards won't affect his feelings as much, but they help you gather information about him, so you can learn to push his buttons.
+    <<profile close>>
+    <<profile over>>
+    <<after 0.08>>
+    <<move lady_in_waiting 200 0 0.28>>
+    <<emote lady_in_waiting neutral>>
+<<endif>>
+===
+
+
+title: lady_in_waiting__explain_frostholm
+---
+Lady in Waiting: TK
+<<pop>>
+===
+
+title: lady_in_waiting__pre_ending
+---
+<<wait 1>>
+<<jump lady_in_waiting__explain_profile>>
+===
+
+title: lady_in_waiting__ending__love
+---
+<<emote lady_in_waiting blush_look_up>>
+Lady in Waiting: That, um, might've been a bit too nice.
+<<emote lady_in_waiting neutral_mouth_open>>
+Lady in Waiting: After all, you don't want him to like you enough to take you as his wife, do you?
+<<push lady_in_waiting__ending__return_point_happy>>
+<<jump lady_in_waiting__explain_frostholm>>
+===
+
+title: lady_in_waiting__ending__neutral
+---
+<<emote lady_in_waiting happy>>
+Lady in Waiting: There, you got the hang of it!
+<<push lady_in_waiting__ending__return_point_neutral>>
+<<jump lady_in_waiting__explain_frostholm>>
+===
+
+title: lady_in_waiting__ending__hate
+---
+<<emote lady_in_waiting sad_look_forward>>
+Lady in Waiting: I get that you don't want him to like you, but you may want to tone it back a bit from that. You don't want to be making enemies of powerful people like him.
+<<push lady_in_waiting__ending__return_point_neutral>>
+<<jump lady_in_waiting__explain_frostholm>>
+===
+
+title: lady_in_waiting__ending__return_point_happy
+---
+Lady in Waiting: FILLER LINE WHY DOES THIS GET SKIPPED? IDK. NEED TO FIX
+<<emote lady_in_waiting happy>>
+Lady in Waiting: Good luck, Princess. I'll always be here to support you.
+<<hide_box>>
+<<fade out lady_in_waiting 1>>
+<<wait 1>>
+<<fade out chamber 1.5>>
+<<wait 1.5>>
+===
+
+title: lady_in_waiting__ending__return_point_neutral
+---
+Lady in Waiting: FILLER LINE WHY DOES THIS GET SKIPPED? IDK. NEED TO FIX
+<<emote lady_in_waiting neutral_mouth_open>>
+Lady in Waiting: Good luck, Princess. I'll always be here to support you.
+<<hide_box>>
+<<fade out lady_in_waiting 1>>
+<<wait 1>>
+<<fade out chamber 1.5>>
+<<wait 1.5>>
+===

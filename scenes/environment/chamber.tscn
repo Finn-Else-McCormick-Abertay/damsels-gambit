@@ -1,19 +1,19 @@
-[gd_scene load_steps=14 format=3 uid="uid://bbvpf523ln0aj"]
+[gd_scene load_steps=16 format=3 uid="uid://bbvpf523ln0aj"]
 
 [ext_resource type="Texture2D" uid="uid://lioraxfo5wox" path="res://assets/characters/lady_in_waiting/neutral.png" id="2_4vov1"]
-[ext_resource type="Script" uid="uid://c5yvgj7xv643o" path="res://scenes/character/CharacterDisplay.cs" id="3_fascp"]
+[ext_resource type="Script" uid="uid://c5yvgj7xv643o" path="res://scenes/dialogue/environment/CharacterDisplay.cs" id="4_767y1"]
 [ext_resource type="Texture2D" uid="uid://r3pis33f1edo" path="res://assets/environment/fireplace_background.png" id="4_gprf7"]
 [ext_resource type="Texture2D" uid="uid://845c6vjf6v1i" path="res://assets/characters/queen/neutral.png" id="5_32wc5"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_a5dej"]
 blend_mode = 1
 
-[sub_resource type="Gradient" id="Gradient_beah4"]
-offsets = PackedFloat32Array(0, 0.283439, 1)
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 0.552267, 0.38776, 0.528297, 1)
+[sub_resource type="Gradient" id="Gradient_767y1"]
+offsets = PackedFloat32Array(0, 0.399329, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 0.55, 0.385, 0.52525, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_32mfv"]
-gradient = SubResource("Gradient_beah4")
+gradient = SubResource("Gradient_767y1")
 fill = 1
 fill_from = Vector2(0.504274, 0.679487)
 fill_to = Vector2(0.230769, 0.350427)
@@ -21,29 +21,36 @@ fill_to = Vector2(0.230769, 0.350427)
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_hmojl"]
 blend_mode = 3
 
+[sub_resource type="Gradient" id="Gradient_du7ql"]
+offsets = PackedFloat32Array(0, 0.283439, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 0.552267, 0.38776, 0.528297, 1)
+
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_vliwc"]
-gradient = SubResource("Gradient_beah4")
+gradient = SubResource("Gradient_du7ql")
 fill = 1
-fill_from = Vector2(0.58547, 0.713675)
-fill_to = Vector2(0.217949, 0.252137)
+fill_from = Vector2(0.559829, 0.730769)
+fill_to = Vector2(0.24359, 0.333333)
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_u4yao"]
 blend_mode = 1
 
-[sub_resource type="Gradient" id="Gradient_46k02"]
+[sub_resource type="Gradient" id="Gradient_hieft"]
 colors = PackedColorArray(0.961342, 0.67336, 0.52894, 1, 0, 0, 0, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_6sx44"]
-gradient = SubResource("Gradient_46k02")
-fill = 1
-fill_from = Vector2(0.910256, 0.641026)
-fill_to = Vector2(0.371795, 0.551282)
-
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_bbqmg"]
-gradient = SubResource("Gradient_46k02")
+gradient = SubResource("Gradient_hieft")
 fill = 1
 fill_from = Vector2(0.106838, 0.452991)
 fill_to = Vector2(0.606838, 0.320513)
+
+[sub_resource type="Gradient" id="Gradient_4q1hs"]
+colors = PackedColorArray(0.961342, 0.67336, 0.52894, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_6sx44"]
+gradient = SubResource("Gradient_4q1hs")
+fill = 1
+fill_from = Vector2(0.910256, 0.641026)
+fill_to = Vector2(0.371795, 0.551282)
 
 [node name="Chamber" type="Node"]
 
@@ -52,8 +59,8 @@ layer = -1
 follow_viewport_enabled = true
 
 [node name="FireplaceBackground" type="Sprite2D" parent="Background"]
-position = Vector2(740.667, 294.938)
-scale = Vector2(0.772106, 0.772107)
+position = Vector2(740.667, 208)
+scale = Vector2(0.842477, 0.842478)
 texture = ExtResource("4_gprf7")
 
 [node name="FirelightGradient" type="Sprite2D" parent="Background"]
@@ -68,37 +75,20 @@ metadata/_edit_lock_ = true
 [node name="ShadowGradient" type="Sprite2D" parent="Background"]
 material = SubResource("CanvasItemMaterial_hmojl")
 position = Vector2(657.001, 354.251)
-scale = Vector2(27.9688, 12.7734)
+scale = Vector2(28.79, 17.243)
 texture = SubResource("GradientTexture2D_vliwc")
 metadata/_edit_lock_ = true
 
 [node name="CharacterLayer" type="CanvasLayer" parent="."]
 follow_viewport_enabled = true
 
-[node name="LadyInWaiting" type="Sprite2D" parent="CharacterLayer"]
-clip_children = 2
-position = Vector2(676, 152)
-scale = Vector2(0.59188, 0.59188)
-texture = ExtResource("2_4vov1")
-offset = Vector2(-113.199, 388.592)
-script = ExtResource("3_fascp")
-CharacterName = &"lady_in_waiting"
-SpriteName = "neutral"
-
-[node name="LightGradient" type="Sprite2D" parent="CharacterLayer/LadyInWaiting"]
-modulate = Color(1, 1, 1, 0.811765)
-material = SubResource("CanvasItemMaterial_u4yao")
-position = Vector2(-45.7428, -75.5447)
-scale = Vector2(19.7092, 20.9437)
-texture = SubResource("GradientTexture2D_6sx44")
-metadata/_edit_lock_ = true
-
 [node name="Queen" type="Sprite2D" parent="CharacterLayer"]
+visible = false
 clip_children = 2
 position = Vector2(904, 416)
 scale = Vector2(0.426402, 0.426402)
 texture = ExtResource("5_32wc5")
-script = ExtResource("3_fascp")
+script = ExtResource("4_767y1")
 CharacterName = &"queen"
 SpriteName = "neutral"
 
@@ -109,6 +99,24 @@ position = Vector2(-1144.46, -168.855)
 scale = Vector2(27.358, 32.418)
 texture = SubResource("GradientTexture2D_bbqmg")
 offset = Vector2(41.4898, 4.62993)
+
+[node name="LadyInWaiting" type="Sprite2D" parent="CharacterLayer"]
+clip_children = 2
+position = Vector2(642, 152)
+scale = Vector2(0.59188, 0.59188)
+texture = ExtResource("2_4vov1")
+offset = Vector2(-113.199, 388.592)
+script = ExtResource("4_767y1")
+CharacterName = &"lady_in_waiting"
+SpriteName = "neutral"
+
+[node name="LightGradient" type="Sprite2D" parent="CharacterLayer/LadyInWaiting"]
+modulate = Color(1, 1, 1, 0.811765)
+material = SubResource("CanvasItemMaterial_u4yao")
+position = Vector2(-70.9604, 175.711)
+scale = Vector2(19.7092, 20.9437)
+texture = SubResource("GradientTexture2D_6sx44")
+metadata/_edit_lock_ = true
 
 [node name="CanvasModulate" type="CanvasModulate" parent="CharacterLayer"]
 color = Color(0.84983, 0.692038, 0.790925, 1)

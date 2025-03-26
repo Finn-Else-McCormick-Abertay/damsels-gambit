@@ -1,0 +1,14 @@
+[remap]
+
+importer="yarnscript"
+type="Resource"
+uid="uid://bhfqpch5d4lkq"
+path="res://.godot/imported/question.yarn-32e6ef7d749351476a00e07ae4b8f5c4.tres"
+
+[deps]
+
+source_file="res://assets/dialogue/frostholm/question.yarn"
+dest_files=["res://.godot/imported/question.yarn-32e6ef7d749351476a00e07ae4b8f5c4.tres"]
+
+[params]
+

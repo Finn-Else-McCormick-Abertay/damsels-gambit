@@ -1,0 +1,103 @@
+[gd_scene load_steps=10 format=3 uid="uid://cs1hro247kwrn"]
+
+[ext_resource type="Texture2D" uid="uid://clj08x647tt2i" path="res://assets/environment/throne_room.png" id="1_ltwxy"]
+[ext_resource type="Texture2D" uid="uid://845c6vjf6v1i" path="res://assets/characters/queen/neutral.png" id="2_tx2im"]
+[ext_resource type="Texture2D" uid="uid://lioraxfo5wox" path="res://assets/characters/lady_in_waiting/neutral.png" id="4_foxbq"]
+[ext_resource type="Script" uid="uid://c5yvgj7xv643o" path="res://scenes/dialogue/environment/CharacterDisplay.cs" id="4_imeel"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_tx2im"]
+blend_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_767y1"]
+offsets = PackedFloat32Array(0, 0.399329, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 0.55, 0.385, 0.52525, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_foxbq"]
+gradient = SubResource("Gradient_767y1")
+fill = 1
+fill_from = Vector2(0.508547, 0.542735)
+fill_to = Vector2(0.512821, 0.162393)
+
+[sub_resource type="Gradient" id="Gradient_imeel"]
+offsets = PackedFloat32Array(0, 0.436242, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 0.55, 0.385, 0.52525, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_gesuy"]
+gradient = SubResource("Gradient_imeel")
+fill = 1
+fill_from = Vector2(0.508547, 0.559829)
+fill_to = Vector2(0.512821, 0.162393)
+
+[node name="ThroneRoom" type="Node"]
+
+[node name="Background" type="CanvasLayer" parent="."]
+layer = -1
+follow_viewport_enabled = true
+
+[node name="ThroneRoom" type="Sprite2D" parent="Background"]
+position = Vector2(576, 352)
+scale = Vector2(0.428, 0.428)
+texture = ExtResource("1_ltwxy")
+metadata/_edit_lock_ = true
+
+[node name="LightGradient" type="Sprite2D" parent="Background"]
+material = SubResource("CanvasItemMaterial_tx2im")
+position = Vector2(152, 72)
+scale = Vector2(12.02, 23.7465)
+texture = SubResource("GradientTexture2D_foxbq")
+metadata/_edit_lock_ = true
+
+[node name="LightGradient2" type="Sprite2D" parent="Background"]
+material = SubResource("CanvasItemMaterial_tx2im")
+position = Vector2(992, 88)
+scale = Vector2(12.02, 23.7465)
+texture = SubResource("GradientTexture2D_foxbq")
+metadata/_edit_lock_ = true
+
+[node name="CanvasModulate" type="CanvasModulate" parent="Background"]
+color = Color(0.533013, 0.463845, 0.605522, 1)
+metadata/_edit_lock_ = true
+
+[node name="CharacterLayer" type="CanvasLayer" parent="."]
+follow_viewport_enabled = true
+
+[node name="CanvasModulate" type="CanvasModulate" parent="CharacterLayer"]
+position = Vector2(768, 504)
+scale = Vector2(0.462958, 0.462958)
+color = Color(0.650354, 0.586927, 0.719691, 1)
+metadata/_edit_lock_ = true
+
+[node name="Queen" type="Sprite2D" parent="CharacterLayer"]
+clip_children = 2
+position = Vector2(769, 486)
+scale = Vector2(0.462958, 0.462958)
+texture = ExtResource("2_tx2im")
+script = ExtResource("4_imeel")
+CharacterName = &"queen"
+SpriteName = "neutral"
+
+[node name="LightGradient2" type="Sprite2D" parent="CharacterLayer/Queen"]
+modulate = Color(1, 1, 1, 0.380392)
+material = SubResource("CanvasItemMaterial_tx2im")
+position = Vector2(276.483, -915.851)
+scale = Vector2(20.2852, 43.6021)
+texture = SubResource("GradientTexture2D_gesuy")
+metadata/_edit_lock_ = true
+
+[node name="LadyInWaiting" type="Sprite2D" parent="CharacterLayer"]
+clip_children = 2
+position = Vector2(520, 140)
+scale = Vector2(0.59188, 0.59188)
+texture = ExtResource("4_foxbq")
+offset = Vector2(-113.199, 388.592)
+script = ExtResource("4_imeel")
+CharacterName = &"lady_in_waiting"
+SpriteName = "neutral"
+
+[node name="LightGradient2" type="Sprite2D" parent="CharacterLayer/LadyInWaiting"]
+modulate = Color(1, 1, 1, 0.380392)
+material = SubResource("CanvasItemMaterial_tx2im")
+position = Vector2(-489.964, -332.838)
+scale = Vector2(20.2852, 43.6021)
+texture = SubResource("GradientTexture2D_gesuy")
+metadata/_edit_lock_ = true

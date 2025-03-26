@@ -1,0 +1,72 @@
+title: frostholm__question_family
+---
+Princess Penelope: So what do you think of the old king and queen, your parents? #theme=princess
+King Ráðúlfr: Hmm.. I've never given it much thought, but who can truly dislike their parents?
+===
+
+title: frostholm__question_food
+---
+Princess Penelope: What's your favourite food? It seems like you have a particular taste. #theme=princess
+King Ráðúlfr: I suppose I've never really been one for sweet things...
+===
+
+title: frostholm__question_animals
+---
+Princess Penelope: Do you have any animal that you favour? #theme=princess
+<<emote frostholm happy_2>>
+King Ráðúlfr: Indeed, I've always been fascinated by wolves, and how majestic they are.
+<<emote frostholm happy_1>>
+<<after 1.5>>
+<<emote frostholm neutral from happy_1>>
+===
+
+title: frostholm__question_art
+---
+Princess Penelope: What's your opinion on art? Do you enjoy it much? #theme=princess
+King Ráðúlfr: Absolutely, I believe art holds significant value. We keep all of our art tightly locked away so no one can steal it.
+===
+
+title: frostholm__question_loyalty
+---
+Princess Penelope: Are you a loyal man? Perhaps looking for loyalty in a wife? #theme=princess
+King Ráðúlfr: It is indeed correct I value loyalty closely to me.
+===
+
+title: frostholm__question_witchcraft
+---
+Princess Penelope: What's your thoughts on all these witches nowadays? #theme=princess
+<<emote frostholm angry>>
+King Ráðúlfr: They should be hunted down, witches have no place here.
+<<emote frostholm neutral>>
+===
+
+title: frostholm__question_religion
+---
+Princess Penelope: Are you religious at all? #theme=princess
+King Ráðúlfr: Very, our country would've collapsed a long time ago if it weren't for our God.
+===
+
+title: frostholm__question_children
+---
+Princess Penelope: Would you ever consider children? #theme=princess
+King Ráðúlfr: Hm I've not given it much thought... But of course, I'm obligated being a king.
+<<emote frostholm sad_1>>
+<<after 1>>
+<<emote frostholm neutral from sad_1>>
+===
+
+title: frostholm__question_weather
+---
+Princess Penelope: It's been pretty cold recently, what's your preferred weather? #theme=princess
+<<emote frostholm happy_2>>
+King Ráðúlfr: Snow, rain, any cold weather reminds me of home.
+<<emote frostholm neutral>>
+===
+
+title: frostholm__question_hobbies
+---
+Princess Penelope: What do you do in spare time, you must tell me... #theme=princess
+<<emote frostholm happy_1>>
+King Ráðúlfr: Actually, I indulge in the sword, a fair bit I would say.
+<<emote frostholm neutral>>
+===

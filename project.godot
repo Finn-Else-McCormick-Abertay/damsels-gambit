@@ -12,20 +12,25 @@ config_version=5
 
 config/name="Damsel's Gambit"
 config/version="0.2.2"
-run/main_scene="res://scenes/main.tscn"
+run/main_scene="uid://c82q6rdj5f5ix"
 config/features=PackedStringArray("4.4", "C#", "Forward Plus")
 boot_splash/bg_color=Color(0.945098, 0.862745, 0.819608, 1)
 boot_splash/image="uid://347p4fnedn1a"
-config/icon="uid://347p4fnedn1a"
+config/icon="uid://c2p02ivr5rqg7"
+
+[audio]
+
+buses/default_bus_layout="res://assets/audio/default_bus_layout.tres"
 
 [autoload]
 
-GameManager="*res://scenes/singleton/GameManager.cs"
-DialogueManager="*res://scenes/singleton/DialogueManager.cs"
+GameManager="*res://scenes/GameManager.cs"
+DialogueManager="*res://scenes/dialogue/DialogueManager.cs"
+EnvironmentManager="*res://scenes/dialogue/EnvironmentManager.cs"
 GUIDE="*res://addons/guide/guide.gd"
-Console="*res://scenes/singleton/Console.cs"
-InputManager="*res://scenes/singleton/InputManager.cs"
-AudioSystem="*res://scenes/AudioSystem.cs"
+Console="*res://scenes/console/Console.cs"
+InputManager="*res://scenes/input/InputManager.cs"
+AudioManager="*res://scenes/AudioManager.cs"
 
 [display]
 

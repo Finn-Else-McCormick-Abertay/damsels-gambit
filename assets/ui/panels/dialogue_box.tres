@@ -1,0 +1,27 @@
+[gd_resource type="StyleBox" script_class="StyleBoxScaledTexture" load_steps=3 format=3 uid="uid://da8adt55nihca"]
+
+[ext_resource type="Texture2D" uid="uid://d00q45ev070vi" path="res://assets/ui/dialogue/dialogue_box.png" id="1_r4rt2"]
+[ext_resource type="Script" uid="uid://bgveruq6sb3li" path="res://util/resources/StyleBoxScaledTexture.cs" id="2_5hl3l"]
+
+[resource]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = 15.0
+content_margin_top = 18.0
+content_margin_right = 18.0
+content_margin_bottom = 20.0
+script = ExtResource("2_5hl3l")
+Texture = ExtResource("1_r4rt2")
+Scale = 0.5
+DrawCenter = true
+TextureMarginLeft = 130
+TextureMarginTop = 106
+TextureMarginRight = 130
+TextureMarginBottom = 106
+ExpandMarginLeft = 44.0
+ExpandMarginTop = 35.0
+ExpandMarginRight = 44.0
+ExpandMarginBottom = 35.0
+AxisStretchHorizontal = 0
+AxisStretchVertical = 0
+ModulateColor = Color(1, 1, 1, 1)

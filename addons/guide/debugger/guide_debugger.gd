@@ -7,10 +7,14 @@ extends MarginContainer
 
 
 func _ready():
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	GUIDE.input_mappings_changed.connect(_update_priorities)
 	_update_priorities()
 
 func _process(delta):
+	if not is_visible_in_tree():
+		return
+		
 	var index:int = 0
 	for mapping in GUIDE._active_action_mappings:
 		var action:GUIDEAction = mapping.action

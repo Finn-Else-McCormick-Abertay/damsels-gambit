@@ -3,3 +3,6 @@
 /android/
 
 /build/
+
+# Mac-specific ignores
+**/.DS_Store

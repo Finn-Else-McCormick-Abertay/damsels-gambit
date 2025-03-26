@@ -9,5 +9,14 @@
     "explorer.fileNesting.patterns": {
         "*": "${capture}.import, ${capture}.uid"
     },
-    "explorer.fileNesting.expand": false
+    "explorer.fileNesting.expand": false,
+    "[yarnspinner]": {
+        "editor.wordWrap": "on",
+        "editor.suggest.preview": true,
+        "editor.acceptSuggestionOnCommitCharacter": false,
+        "editor.suggest.showProperties": true,
+        "editor.suggest.showReferences": true,
+        "editor.suggest.showVariables": true,
+        "editor.suggest.showWords": false
+    }
 }
