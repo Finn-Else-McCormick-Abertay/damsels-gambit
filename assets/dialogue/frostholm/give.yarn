@@ -34,8 +34,8 @@ Princess Penelope: I got this for you...
 title: frostholm__give_witchcraft
 ---
 Princess Penelope: I thought you might like this...
-	-> Voodoo doll!
-		<<score 3>>
+	-> Voodoo doll! <<if knows("witch_opinion")>>
+		<<score -6>>
 	-> Pitchfork. Crafted by yours truly. Perfect for witch hunting! <<if knows("witch_opinion")>>
 		<<score 6>>
 	-> Health Potion! (Frog Potion)
