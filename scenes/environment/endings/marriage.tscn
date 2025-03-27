@@ -4,9 +4,13 @@
 
 [node name="Marriage" type="CanvasLayer"]
 layer = 5
-follow_viewport_enabled = true
 
-[node name="MarriageEnding" type="Sprite2D" parent="."]
-position = Vector2(536, 320)
-scale = Vector2(0.335648, 0.335648)
+[node name="TextureRect" type="TextureRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 texture = ExtResource("1_4khuq")
+expand_mode = 5
+stretch_mode = 6
