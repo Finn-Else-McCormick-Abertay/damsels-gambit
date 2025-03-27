@@ -6,9 +6,10 @@ using System.Collections.Generic;
 
 namespace DamselsGambit.Notebook;
 
+[Tool]
 public partial class ProfilePage : Control
 {
-	[Export] public ProfileDialogueView DialogueView { get; set; }
+	[Export] public Node DialogueView { get; set; }
 
     [Export] public Button PauseButton { get; set { field = value; UpdateShadows(); } }
     [Export] public Button ProfileButton { get; set { field = value; UpdateShadows(); } }
@@ -22,6 +23,7 @@ public partial class ProfilePage : Control
     }
 
     public void FadeShadows(bool visible, double time) {
+        Console.Info($"Fade Shadows to {visible} over {time}s");
         foreach (var shadow in _shadows) {
             // Clean up existing tweens if any
             if (_shadowFadeTweens.TryGetValue(shadow, out var oldTween) && oldTween.IsValid()) oldTween.Kill();

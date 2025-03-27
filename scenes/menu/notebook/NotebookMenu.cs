@@ -1,3 +1,4 @@
+using Bridge;
 using DamselsGambit.Dialogue;
 using DamselsGambit.Util;
 using Godot;
@@ -39,28 +40,34 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 	[ExportSubgroup("Fallback", "Fallback")]
 	[Export] private Control FallbackRoot { get; set { field = value; UpdateLayerReferences(); } }
 	[Export] private Control FallbackProfilePage { get; set { field = value; UpdateLayerReferences(); } }
+	[Export] private Control FallbackPauseMenu { get; set { field = value; UpdateLayerReferences(); } }
 	[Export] private Node3D FallbackCoverPivot { get; set { field = value; UpdateLayerReferences(); } }
 
 	public Control Root { get; private set; }
 
 	public Notebook.ProfilePage ProfilePage {
-		get; private set {
-			ProfilePage?.PauseButton?.TryDisconnectAll((BaseButton.SignalName.Pressed, TogglePauseMenu));
+		get;
+		private set {
+			ProfilePage?.PauseButton?.TryDisconnect(BaseButton.SignalName.Pressed, TogglePauseMenu);
 			ProfilePage?.ProfileButton?.TryDisconnectAll(
-				(Control.SignalName.MouseEntered, OnFocus), (Control.SignalName.MouseExited, OnUnfocus),
-				(Control.SignalName.FocusEntered, OnFocus), (Control.SignalName.FocusExited, OnUnfocus),
-				(BaseButton.SignalName.Pressed, ToggleOpen)
+				(Control.SignalName.MouseEntered, OnFocus), (Control.SignalName.MouseExited, OnUnfocus), (Control.SignalName.FocusEntered, OnFocus), (Control.SignalName.FocusExited, OnUnfocus), (BaseButton.SignalName.Pressed, ToggleOpen)
 			);
 			field = value;
-			ProfilePage?.OnReady(page => {
+			ProfilePage?.OnReady(() => {
 				UpdateDialogueViewNode();
-				ProfilePage?.PauseButton?.TryConnectAll((BaseButton.SignalName.Pressed, TogglePauseMenu));
-				page.ProfileButton?.ConnectAll(
-					(Control.SignalName.MouseEntered, OnFocus), (Control.SignalName.MouseExited, OnUnfocus),
-					(Control.SignalName.FocusEntered, OnFocus), (Control.SignalName.FocusExited, OnUnfocus),
-					(BaseButton.SignalName.Pressed, ToggleOpen)
+				ProfilePage?.PauseButton?.TryConnect(BaseButton.SignalName.Pressed, TogglePauseMenu);
+				ProfilePage?.ProfileButton?.ConnectAll(
+					(Control.SignalName.MouseEntered, OnFocus), (Control.SignalName.MouseExited, OnUnfocus), (Control.SignalName.FocusEntered, OnFocus), (Control.SignalName.FocusExited, OnUnfocus), (BaseButton.SignalName.Pressed, ToggleOpen)
 				);
 			});
+		}
+	}
+	public Notebook.PauseMenu PauseMenu {
+		get;
+		private set {
+			PauseMenu?.ResumeButton?.TryDisconnect(BaseButton.SignalName.Pressed, TogglePauseMenu);
+			field = value;
+			PauseMenu?.OnReady(() => PauseMenu?.ResumeButton?.TryConnect(BaseButton.SignalName.Pressed, TogglePauseMenu));
 		}
 	}
 	public Viewport ProfileViewport { get; private set; }
@@ -71,10 +78,11 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 	
 	public enum AnimationState { Closed, Highlighted, Open, PauseMenu };
 	public AnimationState State { get; private set { this.OnReady(() => AnimateStateChange(State, value)); field = value; } }
+	private void UpdateState() => State = State switch { _ when InPauseMenu => AnimationState.PauseMenu, _ when Open => AnimationState.Open, _ when Highlighted => AnimationState.Highlighted, _ => AnimationState.Closed };
 
-	public bool Open { get; set { field = value; State = State switch { _ when Open => AnimationState.Open, AnimationState.Open when !Open && Highlighted => AnimationState.Highlighted, _ => AnimationState.Closed }; } } = false;
-	public bool Highlighted { get; set { field = value; State = State switch { AnimationState.Open => AnimationState.Open, _ when Highlighted => AnimationState.Highlighted, _ => AnimationState.Closed }; } } = false;
-	public bool InPauseMenu { get; set { field = value; State = State switch { _ when InPauseMenu => AnimationState.PauseMenu, AnimationState.PauseMenu when Open => AnimationState.Open, AnimationState.PauseMenu when Highlighted => AnimationState.Highlighted, _ => AnimationState.Closed }; } } = false;
+	public bool Open { get; set { field = value; UpdateState(); } } = false;
+	public bool Highlighted { get; set { field = value; UpdateState(); } } = false;
+	public bool InPauseMenu { get; set { field = value; UpdateState(); if (PauseMenu.IsValid()) PauseMenu.Active = InPauseMenu; } } = false;
 	
 	private readonly Dictionary<Node, Tween> _tweens = [];
 	private Tween CreateTweenFor(Node node) {
@@ -133,6 +141,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 		void InternalUpdateLayerReferences() {
 			Root = FallbackRoot ?? LayerContainer;
             ProfilePage = LayerContainer?.GetLayer("res://scenes/menu/notebook/pages/profile.tscn") as Notebook.ProfilePage ?? FallbackProfilePage as Notebook.ProfilePage;
+			PauseMenu = LayerContainer?.GetLayer("res://scenes/menu/notebook/pages/pause_menu.tscn") as Notebook.PauseMenu ?? FallbackPauseMenu as Notebook.PauseMenu;
             ProfileViewport = LayerContainer?.GetViewport("res://scenes/menu/notebook/pages/profile.tscn");
             CoverPivot = LayerContainer?.GetPivot("res://scenes/menu/notebook/pages/cover.tscn") ?? FallbackCoverPivot;
 			RestoreAnimationState();
@@ -147,12 +156,14 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 		Open = false; Highlighted = false;
 
 		UpdateLayerReferences();
+		InputManager.Actions.Pause.InnerObject.Connect(GUIDEAction.SignalName.Completed, TogglePauseMenu);
 	}
 	public override void _EnterTree() {
 		RestoreAnimationState();
 		if (Engine.IsEditorHint()) {
 			FallbackRoot?.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			LayerContainer?.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			UpdateLayerReferences();
 			CallableUtils.CallDeferred(UpdateLayerReferences);
 		}
 	}

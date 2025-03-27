@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://83tks4i67hdo"]
+[gd_scene load_steps=6 format=3 uid="uid://83tks4i67hdo"]
 
 [ext_resource type="Theme" uid="uid://db11aw5aoqnpw" path="res://assets/ui/theme/suitor_profile_theme.tres" id="1_fkj1o"]
+[ext_resource type="Script" uid="uid://deg8pkdd7llng" path="res://scenes/menu/notebook/pages/PauseMenu.cs" id="2_8nqi3"]
 [ext_resource type="Texture2D" uid="uid://cnmux17p4b1od" path="res://assets/ui/buttons/pause_icon_alt.png" id="2_dsfxk"]
 
 [sub_resource type="Gradient" id="Gradient_fkj1o"]
@@ -12,7 +13,7 @@ colors = PackedColorArray(0, 0, 0, 0.545098, 0, 0, 0, 0.276534, 0, 0, 0, 0)
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_dsfxk"]
 gradient = SubResource("Gradient_fkj1o")
 
-[node name="PauseMenu" type="Control"]
+[node name="PauseMenu" type="Control" node_paths=PackedStringArray("ResumeButton", "SettingsButton", "QuitButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -20,6 +21,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_fkj1o")
+script = ExtResource("2_8nqi3")
+ResumeButton = NodePath("Resume")
+SettingsButton = NodePath("Settings")
+QuitButton = NodePath("Quit")
 
 [node name="Resume" type="Button" parent="."]
 clip_children = 2
@@ -34,6 +39,7 @@ offset_bottom = 20.0
 grow_vertical = 0
 rotation = 1.5708
 pivot_offset = Vector2(90, 34)
+focus_neighbor_bottom = NodePath("../Settings")
 mouse_default_cursor_shape = 2
 theme_type_variation = &"PauseButton"
 text = "Resume"
@@ -71,6 +77,8 @@ offset_bottom = 19.0
 grow_vertical = 0
 rotation = 1.5708
 pivot_offset = Vector2(90, 34)
+focus_neighbor_top = NodePath("../Resume")
+focus_neighbor_bottom = NodePath("../Quit")
 mouse_default_cursor_shape = 2
 theme_type_variation = &"PauseButton"
 text = "Settings"
@@ -106,6 +114,7 @@ offset_bottom = 4.0
 grow_vertical = 0
 rotation = 1.5708
 pivot_offset = Vector2(90, 34)
+focus_neighbor_top = NodePath("../Settings")
 mouse_default_cursor_shape = 2
 theme_type_variation = &"PauseButton"
 text = " Quit to Title"

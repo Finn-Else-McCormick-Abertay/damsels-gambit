@@ -6,7 +6,8 @@
 [ext_resource type="Script" uid="uid://biqqbrij8l0km" path="res://scenes/menu/notebook/ViewportLayerContainer.cs" id="6_s6j4j"]
 [ext_resource type="PackedScene" uid="uid://2010mmkoekfk" path="res://scenes/menu/notebook/pages/profile.tscn" id="7_43gqe"]
 
-[node name="NotebookMenu" type="Control" node_paths=PackedStringArray("LayerContainer", "FallbackRoot", "FallbackProfilePage")]
+[node name="NotebookMenu" type="Control" node_paths=PackedStringArray("LayerContainer", "FallbackRoot", "FallbackProfilePage", "FallbackPauseMenu")]
+process_mode = 3
 layout_mode = 3
 anchor_right = 0.392
 anchor_bottom = 1.0
@@ -27,6 +28,7 @@ PauseMenuTransitionType = 4
 LayerContainer = NodePath("Root/ViewportLayerContainer")
 FallbackRoot = NodePath("Root")
 FallbackProfilePage = NodePath("Root/Profile")
+FallbackPauseMenu = NodePath("Root/PauseMenu")
 
 [node name="Root" type="Control" parent="."]
 layout_mode = 1

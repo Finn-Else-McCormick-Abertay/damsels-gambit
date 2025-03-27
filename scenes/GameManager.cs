@@ -17,7 +17,6 @@ public sealed partial class GameManager : Node
 	public static CardGameController CardGameController { get; private set; }
 
 	public static Control MainMenu { get; private set; }
-	public static PauseMenu PauseMenu { get; private set; }
 	public static NotebookMenu NotebookMenu { get; private set; }
 
 	public static event Action CardGameChanged;
@@ -64,9 +63,6 @@ public sealed partial class GameManager : Node
 
 		MainMenu = GetTree().Root.FindChildWhere<Control>(x => x.SceneFilePath.Equals(_mainMenuScene.ResourcePath));
 		if (MainMenu.IsValid()) menuLayer.AddOwnedChild(MainMenu, true);
-
-		PauseMenu = GetTree().Root.FindChildWhere<PauseMenu>(x => x.SceneFilePath.Equals(_pauseMenuScene.ResourcePath));
-		if (PauseMenu.IsValid()) menuLayer.AddOwnedChild(MainMenu, true); PauseMenu?.Hide();
 		
 		CardGameController = GetTree().Root.FindChildOfType<CardGameController>();
 		if (CardGameController.IsValid()) {
@@ -117,8 +113,7 @@ public sealed partial class GameManager : Node
 		CardGameController.OnReady(x => x.BeginGame());
 		CardGameChanged?.Invoke();
 
-		PauseMenu = _pauseMenuScene.Instantiate<PauseMenu>();
-		GetLayer("menu").AddOwnedChild(PauseMenu);
-		PauseMenu.Hide();
+		NotebookMenu.Open = false;
+		NotebookMenu.InPauseMenu = false;
 	}
 } 

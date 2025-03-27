@@ -45,6 +45,8 @@ public sealed partial class InputManager : Node
 
 	// Runs when full tree is ready
 	private void OnTreeReady() {
+		ProcessMode = ProcessModeEnum.Always;
+
 		_rootViewport = GetViewport();
 
 		// Initialise the C# wrapper for the GUIDE autoload
@@ -178,7 +180,7 @@ public sealed partial class InputManager : Node
 	
 	// Connected to Back action
 	private void OnBackTriggered() {
-		foreach (var backContext in GetTree().Root.FindChildrenWhere(x => x is IBackContext).Select(x => x as IBackContext).Where(x => x.BackContextPriority > 0).OrderBy(x => x.BackContextPriority)) {
+		foreach (var backContext in GetTree().Root.FindChildrenWhere(x => x is IBackContext).Select(x => x as IBackContext).Where(x => (x as Node)?.CanProcess() ?? true && x.BackContextPriority > 0).OrderBy(x => x.BackContextPriority)) {
 			if (backContext.UseBackInput()) return;
 		}
 	}
@@ -196,7 +198,7 @@ public sealed partial class InputManager : Node
 		var focused = FocusedViewport?.GuiGetFocusOwner();
 		if (focused is null || !focused.IsVisibleInTree()) {
 			foreach (var focusContext in GetTree().Root.FindChildrenWhere(x => x is IFocusContext).Select(x => x as IFocusContext)
-					.Where(x => x.FocusContextPriority >= 0 && ((x as CanvasItem)?.IsVisibleInTree() ?? true)).OrderBy(x => x.FocusContextPriority)) {
+					.Where(x => x.FocusContextPriority >= 0 && ((x as Node)?.CanProcess() ?? true) && ((x as CanvasItem)?.IsVisibleInTree() ?? true)).OrderBy(x => x.FocusContextPriority)) {
 				if (FindFocusableWithin(focusContext?.GetDefaultFocus(direction)) is Control contextDefaultFocus) { contextDefaultFocus?.GrabFocus(); return; }
 			}
 		}
