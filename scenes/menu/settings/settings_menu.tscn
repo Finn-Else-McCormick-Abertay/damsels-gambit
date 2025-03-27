@@ -5,7 +5,7 @@
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/theme/default_theme.tres" id="2_k810m"]
 [ext_resource type="Theme" uid="uid://td8u5lubicg8" path="res://assets/ui/theme/menu_theme.tres" id="5_ww2uk"]
 [ext_resource type="Script" uid="uid://3vkxtd4o4toi" path="res://scenes/menu/settings/window_drop_down_options.gd" id="6_fkvev"]
-[ext_resource type="Script" uid="uid://hpe6rand18ey" path="res://scenes/menu/settings/font_selection.gd" id="7_0snvw"]
+[ext_resource type="Script" uid="uid://c33xpm87kj0b4" path="res://scenes/menu/settings/FontSelection.cs" id="7_62t8f"]
 [ext_resource type="Script" uid="uid://bi1t25iy0eqir" path="res://scenes/menu/settings/resolution_drop_down_options.gd" id="7_d6ec4"]
 
 [node name="SettingsMenu" type="Control" node_paths=PackedStringArray("TabContainer", "ExitButton")]
@@ -58,7 +58,7 @@ grow_vertical = 2
 size_flags_vertical = 3
 focus_neighbor_bottom = NodePath("../ExitButton")
 theme = ExtResource("5_ww2uk")
-current_tab = 1
+current_tab = 3
 
 [node name="Audio" type="Control" parent="TabContainer"]
 visible = false
@@ -83,6 +83,7 @@ focus_mode = 2
 text = "Options Unfinished"
 
 [node name="Graphics" type="Control" parent="TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -148,7 +149,6 @@ focus_mode = 2
 text = "Options Unfinished"
 
 [node name="Accessibility" type="Control" parent="TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 3
 
@@ -157,15 +157,16 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -62.0
-offset_right = 61.0
+offset_left = 2.0
+offset_right = -3.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 64
 
-[node name="Font Selection" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer"]
+[node name="Font Selection" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer" node_paths=PackedStringArray("OptionButton")]
 layout_mode = 2
-script = ExtResource("7_0snvw")
+script = ExtResource("7_62t8f")
+OptionButton = NodePath("OptionButton2")
 
 [node name="Label2" type="Label" parent="TabContainer/Accessibility/VBoxContainer/Font Selection"]
 custom_minimum_size = Vector2(264, 0)
