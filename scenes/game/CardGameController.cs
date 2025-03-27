@@ -193,7 +193,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		if (Engine.IsEditorHint() || !ShouldGameEnd()) return;
 
 		// If mid-round, defer ending until end of round
-		if (MidRound && Connect(SignalName.RoundEnd, Callable.From((int round) => AttemptGameEnd()), (uint)ConnectFlags.OneShot) == Error.Ok) return;
+		if (MidRound) { this.TryConnect(SignalName.RoundEnd, Callable.From((int round) => AttemptGameEnd()), (uint)ConnectFlags.OneShot); return; }
 
 		PlayButton.Hide();
 
