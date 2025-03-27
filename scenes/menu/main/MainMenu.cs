@@ -36,7 +36,7 @@ public partial class MainMenu : Control, IFocusContext
         }
 
         _settingsMenu = SettingsMenuScene?.Instantiate<SettingsMenu>();
-        this.AddOwnedChild(_settingsMenu);
+        AddChild(_settingsMenu);
 
         _settingsMenu.OnExit += OnExitSettingsMenu;
         

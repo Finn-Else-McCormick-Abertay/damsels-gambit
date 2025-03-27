@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://83tks4i67hdo"]
+[gd_scene load_steps=6 format=3 uid="uid://83tks4i67hdo"]
 
 [ext_resource type="Theme" uid="uid://db11aw5aoqnpw" path="res://assets/ui/theme/suitor_profile_theme.tres" id="1_fkj1o"]
 [ext_resource type="Script" uid="uid://deg8pkdd7llng" path="res://scenes/menu/notebook/pages/PauseMenu.cs" id="2_8nqi3"]
+[ext_resource type="PackedScene" uid="uid://cl108jysyilp" path="res://scenes/menu/settings/settings_menu.tscn" id="3_dsfxk"]
 
 [sub_resource type="Gradient" id="Gradient_fkj1o"]
 interpolation_mode = 2
@@ -24,6 +25,7 @@ script = ExtResource("2_8nqi3")
 ResumeButton = NodePath("Resume")
 SettingsButton = NodePath("Settings")
 QuitButton = NodePath("Quit")
+SettingsMenuScene = ExtResource("3_dsfxk")
 
 [node name="Resume" type="Button" parent="."]
 clip_children = 2
