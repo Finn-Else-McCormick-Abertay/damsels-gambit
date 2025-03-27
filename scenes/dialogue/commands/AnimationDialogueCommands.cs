@@ -75,7 +75,7 @@ static class AnimationDialogueCommands
     [YarnCommand("profile")]
     public static void Profile(string action) => RunCommandDeferred(() => {
         if (action.MatchN("open") || action.MatchN("close")) GameManager.NotebookMenu.Open = action.MatchN("open");
-        if (action.MatchN("under") || action.MatchN("over")) GameManager.SetLayer("notebook", action.MatchN("under") ? 22 : 24);
+        if (action.MatchN("under") || action.MatchN("over")) GameManager.NotebookMenu.OverDialogue = action.MatchN("over");
     });
 
     [YarnCommand("open_profile")]

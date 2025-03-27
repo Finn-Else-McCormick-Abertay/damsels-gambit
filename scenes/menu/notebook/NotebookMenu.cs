@@ -84,6 +84,8 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 	public bool Open { get; set { field = value; UpdateState(); } } = false;
 	public bool Highlighted { get; set { field = value; UpdateState(); } } = false;
 	public bool InPauseMenu { get; set { field = value; UpdateState(); if (PauseMenu.IsValid()) PauseMenu.Active = InPauseMenu; } } = false;
+
+	public bool OverDialogue { get; set { field = value; GameManager.SetLayer("notebook", OverDialogue switch { _ when InPauseMenu => 25, true => 25, false => 22 }); } }
 	
 	private readonly Dictionary<Node, Tween> _tweens = [];
 	private Tween CreateTweenFor(Node node) {
@@ -123,6 +125,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 		ProfilePage?.FadeShadows(newState switch { AnimationState.Open => false, _ => true }, duration);
 
 		if (oldState == AnimationState.PauseMenu || newState == AnimationState.PauseMenu) {
+			GameManager.SetLayer("notebook", newState == AnimationState.PauseMenu ? 25 : OverDialogue ? 25 : 22);
 			PauseBackground.Visible = true;
 			PauseBackground.Modulate = PauseBackground.Modulate with { A = newState == AnimationState.PauseMenu ? 0f : 1f };
 			var backgroundTween = CreateTweenFor(PauseBackground);

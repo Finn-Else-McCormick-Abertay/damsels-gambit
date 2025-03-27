@@ -41,15 +41,4 @@ public partial class ProfilePage : Control
     }
     
     public void SetShadows(bool visible) => FadeShadows(visible, 0.0);
-
-    /*[Export] public Control MouseIndicator { get; set; }
-
-    public override void _GuiInput(InputEvent @event) {
-        Console.Info("Profile page gui input: ", @event);
-        if (@event is InputEventMouse mouseEvent) {
-            if (MouseIndicator is not null) {
-                MouseIndicator.Position = mouseEvent.Position;
-            }
-        }
-    }*/
 }

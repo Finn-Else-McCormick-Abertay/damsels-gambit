@@ -17,6 +17,7 @@ public partial class AudioManager : Node
 	public static bool IsMusicPlaying => Instance?._musicPlayer?.Playing ?? false;
 
 	public override void _Ready(){
+		// Continue running when paused
 		ProcessMode = ProcessModeEnum.Always;
 
 		PlayMusic("res://assets/audio/menu.mp3");

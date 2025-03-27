@@ -63,11 +63,10 @@ DownResInEditor = true
 metadata/_custom_type_script = "uid://biqqbrij8l0km"
 
 [node name="PauseLayer" type="CanvasLayer" parent="."]
-layer = 23
+layer = 24
 
 [node name="ColorRect" type="ColorRect" parent="PauseLayer"]
 visible = false
-modulate = Color(1, 1, 1, 0)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

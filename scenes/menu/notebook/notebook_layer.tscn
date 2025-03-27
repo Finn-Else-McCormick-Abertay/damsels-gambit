@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://q1kh0whg1g0g" path="res://scenes/menu/notebook/notebook.tscn" id="1_iyyib"]
 
 [node name="NotebookLayer" type="CanvasLayer"]
-layer = 24
+layer = 25
 
 [node name="Notebook" parent="." instance=ExtResource("1_iyyib")]
 anchor_left = 1.0
