@@ -3,8 +3,8 @@ title: frostholm__give_food
 Princess Penelope: I got you something to eat!...
 	-> Escargot!
 		<<score -3>>
-	-> Fresh, raw, reindeer meat!
-		<<score 3>>
+	-> Fresh, raw, reindeer meat! <<if knows("native_animals")>>
+		<<score 6>>
 	-> Have this bug fondue!
 		<<score -3>>
 ===
@@ -23,8 +23,8 @@ Princess Penelope: I wanted to give you this...
 title: frostholm__give_art
 ---
 Princess Penelope: I got this for you...
-	-> Have this wolf action figure made of sticks!
-		<<score 3>>
+	-> Have this wolf action figure made of sticks! <<if knows("abstract_sculptures")>>
+		<<score 6>>
 	-> Have this painting of the holy snail!
 		<<score 3>>
 	-> Have this painting of last season's wolf hunting…
@@ -36,8 +36,8 @@ title: frostholm__give_witchcraft
 Princess Penelope: I thought you might like this...
 	-> Voodoo doll!
 		<<score 3>>
-	-> Pitchfork. Crafted by yours truly. Perfect for witch hunting!
-		<<score 3>>
+	-> Pitchfork. Crafted by yours truly. Perfect for witch hunting! <<if knows("witch_opinion")>>
+		<<score 6>>
 	-> Health Potion! (Frog Potion)
 		<<score 3>>
 	-> Health Potion! (Wolf Potion)
@@ -49,8 +49,8 @@ title: frostholm__give_religion
 Princess Penelope: I got this for you. It's a...
 	-> Snail idol! It'll portect you from evil!
 		<<score 3>>
-	-> Book disproving Snurch...
-		<<score -3>>
+	-> Book disproving Snurch... <<if knows("afterlife_ring")>>
+		<<score -6>>
 	-> Gospel of our kingdom's religion!
 		<<score -3>>
 ===
@@ -80,8 +80,8 @@ Princess Penelope: Tada!...
 		<<score 3>>
 	-> Sunglasses!
 		<<score -3>>
-	-> An enchanted umbrella! It snows underneath it when you open it!
-		<<score 3>>
+	-> An enchanted umbrella! It snows underneath it when you open it! <<if knows("weather_opinion")>>
+		<<score 6>>
 ===
 
 title: frostholm__give_family
@@ -89,10 +89,10 @@ title: frostholm__give_family
 Princess Penelope: I've got a replica of a treasured family heirloom I can give you! It's...
 	-> Please give your family this dress made of human teeth.
 		<<score -3>>
-	-> A lighting bolt collar for your wolf brother!
-		<<score -3>>
+	-> A lighting bolt collar for your wolf brother! <<if knows("wolf_brother")>>
+		<<score -6>>
 	-> Have this wolf pendant, it's a family heirloom.
 		<<score 3>>
-	-> Have this family's recipe on how to make a voodoo doll!
-		<<score -3>>
+	-> Have this family's recipe on how to make a voodoo doll! <<if knows("witch_treatment")>>
+		<<score -6>>
 ===

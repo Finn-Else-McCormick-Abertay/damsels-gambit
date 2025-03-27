@@ -27,7 +27,7 @@ Princess Penelope: What is...
         King Ráðúlfr: Dog kibble, it reminds me of my childhood. It was the first recipe I have ever created. 
         <<learn favourite_food>>
         King Ráðúlfr: I wanted my pack to always have provisions, even when hunting bore no fruit.
-        <<learn pack_provisions>>
+        <<learn caring_leader>>
 ===
 
 title: frostholm__question_animals
@@ -36,14 +36,18 @@ Princess Penelope: Can I ask?...
     -> What's your favourite animal?
         King Ráðúlfr: Wolves, of course. I was raised by them. They are a lovely pack.
         King Ráðúlfr: They taught me almost everything I know!
+        <<learn favourite_animal>>
     -> Do you have any pets?
         King Ráðúlfr: Does my brother count?
         King Ráðúlfr: He used to be human, but there was a rather unfortunate accident, and he became a wolf.
+        <<learn wolf_brother>>
     -> What animals are native to your kingdom?
         King Ráðúlfr: We have many, but the most known one is reindeer. A rarer species, larger than the ones in other kingdoms.
         King Ráðúlfr: However, we're running out because we keep eating them.
+        <<learn native_animals>>
     -> Are you afraid of any animals?
         King Ráðúlfr: No. Like a strong wolf, I have no fears. I was taught to be an apex predator.
+        <<learn animal_fears>>
 ===
 
 title: frostholm__question_art
@@ -52,10 +56,13 @@ Princess Penelope: I have a question...
     -> What is your opinion on art?
         King Ráðúlfr: I believe it holds significant meaning.
         King Ráðúlfr: So much so, our kingdom keeps all our art in a storage vault. Locked. Away. Forever.
+        <<learn kingdom_art>>
     -> What is your favourite form of art?
         King Ráðúlfr: Poetry. The howls of wolves at night are a form of poetry, you know.
-    -> Do you ever make your own art?
+        <<learn howl_poetry>>
+    -> Do you ever make your own art? <<if knows("art_children")>>
         King Ráðúlfr: Yes. I create abstract sculptures out of carefully arranged piles of sticks.
+        <<learn abstract_sculptures>>
 ===
 
 title: frostholm__question_witchcraft
@@ -63,12 +70,15 @@ title: frostholm__question_witchcraft
 Princess Penelope: I was wondering...
     -> How are witches treated in your kingdom?
         King Ráðúlfr: Tricksters is what they are, and they are treated as such.
-        King Ráðúlfr: They are to be captured and banished or killed. 
+        King Ráðúlfr: They are to be captured and banished or killed.
+        <<learn witch_treatment>>
     -> What are your thoughts on witchcraft?
         King Ráðúlfr: Terrible. Absolutely terrible. Magic has a habit of working too well, in the most unexpected ways. 
         King Ráðúlfr: It can not be trusted.
+        <<learn witch_opinion>>
     -> Have you ever dabbled in witchcraft?
         King Ráðúlfr: Yes. I attempted to make my brother love wolves with the help of a witch. Now he is one.
+        <<learn wolf_potion>>
 ===
 
 title: frostholm__question_religion
@@ -80,24 +90,29 @@ Princess Penelope: I was thinking...
         King Ráðúlfr: To watch over us and teach us how to live.
         King Ráðúlfr: Life itself is meant to be enjoyed. 
         King Ráðúlfr: “Focus on the journey and not on the destination, and when you forget to, look back at your trail, and see how far you've come”. 
+        <<learn snurch_quote>>
         King Ráðúlfr: To live like a snail is to live to the fullest.
     -> What do you believe happens after you die?
         King Ráðúlfr: We will become the next ring on the shell of the Great Snail!
+        <<learn afterlife_ring>>
 ===
 
 title: frostholm__question_children
 ---
 Princess Penelope: So...
-    -> Do you have children?
+    -> Do you have children? <<if knows("abstract_sculptures")>>
         King Ráðúlfr: No. I suppose I could count my stick sculptures, I treat them as such. 
+        <<learn art_children>>
     -> Do you want to have children in the future?
         King Ráðúlfr: Yes. I must. The crown needs an heir, after all.
+        <<learn heir_need>>
         <<emote frostholm sad_1>>
         <<after 1>>
         <<emote frostholm neutral from sad_1>>
     -> How would you like to raise your children?
         King Ráðúlfr: In the wild. Up the mountain. In the way of the forest.
         King Ráðúlfr: If they survive, they are meant to be rulers.
+        <<learn parenting_method>>
 ===
 
 title: frostholm__question_weather
@@ -107,12 +122,15 @@ Princess Penelope: Um...
         King Ráðúlfr: Cold. Freezing. Windy.
         King Ráðúlfr: Ice storms that can flay the flesh from your bones.
         King Ráðúlfr: Beautiful, really.
+        <<learn frostholm_weather>>
     -> What do you think of the weather in my kingdom?
         King Ráðúlfr: Too hot.
         King Ráðúlfr: How do you wear so many layers without bursting into flame?
+        <<learn weather_opinion>>
     -> What's your favourite season?
         King Ráðúlfr: Back home, we do not name them.
         King Ráðúlfr: Either it is "cold and windy" or "cold and less windy."
+        <<learn favourite_season>>
 ===
 
 title: frostholm__question_hobbies
@@ -122,9 +140,12 @@ Princess Penelope: So about you...
         King Ráðúlfr: I like to dig holes.
         King Ráðúlfr: Sometimes, I sit in them for a while. It is relaxing.
         King Ráðúlfr: And skunting, in the cold but less windy season.
-    -> How much time do you set aside for your hobbies?
+        <<learn favourite_hobbies>>
+    -> How much time do you set aside for your hobbies? <<if knows("favourite_hobbies")>>
         King Ráðúlfr: I always make sure to set aside at least a few hours a day for digging and sitting.
         King Ráðúlfr: It is s important to have a routine.
+        <<learn hobby_time>>
     -> Is there a hobby you would like to try?
         King Ráðúlfr: Pottery. I would like to see if I can make a clay wolf as ugly as my brother.
+        <<learn learn_pottery>>
 ===
