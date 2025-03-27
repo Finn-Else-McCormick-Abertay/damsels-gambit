@@ -37,6 +37,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 
 	[ExportGroup("Nodes")]
 	[Export] private ViewportLayerContainer LayerContainer { get; set { field = value; UpdateLayerReferences(); } }
+	[Export] private ColorRect PauseBackground { get; set; }
 	[ExportSubgroup("Fallback", "Fallback")]
 	[Export] private Control FallbackRoot { get; set { field = value; UpdateLayerReferences(); } }
 	[Export] private Control FallbackProfilePage { get; set { field = value; UpdateLayerReferences(); } }
@@ -120,6 +121,14 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 		CreateTweenFor(CoverPivot)?.TweenProperty(CoverPivot, Control.PropertyName.Rotation + ":y", coverAngle, duration);
 
 		ProfilePage?.FadeShadows(newState switch { AnimationState.Open => false, _ => true }, duration);
+
+		if (oldState == AnimationState.PauseMenu || newState == AnimationState.PauseMenu) {
+			PauseBackground.Visible = true;
+			PauseBackground.Modulate = PauseBackground.Modulate with { A = newState == AnimationState.PauseMenu ? 0f : 1f };
+			var backgroundTween = CreateTweenFor(PauseBackground);
+			backgroundTween?.TweenProperty(PauseBackground, CanvasItem.PropertyName.Modulate, PauseBackground.Modulate with { A = newState == AnimationState.PauseMenu ? 1f : 0f }, duration);
+			backgroundTween?.TweenProperty(PauseBackground, CanvasItem.PropertyName.Visible, newState == AnimationState.PauseMenu, 0);
+		}
 	}
 
 	private void RestoreAnimationState() {
@@ -134,6 +143,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 		CallableUtils.CallDeferred(() => {
 			if (Root.IsValid()) { Root.Position = position; Root.Rotation = (float)rootAngle; Root.Scale = new(scale, scale); }
 			if (CoverPivot.IsValid()) CoverPivot.Rotation = CoverPivot.Rotation with { Y = (float)coverAngle };
+			if (PauseBackground.IsValid()) { PauseBackground.Visible = InPauseMenu; PauseBackground.Modulate = PauseBackground.Modulate with { A = 1 }; }
 		});
 	}
 

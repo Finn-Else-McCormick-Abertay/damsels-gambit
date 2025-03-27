@@ -23,7 +23,6 @@ public partial class ProfilePage : Control
     }
 
     public void FadeShadows(bool visible, double time) {
-        Console.Info($"Fade Shadows to {visible} over {time}s");
         foreach (var shadow in _shadows) {
             // Clean up existing tweens if any
             if (_shadowFadeTweens.TryGetValue(shadow, out var oldTween) && oldTween.IsValid()) oldTween.Kill();

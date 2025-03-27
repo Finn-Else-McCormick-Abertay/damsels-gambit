@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://biqqbrij8l0km" path="res://scenes/menu/notebook/ViewportLayerContainer.cs" id="6_s6j4j"]
 [ext_resource type="PackedScene" uid="uid://2010mmkoekfk" path="res://scenes/menu/notebook/pages/profile.tscn" id="7_43gqe"]
 
-[node name="NotebookMenu" type="Control" node_paths=PackedStringArray("LayerContainer", "FallbackRoot", "FallbackProfilePage", "FallbackPauseMenu")]
+[node name="NotebookMenu" type="Control" node_paths=PackedStringArray("LayerContainer", "PauseBackground", "FallbackRoot", "FallbackProfilePage", "FallbackPauseMenu")]
 process_mode = 3
 layout_mode = 3
 anchor_right = 0.392
@@ -26,6 +26,7 @@ PauseMenuScale = 1.565
 PauseMenuTurnDuration = 0.25
 PauseMenuTransitionType = 4
 LayerContainer = NodePath("Root/ViewportLayerContainer")
+PauseBackground = NodePath("PauseLayer/ColorRect")
 FallbackRoot = NodePath("Root")
 FallbackProfilePage = NodePath("Root/Profile")
 FallbackPauseMenu = NodePath("Root/PauseMenu")
@@ -60,3 +61,16 @@ PaddingCamera = 210
 PaddingLayer = 210
 DownResInEditor = true
 metadata/_custom_type_script = "uid://biqqbrij8l0km"
+
+[node name="PauseLayer" type="CanvasLayer" parent="."]
+layer = 23
+
+[node name="ColorRect" type="ColorRect" parent="PauseLayer"]
+visible = false
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0644876, 0.0121933, 0.0102895, 0.690196)

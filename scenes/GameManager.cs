@@ -37,8 +37,7 @@ public sealed partial class GameManager : Node
 	private static readonly PackedScene
 		_dialogueLayerScene = ResourceLoader.Load<PackedScene>("res://scenes/dialogue/dialogue_layer.tscn"),
 		_notebookLayerScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/notebook/notebook_layer.tscn"),
-		_mainMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/main/main_menu.tscn"),
-		_pauseMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/pause_menu.tscn");
+		_mainMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/main/main_menu.tscn");
 	
 	private static readonly Texture2D
 		_cursorPointing = ResourceLoader.Load<Texture2D>("res://assets/ui/cursor/cursor_pointing_hand.png");

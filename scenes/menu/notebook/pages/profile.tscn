@@ -134,6 +134,7 @@ icon = ExtResource("3_54un2")
 alignment = 0
 
 [node name="Shadow" type="TextureRect" parent="Pause Button"]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -169,6 +170,7 @@ text = "Suitor Profile"
 alignment = 0
 
 [node name="Shadow" type="TextureRect" parent="Profile Button"]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0

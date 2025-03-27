@@ -17,18 +17,14 @@ public partial class AudioManager : Node
 	public static bool IsMusicPlaying => Instance?._musicPlayer?.Playing ?? false;
 
 	public override void _Ready(){
+		ProcessMode = ProcessModeEnum.Always;
 
 		PlayMusic("res://assets/audio/menu.mp3");
-
 	}
 
 	public override void _Process(double delta) {
-		if(!IsMusicPlaying){
-				PlayMusic("res://assets/audio/menu.mp3");
-		}
+		if(!IsMusicPlaying){ PlayMusic("res://assets/audio/menu.mp3"); }
 	}
-
-	
 
 	public override void _EnterTree() {
 		if (Instance is not null) throw AutoloadException.For(this);
