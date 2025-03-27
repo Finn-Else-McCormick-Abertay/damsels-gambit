@@ -147,7 +147,7 @@ AxisStretchHorizontal = 0
 AxisStretchVertical = 0
 ModulateColor = Color(1, 1, 1, 1)
 
-[sub_resource type="StyleBox" id="StyleBox_4jbej"]
+[sub_resource type="StyleBox" id="StyleBox_y0esn"]
 resource_local_to_scene = false
 resource_name = ""
 content_margin_left = -1.0
@@ -166,8 +166,8 @@ ExpandMarginLeft = 38.5
 ExpandMarginTop = 17.95
 ExpandMarginRight = 39.02
 ExpandMarginBottom = 18.36
-AxisStretchHorizontal = 1
-AxisStretchVertical = 1
+AxisStretchHorizontal = 0
+AxisStretchVertical = 0
 ModulateColor = Color(1, 1, 1, 1)
 metadata/_custom_type_script = "uid://bgveruq6sb3li"
 
@@ -184,5 +184,5 @@ AffectionMeter/styles/love_boundary = SubResource("StyleBox_3cc77")
 AffectionMeter/styles/middle_boundary = SubResource("StyleBox_mrr2j")
 AffectionMeter/styles/over = null
 AffectionMeter/styles/under = SubResource("StyleBox_5bunv")
-AffectionMeter/styles/value_boundary = SubResource("StyleBox_4jbej")
+AffectionMeter/styles/value_boundary = SubResource("StyleBox_y0esn")
 VSlider/icons/grabber_disabled = null

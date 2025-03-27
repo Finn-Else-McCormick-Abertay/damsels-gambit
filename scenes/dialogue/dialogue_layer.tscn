@@ -18,6 +18,7 @@ offset_right = -82.0
 offset_bottom = 35.28
 grow_horizontal = 0
 focus_neighbor_bottom = NodePath("../DialogueView")
+mouse_default_cursor_shape = 2
 text = "Skip Intro"
 script = ExtResource("1_lwtce")
 

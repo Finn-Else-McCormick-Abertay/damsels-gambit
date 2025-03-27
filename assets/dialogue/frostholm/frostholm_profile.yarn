@@ -3,7 +3,5 @@ tags: portrait:assets/characters/frostholm/suitor_card.png
 ---
 Prince Ráðúlfr of Frostholm #title
 [i]rah-thool-fer[/i] #subtitle
-<<if knows("frostholm/likes_wolves")>>
-He likes wolves
-<<endif>>
+[knowledge=lost_child]He was lost as a child.[/knowledge]
 ===

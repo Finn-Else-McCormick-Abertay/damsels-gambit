@@ -1,72 +1,150 @@
 title: frostholm__question_family
 ---
-Princess Penelope: So what do you think of the old king and queen, your parents? #theme=princess
-King Ráðúlfr: Hmm.. I've never given it much thought, but who can truly dislike their parents?
+Princess Penelope: So what about...
+    -> Your relationship with your parents?
+        <<score 1>>
+        King Ráðúlfr: My human parents or my wolf parents? I get along with both.
+        King Ráðúlfr: Although my human parents and I can't seem to see eye to eye on a few issues. On account of how they lost me when I was 5.
+        <<learn lost_child>>
+    -> Your relationship with your siblings?
+        <<score -1>>
+        King Ráðúlfr: I have only one younger brother. Our relationship is rather tense, since he was the heir to the throne until I came back. 
+        King Ráðúlfr: He was the one who gave me this scar across my eye.
+    -> How were you lost? <<if knows("lost_child")>>
+        King Ráðúlfr: I was kidnapped by bounty hunters who had been told I was a bastard. 
+        King Ráðúlfr: During their escape, I lost in the woods.
+        King Ráðúlfr: I was found and adopted by wolfs.
 ===
 
 title: frostholm__question_food
 ---
-Princess Penelope: What's your favourite food? It seems like you have a particular taste. #theme=princess
-King Ráðúlfr: I suppose I've never really been one for sweet things...
+Princess Penelope: What is...
+    -> The nation dish of your kingdom?
+        <<score 2>>
+        King Ráðúlfr: Reindeer pie with dill pickles, but I find it is better when it is raw.
+    -> Your favourite food?
+        <<score 1>>
+        King Ráðúlfr: Dog kibble, it reminds me of my childhood. It was the first recipe I have ever created. 
+        King Ráðúlfr: I wanted my pack to always have provisions, even when hunting bore no fruit.
 ===
 
 title: frostholm__question_animals
 ---
-Princess Penelope: Do you have any animal that you favour? #theme=princess
-<<emote frostholm happy_2>>
-King Ráðúlfr: Indeed, I've always been fascinated by wolves, and how majestic they are.
-<<emote frostholm happy_1>>
-<<after 1.5>>
-<<emote frostholm neutral from happy_1>>
+Princess Penelope: Can I ask?...
+    -> What's your favourite animal?
+        <<score 1>>
+        King Ráðúlfr: Wolves, of course. I was raised by them. They are a lovely pack.
+        King Ráðúlfr: They taught me almost everything I know!
+    -> Do you have any pets?
+        <<score -1>>
+        King Ráðúlfr: Does my brother count?
+        King Ráðúlfr: He used to be human, but there was a rather unfortunate accident, and he became a wolf.
+    -> What animals are native to your kingdom?
+        <<score 1>>
+        King Ráðúlfr: We have many, but the most known one is reindeer. A rarer species, larger than the ones in other kingdoms.
+        King Ráðúlfr: However, we're running out because we keep eating them.
+    -> Are you afraid of any animals?
+        <<score -2>>
+        King Ráðúlfr: No. Like a strong wolf, I have no fears. I was taught to be an apex predator.
 ===
 
 title: frostholm__question_art
 ---
-Princess Penelope: What's your opinion on art? Do you enjoy it much? #theme=princess
-King Ráðúlfr: Absolutely, I believe art holds significant value. We keep all of our art tightly locked away so no one can steal it.
-===
-
-title: frostholm__question_loyalty
----
-Princess Penelope: Are you a loyal man? Perhaps looking for loyalty in a wife? #theme=princess
-King Ráðúlfr: It is indeed correct I value loyalty closely to me.
+Princess Penelope: I have a question...
+    -> What is your opinion on art?
+        <<score 1>>
+        King Ráðúlfr: I believe it holds significant meaning.
+        King Ráðúlfr: So much so, our kingdom keeps all our art in a storage vault. Locked. Away. Forever.
+    -> What is your favourite form of art?
+        <<score 1>>
+        King Ráðúlfr: Poetry. The howls of wolves at night are a form of poetry, you know.
+    -> Do you ever make your own art?
+        <<score 2>>
+        King Ráðúlfr: Yes. I create abstract sculptures out of carefully arranged piles of sticks.
 ===
 
 title: frostholm__question_witchcraft
 ---
-Princess Penelope: What's your thoughts on all these witches nowadays? #theme=princess
-<<emote frostholm angry>>
-King Ráðúlfr: They should be hunted down, witches have no place here.
-<<emote frostholm neutral>>
+Princess Penelope: I was wondering...
+    -> How are witches treated in your kingdom?
+        <<score 1>>
+        King Ráðúlfr: Tricksters is what they are, and they are treated as such.
+        King Ráðúlfr: They are to be captured and banished or killed. 
+    -> What are your thoughts on witchcraft?
+        <<score -1>>
+        King Ráðúlfr: Terrible. Absolutely terrible. Magic has a habit of working too well, in the most unexpected ways. 
+        King Ráðúlfr: It can not be trusted.
+    -> Have you ever dabbled in witchcraft?
+        <<score -1>>
+        King Ráðúlfr: Yes. I attempted to make my brother love wolves with the help of a witch. Now he is one.
 ===
 
 title: frostholm__question_religion
 ---
-Princess Penelope: Are you religious at all? #theme=princess
-King Ráðúlfr: Very, our country would've collapsed a long time ago if it weren't for our God.
+Princess Penelope: I was thinking...
+    -> It's so strange to think that people would worship a snail...
+        <<score -1>>
+        King Ráðúlfr: Your people worship gods who live in the sky.
+        King Ráðúlfr: My people worship gods who took the humblest form on Earth.
+        King Ráðúlfr: To watch over us and teach us how to live.
+        King Ráðúlfr: Life itself is meant to be enjoyed. 
+        <<score 3>>
+        King Ráðúlfr: “Focus on the journey and not on the destination, and when you forget to, look back at your trail, and see how far you’ve come”. 
+        King Ráðúlfr: To live like a snail is to live to the fullest.
+    -> What do you believe happens after you die?
+        <<score 2>>
+        King Ráðúlfr: We will become the next ring on the shell of the Great Snail!
 ===
 
 title: frostholm__question_children
 ---
-Princess Penelope: Would you ever consider children? #theme=princess
-King Ráðúlfr: Hm I've not given it much thought... But of course, I'm obligated being a king.
-<<emote frostholm sad_1>>
-<<after 1>>
-<<emote frostholm neutral from sad_1>>
+Princess Penelope: So...
+    -> Do you have children?
+        <<score 1>>
+        King Ráðúlfr: No. I suppose I could count my stick sculptures, I treat them as such. 
+    -> Do you want to have children in the future?
+        <<score -1>>
+        King Ráðúlfr: Yes. I must. The crown needs an heir, after all.
+        <<emote frostholm sad_1>>
+        <<after 1>>
+        <<emote frostholm neutral from sad_1>>
+    -> How would you like to raise your children?
+        <<score 2>>
+        King Ráðúlfr: In the wild. Up the mountain. In the way of the forest.
+        King Ráðúlfr: If they survive, they are meant to be rulers.
 ===
 
 title: frostholm__question_weather
 ---
-Princess Penelope: It's been pretty cold recently, what's your preferred weather? #theme=princess
-<<emote frostholm happy_2>>
-King Ráðúlfr: Snow, rain, any cold weather reminds me of home.
-<<emote frostholm neutral>>
+Princess Penelope: Um...
+    -> What is the weather like in your kingdom?
+        King Ráðúlfr: Cold. Freezing. Windy.
+        King Ráðúlfr: Ice storms that can flay the flesh from your bones.
+        <<score 1>>
+        King Ráðúlfr: Beautiful, really.
+    -> What do you think of the weather in my kingdom?
+        King Ráðúlfr: Too hot.
+        <<score -1>>
+        King Ráðúlfr: How do you wear so many layers without bursting into flame?
+    -> What's your favourite season?
+        King Ráðúlfr: Back home, we do not name them.
+        <<score 1>>
+        King Ráðúlfr: Either it is "cold and windy" or "cold and less windy."
 ===
 
 title: frostholm__question_hobbies
 ---
-Princess Penelope: What do you do in spare time, you must tell me... #theme=princess
-<<emote frostholm happy_1>>
-King Ráðúlfr: Actually, I indulge in the sword, a fair bit I would say.
-<<emote frostholm neutral>>
+Princess Penelope: So about you...
+    -> What are your hobbies?
+        King Ráðúlfr: I like to dig holes.
+        King Ráðúlfr: Sometimes, I sit in them for a while. It is relaxing.
+        <<score 1>>
+        King Ráðúlfr: And skunting, in the cold but less windy season.
+    -> How much time do you set aside for your hobbies?
+        King Ráðúlfr: I always make sure to set aside at least a few hours a day for digging and sitting.
+        <<score 1>>
+        King Ráðúlfr: It is s important to have a routine.
+    -> Is there a hobby you would like to try?
+        <<score 2>>
+        King Ráðúlfr: Pottery. I would like to see if I can make a clay wolf as ugly as my brother.
 ===
