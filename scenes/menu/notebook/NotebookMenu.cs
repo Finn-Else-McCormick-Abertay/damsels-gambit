@@ -148,7 +148,14 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 
 		UpdateLayerReferences();
 	}
-	public override void _EnterTree() { RestoreAnimationState(); if (Engine.IsEditorHint()) CallableUtils.CallDeferred(UpdateLayerReferences); }
+	public override void _EnterTree() {
+		RestoreAnimationState();
+		if (Engine.IsEditorHint()) {
+			FallbackRoot?.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			LayerContainer?.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			CallableUtils.CallDeferred(UpdateLayerReferences);
+		}
+	}
 	public override void _ExitTree() {
 		foreach (var (_, tween) in _tweens) if (tween.IsValid()) tween.Kill();
 		_tweens.Clear();
