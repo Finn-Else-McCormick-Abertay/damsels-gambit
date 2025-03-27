@@ -45,6 +45,8 @@ public partial class ProfileDialogueView : Node, DialogueViewBase
 		var complexTags = nodeTags.Select(x => x.Split(':')).Where(x => x.Length == 2).Select(x => (x.First().ToLower(), x.Last())).ToDictionary();
 
 		if (Portrait.IsValid() && complexTags.TryGetValue("portrait", out var path)) Portrait.Texture = ResourceLoader.Load<Texture2D>($"res://{path.Replace('\\','/').StripFront("res://")}");
+
+		Title.Text = ""; Subtitle.Text = ""; Label.Text = "";
 	}
 
 	public void RunLine(LocalizedLine line, Action onLineFinished) {

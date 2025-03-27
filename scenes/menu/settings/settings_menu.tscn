@@ -5,7 +5,7 @@
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/theme/default_theme.tres" id="2_k810m"]
 [ext_resource type="Theme" uid="uid://td8u5lubicg8" path="res://assets/ui/theme/menu_theme.tres" id="5_ww2uk"]
 [ext_resource type="Script" uid="uid://3vkxtd4o4toi" path="res://scenes/menu/settings/window_drop_down_options.gd" id="6_fkvev"]
-[ext_resource type="Script" uid="uid://hpe6rand18ey" path="res://scenes/menu/settings/font_selection.gd" id="7_0snvw"]
+[ext_resource type="Script" uid="uid://c33xpm87kj0b4" path="res://scenes/menu/settings/FontSelection.cs" id="7_62t8f"]
 [ext_resource type="Script" uid="uid://bi1t25iy0eqir" path="res://scenes/menu/settings/resolution_drop_down_options.gd" id="7_d6ec4"]
 
 [node name="SettingsMenu" type="Control" node_paths=PackedStringArray("TabContainer", "ExitButton")]
@@ -68,16 +68,19 @@ metadata/_tab_index = 0
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Audio"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = -0.077
-anchor_top = -0.031
-anchor_right = 1.101
-anchor_bottom = 1.0
-offset_left = -0.0259972
-offset_top = -0.110999
-offset_right = 0.137939
+anchor_left = 0.00302115
+anchor_top = -0.00940439
+anchor_right = 1.02115
+anchor_bottom = 0.978056
+offset_right = -6.10352e-05
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 60
+metadata/_edit_use_anchors_ = true
+
+[node name="TK" type="Label" parent="TabContainer/Audio/VBoxContainer"]
+layout_mode = 2
+focus_mode = 2
+text = "Options Unfinished"
 
 [node name="Graphics" type="Control" parent="TabContainer"]
 visible = false
@@ -139,7 +142,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 64
 
 [node name="TK" type="Label" parent="TabContainer/Controls/VBoxContainer"]
 layout_mode = 2
@@ -155,15 +157,16 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -62.0
-offset_right = 61.0
+offset_left = 2.0
+offset_right = -3.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 64
 
-[node name="Font Selection" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer"]
+[node name="Font Selection" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer" node_paths=PackedStringArray("OptionButton")]
 layout_mode = 2
-script = ExtResource("7_0snvw")
+script = ExtResource("7_62t8f")
+OptionButton = NodePath("OptionButton2")
 
 [node name="Label2" type="Label" parent="TabContainer/Accessibility/VBoxContainer/Font Selection"]
 custom_minimum_size = Vector2(264, 0)
@@ -181,13 +184,14 @@ allow_reselect = true
 [node name="ExitButton" type="Button" parent="."]
 custom_minimum_size = Vector2(120, 20)
 layout_mode = 2
-anchor_top = 0.833
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 855.0
-offset_top = 3.216
-offset_right = -177.0
-offset_bottom = -24.0
+anchor_left = 0.742
+anchor_top = 0.838
+anchor_right = 0.846
+anchor_bottom = 0.963
+offset_left = 0.215942
+offset_top = -0.0240479
+offset_right = 0.407959
+offset_bottom = -0.0240479
 size_flags_horizontal = 8
 size_flags_vertical = 4
 focus_neighbor_left = NodePath("../SaveButton")
@@ -196,15 +200,17 @@ mouse_default_cursor_shape = 2
 text = "Exit"
 
 [node name="SaveButton" type="Button" parent="."]
+visible = false
 custom_minimum_size = Vector2(120, 20)
 layout_mode = 2
-anchor_top = 0.833
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 719.0
-offset_top = 3.216
-offset_right = -313.0
-offset_bottom = -24.0
+anchor_left = 0.624
+anchor_top = 0.838
+anchor_right = 0.728
+anchor_bottom = 0.963
+offset_left = 0.151978
+offset_top = -0.0240479
+offset_right = 0.343933
+offset_bottom = -0.0240479
 size_flags_horizontal = 8
 size_flags_vertical = 4
 focus_neighbor_top = NodePath("../TabContainer")

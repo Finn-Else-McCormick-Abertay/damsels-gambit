@@ -24,10 +24,36 @@ public partial class PauseMenu : Control, IFocusContext, IFocusableContainer, IB
     [Export] public Button ResumeButton { get; set; }
     [Export] public Button SettingsButton { get; set; }
     [Export] public Button QuitButton { get; set; }
+    
+    [Export] private PackedScene SettingsMenuScene { get; set; }
+    private SettingsMenu _settingsMenu;
 
     public override void _Ready() {
         Active = false;
+        SettingsButton?.Connect(BaseButton.SignalName.Pressed, OnSettingsPressed);
         QuitButton?.Connect(BaseButton.SignalName.Pressed, OnQuit);
+    }
+
+    private void OnSettingsPressed() {
+	    InputManager.PushToFocusStack();
+
+        if (_settingsMenu.IsValid()) { _settingsMenu.QueueFree(); _settingsMenu = null; }
+
+        _settingsMenu = SettingsMenuScene?.Instantiate<SettingsMenu>();
+        GameManager.GetLayer("menu").AddChild(_settingsMenu);
+        _settingsMenu.ProcessMode = ProcessModeEnum.WhenPaused;
+
+        _settingsMenu.OnExit += OnExitSettingsMenu;
+    }
+
+    private void OnExitSettingsMenu() {
+        _settingsMenu.OnExit -= OnExitSettingsMenu;
+
+        _settingsMenu.Hide();
+        _settingsMenu.QueueFree();
+        _settingsMenu = null;
+
+	    InputManager.PopFromFocusStack();
     }
 
     private void OnQuit() {
@@ -35,8 +61,8 @@ public partial class PauseMenu : Control, IFocusContext, IFocusableContainer, IB
 		GameManager.SwitchToMainMenu();
     }
     
-    public virtual int FocusContextPriority => Active ? 5 : -1;
-    public virtual int BackContextPriority => Active ? 5 : -1;
+    public virtual int FocusContextPriority => Active && !_settingsMenu.IsValid() ? 5 : -1;
+    public virtual int BackContextPriority => Active && !_settingsMenu.IsValid() ? 5 : -1;
 
     public Control GetDefaultFocus() => ResumeButton;
 

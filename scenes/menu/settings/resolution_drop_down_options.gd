@@ -16,3 +16,6 @@ func _ready():
 
 func on_resolution_selected(index : int) -> void:
 	DisplayServer.window_set_size(RESOLUTION_DICTIONARY.values()[index])
+
+func _process(_delta):
+	option_button.disabled = DisplayServer.window_get_mode() != DisplayServer.WINDOW_MODE_WINDOWED
