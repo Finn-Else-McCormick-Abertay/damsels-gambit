@@ -118,6 +118,11 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 			});
 	}
 
+	public override void _ExitTree() {
+		GameManager.NotebookMenu.FocusNeighborBottom = new();
+		GameManager.NotebookMenu.FocusNeighborLeft = new();
+	}
+
 	// If not yet started, force-run the skip_setup node, skipping to the start of gameplay even if currently in the intro
 	public void ForceSkipIntro() { if (!Started) DialogueManager.Run($"{_suitorId}__skip_setup", true); }
 

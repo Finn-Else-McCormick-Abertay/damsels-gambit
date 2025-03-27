@@ -125,12 +125,14 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 		ProfilePage?.FadeShadows(newState switch { AnimationState.Open => false, _ => true }, duration);
 
 		if (oldState == AnimationState.PauseMenu || newState == AnimationState.PauseMenu) {
-			GameManager.SetLayer("notebook", newState == AnimationState.PauseMenu ? 25 : OverDialogue ? 25 : 22);
+			void UpdateLayer() => GameManager.SetLayer("notebook", newState == AnimationState.PauseMenu ? 25 : OverDialogue ? 25 : 22);
+			if (newState == AnimationState.PauseMenu) UpdateLayer();
 			PauseBackground.Visible = true;
 			PauseBackground.Modulate = PauseBackground.Modulate with { A = newState == AnimationState.PauseMenu ? 0f : 1f };
 			var backgroundTween = CreateTweenFor(PauseBackground);
 			backgroundTween?.TweenProperty(PauseBackground, CanvasItem.PropertyName.Modulate, PauseBackground.Modulate with { A = newState == AnimationState.PauseMenu ? 1f : 0f }, duration);
 			backgroundTween?.TweenProperty(PauseBackground, CanvasItem.PropertyName.Visible, newState == AnimationState.PauseMenu, 0);
+			backgroundTween?.TweenCallback(UpdateLayer);
 		}
 	}
 
