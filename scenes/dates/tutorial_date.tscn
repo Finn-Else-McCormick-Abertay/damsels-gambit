@@ -17,6 +17,7 @@ script = ExtResource("1_nn02b")
 layout_mode = 1
 SuitorName = "Lady in Waiting"
 NumRounds = 2
+AutoFailOnHitThreshold = false
 TopicDeck = {
 "topic/animals": 2,
 "topic/children": 2,
