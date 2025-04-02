@@ -23,6 +23,7 @@ theme = ExtResource("2_k810m")
 script = ExtResource("2_0snvw")
 TabContainer = NodePath("TabContainer")
 ExitButton = NodePath("ExitButton")
+metadata/_edit_horizontal_guides_ = [557.0]
 
 [node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
@@ -40,14 +41,10 @@ expand_mode = 1
 
 [node name="Title" type="Label" parent="."]
 layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.076
+anchors_preset = 10
 anchor_right = 1.0
-anchor_bottom = 0.131
-offset_left = -1.0
-offset_top = -8.248
-offset_right = -1.0
-offset_bottom = 5.27866
+offset_top = 23.0
+offset_bottom = 72.1667
 grow_horizontal = 2
 theme = ExtResource("2_k810m")
 theme_type_variation = &"HeaderLarge"
@@ -55,16 +52,26 @@ text = "Settings"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Feather2" type="Sprite2D" parent="Title"]
-position = Vector2(736, 19)
-rotation = 1.5708
-scale = Vector2(0.156, 0.156)
-texture = ExtResource("4_t8nye")
+[node name="Feathers" type="Control" parent="Title"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Feather3" type="Sprite2D" parent="Title"]
-position = Vector2(420.061, 16.8902)
+[node name="Feather3" type="Sprite2D" parent="Title/Feathers"]
+position = Vector2(-157, -1.58325)
 rotation = 1.5708
 scale = Vector2(0.156247, -0.156247)
+texture = ExtResource("4_t8nye")
+
+[node name="Feather2" type="Sprite2D" parent="Title/Feathers"]
+position = Vector2(158, 1.41675)
+rotation = 1.5708
+scale = Vector2(0.156, 0.156)
 texture = ExtResource("4_t8nye")
 
 [node name="TabContainer" type="TabContainer" parent="."]
@@ -81,13 +88,7 @@ grow_vertical = 2
 size_flags_vertical = 3
 focus_neighbor_bottom = NodePath("../ExitButton")
 theme = ExtResource("5_ww2uk")
-current_tab = 1
-
-[node name="Escargots3" type="Sprite2D" parent="TabContainer"]
-position = Vector2(809, 19)
-rotation = 3.14159
-scale = Vector2(0.0932225, -0.0932225)
-texture = ExtResource("6_enfos")
+current_tab = 3
 
 [node name="Audio" type="Control" parent="TabContainer"]
 visible = false
@@ -109,6 +110,7 @@ grow_vertical = 2
 theme_override_constants/separation = 60
 
 [node name="Graphics" type="Control" parent="TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -175,7 +177,6 @@ focus_mode = 2
 text = "Options Unfinished"
 
 [node name="Accessibility" type="Control" parent="TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 3
 
@@ -207,16 +208,34 @@ layout_mode = 2
 mouse_default_cursor_shape = 2
 allow_reselect = true
 
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+anchors_preset = 0
+offset_left = 973.0
+offset_top = 124.0
+offset_right = 1013.0
+offset_bottom = 164.0
+metadata/_edit_use_anchors_ = true
+
+[node name="Escargots3" type="Sprite2D" parent="Control"]
+rotation = 3.14159
+scale = Vector2(0.0932225, -0.0932225)
+texture = ExtResource("6_enfos")
+
 [node name="ExitButton" type="Button" parent="."]
 custom_minimum_size = Vector2(120, 20)
-layout_mode = 2
-anchor_top = 0.833
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 855.0
-offset_top = 3.216
-offset_right = -177.0
+offset_left = -284.0
+offset_top = -105.0
+offset_right = -164.0
 offset_bottom = -24.0
+grow_horizontal = 0
+grow_vertical = 0
 size_flags_horizontal = 8
 size_flags_vertical = 4
 focus_neighbor_left = NodePath("../SaveButton")
@@ -226,14 +245,18 @@ text = "Exit"
 
 [node name="SaveButton" type="Button" parent="."]
 custom_minimum_size = Vector2(120, 20)
-layout_mode = 2
-anchor_top = 0.833
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 719.0
-offset_top = 3.216
-offset_right = -313.0
+offset_left = -422.0
+offset_top = -105.0
+offset_right = -302.0
 offset_bottom = -24.0
+grow_horizontal = 0
+grow_vertical = 0
 size_flags_horizontal = 8
 size_flags_vertical = 4
 focus_neighbor_top = NodePath("../TabContainer")
