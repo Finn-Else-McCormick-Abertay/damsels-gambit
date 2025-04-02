@@ -50,9 +50,9 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
 		DialogueManager.Deregister(this);
 	}
 
-    public override void _Notification(int what) { if (what == NotificationPredelete) OptionArchetype?.QueueFree(); }
+	public override void _Notification(int what) { if (what == NotificationPredelete) OptionArchetype?.QueueFree(); }
 
-    public void DialogueStarted() {
+	public void DialogueStarted() {
 		Root.Show();
 		State = DialogueState.Waiting;
 	}
@@ -152,7 +152,7 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
 
 	public void UserRequestedViewAdvancement() {}
 	
-    public virtual int FocusContextPriority => State != DialogueState.Inactive ? 3 : -1;
+	public virtual int FocusContextPriority => State != DialogueState.Inactive ? 3 : -1;
 
-    public Control GetDefaultFocus() => ContinueButton;
+	public Control GetDefaultFocus() => ContinueButton;
 }

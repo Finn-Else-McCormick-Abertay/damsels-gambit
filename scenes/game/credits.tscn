@@ -1,25 +1,70 @@
-[gd_scene load_steps=4 format=3 uid="uid://ccmhxutm5bcmr"]
+[gd_scene load_steps=14 format=3 uid="uid://ccmhxutm5bcmr"]
 
-[ext_resource type="Script" uid="uid://bonisd2egs36k" path="res://scenes/ui/credits.gd" id="1_oap8i"]
-[ext_resource type="Texture2D" uid="uid://u26nipulqexe" path="res://assets/environment/endings/Bad Ending (Wedding) Fin.png" id="2_jkvjv"]
+[ext_resource type="Script" uid="uid://bonisd2egs36k" path="res://scenes/game/credits.gd" id="1_oap8i"]
+[ext_resource type="Texture2D" uid="uid://2cbl24t405i5" path="res://assets/ui/panels/Paper texture.png" id="2_n7njp"]
 [ext_resource type="Texture2D" uid="uid://347p4fnedn1a" path="res://assets/logo/logo.png" id="3_pqmjv"]
+[ext_resource type="Script" uid="uid://bgveruq6sb3li" path="res://util/resources/StyleBoxScaledTexture.cs" id="3_yioci"]
+[ext_resource type="Texture2D" uid="uid://ckkplqidm32ur" path="res://assets/gifts/escargots_1.png" id="5_ox8i4"]
+[ext_resource type="Texture2D" uid="uid://cqbhmawyy3l5f" path="res://assets/gifts/human_teeth_dress_1.png" id="6_s70fa"]
+[ext_resource type="Texture2D" uid="uid://cn1fh1nmc7yxn" path="res://assets/gifts/raw_reindeer_meat_2.png" id="7_2tpig"]
+[ext_resource type="Texture2D" uid="uid://can2hbqmw6qbq" path="res://assets/gifts/voodoo_doll book_2.png" id="8_fq7lm"]
+[ext_resource type="Texture2D" uid="uid://rc3xol41mg5g" path="res://assets/gifts/wolf_pendant3.png" id="9_pq3tm"]
+[ext_resource type="Texture2D" uid="uid://dmjtu20tblyl2" path="res://assets/gifts/wolf_claw_3.png" id="10_b15uh"]
+[ext_resource type="Texture2D" uid="uid://b5ug8fyog0m1y" path="res://assets/gifts/wolf_pendant_2.png" id="11_2tpig"]
+[ext_resource type="Texture2D" uid="uid://dpge6cwdv4scr" path="res://assets/gifts/feather_1.png" id="12_fq7lm"]
+
+[sub_resource type="StyleBox" id="StyleBox_xtsoe"]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = -1.0
+content_margin_top = -1.0
+content_margin_right = -1.0
+content_margin_bottom = -1.0
+script = ExtResource("3_yioci")
+Texture = ExtResource("2_n7njp")
+Scale = 1.0
+DrawCenter = true
+TextureMarginLeft = 0
+TextureMarginTop = 0
+TextureMarginRight = 0
+TextureMarginBottom = 0
+ExpandMarginLeft = 0.0
+ExpandMarginTop = 0.0
+ExpandMarginRight = 0.0
+ExpandMarginBottom = 0.0
+AxisStretchHorizontal = 0
+AxisStretchVertical = 0
+ModulateColor = Color(1, 1, 1, 1)
+metadata/_custom_type_script = "uid://bgveruq6sb3li"
 
 [node name="Credits" type="Control"]
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_oap8i")
 
-[node name="BadEnding(wedding)Fin" type="Sprite2D" parent="."]
-position = Vector2(579.889, 322.625)
-scale = Vector2(0.312384, 0.312384)
-texture = ExtResource("2_jkvjv")
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -39.0
+offset_right = 34.0
+offset_bottom = 41.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBox_xtsoe")
 
 [node name="CreditsText" type="RichTextLabel" parent="."]
 layout_mode = 1
 offset_right = 1158.0
 offset_bottom = 980.0
-theme_override_colors/default_color = Color(0.14902, 0, 0.745098, 1)
-theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_colors/default_color = Color(0.227451, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 0.87451, 0.835294, 1)
 theme_override_constants/outline_size = 19
 theme_override_font_sizes/normal_font_size = 34
 text = "
@@ -46,7 +91,7 @@ Art
 
 Character and Asset Artist   -   Caitlyn Johnstone 
 
-UI Design and  Branding Designer  -  Thorn Stirling
+UI and Branding Designer  -  Thorn Stirling
 
 
 Programming
@@ -90,19 +135,14 @@ scroll_following = true
 tab_size = 5
 horizontal_alignment = 1
 
-[node name="Logo" type="Sprite2D" parent="CreditsText"]
-position = Vector2(564, 285)
-scale = Vector2(0.43822, 0.43822)
-texture = ExtResource("3_pqmjv")
-
 [node name="RichTextLabel" type="RichTextLabel" parent="CreditsText"]
 layout_mode = 0
-offset_left = 161.0
-offset_top = 2163.0
-offset_right = 1012.0
-offset_bottom = 2694.0
-theme_override_colors/default_color = Color(0.14902, 0, 0.745098, 1)
-theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+offset_left = 133.0
+offset_top = 2119.0
+offset_right = 984.0
+offset_bottom = 2650.0
+theme_override_colors/default_color = Color(0.227451, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 0.87451, 0.835294, 1)
 theme_override_constants/outline_size = 9
 theme_override_constants/shadow_outline_size = 0
 theme_override_font_sizes/normal_font_size = 12
@@ -130,3 +170,61 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE."
 fit_content = true
 horizontal_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="Logo" type="Sprite2D" parent="CreditsText"]
+position = Vector2(582, 285)
+scale = Vector2(0.43822, 0.43822)
+texture = ExtResource("3_pqmjv")
+
+[node name="Escargots1" type="Sprite2D" parent="CreditsText"]
+position = Vector2(1017, 831)
+scale = Vector2(0.233461, 0.233461)
+texture = ExtResource("5_ox8i4")
+
+[node name="HumanTeethDress1" type="Sprite2D" parent="CreditsText"]
+position = Vector2(853, 1909)
+rotation = 0.223011
+scale = Vector2(0.258849, 0.258849)
+texture = ExtResource("6_s70fa")
+
+[node name="RawReindeerMeat2" type="Sprite2D" parent="CreditsText"]
+position = Vector2(922, 2154)
+rotation = -1.24652
+scale = Vector2(0.297118, 0.297118)
+texture = ExtResource("7_2tpig")
+
+[node name="VoodooDollBook2" type="Sprite2D" parent="CreditsText"]
+position = Vector2(987, 1551)
+scale = Vector2(0.33718, 0.337179)
+texture = ExtResource("8_fq7lm")
+
+[node name="WolfPendant3" type="Sprite2D" parent="CreditsText"]
+position = Vector2(162, 1120)
+rotation = -0.3018
+scale = Vector2(0.264765, 0.264765)
+texture = ExtResource("9_pq3tm")
+
+[node name="WolfClaw3" type="Sprite2D" parent="CreditsText"]
+position = Vector2(162, 1824)
+rotation = -1.04738
+scale = Vector2(0.424324, 0.424324)
+texture = ExtResource("10_b15uh")
+
+[node name="WolfPendant2" type="Sprite2D" parent="CreditsText"]
+position = Vector2(643, 2499)
+rotation = 1.06771
+scale = Vector2(0.191576, 0.191576)
+texture = ExtResource("11_2tpig")
+
+[node name="WolfPendant4" type="Sprite2D" parent="CreditsText"]
+position = Vector2(473, 2501)
+rotation = -1.07687
+scale = Vector2(-0.192, 0.192)
+texture = ExtResource("11_2tpig")
+
+[node name="Feather1" type="Sprite2D" parent="CreditsText"]
+position = Vector2(181, 768)
+rotation = -1.05311
+scale = Vector2(0.261236, 0.261236)
+texture = ExtResource("12_fq7lm")
