@@ -201,7 +201,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 	private void OnUnfocus() => Highlighted = false;
 	private void ToggleOpen() => Open = !Open;
 	private void TogglePauseMenu() => InPauseMenu = !InPauseMenu;
-	private void TryTogglePauseMenu() { if(GameManager.MainMenu.IsInvalid()) TogglePauseMenu(); }
+	private void TryTogglePauseMenu() { if(GameManager.MainMenu.IsInvalid() && !(PauseMenu?.InSettingsMenu ?? false)) TogglePauseMenu(); }
 
 	public void UpdateDialogueViewNode() {
 		if (Engine.IsEditorHint() || string.IsNullOrEmpty(SuitorName) || ProfilePage?.DialogueView is not ProfileDialogueView dialogueView) return;

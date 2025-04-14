@@ -28,6 +28,8 @@ public partial class PauseMenu : Control, IFocusContext, IFocusableContainer, IB
     [Export] private PackedScene SettingsMenuScene { get; set; }
     private SettingsMenu _settingsMenu;
 
+    public bool InSettingsMenu => _settingsMenu.IsValid();
+
     public override void _Ready() {
         Active = false;
         SettingsButton?.Connect(BaseButton.SignalName.Pressed, OnSettingsPressed);

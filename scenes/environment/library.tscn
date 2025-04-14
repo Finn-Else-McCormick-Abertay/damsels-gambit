@@ -97,7 +97,7 @@ offset = Vector2(270.607, 445.53)
 [node name="Gradient" type="Sprite2D" parent="Background"]
 modulate = Color(1, 1, 1, 0.780392)
 material = SubResource("CanvasItemMaterial_gw1xy")
-position = Vector2(575, 316.25)
+position = Vector2(575, 316)
 scale = Vector2(30.5313, 11.5859)
 texture = SubResource("GradientTexture2D_sxxwc")
 
