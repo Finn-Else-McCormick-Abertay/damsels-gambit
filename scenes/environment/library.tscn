@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://d4dgonbop8ygy"]
+[gd_scene load_steps=20 format=3 uid="uid://d4dgonbop8ygy"]
 
 [ext_resource type="Texture2D" uid="uid://b85kbbob2a0hh" path="res://assets/characters/frostholm/neutral.png" id="1_jtctn"]
 [ext_resource type="Texture2D" uid="uid://120j1ta6afcx" path="res://assets/environment/props/Seat.png" id="2_cqnjh"]
@@ -9,8 +9,13 @@
 [ext_resource type="Texture2D" uid="uid://duhbk7c10lnr6" path="res://assets/environment/props/Cutlery.png" id="9_cmbj8"]
 [ext_resource type="Texture2D" uid="uid://5mih1v3tagx0" path="res://assets/environment/props/Plates.png" id="10_qv071"]
 [ext_resource type="Texture2D" uid="uid://bbd555fimwvu" path="res://assets/environment/props/Candle Holder Thing.png" id="11_vf4ml"]
+[ext_resource type="Texture2D" uid="uid://s7ge87mqkk6r" path="res://assets/items/book_disproving_snurch_1.png" id="12_bwry6"]
 [ext_resource type="Texture2D" uid="uid://c5gkp3pcwksoa" path="res://assets/environment/props/Candle 1.png" id="12_fh3wo"]
 [ext_resource type="Texture2D" uid="uid://dqpr258weyxql" path="res://assets/environment/props/Candle 2.png" id="13_ds0vu"]
+[ext_resource type="Script" uid="uid://dhe8ih4jwgodq" path="res://scenes/dialogue/environment/PropDisplay.cs" id="13_hdk4r"]
+[ext_resource type="Texture2D" uid="uid://83a83sx7qjl5" path="res://assets/items/book_disproving_snurch_2.png" id="14_kt6u6"]
+[ext_resource type="Texture2D" uid="uid://103uxyj21jl2" path="res://assets/items/book_disproving_snurch_3.png" id="15_w8eku"]
+[ext_resource type="Texture2D" uid="uid://w7eint5yll7f" path="res://assets/items/escargots_1.png" id="16_hdk4r"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_gw1xy"]
 blend_mode = 1
@@ -104,3 +109,39 @@ position = Vector2(587, 504.851)
 scale = Vector2(0.554795, 0.554795)
 texture = ExtResource("13_ds0vu")
 offset = Vector2(-627.259, 156.815)
+
+[node name="Items" type="CanvasLayer" parent="."]
+layer = 4
+follow_viewport_enabled = true
+
+[node name="Book1" type="Sprite2D" parent="Items"]
+position = Vector2(848, 389)
+scale = Vector2(0.396814, 0.396814)
+texture = ExtResource("12_bwry6")
+script = ExtResource("13_hdk4r")
+PropName = &"book_disproving_snurch_1"
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Book2" type="Sprite2D" parent="Items"]
+position = Vector2(848, 389)
+scale = Vector2(0.396814, 0.396814)
+texture = ExtResource("14_kt6u6")
+script = ExtResource("13_hdk4r")
+PropName = &"book_disproving_snurch_2"
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Book3" type="Sprite2D" parent="Items"]
+position = Vector2(848, 389)
+scale = Vector2(0.396814, 0.396814)
+texture = ExtResource("15_w8eku")
+script = ExtResource("13_hdk4r")
+PropName = &"book_disproving_snurch_3"
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Escargot1" type="Sprite2D" parent="Items"]
+position = Vector2(848, 389)
+scale = Vector2(0.396814, 0.396814)
+texture = ExtResource("16_hdk4r")
+script = ExtResource("13_hdk4r")
+PropName = &"escargot_1"
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"

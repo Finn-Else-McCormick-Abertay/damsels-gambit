@@ -4,7 +4,8 @@ using DamselsGambit.Dialogue;
 
 namespace DamselsGambit.Environment;
 
-public partial class PropDisplay : Node2D, IEnvironmentDisplay
+[GlobalClass]
+public partial class PropDisplay : Sprite2D, IEnvironmentDisplay
 {
 	[Export] public StringName PropName { get; set; }
 	
