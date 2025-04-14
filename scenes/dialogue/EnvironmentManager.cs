@@ -78,7 +78,7 @@ public partial class EnvironmentManager : Node
                 var node = scene.Instantiate();
                 _environmentRoot.AddChild(node);
                 _environments.Add(environmentName, node);
-                foreach (var item in GetEnvironmentItems(environmentName)) item?.Set(CanvasItem.PropertyName.Visible, false);
+                foreach (var layer in GetEnvironmentLayers(environmentName)) layer.Hide();
             }
         }
     }

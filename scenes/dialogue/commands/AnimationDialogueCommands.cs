@@ -89,7 +89,7 @@ static class AnimationDialogueCommands
                 Move(itemName, 0f, -200f, moveSpeed);
                 Fade("out", itemName, moveSpeed);
                 After(moveSpeed);
-                Move(itemName, 0f, 400f, 0);
+                Move(itemName, 0f, 200f, 0);
             }
         }
     }
@@ -173,7 +173,7 @@ static class AnimationDialogueCommands
 
             var tween = item.CreateTween();
             tween.TweenProperty(item, "modulate:a", target, time);
-            //if (inOut == "out") tween.TweenCallback(item.Hide);
+            if (inOut == "out" && item is PropDisplay) tween.TweenCallback(item.Hide);
         }
     });
 }
