@@ -89,6 +89,9 @@ public sealed partial class GameManager : Node
 
 		MainMenu = _mainMenuScene.Instantiate<Control>();
 		GetLayer("menu").AddOwnedChild(MainMenu);
+
+		NotebookMenu.Open = false;
+		NotebookMenu.InPauseMenu = false;
 	}
 
 	public static void BeginGame() {

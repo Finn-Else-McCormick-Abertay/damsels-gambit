@@ -1,6 +1,7 @@
 title: lady_in_waiting__intro
 tags: skippable
 ---
+<<profile hide>>
 <<scene throne_room>>
 <<hide lady_in_waiting>>
 <<hide queen>>
@@ -45,6 +46,7 @@ Lady in Waiting: You can combine an [color=action]Action[/color] card with a [co
 Lady in Waiting: Come on, let's see what you've got.
 <<after 1.5>>
 <<emote lady_in_waiting neutral>>
+<<profile show>>
 ===
 
 title: lady_in_waiting__skip_setup
@@ -52,6 +54,7 @@ title: lady_in_waiting__skip_setup
 <<scene chamber>>
 <<show lady_in_waiting>>
 <<hide queen>>
+<<profile show>>
 ===
 
 title: lady_in_waiting__after_score
