@@ -54,6 +54,7 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
 
     public void DialogueStarted() {
 		Root.Show();
+		ContinueButton.Hide();
 		State = DialogueState.Waiting;
 	}
 
@@ -94,11 +95,16 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
 		TitleRoot.Hide();
 		LineRoot.Hide();
 		OptionVisualRoot.Hide();
+		ContinueButton.Hide();
 	}
 
 	private void OnContinue() => _onLineFinishedAction?.Invoke();
 
-	public void InterruptLine(LocalizedLine dialogueLine, Action onDialogueLineFinished) => onDialogueLineFinished?.Invoke();
+	public void InterruptLine(LocalizedLine dialogueLine, Action onDialogueLineFinished) {
+		ContinueButton.Hide();
+		onDialogueLineFinished?.Invoke();
+		State = DialogueState.Waiting;
+	}
 
 	public void DismissLine(Action onDismissalComplete) {
 		_onLineFinishedAction = null;
