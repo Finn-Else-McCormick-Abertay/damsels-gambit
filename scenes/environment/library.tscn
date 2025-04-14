@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://d4dgonbop8ygy"]
+[gd_scene load_steps=37 format=3 uid="uid://d4dgonbop8ygy"]
 
 [ext_resource type="Texture2D" uid="uid://b85kbbob2a0hh" path="res://assets/characters/frostholm/neutral.png" id="1_jtctn"]
 [ext_resource type="Texture2D" uid="uid://120j1ta6afcx" path="res://assets/environment/props/Seat.png" id="2_cqnjh"]
@@ -13,11 +13,26 @@
 [ext_resource type="Texture2D" uid="uid://c5gkp3pcwksoa" path="res://assets/environment/props/Candle 1.png" id="12_fh3wo"]
 [ext_resource type="Texture2D" uid="uid://dqpr258weyxql" path="res://assets/environment/props/Candle 2.png" id="13_ds0vu"]
 [ext_resource type="Script" uid="uid://dhe8ih4jwgodq" path="res://scenes/dialogue/environment/PropDisplay.cs" id="13_hdk4r"]
-[ext_resource type="Texture2D" uid="uid://83a83sx7qjl5" path="res://assets/items/book_disproving_snurch_2.png" id="14_kt6u6"]
-[ext_resource type="Texture2D" uid="uid://103uxyj21jl2" path="res://assets/items/book_disproving_snurch_3.png" id="15_w8eku"]
+[ext_resource type="Texture2D" uid="uid://crf7bw24tayfj" path="res://assets/items/feather_1.png" id="15_bwry6"]
 [ext_resource type="Texture2D" uid="uid://w7eint5yll7f" path="res://assets/items/escargots_1.png" id="16_hdk4r"]
-[ext_resource type="Texture2D" uid="uid://dgec3afy1uomh" path="res://assets/items/escargots_2.png" id="17_w8eku"]
-[ext_resource type="Texture2D" uid="uid://chacrfsnt52yy" path="res://assets/items/escargots_3.png" id="18_r7o8u"]
+[ext_resource type="Texture2D" uid="uid://dmlmo2rha7qmw" path="res://assets/items/fox_tail_1.png" id="16_kt6u6"]
+[ext_resource type="Texture2D" uid="uid://ch3g5bal5npw0" path="res://assets/items/frog_potion_1.png" id="17_kt6u6"]
+[ext_resource type="Texture2D" uid="uid://yicavtnt2uxs" path="res://assets/items/holy_snail_painting.png" id="18_w8eku"]
+[ext_resource type="Texture2D" uid="uid://bytf0g5obmdce" path="res://assets/items/human_teeth_dress_1.png" id="19_r7o8u"]
+[ext_resource type="Texture2D" uid="uid://dc5u7bwv4i77e" path="res://assets/items/kibble_1.png" id="20_83x1b"]
+[ext_resource type="Texture2D" uid="uid://cert080un13c6" path="res://assets/items/pitchfork_1.png" id="21_g87qu"]
+[ext_resource type="Texture2D" uid="uid://d0hal7h52iifu" path="res://assets/items/raw_reindeer_meat_1.png" id="22_1po7p"]
+[ext_resource type="Texture2D" uid="uid://cp3u8wo2xpb4y" path="res://assets/items/shock_collar_1.png" id="23_xoed5"]
+[ext_resource type="Texture2D" uid="uid://tmkw2batrlb0" path="res://assets/items/snail_bracelet_1.png" id="24_sxisb"]
+[ext_resource type="Texture2D" uid="uid://s61nfx7gkaia" path="res://assets/items/snowman_1.png" id="25_b5ask"]
+[ext_resource type="Texture2D" uid="uid://4j0a0sub5a5d" path="res://assets/items/snurch_gospel_book_1.png" id="26_2fs6e"]
+[ext_resource type="Texture2D" uid="uid://cim875sxhlha5" path="res://assets/items/sunglasses_1.png" id="27_fcd0m"]
+[ext_resource type="Texture2D" uid="uid://crb4dd5ovpjos" path="res://assets/items/umbrella_1.png" id="28_7lvdt"]
+[ext_resource type="Texture2D" uid="uid://ctwbgcb6ikynn" path="res://assets/items/voodoo_doll_1.png" id="29_wx4u4"]
+[ext_resource type="Texture2D" uid="uid://cu08v0swsxlq4" path="res://assets/items/voodoo_book_1.png" id="30_hajcf"]
+[ext_resource type="Texture2D" uid="uid://cowlciskc8teb" path="res://assets/items/wolf_claw_1.png" id="31_f8oqy"]
+[ext_resource type="Texture2D" uid="uid://clqf28oqhcmis" path="res://assets/items/wolf_pendant_1.png" id="32_68ab7"]
+[ext_resource type="Texture2D" uid="uid://dsqn2fqxfkk8c" path="res://assets/items/wolf_potion_1.png" id="33_ytlul"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_gw1xy"]
 blend_mode = 1
@@ -116,62 +131,227 @@ offset = Vector2(-627.259, 156.815)
 layer = 4
 follow_viewport_enabled = true
 
-[node name="Book1" type="Sprite2D" parent="Items"]
+[node name="Book Disproving Snurch" type="Sprite2D" parent="Items"]
 visible = false
 position = Vector2(848, 389)
 scale = Vector2(0.396814, 0.396814)
 texture = ExtResource("12_bwry6")
 script = ExtResource("13_hdk4r")
-PropName = &"book_disproving_snurch"
+PropName = &"Book Disproving Snurch"
 Variant = 1
 metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
-[node name="Book2" type="Sprite2D" parent="Items"]
-visible = false
-position = Vector2(848, 389)
-scale = Vector2(0.396814, 0.396814)
-texture = ExtResource("14_kt6u6")
-script = ExtResource("13_hdk4r")
-PropName = &"book_disproving_snurch"
-Variant = 2
-metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
-
-[node name="Book3" type="Sprite2D" parent="Items"]
-visible = false
-position = Vector2(848, 389)
-scale = Vector2(0.396814, 0.396814)
-texture = ExtResource("15_w8eku")
-script = ExtResource("13_hdk4r")
-PropName = &"book_disproving_snurch"
-Variant = 3
-metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
-
-[node name="Escargot1" type="Sprite2D" parent="Items"]
+[node name="Escargots" type="Sprite2D" parent="Items"]
 visible = false
 position = Vector2(848, 389)
 scale = Vector2(0.396814, 0.396814)
 texture = ExtResource("16_hdk4r")
 script = ExtResource("13_hdk4r")
-PropName = &"escargots"
+PropName = &"Escargots"
 Variant = 1
 metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
-[node name="Escargot2" type="Sprite2D" parent="Items"]
+[node name="Feather" type="Sprite2D" parent="Items"]
 visible = false
 position = Vector2(848, 389)
 scale = Vector2(0.396814, 0.396814)
-texture = ExtResource("17_w8eku")
+texture = ExtResource("15_bwry6")
 script = ExtResource("13_hdk4r")
-PropName = &"escargots"
-Variant = 2
+PropName = &"Feather"
+Variant = 1
 metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
-[node name="Escargot3" type="Sprite2D" parent="Items"]
+[node name="Fox Tail" type="Sprite2D" parent="Items"]
 visible = false
 position = Vector2(848, 389)
 scale = Vector2(0.396814, 0.396814)
-texture = ExtResource("18_r7o8u")
+texture = ExtResource("16_kt6u6")
 script = ExtResource("13_hdk4r")
-PropName = &"escargots"
-Variant = 3
+PropName = &"Fox Tail"
+Variant = 1
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Frog Potion" type="Sprite2D" parent="Items"]
+visible = false
+position = Vector2(848, 389)
+scale = Vector2(0.396814, 0.396814)
+texture = ExtResource("17_kt6u6")
+script = ExtResource("13_hdk4r")
+PropName = &"Frog Potion"
+Variant = 1
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Holy Snail Painting" type="Sprite2D" parent="Items"]
+visible = false
+position = Vector2(876.748, 330.51)
+rotation = 0.0171563
+scale = Vector2(0.472363, 0.472363)
+texture = ExtResource("18_w8eku")
+script = ExtResource("13_hdk4r")
+PropName = &"Holy Snail Painting"
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Human Teeth Dress" type="Sprite2D" parent="Items"]
+visible = false
+position = Vector2(876.748, 330.51)
+rotation = 0.0171563
+scale = Vector2(0.472363, 0.472363)
+texture = ExtResource("19_r7o8u")
+script = ExtResource("13_hdk4r")
+PropName = &"Human Teeth Dress"
+Variant = 1
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Kibble" type="Sprite2D" parent="Items"]
+visible = false
+position = Vector2(876.748, 330.51)
+rotation = 0.0171563
+scale = Vector2(0.472363, 0.472363)
+texture = ExtResource("20_83x1b")
+script = ExtResource("13_hdk4r")
+PropName = &"Kibble"
+Variant = 1
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Pitchfork" type="Sprite2D" parent="Items"]
+visible = false
+position = Vector2(876.748, 330.51)
+rotation = 0.0171563
+scale = Vector2(0.472363, 0.472363)
+texture = ExtResource("21_g87qu")
+script = ExtResource("13_hdk4r")
+PropName = &"Pitchfork"
+Variant = 1
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Raw Reindeer Meat" type="Sprite2D" parent="Items"]
+visible = false
+position = Vector2(876.748, 330.51)
+rotation = 0.0171563
+scale = Vector2(0.472363, 0.472363)
+texture = ExtResource("22_1po7p")
+script = ExtResource("13_hdk4r")
+PropName = &"Raw Reindeer Meat"
+Variant = 1
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Shock Collar" type="Sprite2D" parent="Items"]
+visible = false
+position = Vector2(876.748, 330.51)
+rotation = 0.0171563
+scale = Vector2(0.472363, 0.472363)
+texture = ExtResource("23_xoed5")
+script = ExtResource("13_hdk4r")
+PropName = &"Shock Collar"
+Variant = 1
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Snail Bracelet" type="Sprite2D" parent="Items"]
+visible = false
+position = Vector2(876.748, 330.51)
+rotation = 0.0171563
+scale = Vector2(0.472363, 0.472363)
+texture = ExtResource("24_sxisb")
+script = ExtResource("13_hdk4r")
+PropName = &"Snail Bracelet"
+Variant = 1
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Snowman" type="Sprite2D" parent="Items"]
+visible = false
+position = Vector2(876.748, 330.51)
+rotation = 0.0171563
+scale = Vector2(0.472363, 0.472363)
+texture = ExtResource("25_b5ask")
+script = ExtResource("13_hdk4r")
+PropName = &"Snowman"
+Variant = 1
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Snuch Gospel Book" type="Sprite2D" parent="Items"]
+visible = false
+position = Vector2(876.748, 330.51)
+rotation = 0.0171563
+scale = Vector2(0.472363, 0.472363)
+texture = ExtResource("26_2fs6e")
+script = ExtResource("13_hdk4r")
+PropName = &"Snurch Gospel Book"
+Variant = 1
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Sunglasses" type="Sprite2D" parent="Items"]
+visible = false
+position = Vector2(876.748, 330.51)
+rotation = 0.0171563
+scale = Vector2(0.472363, 0.472363)
+texture = ExtResource("27_fcd0m")
+script = ExtResource("13_hdk4r")
+PropName = &"Sunglasses"
+Variant = 1
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Umbrella" type="Sprite2D" parent="Items"]
+visible = false
+position = Vector2(876.748, 330.51)
+rotation = 0.0171563
+scale = Vector2(0.472363, 0.472363)
+texture = ExtResource("28_7lvdt")
+script = ExtResource("13_hdk4r")
+PropName = &"Umbrella"
+Variant = 1
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Voodoo Doll" type="Sprite2D" parent="Items"]
+visible = false
+position = Vector2(876.748, 330.51)
+rotation = 0.0171563
+scale = Vector2(0.472363, 0.472363)
+texture = ExtResource("29_wx4u4")
+script = ExtResource("13_hdk4r")
+PropName = &"Voodoo Doll"
+Variant = 1
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Voodoo Book" type="Sprite2D" parent="Items"]
+visible = false
+position = Vector2(876.748, 330.51)
+rotation = 0.0171563
+scale = Vector2(0.472363, 0.472363)
+texture = ExtResource("30_hajcf")
+script = ExtResource("13_hdk4r")
+PropName = &"Voodoo Book"
+Variant = 1
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Wolf Claw" type="Sprite2D" parent="Items"]
+visible = false
+position = Vector2(876.748, 330.51)
+rotation = 0.0171563
+scale = Vector2(0.472363, 0.472363)
+texture = ExtResource("31_f8oqy")
+script = ExtResource("13_hdk4r")
+PropName = &"Wolf Claw"
+Variant = 1
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Wolf Pendant" type="Sprite2D" parent="Items"]
+visible = false
+position = Vector2(876.748, 330.51)
+rotation = 0.0171563
+scale = Vector2(0.472363, 0.472363)
+texture = ExtResource("32_68ab7")
+script = ExtResource("13_hdk4r")
+PropName = &"Wolf Pendant"
+Variant = 1
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Wolf Potion" type="Sprite2D" parent="Items"]
+visible = false
+position = Vector2(876.748, 330.51)
+rotation = 0.0171563
+scale = Vector2(0.472363, 0.472363)
+texture = ExtResource("33_ytlul")
+script = ExtResource("13_hdk4r")
+PropName = &"Wolf Potion"
+Variant = 1
 metadata/_custom_type_script = "uid://dhe8ih4jwgodq"

@@ -8,8 +8,8 @@ namespace DamselsGambit.Environment;
 [Tool, GlobalClass]
 public partial class PropDisplay : Sprite2D, IEnvironmentDisplay
 {
-	[Export] public StringName PropName { get; set { field = value; UpdateTexture(); } }
-	[Export] public int Variant { get; set { field = value; UpdateTexture(); } }
+	[Export] public StringName PropName { get => !string.IsNullOrEmpty(field) ? field : Name; set { field = value; UpdateTexture(); } } = "";
+	[Export] public int Variant { get; set { field = value; UpdateTexture(); } } = 0;
 
 	private string TexturePath { get; set { field = value; Texture = ResourceLoader.Exists(TexturePath) ? ResourceLoader.Load<Texture2D>(TexturePath) : new PlaceholderTexture2D() { Size = new(200,200) }; } }
 

@@ -64,7 +64,11 @@ static class AnimationDialogueCommands
     });
 
     [YarnCommand("show")]
-    public static void Show(string itemName) => RunCommandDeferred(() => EnvironmentManager.GetAllItems(itemName)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, true)));
+    public static void Show(string itemName, int variant = -1) => RunCommandDeferred(() =>
+        EnvironmentManager.GetAllItems(itemName)?.ForEach(x => {
+                x?.Set(CanvasItem.PropertyName.Visible, true);
+                if (variant >= 0 && x is PropDisplay propDisplay) propDisplay.Variant = variant;
+            }));
 
     [YarnCommand("hide")]
     public static void Hide(string itemName) => RunCommandDeferred(() => EnvironmentManager.GetAllItems(itemName)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, false)));
