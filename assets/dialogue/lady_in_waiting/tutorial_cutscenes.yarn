@@ -132,7 +132,9 @@ title: lady_in_waiting__ending__return_point_happy
 Lady in Waiting: FILLER LINE WHY DOES THIS GET SKIPPED? IDK. NEED TO FIX
 <<emote lady_in_waiting happy>>
 Lady in Waiting: Good luck, Princess. I'll always be here to support you.
+Lady in Waiting: FILLER LINE WHY DOES THIS GET SKIPPED? IDK. NEED TO FIX
 <<hide_box>>
+<<profile hide>>
 <<fade out lady_in_waiting 1>>
 <<wait 1>>
 <<fade out chamber 1.5>>
@@ -144,7 +146,9 @@ title: lady_in_waiting__ending__return_point_neutral
 Lady in Waiting: FILLER LINE WHY DOES THIS GET SKIPPED? IDK. NEED TO FIX
 <<emote lady_in_waiting neutral_mouth_open>>
 Lady in Waiting: Good luck, Princess. I'll always be here to support you.
+Lady in Waiting: FILLER LINE WHY DOES THIS GET SKIPPED? IDK. NEED TO FIX
 <<hide_box>>
+<<profile hide>>
 <<fade out lady_in_waiting 1>>
 <<wait 1>>
 <<fade out chamber 1.5>>

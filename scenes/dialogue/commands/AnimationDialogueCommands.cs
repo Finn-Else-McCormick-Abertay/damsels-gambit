@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System;
 using DamselsGambit.Util;
 using DamselsGambit.Environment;
+using System.Reflection;
 
 namespace DamselsGambit.Dialogue;
 
@@ -14,6 +15,7 @@ static class AnimationDialogueCommands
     private static readonly Queue<Timer> Timers = [];
 
     private static void RunCommandDeferred(Action action) {
+        //Console.Info($"Command Queued: {action.GetMethodInfo()}");
         var timer = Timers.LastOrDefault();
         if (timer is not null) {
             var awaiter = timer.ToSignal(timer, Timer.SignalName.Timeout);
@@ -74,12 +76,16 @@ static class AnimationDialogueCommands
     public static void Hide(string itemName) => RunCommandDeferred(() => EnvironmentManager.GetAllItems(itemName)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, false)));
 
     [YarnCommand("hide_box")]
-    public static void HideBox() => RunCommandDeferred(() => DialogueManager.DialogueViews?.ForEach(x => x.HideBox()));
+    public static void HideBox() => RunCommandDeferred(() => {
+        Console.Info("Dialogue Command 'hide_box' called");
+        DialogueManager.DialogueViews?.ForEach(x => x.HideBox());
+    });
 
     [YarnCommand("profile")]
     public static void Profile(string action) => RunCommandDeferred(() => {
         if (action.MatchN("open") || action.MatchN("close")) GameManager.NotebookMenu.Open = action.MatchN("open");
         if (action.MatchN("under") || action.MatchN("over")) GameManager.NotebookMenu.OverDialogue = action.MatchN("over");
+        if (action.MatchN("show") || action.MatchN("hide")) GameManager.NotebookMenu.Visible = action.MatchN("show");
     });
 
     [YarnCommand("open_profile")]

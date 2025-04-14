@@ -7,6 +7,7 @@ title: frostholm__intro
 <<wait 1.5>>
 <<fade in frostholm 1>>
 <<wait 1>>
+<<profile show>>
 ===
 
 title: frostholm__skip_setup
@@ -14,4 +15,5 @@ title: frostholm__skip_setup
 <<scene library>>
 <<show frostholm>>
 <<emote frostholm neutral>>
+<<profile show>>
 ===
