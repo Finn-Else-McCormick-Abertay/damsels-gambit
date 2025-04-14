@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://d4dgonbop8ygy"]
+[gd_scene load_steps=22 format=3 uid="uid://d4dgonbop8ygy"]
 
 [ext_resource type="Texture2D" uid="uid://b85kbbob2a0hh" path="res://assets/characters/frostholm/neutral.png" id="1_jtctn"]
 [ext_resource type="Texture2D" uid="uid://120j1ta6afcx" path="res://assets/environment/props/Seat.png" id="2_cqnjh"]
@@ -16,6 +16,8 @@
 [ext_resource type="Texture2D" uid="uid://83a83sx7qjl5" path="res://assets/items/book_disproving_snurch_2.png" id="14_kt6u6"]
 [ext_resource type="Texture2D" uid="uid://103uxyj21jl2" path="res://assets/items/book_disproving_snurch_3.png" id="15_w8eku"]
 [ext_resource type="Texture2D" uid="uid://w7eint5yll7f" path="res://assets/items/escargots_1.png" id="16_hdk4r"]
+[ext_resource type="Texture2D" uid="uid://dgec3afy1uomh" path="res://assets/items/escargots_2.png" id="17_w8eku"]
+[ext_resource type="Texture2D" uid="uid://chacrfsnt52yy" path="res://assets/items/escargots_3.png" id="18_r7o8u"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_gw1xy"]
 blend_mode = 1
@@ -115,33 +117,61 @@ layer = 4
 follow_viewport_enabled = true
 
 [node name="Book1" type="Sprite2D" parent="Items"]
+visible = false
 position = Vector2(848, 389)
 scale = Vector2(0.396814, 0.396814)
 texture = ExtResource("12_bwry6")
 script = ExtResource("13_hdk4r")
-PropName = &"book_disproving_snurch_1"
+PropName = &"book_disproving_snurch"
+Variant = 1
 metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Book2" type="Sprite2D" parent="Items"]
+visible = false
 position = Vector2(848, 389)
 scale = Vector2(0.396814, 0.396814)
 texture = ExtResource("14_kt6u6")
 script = ExtResource("13_hdk4r")
-PropName = &"book_disproving_snurch_2"
+PropName = &"book_disproving_snurch"
+Variant = 2
 metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Book3" type="Sprite2D" parent="Items"]
+visible = false
 position = Vector2(848, 389)
 scale = Vector2(0.396814, 0.396814)
 texture = ExtResource("15_w8eku")
 script = ExtResource("13_hdk4r")
-PropName = &"book_disproving_snurch_3"
+PropName = &"book_disproving_snurch"
+Variant = 3
 metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Escargot1" type="Sprite2D" parent="Items"]
+visible = false
 position = Vector2(848, 389)
 scale = Vector2(0.396814, 0.396814)
 texture = ExtResource("16_hdk4r")
 script = ExtResource("13_hdk4r")
-PropName = &"escargot_1"
+PropName = &"escargots"
+Variant = 1
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Escargot2" type="Sprite2D" parent="Items"]
+visible = false
+position = Vector2(848, 389)
+scale = Vector2(0.396814, 0.396814)
+texture = ExtResource("17_w8eku")
+script = ExtResource("13_hdk4r")
+PropName = &"escargots"
+Variant = 2
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Escargot3" type="Sprite2D" parent="Items"]
+visible = false
+position = Vector2(848, 389)
+scale = Vector2(0.396814, 0.396814)
+texture = ExtResource("18_r7o8u")
+script = ExtResource("13_hdk4r")
+PropName = &"escargots"
+Variant = 3
 metadata/_custom_type_script = "uid://dhe8ih4jwgodq"

@@ -1,13 +1,19 @@
 using Godot;
 using System;
 using DamselsGambit.Dialogue;
+using DamselsGambit.Util;
 
 namespace DamselsGambit.Environment;
 
-[GlobalClass]
+[Tool, GlobalClass]
 public partial class PropDisplay : Sprite2D, IEnvironmentDisplay
 {
-	[Export] public StringName PropName { get; set; }
+	[Export] public StringName PropName { get; set { field = value; UpdateTexture(); } }
+	[Export] public int Variant { get; set { field = value; UpdateTexture(); } }
+
+	private string TexturePath { get; set { field = value; Texture = ResourceLoader.Exists(TexturePath) ? ResourceLoader.Load<Texture2D>(TexturePath) : new PlaceholderTexture2D() { Size = new(200,200) }; } }
+
+	private void UpdateTexture() => TexturePath = $"res://assets/items/{Case.ToSnake(PropName)}{(Variant > 0 ? $"_{Variant}" : "")}.png";
 	
 	private bool _initiallyVisible;
 
