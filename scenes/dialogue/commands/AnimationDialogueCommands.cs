@@ -73,23 +73,48 @@ static class AnimationDialogueCommands
         }));
     
     [YarnCommand("prop")]
-    public static void Prop(string action, string itemName, string actionArg = "", float moveSpeed = 1f, float waitTime = 2f) {
+    public static void Prop(string action, string itemName, string actionArg = "") {
         action = action.Trim().ToLower();
         if (action == "variant") Variant(itemName, actionArg);
         else if (action == "animate") {
             actionArg = actionArg.Trim().ToLower();
+            float moveSpeed = 1f, waitTime = 2f; 
             if (actionArg.IsAnyOf("in", "enter", "full", "inout", "")) {
-                Move(itemName, 0f, 200f, 0);
-                Move(itemName, 0f, -200f, moveSpeed);
-                Fade("in", itemName, moveSpeed);
-                After(moveSpeed);
+                var validPlayers = EnvironmentManager.GetAllAnimationPlayers().Where(x => x.HasAnimation("item_enter"));
+                if (validPlayers.Any()) {
+                    float timeToBlock = 0f;
+                    foreach (var player in validPlayers) {
+                        player.Play("item_enter"); player.Advance(0);
+                        timeToBlock = MathF.Max(timeToBlock, (float)player.CurrentAnimationLength);
+                    }
+                    Fade("in", itemName, timeToBlock);
+                    After(timeToBlock);
+                }
+                else {
+                    Move(itemName, 0f, 200f, 0);
+                    Move(itemName, 0f, -200f, moveSpeed);
+                    Fade("in", itemName, moveSpeed);
+                    After(moveSpeed);
+                }
             }
             if (actionArg.IsAnyOf("full", "inout", "")) After(waitTime);
             if (actionArg.IsAnyOf("out", "exit", "full", "inout", "")) {
-                Move(itemName, 0f, -200f, moveSpeed);
-                Fade("out", itemName, moveSpeed);
-                After(moveSpeed);
-                Move(itemName, 0f, 200f, 0);
+                var validPlayers = EnvironmentManager.GetAllAnimationPlayers().Where(x => x.HasAnimation("item_exit"));
+                if (validPlayers.Any()) {
+                    float timeToBlock = 0f;
+                    foreach (var player in validPlayers) {
+                        player.Play("item_enter"); player.Advance(0);
+                        timeToBlock = MathF.Max(timeToBlock, (float)player.CurrentAnimationLength);
+                    }
+                    Fade("out", itemName, timeToBlock);
+                    After(timeToBlock);
+                }
+                else {
+                    Move(itemName, 0f, -200f, moveSpeed);
+                    Fade("out", itemName, moveSpeed);
+                    After(moveSpeed);
+                    Move(itemName, 0f, 200f, 0);
+                }
             }
         }
     }
@@ -120,6 +145,18 @@ static class AnimationDialogueCommands
             if (from == "from" && !string.IsNullOrWhiteSpace(revertFrom) && display.SpriteName != revertFrom) return;
             display.Show(); display.SpriteName = emotionName;
         }));
+    
+    [YarnCommand("animation")]
+    public static void Animation(string animationName, bool block = false) => RunCommandDeferred(() => {
+        float timeToBlock = 0f;
+        foreach (var animationPlayer in EnvironmentManager.GetAllAnimationPlayers()) {
+            if (animationPlayer.HasAnimation(animationName)) {
+                animationPlayer.Play(animationName); animationPlayer.Advance(0);
+                timeToBlock = MathF.Max(timeToBlock, (float)animationPlayer.CurrentAnimationLength);
+            }
+        }
+        if (block && timeToBlock > 0f) After(timeToBlock);
+    });
 
     [YarnCommand("move")]
     public static void Move(string itemName, float x, float y, float time = 0f) => RunCommandDeferred(()
@@ -142,7 +179,7 @@ static class AnimationDialogueCommands
 
         foreach (var layer in EnvironmentManager.GetEnvironmentLayers(itemName)) {
             if (time <= 0f) { if (inOut == "in") layer.Show(); else if (inOut == "out") layer.Hide(); continue; }
-            var layerItems = layer.GetChildren().Cast<CanvasItem>().WhereExists().Where(x => !affectedItems.Contains(x));
+            var layerItems = layer.GetChildren().Where(x => x is CanvasItem).Cast<CanvasItem>().Where(x => !affectedItems.Contains(x));
 
             layer.Show();
 

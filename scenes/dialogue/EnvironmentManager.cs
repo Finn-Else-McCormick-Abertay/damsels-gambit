@@ -32,9 +32,13 @@ public partial class EnvironmentManager : Node
     public static IEnumerable<Node> GetEnvironmentItems(string environmentName) => Instance?._environments?.GetValueOrDefault(environmentName)?.GetSelfAndChildren()?.Where(node => node is CanvasLayer || node is CanvasItem) ?? [];
     // Get all CanvasLayers within given environment
     public static IEnumerable<CanvasLayer> GetEnvironmentLayers(string environmentName) => Instance?._environments?.GetValueOrDefault(environmentName)?.GetSelfAndChildren()?.Where(x => x is CanvasLayer)?.Select(x => x as CanvasLayer) ?? [];
+    // Get all AnimationPlayers within given environment
+    public static IEnumerable<AnimationPlayer> GetEnvironmentAnimationPlayers(string environmentName) => Instance?._environments?.GetValueOrDefault(environmentName)?.FindChildrenOfType<AnimationPlayer>() ?? [];
 
     // Get all possible items for a given item name, including CharacterDisplays, PropDisplays and environment items.
     public static IEnumerable<Node> GetAllItems(string itemName) => GetEnvironmentItems(itemName)?.Concat(GetCharacterDisplays(itemName))?.Concat(GetPropDisplays(itemName))?.Distinct() ?? [];
+    
+    public static IEnumerable<AnimationPlayer> GetAllAnimationPlayers() => GetEnvironmentNames()?.SelectMany(GetEnvironmentAnimationPlayers);
     
     private readonly Node _environmentRoot = new() { Name = "EnvironmentRoot" };
     private readonly Dictionary<string, Node> _environments = [];
