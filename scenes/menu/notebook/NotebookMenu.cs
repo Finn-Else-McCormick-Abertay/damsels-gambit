@@ -86,6 +86,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 	public bool InPauseMenu { get; set { field = value; UpdateState(); if (PauseMenu.IsValid()) PauseMenu.Active = InPauseMenu; } } = false;
 
 	public bool OverDialogue { get; set { field = value; GameManager.SetLayer("notebook", OverDialogue switch { _ when InPauseMenu => 25, true => 25, false => 22 }); } }
+	private bool _returnVisibleState = true;
 	
 	private readonly Dictionary<Node, Tween> _tweens = [];
 	private Tween CreateTweenFor(Node node) {
@@ -102,6 +103,8 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 
 	private void AnimateStateChange(AnimationState oldState, AnimationState newState) {
 		if (oldState == newState) return;
+
+		if (newState == AnimationState.PauseMenu) { _returnVisibleState = Visible; Visible = true; }
 
 		double duration = newState switch {
 			AnimationState.Open => OpenDuration,
@@ -123,6 +126,11 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 		CreateTweenFor(CoverPivot)?.TweenProperty(CoverPivot, Control.PropertyName.Rotation + ":y", coverAngle, duration);
 
 		ProfilePage?.FadeShadows(newState switch { AnimationState.Open => false, _ => true }, duration);
+		
+		if (oldState == AnimationState.PauseMenu) {
+			rootTween?.SetParallel(false);
+			rootTween?.TweenCallback(() => { Visible = _returnVisibleState; });
+		}
 
 		if (oldState == AnimationState.PauseMenu || newState == AnimationState.PauseMenu) {
 			void UpdateLayer() => GameManager.SetLayer("notebook", newState == AnimationState.PauseMenu ? 25 : OverDialogue ? 25 : 22);
