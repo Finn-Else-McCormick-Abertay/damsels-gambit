@@ -3,6 +3,7 @@ title: frostholm__give_food
 Princess Penelope: I got you something to eat!...
 	-> Escargot!
 		<<score -3>>
+		<<show escargot>>
 	-> Fresh, raw, reindeer meat! <<if knows("native_animals")>>
 		<<score 6>>
 	-> Have this bug fondue!

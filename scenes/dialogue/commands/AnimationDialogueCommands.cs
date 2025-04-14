@@ -109,43 +109,45 @@ static class AnimationDialogueCommands
 
     [YarnCommand("fade")]
     public static void Fade(string inOut, string itemName, float time) => RunCommandDeferred(() => {
-        var affectedLayers = EnvironmentManager.GetEnvironmentLayers(itemName);
-        var affectedItems =
-            affectedLayers.Aggregate((IEnumerable<CanvasItem>)[], (items, layer) => items.Concat(layer.GetChildren().Cast<CanvasItem>().WhereExists()))
-            .Concat(EnvironmentManager.GetCharacterDisplays(itemName).Cast<CanvasItem>())
-            .Concat(EnvironmentManager.GetPropDisplays(itemName).Cast<CanvasItem>())
-            .Distinct();
+        inOut = inOut.ToLower().Trim();
+        if (inOut != "in" && inOut != "out") return;
 
-        if (time <= 0f) {
-            foreach (var item in affectedItems) if (inOut == "in") item.Show(); else if (inOut == "out") item.Hide();
-            foreach (var layer in affectedLayers) if (inOut == "in") layer.Show(); else if (inOut == "out") layer.Hide();
-            return;
+        IEnumerable<CanvasItem> affectedItems = EnvironmentManager.GetCharacterDisplays(itemName).Cast<CanvasItem>().Concat(EnvironmentManager.GetPropDisplays(itemName).Cast<CanvasItem>());
+
+        foreach (var layer in EnvironmentManager.GetEnvironmentLayers(itemName)) {
+            if (time <= 0f) { if (inOut == "in") layer.Show(); else if (inOut == "out") layer.Hide(); continue; }
+            var layerItems = layer.GetChildren().Cast<CanvasItem>().WhereExists().Where(x => !affectedItems.Contains(x));
+
+            layer.Show();
+
+            foreach (var item in layerItems) {
+                if (!item.Visible) continue;
+
+                float target = inOut switch { "in" => 1f, _ => 0f };
+                item.Modulate = item.Modulate with { A = inOut switch { "in" => 0f, _ => item.Modulate.A } };
+                
+                var tween = item.CreateTween();
+                tween.TweenProperty(item, "modulate:a", target, time);
+            }
+
+            if (inOut == "out") {
+                var layerTween = layer.CreateTween();
+                layerTween.TweenInterval(time);
+                layerTween.TweenCallback(() => { layer.Hide(); foreach (var item in layerItems) item.Modulate = item.Modulate with { A = 1f }; });    
+            }
         }
 
+        if (time <= 0f) { foreach (var item in affectedItems) { if (inOut == "in") item.Show(); else if (inOut == "out") item.Hide(); } return; }
+
         foreach (var item in affectedItems) {
-            float target;
-            if (inOut == "in") { item.Modulate = item.Modulate with { A = 0f }; target = 1f; }
-            else if (inOut == "out") {
-                item.Modulate = item.Modulate with { A = item.Modulate.A }; target = 0f;
-                if (!item.Visible) continue;
-            }
-            else continue;
+            float target = inOut switch { "in" => 1f, _ => 0f };
+            item.Modulate = item.Modulate with { A = inOut switch { "in" => 0f, _ => item.Modulate.A } };
             
             item.Show();
 
             var tween = item.CreateTween();
             tween.TweenProperty(item, "modulate:a", target, time);
-
-            //if (inOut == "out") tween.TweenCallback(Callable.From(item.Hide));
-        }
-        
-        foreach (var layer in affectedLayers) {
-            layer.Show();
-            if (inOut == "out") {
-                var tween = layer.CreateTween();
-                tween.TweenInterval(time);
-                tween.TweenCallback(Callable.From(layer.Hide));
-            }
+            if (inOut == "out") tween.TweenCallback(item.Hide);
         }
     });
 }

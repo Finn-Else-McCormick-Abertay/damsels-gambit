@@ -14,7 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://dqpr258weyxql" path="res://assets/environment/props/Candle 2.png" id="13_ds0vu"]
 [ext_resource type="Script" uid="uid://dhe8ih4jwgodq" path="res://scenes/dialogue/environment/PropDisplay.cs" id="13_hdk4r"]
 [ext_resource type="Texture2D" uid="uid://crf7bw24tayfj" path="res://assets/items/feather_1.png" id="15_bwry6"]
-[ext_resource type="Texture2D" uid="uid://w7eint5yll7f" path="res://assets/items/escargots_1.png" id="16_hdk4r"]
+[ext_resource type="Texture2D" uid="uid://w7eint5yll7f" path="res://assets/items/escargot_1.png" id="16_hdk4r"]
 [ext_resource type="Texture2D" uid="uid://dmlmo2rha7qmw" path="res://assets/items/fox_tail_1.png" id="16_kt6u6"]
 [ext_resource type="Texture2D" uid="uid://ch3g5bal5npw0" path="res://assets/items/frog_potion_1.png" id="17_kt6u6"]
 [ext_resource type="Texture2D" uid="uid://yicavtnt2uxs" path="res://assets/items/holy_snail_painting.png" id="18_w8eku"]
@@ -128,12 +128,12 @@ texture = ExtResource("13_ds0vu")
 offset = Vector2(-627.259, 156.815)
 
 [node name="Items" type="CanvasLayer" parent="."]
-layer = 4
+layer = 21
 follow_viewport_enabled = true
 
 [node name="Book Disproving Snurch" type="Sprite2D" parent="Items"]
 visible = false
-position = Vector2(848, 389)
+position = Vector2(848, 336.294)
 scale = Vector2(0.396814, 0.396814)
 texture = ExtResource("12_bwry6")
 script = ExtResource("13_hdk4r")
@@ -141,19 +141,19 @@ PropName = &"Book Disproving Snurch"
 Variant = 1
 metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
-[node name="Escargots" type="Sprite2D" parent="Items"]
+[node name="Escargot" type="Sprite2D" parent="Items"]
 visible = false
-position = Vector2(848, 389)
+position = Vector2(848, 336.294)
 scale = Vector2(0.396814, 0.396814)
 texture = ExtResource("16_hdk4r")
 script = ExtResource("13_hdk4r")
-PropName = &"Escargots"
+PropName = &"Escargot"
 Variant = 1
 metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Feather" type="Sprite2D" parent="Items"]
 visible = false
-position = Vector2(848, 389)
+position = Vector2(848, 336.294)
 scale = Vector2(0.396814, 0.396814)
 texture = ExtResource("15_bwry6")
 script = ExtResource("13_hdk4r")
@@ -163,7 +163,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Fox Tail" type="Sprite2D" parent="Items"]
 visible = false
-position = Vector2(848, 389)
+position = Vector2(848, 336.294)
 scale = Vector2(0.396814, 0.396814)
 texture = ExtResource("16_kt6u6")
 script = ExtResource("13_hdk4r")
@@ -173,7 +173,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Frog Potion" type="Sprite2D" parent="Items"]
 visible = false
-position = Vector2(848, 389)
+position = Vector2(848, 336.294)
 scale = Vector2(0.396814, 0.396814)
 texture = ExtResource("17_kt6u6")
 script = ExtResource("13_hdk4r")
@@ -183,7 +183,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Holy Snail Painting" type="Sprite2D" parent="Items"]
 visible = false
-position = Vector2(876.748, 330.51)
+position = Vector2(876.748, 277.804)
 rotation = 0.0171563
 scale = Vector2(0.472363, 0.472363)
 texture = ExtResource("18_w8eku")
@@ -193,7 +193,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Human Teeth Dress" type="Sprite2D" parent="Items"]
 visible = false
-position = Vector2(876.748, 330.51)
+position = Vector2(876.748, 277.804)
 rotation = 0.0171563
 scale = Vector2(0.472363, 0.472363)
 texture = ExtResource("19_r7o8u")
@@ -204,7 +204,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Kibble" type="Sprite2D" parent="Items"]
 visible = false
-position = Vector2(876.748, 330.51)
+position = Vector2(876.748, 277.804)
 rotation = 0.0171563
 scale = Vector2(0.472363, 0.472363)
 texture = ExtResource("20_83x1b")
@@ -215,7 +215,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Pitchfork" type="Sprite2D" parent="Items"]
 visible = false
-position = Vector2(876.748, 330.51)
+position = Vector2(876.748, 277.804)
 rotation = 0.0171563
 scale = Vector2(0.472363, 0.472363)
 texture = ExtResource("21_g87qu")
@@ -226,7 +226,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Raw Reindeer Meat" type="Sprite2D" parent="Items"]
 visible = false
-position = Vector2(876.748, 330.51)
+position = Vector2(876.748, 277.804)
 rotation = 0.0171563
 scale = Vector2(0.472363, 0.472363)
 texture = ExtResource("22_1po7p")
@@ -237,7 +237,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Shock Collar" type="Sprite2D" parent="Items"]
 visible = false
-position = Vector2(876.748, 330.51)
+position = Vector2(876.748, 277.804)
 rotation = 0.0171563
 scale = Vector2(0.472363, 0.472363)
 texture = ExtResource("23_xoed5")
@@ -248,7 +248,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Snail Bracelet" type="Sprite2D" parent="Items"]
 visible = false
-position = Vector2(876.748, 330.51)
+position = Vector2(876.748, 277.804)
 rotation = 0.0171563
 scale = Vector2(0.472363, 0.472363)
 texture = ExtResource("24_sxisb")
@@ -259,7 +259,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Snowman" type="Sprite2D" parent="Items"]
 visible = false
-position = Vector2(876.748, 330.51)
+position = Vector2(876.748, 277.804)
 rotation = 0.0171563
 scale = Vector2(0.472363, 0.472363)
 texture = ExtResource("25_b5ask")
@@ -270,7 +270,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Snuch Gospel Book" type="Sprite2D" parent="Items"]
 visible = false
-position = Vector2(876.748, 330.51)
+position = Vector2(876.748, 277.804)
 rotation = 0.0171563
 scale = Vector2(0.472363, 0.472363)
 texture = ExtResource("26_2fs6e")
@@ -281,7 +281,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Sunglasses" type="Sprite2D" parent="Items"]
 visible = false
-position = Vector2(876.748, 330.51)
+position = Vector2(876.748, 277.804)
 rotation = 0.0171563
 scale = Vector2(0.472363, 0.472363)
 texture = ExtResource("27_fcd0m")
@@ -292,7 +292,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Umbrella" type="Sprite2D" parent="Items"]
 visible = false
-position = Vector2(876.748, 330.51)
+position = Vector2(876.748, 277.804)
 rotation = 0.0171563
 scale = Vector2(0.472363, 0.472363)
 texture = ExtResource("28_7lvdt")
@@ -303,7 +303,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Voodoo Doll" type="Sprite2D" parent="Items"]
 visible = false
-position = Vector2(876.748, 330.51)
+position = Vector2(876.748, 277.804)
 rotation = 0.0171563
 scale = Vector2(0.472363, 0.472363)
 texture = ExtResource("29_wx4u4")
@@ -314,7 +314,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Voodoo Book" type="Sprite2D" parent="Items"]
 visible = false
-position = Vector2(876.748, 330.51)
+position = Vector2(876.748, 277.804)
 rotation = 0.0171563
 scale = Vector2(0.472363, 0.472363)
 texture = ExtResource("30_hajcf")
@@ -325,7 +325,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Wolf Claw" type="Sprite2D" parent="Items"]
 visible = false
-position = Vector2(876.748, 330.51)
+position = Vector2(876.748, 277.804)
 rotation = 0.0171563
 scale = Vector2(0.472363, 0.472363)
 texture = ExtResource("31_f8oqy")
@@ -336,7 +336,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Wolf Pendant" type="Sprite2D" parent="Items"]
 visible = false
-position = Vector2(876.748, 330.51)
+position = Vector2(876.748, 277.804)
 rotation = 0.0171563
 scale = Vector2(0.472363, 0.472363)
 texture = ExtResource("32_68ab7")
@@ -347,7 +347,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Wolf Potion" type="Sprite2D" parent="Items"]
 visible = false
-position = Vector2(876.748, 330.51)
+position = Vector2(876.748, 277.804)
 rotation = 0.0171563
 scale = Vector2(0.472363, 0.472363)
 texture = ExtResource("33_ytlul")

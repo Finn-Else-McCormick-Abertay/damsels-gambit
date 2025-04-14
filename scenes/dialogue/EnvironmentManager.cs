@@ -46,8 +46,8 @@ public partial class EnvironmentManager : Node
     public static void Deregister(CharacterDisplay display) => Instance?._characterDisplays?.GetValueOrDefault(display.CharacterName)?.Remove(display);
 
     // Called by PropDisplay. Automatically updates our dictionary when PropDisplays enter or exit tree.
-    public static void Register(PropDisplay display) => Instance?._propDisplays?.GetOrAdd(display.PropName, [])?.Add(display);
-    public static void Deregister(PropDisplay display) => Instance?._propDisplays?.GetValueOrDefault(display.PropName)?.Remove(display);
+    public static void Register(PropDisplay display) => Instance?._propDisplays?.GetOrAdd(Case.ToSnake(display.PropName), [])?.Add(display);
+    public static void Deregister(PropDisplay display) => Instance?._propDisplays?.GetValueOrDefault(Case.ToSnake(display.PropName))?.Remove(display);
 
     // Find and load all scenes within the scenes/environment folder, then hide them all.
     public void ReloadEnvironments(bool cleanupExisting = false) {
