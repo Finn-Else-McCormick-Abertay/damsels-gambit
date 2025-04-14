@@ -53,6 +53,7 @@ title: lady_in_waiting__skip_setup
 ---
 <<scene chamber>>
 <<show lady_in_waiting>>
+<<emote lady_in_waiting neutral>>
 <<hide queen>>
 <<profile show>>
 ===
