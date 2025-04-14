@@ -15,7 +15,6 @@ Princess Penelope: I got you something to eat!...
 
 title: frostholm__give_animals
 ---
-<<animation nonexistent_anim>>
 Princess Penelope: I wanted to give you this...
 	-> A feather I found outside from one of our imported birds!
 		<<score 3>>
