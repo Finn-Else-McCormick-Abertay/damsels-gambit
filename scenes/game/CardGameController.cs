@@ -71,7 +71,8 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		foreach (var child in TopicHand.GetChildren()) { TopicHand.RemoveChild(child); child.QueueFree(); }
 		foreach (var child in ActionHand.GetChildren()) { ActionHand.RemoveChild(child); child.QueueFree(); }
 		
-		Hide(); Round = 1;
+		AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide(); PlayButton.Hide();
+		Round = 1;
 	}
 
 	// Has intro ended and game started? Tracked for skip logic
@@ -111,7 +112,8 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		// (Due to how AndThen works, if this dialogue is interrupted by another then the callback will still run when that dialogue ends, which is why force-running the skip setup (see ForceSkipIntro) doesn't break everything)
 		DialogueManager.TryRun(skipIntro ? $"{_suitorId}__skip_setup" : $"{_suitorId}__intro")
 			.AndThen(() => {
-				Show(); GameManager.NotebookMenu.Show();
+				AffectionMeter.Show(); RoundMeter.Show(); TopicHand.Show(); ActionHand.Show(); PlayButton.Show();
+				GameManager.NotebookMenu.Show();
 				Started = true;
 				Round = 1; Deal();
 				EmitSignal(SignalName.RoundStart, Round);
