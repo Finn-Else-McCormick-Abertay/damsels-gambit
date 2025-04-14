@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://cl108jysyilp"]
+[gd_scene load_steps=11 format=3 uid="uid://cl108jysyilp"]
 
 [ext_resource type="Texture2D" uid="uid://2cbl24t405i5" path="res://assets/ui/panels/Paper texture.png" id="1_tfbc3"]
 [ext_resource type="Script" uid="uid://5mxdn2su8s3f" path="res://scenes/menu/settings/SettingsMenu.cs" id="2_0snvw"]
@@ -7,6 +7,7 @@
 [ext_resource type="Theme" uid="uid://td8u5lubicg8" path="res://assets/ui/theme/menu_theme.tres" id="5_ww2uk"]
 [ext_resource type="Texture2D" uid="uid://c40ofvpy32fi4" path="res://assets/gifts/escargots_3.png" id="6_enfos"]
 [ext_resource type="Script" uid="uid://3vkxtd4o4toi" path="res://scenes/menu/settings/window_drop_down_options.gd" id="6_fkvev"]
+[ext_resource type="PackedScene" uid="uid://i8d73rmb2ldl" path="res://scenes/menu/settings/audio_slider.tscn" id="6_j6sto"]
 [ext_resource type="Script" uid="uid://hpe6rand18ey" path="res://scenes/menu/settings/font_selection.gd" id="7_0snvw"]
 [ext_resource type="Script" uid="uid://bi1t25iy0eqir" path="res://scenes/menu/settings/resolution_drop_down_options.gd" id="7_d6ec4"]
 
@@ -88,10 +89,9 @@ grow_vertical = 2
 size_flags_vertical = 3
 focus_neighbor_bottom = NodePath("../ExitButton")
 theme = ExtResource("5_ww2uk")
-current_tab = 3
+current_tab = 0
 
 [node name="Audio" type="Control" parent="TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -108,6 +108,18 @@ offset_right = 0.137939
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 60
+
+[node name="AudioSlider" parent="TabContainer/Audio/VBoxContainer" instance=ExtResource("6_j6sto")]
+layout_mode = 2
+bus_name = "Master"
+
+[node name="AudioSlider2" parent="TabContainer/Audio/VBoxContainer" instance=ExtResource("6_j6sto")]
+layout_mode = 2
+bus_name = "Music"
+
+[node name="AudioSlider3" parent="TabContainer/Audio/VBoxContainer" instance=ExtResource("6_j6sto")]
+layout_mode = 2
+bus_name = "SFX"
 
 [node name="Graphics" type="Control" parent="TabContainer"]
 visible = false
@@ -177,6 +189,7 @@ focus_mode = 2
 text = "Options Unfinished"
 
 [node name="Accessibility" type="Control" parent="TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 3
 
