@@ -143,7 +143,7 @@ static class AnimationDialogueCommands
 
             var tween = item.CreateTween();
             tween.TweenProperty(item, "modulate:a", target, time);
-            if (inOut == "out") tween.TweenCallback(item.Hide);
+            //if (inOut == "out") tween.TweenCallback(item.Hide);
         }
     });
 }
