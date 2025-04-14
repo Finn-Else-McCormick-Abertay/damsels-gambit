@@ -87,12 +87,6 @@ static class AnimationDialogueCommands
         if (action.MatchN("show") || action.MatchN("hide")) GameManager.NotebookMenu.Visible = action.MatchN("show");
     });
 
-    [YarnCommand("open_profile")]
-    public static void OpenProfile() => RunCommandDeferred(() => GameManager.NotebookMenu.Open = true);
-
-    [YarnCommand("close_profile")]
-    public static void CloseProfile() => RunCommandDeferred(() => GameManager.NotebookMenu.Open = false);
-
     [YarnCommand("emote")]
     public static void Emote(string characterName, string emotionName, string from = "", string revertFrom = "") => RunCommandDeferred(() =>
         EnvironmentManager.GetCharacterDisplays(characterName).ForEach(display => {
