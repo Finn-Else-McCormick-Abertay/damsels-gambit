@@ -204,9 +204,10 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 64
 
-[node name="Font Selection" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer"]
+[node name="Font Selection" type="HBoxContainer" parent="TabContainer/Accessibility/VBoxContainer" node_paths=PackedStringArray("OptionButton")]
 layout_mode = 2
 script = ExtResource("9_enfos")
+OptionButton = NodePath("OptionButton2")
 
 [node name="Label2" type="Label" parent="TabContainer/Accessibility/VBoxContainer/Font Selection"]
 custom_minimum_size = Vector2(264, 0)
