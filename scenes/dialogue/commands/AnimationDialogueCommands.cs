@@ -64,12 +64,42 @@ static class AnimationDialogueCommands
             (sceneName.MatchN("all") ? EnvironmentManager.GetEnvironmentNames()?.SelectMany(EnvironmentManager.GetEnvironmentLayers) : EnvironmentManager.GetEnvironmentLayers(sceneName))?.ForEach(x => x.Visible = action.MatchN("show"));
     });
 
+    [YarnCommand("variant")]
+    public static void Variant(string itemName, string variant) => RunCommandDeferred(() =>
+        EnvironmentManager.GetPropDisplays(itemName)?.ForEach(x => {
+            if (int.TryParse(variant, out int variantNum)) x.Variant = variantNum;
+            if (variant.ToLower().Trim() == "default") x.Variant = PropDisplay.GetValidVariants(itemName).FirstOrDefault();
+            if (variant.ToLower().Trim().IsAnyOf("random", "rand")) x.Variant = PropDisplay.GetValidVariants(itemName).OrderBy(x => Random.Shared.Next()).FirstOrDefault();
+        }));
+    
+    [YarnCommand("prop")]
+    public static void Prop(string action, string itemName, string actionArg = "", float moveSpeed = 1f, float waitTime = 2f) {
+        action = action.Trim().ToLower();
+        if (action == "variant") Variant(itemName, actionArg);
+        else if (action == "animate") {
+            actionArg = actionArg.Trim().ToLower();
+            if (actionArg.IsAnyOf("in", "enter", "full", "inout", "")) {
+                Move(itemName, 0f, 200f, 0);
+                Move(itemName, 0f, -200f, moveSpeed);
+                Fade("in", itemName, moveSpeed);
+                After(moveSpeed);
+            }
+            if (actionArg.IsAnyOf("full", "inout", "")) After(waitTime);
+            if (actionArg.IsAnyOf("out", "exit", "full", "inout", "")) {
+                Move(itemName, 0f, -200f, moveSpeed);
+                Fade("out", itemName, moveSpeed);
+                After(moveSpeed);
+                Move(itemName, 0f, 400f, 0);
+            }
+        }
+    }
+
     [YarnCommand("show")]
     public static void Show(string itemName, int variant = -1) => RunCommandDeferred(() =>
         EnvironmentManager.GetAllItems(itemName)?.ForEach(x => {
-                x?.Set(CanvasItem.PropertyName.Visible, true);
-                if (variant >= 0 && x is PropDisplay propDisplay) propDisplay.Variant = variant;
-            }));
+            x?.Set(CanvasItem.PropertyName.Visible, true);
+            if (variant >= 0 && x is PropDisplay propDisplay) propDisplay.Variant = variant;
+        }));
 
     [YarnCommand("hide")]
     public static void Hide(string itemName) => RunCommandDeferred(() => EnvironmentManager.GetAllItems(itemName)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, false)));
