@@ -17,6 +17,7 @@ public sealed partial class GameManager : Node
 
 	public static Control MainMenu { get; private set; }
 	public static Control Credits { get; private set; }
+	public static Control SplashScreen { get; private set; }
 	public static NotebookMenu NotebookMenu { get; private set; }
 
 	public static event Action CardGameChanged;
@@ -40,7 +41,8 @@ public sealed partial class GameManager : Node
 		_dialogueLayerScene = ResourceLoader.Load<PackedScene>("res://scenes/dialogue/dialogue_layer.tscn"),
 		_notebookLayerScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/notebook/notebook_layer.tscn"),
 		_mainMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/main/main_menu.tscn"),
-		_creditsScene = ResourceLoader.Load<PackedScene>("res://scenes/game/credits.tscn");
+		_creditsScene = ResourceLoader.Load<PackedScene>("res://scenes/game/credits.tscn"),
+		_splashScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/splash/splash_screen.tscn");
 	
 	private static readonly Texture2D
 		_cursorPointing = ResourceLoader.Load<Texture2D>("res://assets/ui/cursor/cursor_pointing_hand.png");
@@ -57,10 +59,12 @@ public sealed partial class GameManager : Node
 		Input.SetCustomMouseCursor(_cursorPointing, Input.CursorShape.PointingHand);
 
 		var gameLayer = AddLayer("game", 20);
-		var menuLayer = AddLayer("menu", 26);
 		var creditsLayer = AddLayer("credits", 30);
 		var dialogueLayer = AddLayer("dialogue", GetTree().Root.FindChildWhere<CanvasLayer>(x => x.SceneFilePath.Equals(_dialogueLayerScene.ResourcePath)) ?? _dialogueLayerScene.Instantiate<CanvasLayer>(), false);
 		var notebookLayer = AddLayer("notebook", GetTree().Root.FindChildWhere<CanvasLayer>(x => x.SceneFilePath.Equals(_notebookLayerScene.ResourcePath)) ?? _notebookLayerScene.Instantiate<CanvasLayer>(), false);
+		
+		var menuLayer = AddLayer("menu", 26);
+		var splashLayer = AddLayer("splash", 30);
 
 		var transitionLayer = AddLayer("transition", 99, false);
 		transitionLayer.Hide();
@@ -71,6 +75,9 @@ public sealed partial class GameManager : Node
 
 		MainMenu = GetTree().Root.FindChildWhere<Control>(x => x.SceneFilePath.Equals(_mainMenuScene.ResourcePath));
 		if (MainMenu.IsValid()) menuLayer.AddOwnedChild(MainMenu, true);
+
+		SplashScreen = GetTree().Root.FindChildWhere<Control>(x => x.SceneFilePath.Equals(_splashScene.ResourcePath));
+		if (SplashScreen.IsValid()) splashLayer.AddOwnedChild(SplashScreen, true);
 		
 		Credits = GetTree().Root.FindChildWhere<Control>(x => x.SceneFilePath.Equals(_creditsScene.ResourcePath));
 		if (Credits.IsValid()) creditsLayer.AddOwnedChild(Credits, true);
@@ -81,6 +88,10 @@ public sealed partial class GameManager : Node
 			gameLayer.AddOwnedChild(sceneRoot.IsAncestorOf(CardGameController) ? sceneRoot : CardGameController, true);
 			CardGameController.OnReady(x => x.CallDeferred(CardGameController.MethodName.BeginGame, true));
 			CardGameChanged?.Invoke();
+		}
+
+		if (MainMenu.IsValid() && !SplashScreen.IsValid() && !CardGameController.IsValid() && !SplashScreen.IsValid()) {
+			SplashScreen = _splashScene.Instantiate<Control>(); GetLayer("splash").AddChild(SplashScreen);
 		}
 	}
 
@@ -101,8 +112,8 @@ public sealed partial class GameManager : Node
 		if (!Instance.IsValid()) return;
 
 		// Clearing other scenes is handled by the transition
-		// Crossfade when coming from credits, otherwise fade to black
-		SceneTransition.Run(GetLayer("credits").GetChildCount() > 0 ? SceneTransition.Type.CrossFade : SceneTransition.Type.FadeToBlack, "menu", () => {
+		// Crossfade when coming from credits or splash, otherwise fade to black
+		SceneTransition.Run(GetLayer("credits").GetChildCount() > 0 || GetLayer("splash").GetChildCount() > 0 ? SceneTransition.Type.CrossFade : SceneTransition.Type.FadeToBlack, "menu", () => {
 			MainMenu = _mainMenuScene.Instantiate<Control>(); GetLayer("menu").AddChild(MainMenu);
 			SetNotebookActive(false);
 		});
@@ -228,7 +239,7 @@ public sealed partial class GameManager : Node
 				if (index != 0) tween.Parallel();
 				tween.TweenProperty(item, "modulate:a", fade switch { FadeType.In => _cachedAlphaValues.GetValueOr(item, 1f), FadeType.Out => 0f }, duration).SetTrans(transitionType);
 			}
-			if (fade == FadeType.Out) tween.TweenCallback(() => { layer?.Hide(); foreach (var item in items) item.Modulate = item.Modulate with { A = _cachedAlphaValues.GetValueOr(item, 1f) }; });
+			if (fade == FadeType.Out) tween.TweenCallback(() => { layer?.Hide(); foreach (var item in layer?.GetChildren()?.Where(x => x is CanvasItem)?.Cast<CanvasItem>() ?? []) item.Modulate = item.Modulate with { A = _cachedAlphaValues.GetValueOr(item, 1f) }; });
 			return tween;
 		}
 

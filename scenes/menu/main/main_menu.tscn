@@ -26,9 +26,9 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_gcq7h")
 script = ExtResource("1_ly6k8")
-StartButton = NodePath("HBoxContainer/VBoxContainer/Start")
-SettingsButton = NodePath("HBoxContainer/VBoxContainer2/Settings")
-ExitButton = NodePath("HBoxContainer/VBoxContainer3/Exit")
+StartButton = NodePath("HBoxContainer/StartColumn/Start")
+SettingsButton = NodePath("HBoxContainer/SettingsColumn/Settings")
+ExitButton = NodePath("HBoxContainer/ExitColumn/Exit")
 ButtonRoot = NodePath("HBoxContainer")
 SettingsMenuScene = ExtResource("6_f1uj7")
 
@@ -60,19 +60,19 @@ size_flags_stretch_ratio = 20.0
 alignment = 1
 metadata/_edit_group_ = true
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+[node name="StartColumn" type="VBoxContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 2
 
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/StartColumn"]
 layout_mode = 2
 size_flags_vertical = 3
 texture = ExtResource("4_juol1")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Start" type="TextureButton" parent="HBoxContainer/VBoxContainer"]
+[node name="Start" type="TextureButton" parent="HBoxContainer/StartColumn"]
 custom_minimum_size = Vector2(0, 105)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -85,23 +85,23 @@ ignore_texture_size = true
 stretch_mode = 5
 metadata/_edit_use_anchors_ = true
 
-[node name="Padding" type="Control" parent="HBoxContainer/VBoxContainer"]
+[node name="Padding" type="Control" parent="HBoxContainer/StartColumn"]
 editor_description = "If I don't put a padding node at the bottom, the bottom edge of the button texture gets noticably cut off at certain screen resolutions"
 layout_mode = 2
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer"]
+[node name="SettingsColumn" type="VBoxContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 2
 
-[node name="TextureRect2" type="TextureRect" parent="HBoxContainer/VBoxContainer2"]
+[node name="TextureRect2" type="TextureRect" parent="HBoxContainer/SettingsColumn"]
 layout_mode = 2
 size_flags_vertical = 3
 texture = ExtResource("8_3ve8a")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Settings" type="TextureButton" parent="HBoxContainer/VBoxContainer2"]
+[node name="Settings" type="TextureButton" parent="HBoxContainer/SettingsColumn"]
 custom_minimum_size = Vector2(0, 105)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -114,23 +114,23 @@ ignore_texture_size = true
 stretch_mode = 5
 metadata/_edit_use_anchors_ = true
 
-[node name="Padding" type="Control" parent="HBoxContainer/VBoxContainer2"]
+[node name="Padding" type="Control" parent="HBoxContainer/SettingsColumn"]
 editor_description = "If I don't put a padding node at the bottom, the bottom edge of the button texture gets noticably cut off at certain screen resolutions"
 layout_mode = 2
 
-[node name="VBoxContainer3" type="VBoxContainer" parent="HBoxContainer"]
+[node name="ExitColumn" type="VBoxContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 2
 
-[node name="TextureRect3" type="TextureRect" parent="HBoxContainer/VBoxContainer3"]
+[node name="TextureRect3" type="TextureRect" parent="HBoxContainer/ExitColumn"]
 layout_mode = 2
 size_flags_vertical = 3
 texture = ExtResource("11_a7lqt")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Exit" type="TextureButton" parent="HBoxContainer/VBoxContainer3"]
+[node name="Exit" type="TextureButton" parent="HBoxContainer/ExitColumn"]
 custom_minimum_size = Vector2(0, 105)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -143,6 +143,6 @@ ignore_texture_size = true
 stretch_mode = 5
 metadata/_edit_use_anchors_ = true
 
-[node name="Padding" type="Control" parent="HBoxContainer/VBoxContainer3"]
+[node name="Padding" type="Control" parent="HBoxContainer/ExitColumn"]
 editor_description = "If I don't put a padding node at the bottom, the bottom edge of the button texture gets noticably cut off at certain screen resolutions"
 layout_mode = 2
