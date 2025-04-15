@@ -146,4 +146,18 @@ public class Game : Console.Command
             Console.Info(helpText, false);
         });
     }
+
+    
+    public override IEnumerable<string> GetAutofill(string[] args) => args.Length switch {
+        1 => [ "get", "set", "start", "end" ],
+        >1 => args.First() switch {
+            "get" => [ "round", "card", "cards" ],
+            "set" when args.Length == 2 => [ "round", "score" ],
+            "start" when args.Length == 2 || (args.Length == 3 && args[2] == "--skipintro") => [ "lady_in_waiting", "frostholm" ],
+            "start" when args.Length == 3 && args[2] != "--skipintro" => [ "--skipintro" ],
+            "end" => [],
+            _ => []
+        },
+        _ => []
+    };
 }
