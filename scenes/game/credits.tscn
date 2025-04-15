@@ -61,8 +61,10 @@ theme_override_styles/panel = SubResource("StyleBox_xtsoe")
 
 [node name="CreditsText" type="RichTextLabel" parent="."]
 layout_mode = 1
-offset_right = 1158.0
-offset_bottom = 980.0
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 2604.0
+grow_horizontal = 2
 theme_override_colors/default_color = Color(0.227451, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(1, 0.87451, 0.835294, 1)
 theme_override_constants/outline_size = 19
@@ -135,12 +137,16 @@ scroll_following = true
 tab_size = 5
 horizontal_alignment = 1
 
-[node name="RichTextLabel" type="RichTextLabel" parent="CreditsText"]
-layout_mode = 0
-offset_left = 133.0
-offset_top = 2119.0
-offset_right = 984.0
-offset_bottom = 2650.0
+[node name="LicenceText" type="RichTextLabel" parent="CreditsText"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -489.0
+offset_bottom = -159.0
+grow_horizontal = 2
+grow_vertical = 0
 theme_override_colors/default_color = Color(0.227451, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(1, 0.87451, 0.835294, 1)
 theme_override_constants/outline_size = 9
@@ -170,64 +176,91 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE."
 fit_content = true
 horizontal_alignment = 1
-metadata/_edit_lock_ = true
 
-[node name="Logo" type="Sprite2D" parent="CreditsText"]
-position = Vector2(582, 285)
-scale = Vector2(0.43822, 0.43822)
+[node name="TextureRect" type="TextureRect" parent="CreditsText"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -199.0
+offset_top = 113.0
+offset_right = 211.0
+offset_bottom = 457.0
+grow_horizontal = 2
 texture = ExtResource("3_pqmjv")
+expand_mode = 1
+stretch_mode = 5
 
-[node name="Escargots1" type="Sprite2D" parent="CreditsText"]
-position = Vector2(1017, 831)
+[node name="Marginalia" type="Control" parent="CreditsText"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+grow_horizontal = 2
+
+[node name="Escargots1" type="Sprite2D" parent="CreditsText/Marginalia"]
+position = Vector2(441, 831)
 scale = Vector2(0.233461, 0.233461)
 texture = ExtResource("5_ox8i4")
 
-[node name="HumanTeethDress1" type="Sprite2D" parent="CreditsText"]
-position = Vector2(853, 1909)
+[node name="HumanTeethDress1" type="Sprite2D" parent="CreditsText/Marginalia"]
+position = Vector2(277, 1909)
 rotation = 0.223011
 scale = Vector2(0.258849, 0.258849)
 texture = ExtResource("6_s70fa")
 
-[node name="RawReindeerMeat2" type="Sprite2D" parent="CreditsText"]
-position = Vector2(922, 2154)
+[node name="RawReindeerMeat2" type="Sprite2D" parent="CreditsText/Marginalia"]
+position = Vector2(373, 2154)
 rotation = -1.24652
 scale = Vector2(0.297118, 0.297118)
 texture = ExtResource("7_2tpig")
 
-[node name="VoodooDollBook2" type="Sprite2D" parent="CreditsText"]
-position = Vector2(987, 1551)
+[node name="VoodooDollBook2" type="Sprite2D" parent="CreditsText/Marginalia"]
+position = Vector2(411, 1551)
 scale = Vector2(0.33718, 0.337179)
 texture = ExtResource("8_fq7lm")
 
-[node name="WolfPendant3" type="Sprite2D" parent="CreditsText"]
-position = Vector2(162, 1120)
+[node name="WolfPendant3" type="Sprite2D" parent="CreditsText/Marginalia"]
+position = Vector2(-414, 1120)
 rotation = -0.3018
 scale = Vector2(0.264765, 0.264765)
 texture = ExtResource("9_pq3tm")
 
-[node name="WolfClaw3" type="Sprite2D" parent="CreditsText"]
-position = Vector2(162, 1824)
+[node name="WolfClaw3" type="Sprite2D" parent="CreditsText/Marginalia"]
+position = Vector2(-417, 1825)
 rotation = -1.04738
 scale = Vector2(0.424324, 0.424324)
 texture = ExtResource("10_b15uh")
 
-[node name="WolfPendant2" type="Sprite2D" parent="CreditsText"]
-position = Vector2(643, 2499)
+[node name="Feather1" type="Sprite2D" parent="CreditsText/Marginalia"]
+position = Vector2(-395, 768)
+rotation = -1.05311
+scale = Vector2(0.261236, 0.261236)
+texture = ExtResource("12_fq7lm")
+
+[node name="End Graphic" type="Control" parent="CreditsText"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_top = -56.0
+offset_bottom = -56.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="WolfPendant2" type="Sprite2D" parent="CreditsText/End Graphic"]
+position = Vector2(84.2172, -49.1519)
 rotation = 1.06771
 scale = Vector2(0.191576, 0.191576)
 texture = ExtResource("11_2tpig")
 
-[node name="WolfPendant4" type="Sprite2D" parent="CreditsText"]
-position = Vector2(473, 2501)
-rotation = -1.07687
-scale = Vector2(-0.192, 0.192)
+[node name="WolfPendant4" type="Sprite2D" parent="CreditsText/End Graphic"]
+position = Vector2(-85.7828, -47.1519)
+rotation = 2.06472
+scale = Vector2(0.192, -0.192)
 texture = ExtResource("11_2tpig")
-
-[node name="Feather1" type="Sprite2D" parent="CreditsText"]
-position = Vector2(181, 768)
-rotation = -1.05311
-scale = Vector2(0.261236, 0.261236)
-texture = ExtResource("12_fq7lm")
 
 [node name="Exit_Button" type="Button" parent="."]
 layout_mode = 1
