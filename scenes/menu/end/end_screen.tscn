@@ -11,7 +11,7 @@ gradient = SubResource("Gradient_hjb8g")
 fill_from = Vector2(0.491453, 0)
 repeat = 2
 
-[node name="EndScreen" type="Control" node_paths=PackedStringArray("MessageLabel", "RetryButton", "QuitButton")]
+[node name="EndScreen" type="Control" node_paths=PackedStringArray("MessageLabel", "RetryButton", "QuitButton", "CreditsButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,6 +23,7 @@ script = ExtResource("2_g0krg")
 MessageLabel = NodePath("Label")
 RetryButton = NodePath("VBoxContainer/Play Again")
 QuitButton = NodePath("VBoxContainer/Quit To Title")
+CreditsButton = NodePath("VBoxContainer/Credits")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
@@ -84,3 +85,10 @@ size_flags_vertical = 3
 mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 25
 text = "Quit To Title"
+
+[node name="Credits" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 25
+text = "Credits"

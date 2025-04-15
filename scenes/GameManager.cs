@@ -17,6 +17,7 @@ public sealed partial class GameManager : Node
 	public static CardGameController CardGameController { get; private set; }
 
 	public static Control MainMenu { get; private set; }
+	public static Control Credits { get; private set; }
 	public static NotebookMenu NotebookMenu { get; private set; }
 
 	public static event Action CardGameChanged;
@@ -37,7 +38,8 @@ public sealed partial class GameManager : Node
 	private static readonly PackedScene
 		_dialogueLayerScene = ResourceLoader.Load<PackedScene>("res://scenes/dialogue/dialogue_layer.tscn"),
 		_notebookLayerScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/notebook/notebook_layer.tscn"),
-		_mainMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/main/main_menu.tscn");
+		_mainMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/main/main_menu.tscn"),
+		_creditsScene = ResourceLoader.Load<PackedScene>("res://scenes/game/credits.tscn");
 	
 	private static readonly Texture2D
 		_cursorPointing = ResourceLoader.Load<Texture2D>("res://assets/ui/cursor/cursor_pointing_hand.png");
@@ -55,6 +57,7 @@ public sealed partial class GameManager : Node
 
 		var gameLayer = AddLayer("game", 20);
 		var menuLayer = AddLayer("menu", 26);
+		var creditsLayer = AddLayer("credits", 30);
 		AddLayer("dialogue", GetTree().Root.FindChildWhere<CanvasLayer>(x => x.SceneFilePath.Equals(_dialogueLayerScene.ResourcePath)) ?? _dialogueLayerScene.Instantiate<CanvasLayer>());
 		var notebookLayer = AddLayer("notebook", GetTree().Root.FindChildWhere<CanvasLayer>(x => x.SceneFilePath.Equals(_notebookLayerScene.ResourcePath)) ?? _notebookLayerScene.Instantiate<CanvasLayer>());
 
@@ -62,6 +65,9 @@ public sealed partial class GameManager : Node
 
 		MainMenu = GetTree().Root.FindChildWhere<Control>(x => x.SceneFilePath.Equals(_mainMenuScene.ResourcePath));
 		if (MainMenu.IsValid()) menuLayer.AddOwnedChild(MainMenu, true);
+		
+		Credits = GetTree().Root.FindChildWhere<Control>(x => x.SceneFilePath.Equals(_creditsScene.ResourcePath));
+		if (Credits.IsValid()) creditsLayer.AddOwnedChild(Credits, true);
 		
 		CardGameController = GetTree().Root.FindChildOfType<CardGameController>();
 		if (CardGameController.IsValid()) {
@@ -89,6 +95,18 @@ public sealed partial class GameManager : Node
 
 		MainMenu = _mainMenuScene.Instantiate<Control>();
 		GetLayer("menu").AddOwnedChild(MainMenu);
+
+		NotebookMenu.Open = false;
+		NotebookMenu.InPauseMenu = false;
+	}
+	
+	public static void SwitchToCredits() {
+		if (!Instance.IsValid()) return;
+
+		ClearLoadedScenes();
+
+		Credits = _creditsScene.Instantiate<Control>();
+		GetLayer("credits").AddOwnedChild(Credits);
 
 		NotebookMenu.Open = false;
 		NotebookMenu.InPauseMenu = false;
