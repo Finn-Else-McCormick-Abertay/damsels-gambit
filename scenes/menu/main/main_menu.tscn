@@ -32,7 +32,7 @@ ExitButton = NodePath("HBoxContainer/VBoxContainer3/Exit")
 ButtonRoot = NodePath("HBoxContainer")
 SettingsMenuScene = ExtResource("6_f1uj7")
 
-[node name="Background" type="NinePatchRect" parent="."]
+[node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -40,10 +40,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_mhvoi")
-region_rect = Rect2(82.6887, 0, 1837.31, 1080)
-patch_margin_top = 74
-patch_margin_right = 77
-patch_margin_bottom = 60
+expand_mode = 1
+stretch_mode = 6
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 clip_contents = true
