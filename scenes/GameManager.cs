@@ -151,6 +151,16 @@ public sealed partial class GameManager : Node
 		});
 	}
 
+	public static void Quit() {
+		float tweenDuration = 1.5f;
+
+		var masterBusIndex = AudioServer.GetBusIndex("Master");
+		var volumeTween = Instance.CreateTween();
+		volumeTween.TweenMethod(x => AudioServer.SetBusVolumeLinear(masterBusIndex, (float)x.AsDouble()), AudioServer.GetBusVolumeLinear(masterBusIndex), 0, tweenDuration);
+
+		SceneTransition.Run(SceneTransition.Type.FadeToBlack, tweenDuration * 2, () => Instance.GetTree().Quit());
+	}
+
 	private static void SetNotebookActive(bool active) { NotebookMenu.CanPause = active; NotebookMenu.Open = false; NotebookMenu.InPauseMenu = false; }
 
 	private class SceneTransition
