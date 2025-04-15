@@ -1,17 +1,15 @@
 extends Control
 
-@export var scroll_speed : float = 5.0
-@onready var text = $CreditsText
-@onready var exit_button = $Exit_Button as Button
+@export var duration : float = 20
+@export var credits_text : Control
+@export var skip_button : Button
+
+var credits_tween : Tween
 
 func _ready():
-	exit_button.button_down.connect(on_exit_pressed)
+	skip_button.button_down.connect(on_credits_end)
+	credits_tween = credits_text.create_tween()
+	credits_tween.tween_property(credits_text, "position:y", -(credits_text.size.y + credits_text.position.y), 20)
 
-
-func _process(_delta: float) -> void:
-	#text.position -= Vector2(0.0, scroll_speed*delta)
-	if (text.position.y + text.size.y > -100):
-		text.position = lerp(text.position, text.position-Vector2(0.0, scroll_speed), 0.1)
-
-func on_exit_pressed() -> void:
+func on_credits_end() -> void:
 	GameManager.SwitchToMainMenu()
