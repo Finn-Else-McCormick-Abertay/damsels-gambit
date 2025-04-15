@@ -31,6 +31,7 @@ public partial class ConsoleWindow : Control
 	}
 
 	public override void _Ready() {
+		ProcessMode = ProcessModeEnum.Always;
 		TextEdit.Text = ""; OutputLabel.Text = ""; Autofill.Text = "";
 		TextEdit.ConnectAll((Control.SignalName.GuiInput, Callable.From<InputEvent>(OnTextEditGuiInput)), (TextEdit.SignalName.CaretChanged, Callable.From(UpdateAutofillSuggestion)));
 		var editMenu = TextEdit.GetMenu();
