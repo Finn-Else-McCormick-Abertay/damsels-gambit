@@ -23,14 +23,16 @@ public sealed partial class GameManager : Node
 	public static event Action CardGameChanged;
 
 	private static readonly Dictionary<string, CanvasLayer> _layers = [];
+	private static readonly HashSet<string> _resettableLayers = [];
 	
-	private static CanvasLayer AddLayer(string name, CanvasLayer layer, bool force = false) {
+	private static CanvasLayer AddLayer(string name, CanvasLayer layer, bool canReset = true, bool force = false) {
 		name = Case.ToSnake(name);
-		if (_layers.TryGetValue(name, out var existingLayer)) { if (!force) return null; existingLayer.QueueFree(); _layers.Remove(name); }
+		if (_layers.TryGetValue(name, out var existingLayer)) { if (!force) return null; existingLayer.QueueFree(); _layers.Remove(name); _resettableLayers.Remove(name); }
 		_layers.Add(name, layer); Instance.AddOwnedChild(layer, true);
+		if (canReset) _resettableLayers.Add(name);
 		return layer;
 	}
-	public static CanvasLayer AddLayer(string name, int layer, bool force = false) => AddLayer(name, new CanvasLayer() { Layer = layer, Name = Case.ToPascal($"{name.Trim()}_layer") }, force);
+	public static CanvasLayer AddLayer(string name, int layer, bool canReset = true, bool force = false) => AddLayer(name, new CanvasLayer() { Layer = layer, Name = Case.ToPascal($"{name.Trim()}_layer") }, canReset, force);
 
 	public static CanvasLayer GetLayer(string name) => _layers.GetValueOrDefault(Case.ToSnake(name));
 	public static void SetLayer(string name, int layer) { if (Engine.IsEditorHint()) return; var canvasLayer = GetLayer(name); if (canvasLayer.IsValid()) canvasLayer.Layer = layer; else Console.Error($"No such layer '{name}'"); }
@@ -58,8 +60,13 @@ public sealed partial class GameManager : Node
 		var gameLayer = AddLayer("game", 20);
 		var menuLayer = AddLayer("menu", 26);
 		var creditsLayer = AddLayer("credits", 30);
-		AddLayer("dialogue", GetTree().Root.FindChildWhere<CanvasLayer>(x => x.SceneFilePath.Equals(_dialogueLayerScene.ResourcePath)) ?? _dialogueLayerScene.Instantiate<CanvasLayer>());
-		var notebookLayer = AddLayer("notebook", GetTree().Root.FindChildWhere<CanvasLayer>(x => x.SceneFilePath.Equals(_notebookLayerScene.ResourcePath)) ?? _notebookLayerScene.Instantiate<CanvasLayer>());
+		var dialogueLayer = AddLayer("dialogue", GetTree().Root.FindChildWhere<CanvasLayer>(x => x.SceneFilePath.Equals(_dialogueLayerScene.ResourcePath)) ?? _dialogueLayerScene.Instantiate<CanvasLayer>(), false);
+		var notebookLayer = AddLayer("notebook", GetTree().Root.FindChildWhere<CanvasLayer>(x => x.SceneFilePath.Equals(_notebookLayerScene.ResourcePath)) ?? _notebookLayerScene.Instantiate<CanvasLayer>(), false);
+
+		var transitionLayer = AddLayer("transition", 200, false);
+		transitionLayer.Hide();
+		var blackRect = new ColorRect() { Color = Colors.Black }; transitionLayer.AddChild(blackRect);
+		blackRect.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
 
 		NotebookMenu = notebookLayer.FindChildOfType<NotebookMenu>();
 
@@ -82,7 +89,7 @@ public sealed partial class GameManager : Node
 		if (!Instance.IsValid()) return;
 
 		foreach (var (name, layer) in _layers) {
-			if (name.IsAnyOf([ "dialogue", "notebook" ])) continue;
+			if (!name.IsAnyOf(_resettableLayers)) continue;
 			foreach (var child in layer.GetChildren()) { layer.RemoveChild(child); child.QueueFree(); }
 		}
 		CardGameChanged?.Invoke();
@@ -91,13 +98,14 @@ public sealed partial class GameManager : Node
 	public static void SwitchToMainMenu() {
 		if (!Instance.IsValid()) return;
 
-		ClearLoadedScenes();
+		SceneTransition.Run(SceneTransition.Type.FadeToBlack, () => {
+			ClearLoadedScenes();
 
-		MainMenu = _mainMenuScene.Instantiate<Control>();
-		GetLayer("menu").AddOwnedChild(MainMenu);
+			MainMenu = _mainMenuScene.Instantiate<Control>();
+			GetLayer("menu").AddChild(MainMenu);
 
-		NotebookMenu.Open = false;
-		NotebookMenu.InPauseMenu = false;
+			SetNotebookActive(false);
+		});
 	}
 	
 	public static void SwitchToCredits() {
@@ -108,8 +116,7 @@ public sealed partial class GameManager : Node
 		Credits = _creditsScene.Instantiate<Control>();
 		GetLayer("credits").AddOwnedChild(Credits);
 
-		NotebookMenu.Open = false;
-		NotebookMenu.InPauseMenu = false;
+		SetNotebookActive(false);
 	}
 
 	public static void BeginGame() {
@@ -119,21 +126,82 @@ public sealed partial class GameManager : Node
 	
 	public static void SwitchToCardGameScene(string cardGameScenePath) {
 		if (!Instance.IsValid()) return;
+		if (!ResourceLoader.Exists(cardGameScenePath)) { Console.Error($"No such scene '{cardGameScenePath}'"); return; }
+		
+		SceneTransition.Run(SceneTransition.Type.FadeToBlack, () => {
+			ClearLoadedScenes();
 
-		if (!ResourceLoader.Exists(cardGameScenePath)) {
-			Console.Error($"No such scene '{cardGameScenePath}'");
-			return;
+			var cardGameScene = ResourceLoader.Load<PackedScene>(cardGameScenePath).Instantiate();
+			GetLayer("game").AddChild(cardGameScene);
+			CardGameController = cardGameScene as CardGameController ?? cardGameScene.FindChildOfType<CardGameController>();
+			CardGameController.OnReady(x => x.BeginGame());
+			CardGameChanged?.Invoke();
+
+			SetNotebookActive(true);
+		});
+	}
+
+	private static void SetNotebookActive(bool active) { NotebookMenu.CanPause = active; NotebookMenu.Open = false; NotebookMenu.InPauseMenu = false; }
+
+	private class SceneTransition
+	{
+		public enum Type { Cut, FadeToBlack }
+
+		private readonly Action _loadStep;
+		private readonly Type _type;
+		private readonly float _duration;
+
+		private static readonly float DefaultDuration = 1.5f;
+		private static readonly Tween.TransitionType DefaultInterpolation = Tween.TransitionType.Quad;
+
+		private SceneTransition(Action loadStep, Type type, float duration) { _type = type; _loadStep = loadStep; _duration = duration; }
+
+		public static SceneTransition Create(Action loadStep) => new(loadStep, Type.Cut, 0f);
+		public static SceneTransition Create(Type type, Action loadStep) => new(loadStep, type, type switch { Type.Cut => 0f, _ => DefaultDuration });
+		public static SceneTransition Create(Type type, float duration, Action loadStep) => new(loadStep, type, duration);
+		
+		public static SignalAwaiter Run(Action loadStep) => Create(loadStep).Run();
+		public static SignalAwaiter Run(Type type, Action loadStep) => Create(type, loadStep).Run();
+		public static SignalAwaiter Run(Type type, float duration, Action loadStep) => Create(type, duration, loadStep).Run();
+
+		public SignalAwaiter Run() => Instance.ToSignal(_type switch {
+			Type.Cut => PerformCut(),
+			Type.FadeToBlack => PerformFadeToBlack()
+		}, Tween.SignalName.Finished);
+
+		private Tween PerformCut() {
+			var tween = Instance.CreateTween();
+			var callbackTweener = tween.TweenCallback(_loadStep);
+			if (_duration > 0) callbackTweener.SetDelay(_duration);
+			return tween;
 		}
 
-		ClearLoadedScenes();
+		private Tween PerformFadeToBlack() {
+			var tween = FadeLayer("transition", FadeType.In, _duration / 2, DefaultInterpolation);
+			tween.TweenCallback(_loadStep);
+			FadeLayer("transition", FadeType.Out, _duration / 2, DefaultInterpolation, tween);
+			return tween;
+		}
 
-		var cardGameScene = ResourceLoader.Load<PackedScene>(cardGameScenePath).Instantiate();
-		GetLayer("game").AddOwnedChild(cardGameScene);
-		CardGameController = cardGameScene as CardGameController ?? cardGameScene.FindChildOfType<CardGameController>();
-		CardGameController.OnReady(x => x.BeginGame());
-		CardGameChanged?.Invoke();
+		private readonly Dictionary<CanvasItem, float> _cachedAlphaValues = [];
 
-		NotebookMenu.Open = false;
-		NotebookMenu.InPauseMenu = false;
+		private enum FadeType { In, Out }
+		private Tween FadeLayer(string name, FadeType fade, float duration, Tween.TransitionType transitionType = Tween.TransitionType.Linear, Tween existingTween = null) {
+			var layer = GetLayer(name); var items = layer?.GetChildren()?.Where(x => x is CanvasItem)?.Cast<CanvasItem>() ?? [];
+
+			if (fade == FadeType.In) CacheLayerAlphas(name);
+			foreach (var item in items) item.Modulate = item.Modulate with { A = fade switch { FadeType.In => 0f, FadeType.Out => item.Modulate.A } };
+			layer?.Show();
+			
+			var tween = existingTween ?? Instance.CreateTween();
+			foreach (var (index, item) in items.Index()) {
+				if (index != 0) tween.Parallel();
+				tween.TweenProperty(item, "modulate:a", fade switch { FadeType.In => _cachedAlphaValues.GetValueOr(item, 1f), FadeType.Out => 0f }, duration).SetTrans(transitionType);
+			}
+			if (fade == FadeType.Out) tween.TweenCallback(() => { layer?.Hide(); foreach (var item in items) item.Modulate = item.Modulate with { A = _cachedAlphaValues.GetValueOr(item, 1f) }; });
+			return tween;
+		}
+
+		private void CacheLayerAlphas(string name) { foreach (var item in GetLayer(name)?.GetChildren()?.Where(x => x is CanvasItem)?.Cast<CanvasItem>() ?? []) _cachedAlphaValues[item] = item.Modulate.A; }
 	}
 } 

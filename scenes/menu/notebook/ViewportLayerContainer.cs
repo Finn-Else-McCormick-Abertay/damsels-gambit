@@ -85,7 +85,7 @@ public partial class ViewportLayerContainer : Control, IReloadableToolScript
     private const float _spritePixelSize = 0.01f;
 
     private void UpdateViewports(bool lowImpact = false) {
-        if (!IsInsideTree() || !Visible) return;
+        if (!IsInsideTree() || !IsVisibleInTree()) return;
 
         if (!_viewportsRoot.IsValid()) { _viewportsRoot = new() { Name = "ViewportsRoot" }; AddChild(_viewportsRoot); }
 

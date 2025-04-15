@@ -85,6 +85,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 	public bool Highlighted { get; set { field = value; UpdateState(); } } = false;
 	public bool InPauseMenu { get; set { field = value; UpdateState(); if (PauseMenu.IsValid()) PauseMenu.Active = InPauseMenu; } } = false;
 
+	public bool CanPause { get; set; }
 	public bool OverDialogue { get; set { field = value; GameManager.SetLayer("notebook", OverDialogue switch { _ when InPauseMenu => 25, true => 25, false => 22 }); } }
 	private bool _returnVisibleState = true;
 	
@@ -201,7 +202,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 	private void OnUnfocus() => Highlighted = false;
 	private void ToggleOpen() => Open = !Open;
 	private void TogglePauseMenu() => InPauseMenu = !InPauseMenu;
-	private void TryTogglePauseMenu() { if(GameManager.MainMenu.IsInvalid() && !(PauseMenu?.InSettingsMenu ?? false)) TogglePauseMenu(); }
+	private void TryTogglePauseMenu() { if(CanPause && !(PauseMenu?.InSettingsMenu ?? false)) TogglePauseMenu(); }
 
 	public void UpdateDialogueViewNode() {
 		if (Engine.IsEditorHint() || string.IsNullOrEmpty(SuitorName) || ProfilePage?.DialogueView is not ProfileDialogueView dialogueView) return;
