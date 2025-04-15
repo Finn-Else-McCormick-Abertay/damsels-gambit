@@ -4,7 +4,6 @@ using DamselsGambit.Util;
 using Godot;
 using Bridge;
 using System.Linq;
-using Google.Protobuf.WellKnownTypes;
 using System.Collections.Generic;
 
 namespace DamselsGambit;
@@ -63,7 +62,7 @@ public sealed partial class GameManager : Node
 		var dialogueLayer = AddLayer("dialogue", GetTree().Root.FindChildWhere<CanvasLayer>(x => x.SceneFilePath.Equals(_dialogueLayerScene.ResourcePath)) ?? _dialogueLayerScene.Instantiate<CanvasLayer>(), false);
 		var notebookLayer = AddLayer("notebook", GetTree().Root.FindChildWhere<CanvasLayer>(x => x.SceneFilePath.Equals(_notebookLayerScene.ResourcePath)) ?? _notebookLayerScene.Instantiate<CanvasLayer>(), false);
 
-		var transitionLayer = AddLayer("transition", 200, false);
+		var transitionLayer = AddLayer("transition", 99, false);
 		transitionLayer.Hide();
 		var blackRect = new ColorRect() { Color = Colors.Black }; transitionLayer.AddChild(blackRect);
 		blackRect.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
@@ -85,25 +84,26 @@ public sealed partial class GameManager : Node
 		}
 	}
 
-	private static void ClearLoadedScenes() {
+	private static void ClearLoadedScenesExcept(params IEnumerable<string> ignoreLayers) {
 		if (!Instance.IsValid()) return;
 
 		foreach (var (name, layer) in _layers) {
-			if (!name.IsAnyOf(_resettableLayers)) continue;
+			if (!name.IsAnyOf(_resettableLayers) || name.IsAnyOf(ignoreLayers)) continue;
+			//Console.Info($"Clearing layer '{name}'");
 			foreach (var child in layer.GetChildren()) { layer.RemoveChild(child); child.QueueFree(); }
 		}
 		CardGameChanged?.Invoke();
 	}
 
+	private static void ClearLoadedScenes() => ClearLoadedScenesExcept();
+
 	public static void SwitchToMainMenu() {
 		if (!Instance.IsValid()) return;
 
-		SceneTransition.Run(SceneTransition.Type.FadeToBlack, () => {
-			ClearLoadedScenes();
-
-			MainMenu = _mainMenuScene.Instantiate<Control>();
-			GetLayer("menu").AddChild(MainMenu);
-
+		// Clearing other scenes is handled by the transition
+		// Crossfade when coming from credits, otherwise fade to black
+		SceneTransition.Run(GetLayer("credits").GetChildCount() > 0 ? SceneTransition.Type.CrossFade : SceneTransition.Type.FadeToBlack, "menu", () => {
+			MainMenu = _mainMenuScene.Instantiate<Control>(); GetLayer("menu").AddChild(MainMenu);
 			SetNotebookActive(false);
 		});
 	}
@@ -111,12 +111,11 @@ public sealed partial class GameManager : Node
 	public static void SwitchToCredits() {
 		if (!Instance.IsValid()) return;
 
-		ClearLoadedScenes();
-
-		Credits = _creditsScene.Instantiate<Control>();
-		GetLayer("credits").AddOwnedChild(Credits);
-
-		SetNotebookActive(false);
+		// Clearing other scenes is handled by the transition
+		SceneTransition.Run(SceneTransition.Type.CrossFade, "credits", () => {
+			Credits = _creditsScene.Instantiate<Control>(); GetLayer("credits").AddChild(Credits);
+			SetNotebookActive(false);
+		});
 	}
 
 	public static void BeginGame() {
@@ -128,9 +127,9 @@ public sealed partial class GameManager : Node
 		if (!Instance.IsValid()) return;
 		if (!ResourceLoader.Exists(cardGameScenePath)) { Console.Error($"No such scene '{cardGameScenePath}'"); return; }
 		
-		SceneTransition.Run(SceneTransition.Type.FadeToBlack, () => {
-			ClearLoadedScenes();
-
+		// Clearing other scenes is handled by the transition
+		// Cut when coming from another card game scene, otherwise crossfade
+		SceneTransition.Run(CardGameController.IsValid() ? SceneTransition.Type.Cut : SceneTransition.Type.CrossFade, "game", () => {
 			var cardGameScene = ResourceLoader.Load<PackedScene>(cardGameScenePath).Instantiate();
 			GetLayer("game").AddChild(cardGameScene);
 			CardGameController = cardGameScene as CardGameController ?? cardGameScene.FindChildOfType<CardGameController>();
@@ -145,41 +144,73 @@ public sealed partial class GameManager : Node
 
 	private class SceneTransition
 	{
-		public enum Type { Cut, FadeToBlack }
+		public enum Type { Cut, FadeToBlack, CrossFade }
 
 		private readonly Action _loadStep;
-		private readonly Type _type;
-		private readonly float _duration;
+		private Type _type; private float? _duration; private string _fadeLayer;
+		private Tween.TransitionType _interpolation = Tween.TransitionType.Quad;
 
-		private static readonly float DefaultDuration = 1.5f;
-		private static readonly Tween.TransitionType DefaultInterpolation = Tween.TransitionType.Quad;
+		public float Duration => _duration switch { null or <0 => _type switch { Type.Cut => 0f, _ => 1.5f }, _ => (float)_duration };
 
-		private SceneTransition(Action loadStep, Type type, float duration) { _type = type; _loadStep = loadStep; _duration = duration; }
+		private SceneTransition(Action loadStep, Type type, float? duration = null, string fadeLayer = null) { _type = type; _loadStep = loadStep; _duration = duration; _fadeLayer = fadeLayer; }
 
-		public static SceneTransition Create(Action loadStep) => new(loadStep, Type.Cut, 0f);
-		public static SceneTransition Create(Type type, Action loadStep) => new(loadStep, type, type switch { Type.Cut => 0f, _ => DefaultDuration });
+		public static SceneTransition Create(Action loadStep) => new(loadStep, Type.Cut);
+		public static SceneTransition Create(Type type, Action loadStep) => new(loadStep, type);
 		public static SceneTransition Create(Type type, float duration, Action loadStep) => new(loadStep, type, duration);
+		public static SceneTransition Create(Type type, string fadeLayer, float duration, Action loadStep) => new(loadStep, type, duration, fadeLayer);
+		public static SceneTransition Create(Type type, string fadeLayer, Action loadStep) => new(loadStep, type, null, fadeLayer);
 		
 		public static SignalAwaiter Run(Action loadStep) => Create(loadStep).Run();
 		public static SignalAwaiter Run(Type type, Action loadStep) => Create(type, loadStep).Run();
 		public static SignalAwaiter Run(Type type, float duration, Action loadStep) => Create(type, duration, loadStep).Run();
+		public static SignalAwaiter Run(Type type, string fadeLayer, float duration, Action loadStep) => Create(type, fadeLayer, duration, loadStep).Run();
+		public static SignalAwaiter Run(Type type, string fadeLayer, Action loadStep) => Create(type, fadeLayer, loadStep).Run();
+
+		public SceneTransition SetType(Type type) { _type = type; return this; }
+		public SceneTransition SetDuration(float duration) { _duration = duration; return this; }
+		public SceneTransition SetInterpolation(Tween.TransitionType interpolation) { _interpolation = interpolation; return this; }
+		public SceneTransition SetFadeLayer(string name) { _fadeLayer = name; return this; }
 
 		public SignalAwaiter Run() => Instance.ToSignal(_type switch {
 			Type.Cut => PerformCut(),
-			Type.FadeToBlack => PerformFadeToBlack()
+			Type.FadeToBlack => PerformFadeToBlack(),
+			Type.CrossFade => PerformCrossFade()
 		}, Tween.SignalName.Finished);
 
 		private Tween PerformCut() {
 			var tween = Instance.CreateTween();
-			var callbackTweener = tween.TweenCallback(_loadStep);
-			if (_duration > 0) callbackTweener.SetDelay(_duration);
+			var callbackTweener = tween.TweenCallback(() => { ClearLoadedScenes(); _loadStep?.Invoke(); foreach (var (name, layer) in _layers.Where(x => x.Key != "transition")) layer.Show(); });
+			if (Duration > 0) callbackTweener.SetDelay(Duration);
 			return tween;
 		}
 
 		private Tween PerformFadeToBlack() {
-			var tween = FadeLayer("transition", FadeType.In, _duration / 2, DefaultInterpolation);
-			tween.TweenCallback(_loadStep);
-			FadeLayer("transition", FadeType.Out, _duration / 2, DefaultInterpolation, tween);
+			var tween = FadeLayer("transition", FadeType.In, Duration / 2, _interpolation);
+			tween.TweenCallback(() => { ClearLoadedScenes(); _loadStep?.Invoke(); foreach (var (name, layer) in _layers.Where(x => x.Key != "transition")) layer.Show(); });
+			FadeLayer("transition", FadeType.Out, Duration / 2, _interpolation, tween);
+			return tween;
+		}
+
+		private Tween PerformCrossFade() {
+			_loadStep?.Invoke();
+			var tween = Instance.CreateTween();
+			if (_fadeLayer is null) return tween;
+
+			var visibleLayers = _layers.Where(x => x.Value.IsValid() && x.Value.Visible && x.Value.GetChildCount() > 0 && _resettableLayers.Contains(x.Key));
+			var sortedLayers = visibleLayers.Select(x => new KeyValuePair<string, float>(x.Key, x.Value.Layer)).OrderBy(x => x.Value).ToDictionary();
+			var layerIndex = GetLayer(_fadeLayer).Layer;
+
+			var layersAbove = sortedLayers.Where(x => x.Key != _fadeLayer).Where(x => x.Value >= layerIndex).Select(x => x.Key);
+
+			Console.Info($"Layer: {_fadeLayer}({layerIndex}). Layers: {sortedLayers.ToPrettyString()}");
+
+			if (layersAbove.Any()) {
+				GetLayer(_fadeLayer).Show();
+				foreach (var (index, layer) in layersAbove.Index()) { if (index != 0) tween.Parallel(); tween.TweenSubtween(FadeLayer(layer, FadeType.Out, Duration, _interpolation)); }
+			}
+			else FadeLayer(_fadeLayer, FadeType.In, Duration, _interpolation, tween);
+
+			tween.TweenCallback(() => ClearLoadedScenesExcept(_fadeLayer));
 			return tween;
 		}
 
@@ -187,6 +218,7 @@ public sealed partial class GameManager : Node
 
 		private enum FadeType { In, Out }
 		private Tween FadeLayer(string name, FadeType fade, float duration, Tween.TransitionType transitionType = Tween.TransitionType.Linear, Tween existingTween = null) {
+			//Console.Info($"Fading {fade switch { FadeType.In => "in", FadeType.Out => "out" }} layer '{name}' over {duration}s with {Enum.GetName(transitionType).ToLower()} interpolation{existingTween switch { null => "", _ => $" using {existingTween.ToPrettyString()}" }}");
 			var layer = GetLayer(name); var items = layer?.GetChildren()?.Where(x => x is CanvasItem)?.Cast<CanvasItem>() ?? [];
 
 			if (fade == FadeType.In) CacheLayerAlphas(name);
