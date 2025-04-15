@@ -127,8 +127,7 @@ public class Game : Console.Command
 
         result.WithParsed<EndOptions>(options => {
             if (cardGame is null) { Console.Error("Game scene not instantiated.", false); return; }
-
-            cardGame.Round = cardGame.NumRounds + 1;
+            cardGame.ForceGameEnd();
         });
 
         result.WithParsed<DefaultOptions>(options => {

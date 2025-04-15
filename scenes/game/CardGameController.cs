@@ -192,11 +192,11 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	}
 
 	// Triggers game end if the preconditions are met. Called by the Round and Score setters.
-	private void AttemptGameEnd() {
+	private void AttemptGameEnd(bool force = false) {
 		if (Engine.IsEditorHint() || !ShouldGameEnd()) return;
 
 		// If mid-round, defer ending until end of round
-		if (MidRound) { this.TryConnect(SignalName.RoundEnd, Callable.From((int round) => AttemptGameEnd()), (uint)ConnectFlags.OneShot); return; }
+		if (MidRound && !force) { this.TryConnect(SignalName.RoundEnd, Callable.From((int round) => AttemptGameEnd()), (uint)ConnectFlags.OneShot); return; }
 
 		PlayButton.Hide();
 
@@ -212,6 +212,8 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 				});
 		});
 	}
+
+	public void ForceGameEnd() { Round = NumRounds + 1; if (MidRound) AttemptGameEnd(true); }
 
 	// Deal up to each HandContainer's hand size, drawing from the working decks. Automatically handles tweens to animate them flying in from offscreen.
 	private void Deal() {
