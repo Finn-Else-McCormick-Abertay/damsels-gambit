@@ -202,8 +202,6 @@ public sealed partial class GameManager : Node
 
 			var layersAbove = sortedLayers.Where(x => x.Key != _fadeLayer).Where(x => x.Value >= layerIndex).Select(x => x.Key);
 
-			Console.Info($"Layer: {_fadeLayer}({layerIndex}). Layers: {sortedLayers.ToPrettyString()}");
-
 			if (layersAbove.Any()) {
 				GetLayer(_fadeLayer).Show();
 				foreach (var (index, layer) in layersAbove.Index()) { if (index != 0) tween.Parallel(); tween.TweenSubtween(FadeLayer(layer, FadeType.Out, Duration, _interpolation)); }
