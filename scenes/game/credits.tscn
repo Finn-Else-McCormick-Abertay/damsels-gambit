@@ -231,10 +231,12 @@ texture = ExtResource("12_fq7lm")
 
 [node name="Exit_Button" type="Button" parent="."]
 layout_mode = 1
-anchors_preset = 1
+anchors_preset = -1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -144.0
-offset_bottom = 81.0
+offset_left = -163.0
+offset_top = 10.0
+offset_right = -19.0
+offset_bottom = 91.0
 grow_horizontal = 0
-text = "Exit Game"
+text = "Skip"
