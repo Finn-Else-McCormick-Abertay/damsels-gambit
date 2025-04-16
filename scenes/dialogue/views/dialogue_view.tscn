@@ -91,7 +91,7 @@ theme_type_variation = &"OptionContainer"
 [node name="OptionArchetype" type="Button" parent="Root/VBoxContainer/OptionPaddingContainer/OptionContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 5.0
+size_flags_stretch_ratio = 5.22
 mouse_default_cursor_shape = 2
 theme_type_variation = &"DialogueOptionButton"
 text = "Option Text"
@@ -101,7 +101,15 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 5.0
 mouse_default_cursor_shape = 2
-theme_type_variation = &"DialogueOptionButton"
+theme_type_variation = &"DialogueOptionButtonUsed"
+text = "Option Text"
+
+[node name="Option3" type="Button" parent="Root/VBoxContainer/OptionPaddingContainer/OptionContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 5.0
+mouse_default_cursor_shape = 2
+theme_type_variation = &"DialogueOptionButtonUnlocked"
 text = "Option Text"
 
 [node name="PaddingRight" type="Control" parent="Root/VBoxContainer/OptionPaddingContainer"]

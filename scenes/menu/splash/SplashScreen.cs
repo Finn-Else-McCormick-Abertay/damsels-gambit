@@ -7,13 +7,13 @@ namespace DamselsGambit;
 
 public partial class SplashScreen : Control
 {
-    [Export] private bool UseSpashScreen = false;
-    [Export] private double BootFadeTime = 1.5;
+    [Export] public bool UseSpashScreen = false;
+    [Export] public double BootFadeTime = 1.5;
 
     private Tween _bootFadeTween;
 
     public override void _Ready() {
-        if (!UseSpashScreen) { foreach (var child in GetChildren().Where(x => x is CanvasItem).Cast<CanvasItem>()) child.Hide(); }
+        if (!UseSpashScreen) { MouseFilter = MouseFilterEnum.Ignore; foreach (var child in GetChildren().Where(x => x is CanvasItem).Cast<CanvasItem>()) child.Hide(); }
 
         var colorRect = new ColorRect() { Color = ProjectSettings.GetSettingWithOverride("application/boot_splash/bg_color").AsColor(), MouseFilter = MouseFilterEnum.Ignore };
         AddChild(colorRect);

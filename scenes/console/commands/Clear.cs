@@ -22,7 +22,7 @@ public class Clear : Console.Command
                 h.Copyright = ""; h.AutoHelp = true; h.AutoVersion = false;
                 return h;
             }, e => e);
-            Console.Info(helpText, false);
+            Console.Print(helpText);
         });
     }
 }

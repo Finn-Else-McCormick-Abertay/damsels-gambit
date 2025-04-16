@@ -95,6 +95,8 @@ public sealed partial class GameManager : Node
 		}
 	}
 
+	private static bool _inTransition = false;
+
 	private static void ClearLoadedScenesExcept(params IEnumerable<string> ignoreLayers) {
 		if (!Instance.IsValid()) return;
 
@@ -113,7 +115,12 @@ public sealed partial class GameManager : Node
 
 		// Clearing other scenes is handled by the transition
 		// Crossfade when coming from credits or splash, otherwise fade to black
-		SceneTransition.Run(GetLayer("credits").GetChildCount() > 0 || GetLayer("splash").GetChildCount() > 0 ? SceneTransition.Type.CrossFade : SceneTransition.Type.FadeToBlack, "menu", () => {
+		SceneTransition.Run(
+			0 switch {
+				_ when GetLayer("splash").FindChildOfType<SplashScreen>() is SplashScreen splash && !splash.UseSpashScreen => SceneTransition.Type.Cut,
+				_ when GetLayer("credits").GetChildCount() > 0 || GetLayer("splash").GetChildCount() > 0 => SceneTransition.Type.CrossFade,
+				_ => SceneTransition.Type.FadeToBlack
+			}, "menu", () => {
 			MainMenu = _mainMenuScene.Instantiate<Control>(); GetLayer("menu").AddChild(MainMenu);
 			SetNotebookActive(false);
 		});
@@ -129,18 +136,16 @@ public sealed partial class GameManager : Node
 		});
 	}
 
-	public static void BeginGame() {
-		DialogueManager.Instance.Reset();
-		SwitchToCardGameScene("res://scenes/dates/tutorial_date.tscn");
-	}
+	public static void BeginGame() => SwitchToCardGameScene("res://scenes/dates/tutorial_date.tscn", true);
 	
-	public static void SwitchToCardGameScene(string cardGameScenePath) {
+	public static void SwitchToCardGameScene(string cardGameScenePath, bool resetDialogueInstance = false) {
 		if (!Instance.IsValid()) return;
 		if (!ResourceLoader.Exists(cardGameScenePath)) { Console.Error($"No such scene '{cardGameScenePath}'"); return; }
 		
 		// Clearing other scenes is handled by the transition
 		// Cut when coming from another card game scene, otherwise crossfade
 		SceneTransition.Run(CardGameController.IsValid() ? SceneTransition.Type.Cut : SceneTransition.Type.CrossFade, "game", () => {
+			if (resetDialogueInstance) DialogueManager.Instance.Reset();
 			var cardGameScene = ResourceLoader.Load<PackedScene>(cardGameScenePath).Instantiate();
 			GetLayer("game").AddChild(cardGameScene);
 			CardGameController = cardGameScene as CardGameController ?? cardGameScene.FindChildOfType<CardGameController>();
@@ -192,11 +197,21 @@ public sealed partial class GameManager : Node
 		public SceneTransition SetInterpolation(Tween.TransitionType interpolation) { _interpolation = interpolation; return this; }
 		public SceneTransition SetFadeLayer(string name) { _fadeLayer = name; return this; }
 
-		public SignalAwaiter Run() => Instance.ToSignal(_type switch {
-			Type.Cut => PerformCut(),
-			Type.FadeToBlack => PerformFadeToBlack(),
-			Type.CrossFade => PerformCrossFade()
-		}, Tween.SignalName.Finished);
+		public SignalAwaiter Run() {
+			Console.Info($"Transition of type {Enum.GetName(_type)} {(_fadeLayer is not null ? $"to {_fadeLayer} " : "")}over {Duration}s : {_inTransition}");
+			if (_inTransition) {
+				Console.Warning($"Failed scene transition {(_fadeLayer is not null ? $"to {_fadeLayer} " : "")}over {Duration}s: transition already in progress.", false);
+				return null;
+			}
+			_inTransition = true;
+			var tween = _type switch {
+				Type.Cut => PerformCut(),
+				Type.FadeToBlack => PerformFadeToBlack(),
+				Type.CrossFade => PerformCrossFade()
+			};
+			tween.TweenCallback(() => _inTransition = false);
+			return Instance.ToSignal(tween, Tween.SignalName.Finished);
+		}
 
 		private Tween PerformCut() {
 			var tween = Instance.CreateTween();

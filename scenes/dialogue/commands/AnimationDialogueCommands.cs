@@ -28,9 +28,9 @@ static class AnimationDialogueCommands
         else action?.Invoke();
     }
 
-    private static void CommandInfo(string msg, [CallerMemberName]string callingMethod = null) => Console.Info($"Dialogue Command [{callingMethod}]: {msg}");
-    private static void CommandWarning(string msg, [CallerMemberName]string callingMethod = null) => Console.Warning($"Dialogue Command [{callingMethod}]: {msg}");
-    private static void CommandError(string msg, [CallerMemberName]string callingMethod = null) => Console.Error($"Dialogue Command [{callingMethod}]: {msg}");
+    private static void CommandInfo(string msg, [CallerMemberName]string callingMethod = null) => Console.Info($"Dialogue Command [{callingMethod}]: {msg}", true, false);
+    private static void CommandWarning(string msg, [CallerMemberName]string callingMethod = null) => Console.Warning($"Dialogue Command [{callingMethod}]: {msg}", true, false);
+    private static void CommandError(string msg, [CallerMemberName]string callingMethod = null) => Console.Error($"Dialogue Command [{callingMethod}]: {msg}", true, false);
 
     // Non-blocking wait
     [YarnCommand("after")]

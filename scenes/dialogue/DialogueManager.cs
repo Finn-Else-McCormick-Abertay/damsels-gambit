@@ -15,6 +15,8 @@ public partial class DialogueManager : Node
     public static DialogueManager Instance { get; private set; }
     public override void _EnterTree() { if (Instance is not null) throw AutoloadException.For(this); Instance = this; InitRunner(); }
 
+    public static bool VerboseLogging { get; set; } = false;
+
     public static DialogueRunner Runner { get; private set; }
     public static DialogueRunner ProfileRunner { get; private set; }
     
@@ -41,8 +43,12 @@ public partial class DialogueManager : Node
     }
 
     private void InitRunner(bool force = true) {
-        if (Runner is not null) { if (force) { RemoveChild(Runner); Runner.QueueFree(); Runner = null; } else return; }
-        if (ProfileRunner is not null) { if (force) { RemoveChild(ProfileRunner); ProfileRunner.QueueFree(); ProfileRunner = null; } else return; }
+        if (Runner is not null) {
+            if (force) { RemoveChild(Runner); Runner.QueueFree(); Runner = null; } else return;
+        }
+        if (ProfileRunner is not null) {
+            if (force) { RemoveChild(ProfileRunner); ProfileRunner.QueueFree(); ProfileRunner = null; } else return;
+        }
 
         _yarnProject ??= ResourceLoader.Load<YarnProject>("res://assets/dialogue/DamselsGambit.yarnproject");
 
@@ -56,19 +62,20 @@ public partial class DialogueManager : Node
 
         AddChild(Runner); AddChild(ProfileRunner);
 
-        Runner.ConnectAll(
-            (DialogueRunner.SignalName.onDialogueStart, Callable.From(OnRunnerDialogueStart)),
-            (DialogueRunner.SignalName.onDialogueComplete, Callable.From(OnRunnerDialogueComplete)),
-            (DialogueRunner.SignalName.onNodeStart, Callable.From<string>(OnRunnerNodeStart)),
-            (DialogueRunner.SignalName.onNodeComplete, Callable.From<string>(OnRunnerNodeComplete))
-        );
+        Runner.Connect(DialogueRunner.SignalName.onDialogueComplete, OnDialogueComplete);
 
         Runner.SetDialogueViews(_dialogueViews.Where(x => x is not ProfileDialogueView));
         ProfileRunner.SetDialogueViews(_dialogueViews.Where(x => x is ProfileDialogueView));
+
+        Runner.Dialogue.NodeStartHandler += OnNodeStart;
+        Runner.Dialogue.NodeCompleteHandler += OnNodeComplete;
+        Runner.Dialogue.LineHandler += OnLine;
+        Runner.Dialogue.OptionsHandler += OnOptions;
+        Runner.Dialogue.CommandHandler += OnCommand;
     }
 
     // Yarn project contains dialogue node with given name
-    public static bool DialogueExists(string nodeName) => _yarnProject?.Program?.Nodes?.ContainsKey(nodeName ?? "") ?? false;
+    public static bool DialogueExists(string nodeName) => Runner.Dialogue.NodeExists(nodeName);
 
     // Run given dialogue node. If force is true, will interrupt and overwrite whatever dialogue is already in progress
     // If orErrorDialogue is true, will run the node 'error' (which displays the text 'Invalid node') if it can't find the node
@@ -130,32 +137,49 @@ public partial class DialogueManager : Node
     private static int _completesToIgnore = 0;
     private static readonly Queue<Callable> _onCompleteQueue = [];
 
-    private void OnRunnerDialogueStart() {
-        //Console.Info("OnStart");
-    }
-
-    private void OnRunnerDialogueComplete() {
-        //Console.Info($"OnComplete {_completesToIgnore}");
+    private void OnDialogueComplete() {
         if (_completesToIgnore > 0) { _completesToIgnore--; return; }
 
         while (_onCompleteQueue.Count > 0) {
-            //Console.Info($" - dequeue {_onCompleteQueue.Peek()}");
             var callable = _onCompleteQueue.Dequeue();
             if (callable.Target.IsValid()) callable.CallDeferred();
         }
     }
 
-    private void OnRunnerNodeStart(string nodeName) {
-        //Console.Info($"OnNodeStart {nodeName}");
+    private static string LineToDebugString(Yarn.Line line) {
+        var localisedLine = _textLineProvider.GetLocalizedLine(line);
+        return $"{localisedLine.RawText}{(localisedLine.Metadata is not null ? $" {string.Join(" ", localisedLine.Metadata.Select(x => $"#{x}"))}" : "")}";
     }
 
-    private void OnRunnerNodeComplete(string nodeName) {
-        //Console.Info($"OnNodeComplete {nodeName}");
+    private void OnNodeStart(string nodeName) {
+        if (!VerboseLogging) return;
+        var tags = Runner.Dialogue.GetTagsForNode(nodeName) ?? [];
+        Console.Info($"Dialogue: --- {nodeName}{(tags.Any() ? $"({string.Join(", ", tags)})" : "")} ---");
+    }
+
+    private void OnNodeComplete(string nodeName) {
+        if (!VerboseLogging) return;
+        Console.Info($"Dialogue: ===");
+    }
+
+    private void OnLine(Yarn.Line line) {
+        if (!VerboseLogging) return;
+        Console.Info($"Dialogue: {LineToDebugString(line)}");
+    }
+
+    private void OnOptions(Yarn.OptionSet options) {
+        if (!VerboseLogging) return;
+        foreach (var option in options.Options) Console.Info($"Dialogue: -> {LineToDebugString(option.Line)}{(!option.IsAvailable ? " (unavailable)" : "")}{(!option.DestinationNode.IsNullOrWhitespace() ? $" => {option.DestinationNode}" : "")}");
+    }
+
+    private void OnCommand(Yarn.Command command) {
+        if (!VerboseLogging) return;
+        Console.Info($"Dialogue: <<{command.Text}>>");
     }
 
     public static void OnComplete(Callable callable) {
         if (!Runner.IsDialogueRunning) callable.Call();
-        else _onCompleteQueue.Enqueue(callable); // CallableUtils.CallDeferred(() => Runner.Connect(DialogueRunner.SignalName.onDialogueComplete, callable, (uint)ConnectFlags.OneShot));
+        else _onCompleteQueue.Enqueue(callable);
     }
     public static void OnComplete(Action action) => OnComplete(Callable.From(action));
 }
