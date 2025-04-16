@@ -29,12 +29,20 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
 			_themes.Add(relativePath.StripExtension(), ResourceLoader.Load<Theme>(fullPath));
 	}
 
+	public static class ThemeTypeVariations {
+		public static readonly StringName OptionNormal = "DialogueOptionButton";
+		public static readonly StringName OptionUsed = "DialogueOptionButtonUsed";
+		public static readonly StringName OptionNewlyUnlocked = "DialogueOptionButtonUnlocked";
+	}
+
 	public enum DialogueState { Inactive, DisplayingLine, DisplayingOptions, Waiting }
 	public DialogueState State { get; private set; }
 
 	Action _onLineFinishedAction = null;
 
 	public Action requestInterrupt { get; set; }
+
+	private readonly HashSet<string> _usedOptions = [];
 
 	public override void _EnterTree() {
 		ContinueButton?.TryConnect(BaseButton.SignalName.Pressed, OnContinue);
@@ -62,11 +70,10 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
 		_onLineFinishedAction = onLineFinished;
 
 		bool HasTag(string tag) => line?.Metadata?.Contains(tag) ?? false;
-
 		bool withNext = HasTag("withnext") || HasTag("lastline");
 
 		var lineText = line.TextWithoutCharacterName.AsBBCode();
-		if (string.IsNullOrWhiteSpace(lineText)) lineText = "";
+		if (lineText.IsNullOrWhitespace()) lineText = "";
 
 		TitleLabel?.Set(Label.PropertyName.Text, line.CharacterName);
 		LineLabel?.Set(Label.PropertyName.Text, lineText);
@@ -124,14 +131,22 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
 
 			var optionControl = OptionArchetype.Duplicate() as Control;
 			OptionRoot.AddChild(optionControl);
+			
+			bool alreadyUsed = _usedOptions.Contains(option.Line.TextID);
+
+			Console.Info($"{option.Line.TextID}, {option.Line.RawText}, {string.Join(", ", option.Line.Metadata ?? [])} : {(alreadyUsed ? "used" : "not used")}");
 
 			var button = optionControl as Button ?? optionControl.FindChildOfType<Button>();
 			button.Text = option.Line.Text.Text;
+			button.ThemeTypeVariation = 0 switch {
+				_ when alreadyUsed => ThemeTypeVariations.OptionUsed,
+				_ => ThemeTypeVariations.OptionNormal
+			};
 			button.Pressed += () => {
 				Task.Factory.StartNew(async () => {
 					await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-					CleanupOptions();
-					onOptionSelected?.Invoke(option.DialogueOptionID);
+					_usedOptions.Add(option.Line.TextID);
+					CleanupOptions(); onOptionSelected?.Invoke(option.DialogueOptionID);
 				});
 			};
 			toFocus ??= button;
