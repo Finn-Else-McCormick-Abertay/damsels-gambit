@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://2010mmkoekfk"]
+[gd_scene load_steps=11 format=3 uid="uid://2010mmkoekfk"]
 
 [ext_resource type="Theme" uid="uid://db11aw5aoqnpw" path="res://assets/ui/theme/suitor_profile_theme.tres" id="1_eqs5j"]
 [ext_resource type="Script" uid="uid://drk6opts1ja02" path="res://scenes/menu/notebook/pages/ProfilePage.cs" id="2_scbxg"]
@@ -7,6 +7,12 @@
 [ext_resource type="Script" uid="uid://dxgjxwnt0yhqf" path="res://scenes/dialogue/views/ProfileDialogueView.cs" id="3_a4plf"]
 [ext_resource type="Script" uid="uid://cbqc0snx0l0pi" path="res://scenes/menu/notebook/PivotPoint.cs" id="4_bpofr"]
 [ext_resource type="Texture2D" uid="uid://bfoqt200g8dkj" path="res://assets/characters/frostholm/suitor_card.png" id="5_n3mgi"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n3mgi"]
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [sub_resource type="Gradient" id="Gradient_fkj1o"]
 interpolation_mode = 2
@@ -38,11 +44,27 @@ Subtitle = NodePath("../Subtitle")
 Label = NodePath("../Info")
 Portrait = NodePath("../Portrait")
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="Panel" type="Panel" parent="."]
+clip_children = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.994
+offset_left = -1.0
+offset_top = 1.0
+offset_right = -3.0
+offset_bottom = 3.888
+theme_override_styles/panel = SubResource("StyleBoxFlat_n3mgi")
+
+[node name="Background" type="TextureRect" parent="Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -4.0
+offset_top = -4.0
+offset_right = 7.0
+offset_bottom = 3.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(229, 197)
