@@ -55,7 +55,7 @@ public partial class MainMenu : Control, IFocusContext
 		InputManager.PopFromFocusStack();
 	}
 
-	private void OnExitPressed() => GetTree().Quit();
+	private void OnExitPressed() => GameManager.Quit();
 	
 	public virtual int FocusContextPriority => 8;
 

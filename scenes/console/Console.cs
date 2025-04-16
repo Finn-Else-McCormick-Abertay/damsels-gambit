@@ -116,6 +116,7 @@ public sealed partial class Console : Node
     public Console() {
         _parser = new(with => { with.AutoHelp = false; with.AutoVersion = false; with.HelpWriter = null; });
         RegisterAllCommands();
+        ProcessMode = ProcessModeEnum.Always;
     }
     
     public override void _EnterTree() {

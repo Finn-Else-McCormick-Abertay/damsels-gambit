@@ -12,7 +12,6 @@ public partial class EndScreen : Control
 	[Export] Button QuitButton { get; set; }
 	[Export] Button CreditsButton { get; set; }
 
-
 	public override void _Ready() {
 		RetryButton?.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnRetry));
 		QuitButton?.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnQuit));
@@ -22,23 +21,22 @@ public partial class EndScreen : Control
 		OnVisibilityChanged();
 	}
 
+    public override void _ExitTree() { GameManager.NotebookMenu.Visible = true; }
+
 	private void OnVisibilityChanged() {
 		GameManager.NotebookMenu.Visible = !Visible;
 	}
 
 	private void OnRetry() {
-		GameManager.NotebookMenu.Visible = true;
 		GameManager.SwitchToCardGameScene("res://scenes/dates/frostholm_date.tscn");
 		QueueFree();
 	}
 
 	private static void OnQuit() {
-		GameManager.NotebookMenu.Visible = true;
 		GameManager.SwitchToMainMenu();
 	}
 
 	private static void OnCredits() {
-		GameManager.NotebookMenu.Visible = true;
 		GameManager.SwitchToCredits();
 	}
 }

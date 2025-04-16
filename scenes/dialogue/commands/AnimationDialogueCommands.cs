@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System;
 using DamselsGambit.Util;
 using DamselsGambit.Environment;
+using System.Runtime.CompilerServices;
+using Antlr4.Runtime;
 
 namespace DamselsGambit.Dialogue;
 
@@ -26,10 +28,15 @@ static class AnimationDialogueCommands
         else action?.Invoke();
     }
 
+    private static void CommandInfo(string msg, [CallerMemberName]string callingMethod = null) => Console.Info($"Dialogue Command [{callingMethod}]: {msg}");
+    private static void CommandWarning(string msg, [CallerMemberName]string callingMethod = null) => Console.Warning($"Dialogue Command [{callingMethod}]: {msg}");
+    private static void CommandError(string msg, [CallerMemberName]string callingMethod = null) => Console.Error($"Dialogue Command [{callingMethod}]: {msg}");
+
     // Non-blocking wait
     [YarnCommand("after")]
     public static void After(float time) {
         if (EnvironmentManager.Instance is null) return;
+        if (time < 0) { CommandWarning($"Time '{time}' invalid. Cannot be less than zero."); }
         var timer = new Timer() { OneShot = true, WaitTime = time };
         EnvironmentManager.Instance.AddChild(timer);
         Timers.Enqueue(timer);
@@ -58,10 +65,13 @@ static class AnimationDialogueCommands
 
     [YarnCommand("scene")]
     public static void Scene(string sceneName, string action = "switch") => RunCommandDeferred(() => {
-        if (action.MatchN("switch"))
+        action = action.Trim().ToLower();
+        if (action == "switch")
             EnvironmentManager.GetEnvironmentNames()?.ForEach(name => EnvironmentManager.GetEnvironmentLayers(name)?.ForEach(x => x.Visible = !sceneName.MatchN("none") && name == sceneName));
-        else if (action.MatchN("show") || action.MatchN("hide"))
-            (sceneName.MatchN("all") ? EnvironmentManager.GetEnvironmentNames()?.SelectMany(EnvironmentManager.GetEnvironmentLayers) : EnvironmentManager.GetEnvironmentLayers(sceneName))?.ForEach(x => x.Visible = action.MatchN("show"));
+        else if (action.IsAnyOf("show", "hide"))
+            (sceneName.MatchN("all") ? EnvironmentManager.GetEnvironmentNames()?.SelectMany(EnvironmentManager.GetEnvironmentLayers) : EnvironmentManager.GetEnvironmentLayers(sceneName))?.ForEach(x => x.Visible = action == "show");
+        else
+            CommandError($"Invalid action arg '{action}': should be one of 'switch', 'show' or 'hide'.");
     });
 
     [YarnCommand("variant")]
@@ -71,89 +81,95 @@ static class AnimationDialogueCommands
             if (variant.ToLower().Trim() == "default") x.Variant = PropDisplay.GetValidVariants(itemName).FirstOrDefault();
             if (variant.ToLower().Trim().IsAnyOf("random", "rand")) x.Variant = PropDisplay.GetValidVariants(itemName).OrderBy(x => Random.Shared.Next()).FirstOrDefault();
         }));
+
+    private static void PropAnimate(string itemName, string type = "") {
+        type = type.Trim().ToLower();
+        float moveSpeed = 1f, waitTime = 2f; 
+        var players = EnvironmentManager.GetAllAnimationPlayers();
+
+        bool PlayAnimation(string name, string fade) {
+            var validPlayers = players.Where(x => x.HasAnimation(name));
+            if (!validPlayers.Any()) return false;
+            float timeToBlock = 0f;
+            foreach (var player in validPlayers) { player.Play(name); player.Advance(0); timeToBlock = MathF.Max(timeToBlock, (float)player.CurrentAnimationLength); }
+            Fade(fade, itemName, timeToBlock); After(timeToBlock);
+            return true;
+        }
+
+        if (type.IsAnyOf("in", "enter", "full", "inout", "")) {
+            if (!PlayAnimation("item_enter", "in")) {
+                Move(itemName, 0f, 200f, 0);
+                Move(itemName, 0f, -200f, moveSpeed);
+                Fade("in", itemName, moveSpeed);
+                After(moveSpeed);
+            }
+        }
+        if (type.IsAnyOf("full", "inout", "")) After(waitTime);
+        if (type.IsAnyOf("out", "exit", "full", "inout", "")) {
+            if (!PlayAnimation("item_exit", "out")){
+                Move(itemName, 0f, -200f, moveSpeed);
+                Fade("out", itemName, moveSpeed); After(moveSpeed);
+                Move(itemName, 0f, 200f, 0);
+            }
+        }
+    }
     
     [YarnCommand("prop")]
-    public static void Prop(string action, string itemName, string actionArg = "") {
-        action = action.Trim().ToLower();
-        if (action == "variant") Variant(itemName, actionArg);
-        else if (action == "animate") {
-            actionArg = actionArg.Trim().ToLower();
-            float moveSpeed = 1f, waitTime = 2f; 
-            if (actionArg.IsAnyOf("in", "enter", "full", "inout", "")) {
-                var validPlayers = EnvironmentManager.GetAllAnimationPlayers().Where(x => x.HasAnimation("item_enter"));
-                if (validPlayers.Any()) {
-                    float timeToBlock = 0f;
-                    foreach (var player in validPlayers) {
-                        player.Play("item_enter"); player.Advance(0);
-                        timeToBlock = MathF.Max(timeToBlock, (float)player.CurrentAnimationLength);
-                    }
-                    Fade("in", itemName, timeToBlock);
-                    After(timeToBlock);
-                }
-                else {
-                    Move(itemName, 0f, 200f, 0);
-                    Move(itemName, 0f, -200f, moveSpeed);
-                    Fade("in", itemName, moveSpeed);
-                    After(moveSpeed);
-                }
-            }
-            if (actionArg.IsAnyOf("full", "inout", "")) After(waitTime);
-            if (actionArg.IsAnyOf("out", "exit", "full", "inout", "")) {
-                var validPlayers = EnvironmentManager.GetAllAnimationPlayers().Where(x => x.HasAnimation("item_exit"));
-                if (validPlayers.Any()) {
-                    float timeToBlock = 0f;
-                    foreach (var player in validPlayers) {
-                        player.Play("item_enter"); player.Advance(0);
-                        timeToBlock = MathF.Max(timeToBlock, (float)player.CurrentAnimationLength);
-                    }
-                    Fade("out", itemName, timeToBlock);
-                    After(timeToBlock);
-                }
-                else {
-                    Move(itemName, 0f, -200f, moveSpeed);
-                    Fade("out", itemName, moveSpeed);
-                    After(moveSpeed);
-                    Move(itemName, 0f, 200f, 0);
-                }
-            }
+    public static void Prop(string action, string itemName, string actionArg1 = "", string actionArg2 = "") {
+        switch (action.Trim().ToLower()) {
+            case "variant": Variant(itemName, actionArg1); break;
+            case "animate": {
+                bool firstArgIsAnimateArg = actionArg1.Trim().ToLower().IsAnyOf("in", "out", "enter", "exit", "full", "inout");
+                Variant(itemName, !firstArgIsAnimateArg ? actionArg1 : actionArg2);
+                PropAnimate(itemName, firstArgIsAnimateArg ? actionArg1 : actionArg2);
+            } break;
+            default: CommandError($"Invalid arg '{action}': must be 'variant' or 'animate'."); break;
         }
     }
 
     [YarnCommand("show")]
-    public static void Show(string itemName, int variant = -1) => RunCommandDeferred(() =>
-        EnvironmentManager.GetAllItems(itemName)?.ForEach(x => {
-            x?.Set(CanvasItem.PropertyName.Visible, true);
-            if (variant >= 0 && x is PropDisplay propDisplay) propDisplay.Variant = variant;
-        }));
+    public static void Show(string itemName, string variant = "") => RunCommandDeferred(itemName.Trim().ToLower() switch {
+        "profile" => () => GameManager.NotebookMenu.Visible = true,
+        _ => () => EnvironmentManager.GetAllItems(itemName)?.ForEach(x => { x?.Set(CanvasItem.PropertyName.Visible, true); if (!variant.IsNullOrWhitespace()) Variant(itemName, variant); })
+    });
 
     [YarnCommand("hide")]
-    public static void Hide(string itemName) => RunCommandDeferred(() => EnvironmentManager.GetAllItems(itemName)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, false)));
-
-    [YarnCommand("hide_box")]
-    public static void HideBox() => RunCommandDeferred(() => DialogueManager.DialogueViews?.ForEach(x => x.HideBox()));
+    public static void Hide(string itemName) => RunCommandDeferred(itemName.Trim().ToLower() switch {
+        "profile" => () => GameManager.NotebookMenu.Visible = false,
+        "box" => () => DialogueManager.DialogueViews?.ForEach(x => x.HideBox()),
+        _ => () => EnvironmentManager.GetAllItems(itemName)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, false))
+    });
 
     [YarnCommand("profile")]
     public static void Profile(string action) => RunCommandDeferred(() => {
-        if (action.MatchN("open") || action.MatchN("close")) GameManager.NotebookMenu.Open = action.MatchN("open");
-        if (action.MatchN("under") || action.MatchN("over")) GameManager.NotebookMenu.OverDialogue = action.MatchN("over");
-        if (action.MatchN("show") || action.MatchN("hide")) GameManager.NotebookMenu.Visible = action.MatchN("show");
+        action = action.Trim().ToLower();
+        bool? result = action switch {
+            "open" or "close" => GameManager.NotebookMenu.Open = action == "open",
+            "under" or "over" => GameManager.NotebookMenu.OverDialogue = action == "over",
+            "show" or "hide" => GameManager.NotebookMenu.Visible = action == "show",
+            _ => null
+        };
+        if (result is null) CommandError($"Invalid arg '{action}': should be one of 'open', 'close', 'over', 'under', 'show' or 'hide'.");
     });
 
     [YarnCommand("emote")]
-    public static void Emote(string characterName, string emotionName, string from = "", string revertFrom = "") => RunCommandDeferred(() =>
+    public static void Emote(string characterName, string emotionName, bool from = false, string revertFrom = "") => RunCommandDeferred(() => {
+        if (from && revertFrom.IsNullOrWhitespace()) CommandWarning("Using arg 'from', but no emotion to revert from specified.");
         EnvironmentManager.GetCharacterDisplays(characterName).ForEach(display => {
-            if (from == "from" && !string.IsNullOrWhiteSpace(revertFrom) && display.SpriteName != revertFrom) return;
+            if (from && !string.IsNullOrWhiteSpace(revertFrom) && display.SpriteName != revertFrom) return;
             display.Show(); display.SpriteName = emotionName;
-        }));
+            if (!display.SpriteExists) Console.Warning($"Attempted to set '{characterName}' to nonexistent emotion '{emotionName}'.");
+        });
+    });
     
     [YarnCommand("animation")]
     public static void Animation(string animationName, bool block = false) => RunCommandDeferred(() => {
+        var validPlayers = EnvironmentManager.GetAllAnimationPlayers().Where(x => x.HasAnimation(animationName));
+        if (!validPlayers.Any()) Console.Warning("Animation '{animationName}' could not be found");
         float timeToBlock = 0f;
-        foreach (var animationPlayer in EnvironmentManager.GetAllAnimationPlayers()) {
-            if (animationPlayer.HasAnimation(animationName)) {
-                animationPlayer.Play(animationName); animationPlayer.Advance(0);
-                timeToBlock = MathF.Max(timeToBlock, (float)animationPlayer.CurrentAnimationLength);
-            }
+        foreach (var animationPlayer in validPlayers) {
+            animationPlayer.Play(animationName); animationPlayer.Advance(0);
+            timeToBlock = MathF.Max(timeToBlock, (float)animationPlayer.CurrentAnimationLength);
         }
         if (block && timeToBlock > 0f) After(timeToBlock);
     });
@@ -173,7 +189,7 @@ static class AnimationDialogueCommands
     [YarnCommand("fade")]
     public static void Fade(string inOut, string itemName, float time) => RunCommandDeferred(() => {
         inOut = inOut.ToLower().Trim();
-        if (inOut != "in" && inOut != "out") return;
+        if (inOut != "in" && inOut != "out") { CommandError($"Invalid arg '{inOut}': must be 'in' or 'out'."); return; }
 
         IEnumerable<CanvasItem> affectedItems = EnvironmentManager.GetCharacterDisplays(itemName).Cast<CanvasItem>().Concat(EnvironmentManager.GetPropDisplays(itemName).Cast<CanvasItem>());
 

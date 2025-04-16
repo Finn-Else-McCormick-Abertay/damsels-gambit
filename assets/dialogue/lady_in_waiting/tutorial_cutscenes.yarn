@@ -11,7 +11,7 @@ Queen Helena: My daughter, the time is long overdue for you to be married.
 <<emote queen turn_right>>
 Queen Helena: I have arranged you a date with a suitor tonight. Prince Ráðúlfr is making his way from his kingdom of Frostholm as we speak.
 Queen Helena: Make yourself ready, and try not to disappoint him.
-<<hide_box>>
+<<hide box>>
 <<move queen 300 0 1>>
 <<fade out queen 1>>
 <<wait 1>>
@@ -30,7 +30,7 @@ Lady in Waiting: [i]You[/i] might not have a choice, but [i]he[/i] does. If you 
 <<emote lady_in_waiting neutral_mouth_open>>
 Lady in Waiting: I'll tell you what, we still have time before he arrives. Why don't you practice with me first, just to get the hang of things?
 <<flush_command_queue>>
-<<hide_box>>
+<<hide box>>
 <<emote lady_in_waiting neutral>>
 <<move lady_in_waiting -300 0 1>>
 <<fade out lady_in_waiting 1>>
@@ -137,7 +137,7 @@ Lady in Waiting: FILLER LINE WHY DOES THIS GET SKIPPED? IDK. NEED TO FIX
 <<emote lady_in_waiting happy>>
 Lady in Waiting: Good luck, Princess. I'll always be here to support you.
 Lady in Waiting: FILLER LINE WHY DOES THIS GET SKIPPED? IDK. NEED TO FIX
-<<hide_box>>
+<<hide box>>
 <<profile hide>>
 <<fade out lady_in_waiting 1>>
 <<wait 1>>
@@ -151,7 +151,7 @@ Lady in Waiting: FILLER LINE WHY DOES THIS GET SKIPPED? IDK. NEED TO FIX
 <<emote lady_in_waiting neutral_mouth_open>>
 Lady in Waiting: Good luck, Princess. I'll always be here to support you.
 Lady in Waiting: FILLER LINE WHY DOES THIS GET SKIPPED? IDK. NEED TO FIX
-<<hide_box>>
+<<hide box>>
 <<profile hide>>
 <<fade out lady_in_waiting 1>>
 <<wait 1>>
