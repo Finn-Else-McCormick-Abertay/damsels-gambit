@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://dajkw7w45mh4c"]
 
-[ext_resource type="Texture2D" uid="uid://bgp5yt38gueut" path="res://assets/ui/panels/paper_texture_white_bkg.png" id="1_l1sy0"]
+[ext_resource type="Texture2D" uid="uid://b8lnwq2qt7eq3" path="res://assets/ui/panels/leather cover.png" id="1_3tu7u"]
 [ext_resource type="Texture2D" uid="uid://cnmux17p4b1od" path="res://assets/ui/buttons/pause_icon_alt.png" id="2_gfsyx"]
 [ext_resource type="Script" uid="uid://cbqc0snx0l0pi" path="res://scenes/menu/notebook/PivotPoint.cs" id="3_3tu7u"]
 
@@ -13,7 +13,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Background" type="TextureRect" parent="."]
-modulate = Color(0.721876, 0.565272, 0.381291, 1)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -25,7 +24,7 @@ offset_bottom = 11.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(229, 197)
-texture = ExtResource("1_l1sy0")
+texture = ExtResource("1_3tu7u")
 expand_mode = 1
 
 [node name="Pause Button" type="Button" parent="."]
