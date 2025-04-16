@@ -87,7 +87,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 5.22
 theme_type_variation = &"OptionContainer"
-theme_override_constants/separation = 15
 
 [node name="OptionArchetype" type="Button" parent="Root/VBoxContainer/OptionPaddingContainer/OptionContainer"]
 layout_mode = 2
