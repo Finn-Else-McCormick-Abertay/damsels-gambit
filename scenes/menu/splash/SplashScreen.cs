@@ -7,8 +7,8 @@ namespace DamselsGambit;
 
 public partial class SplashScreen : Control
 {
-    [Export] private bool UseSpashScreen = false;
-    [Export] private double BootFadeTime = 1.5;
+    [Export] public bool UseSpashScreen = false;
+    [Export] public double BootFadeTime = 1.5;
 
     private Tween _bootFadeTween;
 

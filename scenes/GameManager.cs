@@ -115,7 +115,12 @@ public sealed partial class GameManager : Node
 
 		// Clearing other scenes is handled by the transition
 		// Crossfade when coming from credits or splash, otherwise fade to black
-		SceneTransition.Run(GetLayer("credits").GetChildCount() > 0 || GetLayer("splash").GetChildCount() > 0 ? SceneTransition.Type.CrossFade : SceneTransition.Type.FadeToBlack, "menu", () => {
+		SceneTransition.Run(
+			0 switch {
+				_ when GetLayer("splash").FindChildOfType<SplashScreen>() is SplashScreen splash && !splash.UseSpashScreen => SceneTransition.Type.Cut,
+				_ when GetLayer("credits").GetChildCount() > 0 || GetLayer("splash").GetChildCount() > 0 => SceneTransition.Type.CrossFade,
+				_ => SceneTransition.Type.FadeToBlack
+			}, "menu", () => {
 			MainMenu = _mainMenuScene.Instantiate<Control>(); GetLayer("menu").AddChild(MainMenu);
 			SetNotebookActive(false);
 		});
@@ -195,7 +200,7 @@ public sealed partial class GameManager : Node
 		public SignalAwaiter Run() {
 			Console.Info($"Transition of type {Enum.GetName(_type)} {(_fadeLayer is not null ? $"to {_fadeLayer} " : "")}over {Duration}s : {_inTransition}");
 			if (_inTransition) {
-				Console.Error($"Failed scene transition {(_fadeLayer is not null ? $"to {_fadeLayer} " : "")}over {Duration}s: transition already in progress.");
+				Console.Warning($"Failed scene transition {(_fadeLayer is not null ? $"to {_fadeLayer} " : "")}over {Duration}s: transition already in progress.", false);
 				return null;
 			}
 			_inTransition = true;
