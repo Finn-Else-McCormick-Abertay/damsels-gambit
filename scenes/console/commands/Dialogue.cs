@@ -180,18 +180,36 @@ public class Dialogue : Console.Command
     }
 
     public override IEnumerable<string> GetAutofill(string[] args) {
+        static IEnumerable<string> GetNodeAutofill() {
+            var nodes = DialogueManager.Runner.yarnProject.Program.Nodes.Keys;
+            var split = nodes.Select(x => x.Split("__")).Where(x => x.Length > 1);
+            return
+                split.Select(x => {
+                    List<string> list = [];
+                    for (int i = 1; i < x.Length; ++i) {
+                        string pre = $"{string.Join("__", x[..i])}__";
+                        list.Add(pre);
+                        var parts = x[i].Split('_', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                        for (int j = 0; j < parts.Length; ++j) list.Add($"{pre}{string.Join('_', parts[..j])}{(j > 0 ? "_" : "")}");
+                    }
+                    return list.AsEnumerable();
+                }).SelectMany(x => x)
+                .Concat(nodes)
+                .Distinct();
+        }
+
         if (args.Length == 1) return [ "run", "learn", "unlearn", "get", "logging" ];
         if (args.Length > 1) return args.First() switch {
             "get" => args.Length switch {
                 2 => [ "--node", "--nodes", "--scene", "--scenes", "--character", "--characters", "--prop", "--props", "--knowledge", "--facts" ],
                 > 2 when args.Contains("--knowledge") => [ "current", "all" ],
-                > 2 when args.Contains("--node") => DialogueManager.Runner.yarnProject.Program.Nodes.Keys,
+                > 2 when args.Contains("--node") => GetNodeAutofill(),
                 > 2 when args.Contains("--scene") => EnvironmentManager.GetEnvironmentNames(),
                 > 2 when args.Contains("--character") => EnvironmentManager.GetCharacterNames(),
                 > 2 when args.Contains("--prop") => EnvironmentManager.GetPropNames(),
                 _ => []
             },
-            "run" when args.Length == 2 => DialogueManager.Runner.yarnProject.Program.Nodes.Keys,
+            "run" when args.Length == 2 => GetNodeAutofill(),
             "learn" or "unlearn" when args.Length == 2 => Knowledge.AllFacts,
             "logging" when args.Length == 2 => [ "enable", "disable", "verbose" ],
             _ => []

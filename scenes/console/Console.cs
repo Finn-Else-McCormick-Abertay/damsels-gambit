@@ -117,7 +117,8 @@ public sealed partial class Console : Node
         var args = inputString.Split(); var inProgressArg = args.LastOrDefault();
         return
             (args.Length switch { <= 1 => (IEnumerable<string>)[..Instance._commands.Keys], > 1 => Instance._commands.TryGetValue(args.First(), out Command command) ? [..command.GetAutofill(args[1..])] : [] })
-            .Where(arg => arg.Length >= inProgressArg.Length && arg[..inProgressArg.Length] == inProgressArg);
+            .Where(arg => arg.Length >= inProgressArg.Length && arg[..inProgressArg.Length] == inProgressArg)
+            .Where(arg => arg != inProgressArg);
     }
     
     public Console() {
