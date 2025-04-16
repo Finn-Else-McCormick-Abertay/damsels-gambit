@@ -140,9 +140,6 @@ static class AnimationDialogueCommands
         _ => () => EnvironmentManager.GetAllItems(itemName)?.ForEach(x => x?.Set(CanvasItem.PropertyName.Visible, false))
     });
 
-    [YarnCommand("hide_box")]
-    public static void HideBox() => RunCommandDeferred(() => DialogueManager.DialogueViews?.ForEach(x => x.HideBox()));
-
     [YarnCommand("profile")]
     public static void Profile(string action) => RunCommandDeferred(() => {
         action = action.Trim().ToLower();
