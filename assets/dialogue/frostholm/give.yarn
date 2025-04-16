@@ -3,12 +3,10 @@ title: frostholm__give_food
 Princess Penelope: I got you something to eat!...
 	-> Escargot!
 		<<score -3>>
-		<<variant escargot random>>
-		<<prop animate escargot>>
+		<<prop animate escargot random>>
 	-> Fresh, raw, reindeer meat! <<if knows("native_animals")>>
 		<<score 6>>
-		<<variant raw_reindeer_meat random>>
-		<<prop animate raw_reindeer_meat>>
+		<<prop animate raw_reindeer_meat random>>
 	-> Have this bug fondue!
 		<<score -3>>
 ===
@@ -18,16 +16,13 @@ title: frostholm__give_animals
 Princess Penelope: I wanted to give you this...
 	-> A feather I found outside from one of our imported birds!
 		<<score 3>>
-		<<variant feather random>>
-		<<prop animate feather>>
+		<<prop animate feather random>>
 	-> A claw I snapped of a wolf I fought with!
 		<<score -3>>
-		<<variant wolf_claw random>>
-		<<prop animate wolf_claw>>
+		<<prop animate wolf_claw random>>
 	-> A scarf I made from a fox tail!
 		<<score 3>>
-		<<variant fox_tail random>>
-		<<prop animate fox_tail>>
+		<<prop animate fox_tail random>>
 ===
 
 title: frostholm__give_art
@@ -49,16 +44,13 @@ Princess Penelope: I thought you might like this...
 		<<score -6>>
 	-> Pitchfork. Crafted by yours truly. Perfect for witch hunting! <<if knows("witch_opinion")>>
 		<<score 6>>
-		<<variant pitchfork random>>
-		<<prop animate pitchfork>>
+		<<prop animate pitchfork random>>
 	-> Health Potion! (Frog Potion)
 		<<score 3>>
-		<<variant frog_potion random>>
-		<<prop animate frog_potion>>
+		<<prop animate frog_potion random>>
 	-> Health Potion! (Wolf Potion)
 		<<score 3>>
-		<<variant wolf_potion random>>
-		<<prop animate wolf_potion>>
+		<<prop animate wolf_potion random>>
 ===
 
 title: frostholm__give_religion
@@ -68,8 +60,7 @@ Princess Penelope: I got this for you. It's a...
 		<<score 3>>
 	-> Book disproving Snurch... <<if knows("afterlife_ring")>>
 		<<score -6>>
-		<<variant book_disproving_snurch random>>
-		<<prop animate book_disproving_snurch>>
+		<<prop animate book_disproving_snurch random>>
 	-> Gospel of our kingdom's religion!
 		<<score -3>>
 ===
@@ -90,8 +81,7 @@ Princess Penelope: Here this...
 		<<score 3>>
 	-> Snail bracelet! (Designer too!)
 		<<score -3>>
-		<<variant snail_bracelet random>>
-		<<prop animate snail_bracelet>>
+		<<prop animate snail_bracelet random>>
 ===
 
 title: frostholm__give_weather
@@ -99,16 +89,13 @@ title: frostholm__give_weather
 Princess Penelope: Tada!...
 	-> An enchanted snowman that never melts!
 		<<score 3>>
-		<<variant snowman random>>
-		<<prop animate snowman>>
+		<<prop animate snowman random>>
 	-> Sunglasses!
 		<<score -3>>
-		<<variant sunglasses random>>
-		<<prop animate sunglasses>>
+		<<prop animate sunglasses random>>
 	-> An enchanted umbrella! It snows underneath it when you open it! <<if knows("weather_opinion")>>
 		<<score 6>>
-		<<variant umbrella random>>
-		<<prop animate umbrella>>
+		<<prop animate umbrella random>>
 ===
 
 title: frostholm__give_family
@@ -116,18 +103,14 @@ title: frostholm__give_family
 Princess Penelope: I've got a replica of a treasured family heirloom I can give you! It's...
 	-> Please give your family this dress made of human teeth.
 		<<score -3>>
-		<<variant human_teeth_dress random>>
-		<<prop animate human_teeth_dress>>
+		<<prop animate human_teeth_dress random>>
 	-> A lighting bolt collar for your wolf brother! <<if knows("wolf_brother")>>
 		<<score -6>>
-		<<variant shock_collar random>>
 		<<prop animate shock_collar>>
 	-> Have this wolf pendant, it's a family heirloom.
 		<<score 3>>
-		<<variant wolf_pendant random>>
-		<<prop animate wolf_pendant>>
+		<<prop animate wolf_pendant random>>
 	-> Have this family's recipe on how to make a voodoo doll! <<if knows("witch_treatment")>>
 		<<score -6>>
-		<<variant voodoo_book random>>
-		<<prop animate voodoo_book>>
+		<<prop animate voodoo_book random>>
 ===
