@@ -134,8 +134,6 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
 			
 			bool alreadyUsed = _usedOptions.Contains(option.Line.TextID);
 
-			Console.Info($"{option.Line.TextID}, {option.Line.RawText}, {string.Join(", ", option.Line.Metadata ?? [])} : {(alreadyUsed ? "used" : "not used")}");
-
 			var button = optionControl as Button ?? optionControl.FindChildOfType<Button>();
 			button.Text = option.Line.Text.Text;
 			button.ThemeTypeVariation = 0 switch {

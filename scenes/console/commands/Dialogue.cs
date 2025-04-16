@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -56,10 +57,16 @@ public class Dialogue : Console.Command
         public string Fact { get; set; }
     }
 
+    [Verb("logging")]
+    class LoggingOptions {
+        [Value(0)]
+        public string State { get; set; }
+    }
+
     public override void Parse(Parser parser, IEnumerable<string> args)
     {
         var program = DialogueManager.Runner.yarnProject.Program;
-        var result = parser.ParseArguments<GetOptions, RunOptions, LearnOptions, UnlearnOptions>(args);
+        var result = parser.ParseArguments<GetOptions, RunOptions, LearnOptions, UnlearnOptions, LoggingOptions>(args);
         result.WithParsed<GetOptions>(options => {
             if (!options.Node.IsEmpty()) {
                 if (program.Nodes.TryGetValue(options.Node, out var node)) {
@@ -150,13 +157,17 @@ public class Dialogue : Console.Command
             if (options.Props) Console.Info(string.Join(", ", EnvironmentManager.GetPropNames()));
         });
 
-        result.WithParsed<RunOptions>(options => {
-            DialogueManager.Run(options.Node, true);
-        });
+        result.WithParsed<RunOptions>(options => DialogueManager.Run(options.Node, true));
 
-        result.WithParsed<LearnOptions>(options => { DialogueManager.Knowledge.Learn(options.Fact); });
+        result.WithParsed<LearnOptions>(options => DialogueManager.Knowledge.Learn(options.Fact));
 
-        result.WithParsed<UnlearnOptions>(options => { DialogueManager.Knowledge.Unlearn(options.Fact); });
+        result.WithParsed<UnlearnOptions>(options => DialogueManager.Knowledge.Unlearn(options.Fact));
+
+        result.WithParsed<LoggingOptions>(options => ((Action)(options.State.ToLower() switch {
+            "enable" or "verbose" => () => DialogueManager.VerboseLogging = true,
+            "disable" => () => DialogueManager.VerboseLogging = false,
+            string invalidState => () => Console.Warning($"Invalid arg '{invalidState}' : must be one of 'enable', 'disable' or 'verbose'", false)
+        })).Invoke());
 
         result.WithNotParsed(err => {
             var helpText = HelpText.AutoBuild(result, h => {
@@ -169,7 +180,7 @@ public class Dialogue : Console.Command
     }
 
     public override IEnumerable<string> GetAutofill(string[] args) {
-        if (args.Length == 1) return [ "run", "learn", "unlearn", "get" ];
+        if (args.Length == 1) return [ "run", "learn", "unlearn", "get", "logging" ];
         if (args.Length > 1) return args.First() switch {
             "get" => args.Length switch {
                 2 => [ "--node", "--nodes", "--scene", "--scenes", "--character", "--characters", "--prop", "--props", "--knowledge", "--facts" ],
@@ -182,6 +193,7 @@ public class Dialogue : Console.Command
             },
             "run" when args.Length == 2 => DialogueManager.Runner.yarnProject.Program.Nodes.Keys,
             "learn" or "unlearn" when args.Length == 2 => Knowledge.AllFacts,
+            "logging" when args.Length == 2 => [ "enable", "disable", "verbose" ],
             _ => []
         };
         return [];
