@@ -56,10 +56,32 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	[Export] public Godot.Collections.Dictionary<string, int> TopicDeck { get; set { field = value; this.OnReady(EditorUpdateHands); } }
 	[Export] public Godot.Collections.Dictionary<string, int> ActionDeck { get; set { field = value; this.OnReady(EditorUpdateHands); } }
 
-	private List<string> _topicDeckWorking, _actionDeckWorking;
+	public class Deck
+	{
+		private List<string> _working;
 
-	public ReadOnlyCollection<string> RemainingTopicDeck => _topicDeckWorking?.AsReadOnly();
-	public ReadOnlyCollection<string> RemainingActionDeck => _actionDeckWorking?.AsReadOnly();
+		public Deck() => _working = [];
+		public Deck(IEnumerable<string> cards) => _working = [..cards];
+		public Deck(Dictionary<string, int> layout) { _working = []; foreach (var (card, count) in layout) for (int i = 0; i < count; ++i) _working.Add(card); }
+		public Deck(Godot.Collections.Dictionary<string, int> layout) : this(layout.ToDictionary()) {}
+
+		public static Deck Copy(Deck otherDeck) { Deck newDeck = new(); newDeck._working.AddRange(otherDeck._working); return newDeck; }
+
+		public ReadOnlyCollection<string> Remaining => _working.AsReadOnly();
+
+		public string Peek() => _working.FirstOrDefault();
+		public string PeekWhere(Func<string, bool> predicate) => _working.FirstOrDefault(predicate);
+
+		public string Draw() { var card = _working.FirstOrDefault(); if (card is not null) _working.Remove(card); return card; }
+		public string DrawWhere(Func<string, bool> predicate) { var card = _working.FirstOrDefault(predicate); if (card is not null) _working.Remove(card); return card; }
+
+		public void Clear() => _working.Clear();
+
+		public void Shuffle(Random random = null) => _working = [.._working.OrderBy(x => (random ?? Random.Shared).Next())];
+	}
+
+	public Deck TopicWorking { get; private set; }
+	public Deck ActionWorking { get; private set; }
 
 	[ExportSubgroup("Draw")]
 	[Export] public int ActionHandSize { get; set { field = value; ActionHand?.OnReady(x => x.HandSize = value); this.OnReady(EditorUpdateHands); } } = 3;
@@ -91,20 +113,18 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	// Trigger the start of the game
 	// This doesn't happen in ready so that GameManager is able to set whether the intro should be skipped (which it is when loading into the scene directly)
 	public void BeginGame(bool skipIntro = false) {
-		// Creating list of cards from exported dictionary of cards and their counts
-		static List<string> CreateWorkingDeck(Godot.Collections.Dictionary<string, int> deck) { List<string> working = []; foreach (var (card, count) in deck) for (int i = 0; i < count; ++i) working.Add(card); return working; }
+		TopicWorking = new Deck(TopicDeck);
+		ActionWorking = new Deck(ActionDeck);
 
-		// Create and shuffle deck
-		_topicDeckWorking = [..CreateWorkingDeck(TopicDeck).OrderBy(x => Random.Shared.Next())];
-		_actionDeckWorking = [..CreateWorkingDeck(ActionDeck).OrderBy(x => Random.Shared.Next())];
+		// Shuffle decks
+		TopicWorking.Shuffle();
+		ActionWorking.Shuffle();
 		
 		EmitSignal(SignalName.GameStart);
 
 		// Make NotebookMenu the focus neighbour of topic hand, so it can be accessed via keyboard controls
-		TopicHand.FocusNeighborTop = GameManager.NotebookMenu.GetPath();
-		TopicHand.FocusNeighborRight = GameManager.NotebookMenu.GetPath();
-		GameManager.NotebookMenu.FocusNeighborBottom = TopicHand.GetPath().ToString() + "!left";
-		GameManager.NotebookMenu.FocusNeighborLeft = TopicHand.GetPath().ToString() + "!right";
+		TopicHand.FocusNeighborTop = GameManager.NotebookMenu.GetPath(); TopicHand.FocusNeighborRight = GameManager.NotebookMenu.GetPath();
+		GameManager.NotebookMenu.FocusNeighborBottom = TopicHand.GetPath().ToString() + "!left"; GameManager.NotebookMenu.FocusNeighborLeft = TopicHand.GetPath().ToString() + "!right";
 
 		// Set whether intro skippable based on intro tags
 		foreach (var tag in DialogueManager.Runner.GetTagsForNode($"{_suitorId}__intro")) {
@@ -128,9 +148,16 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 
 	public override void _ExitTree() {
 		if (Engine.IsEditorHint()) return;
-		GameManager.NotebookMenu.FocusNeighborBottom = new();
-		GameManager.NotebookMenu.FocusNeighborLeft = new();
+		GameManager.NotebookMenu.FocusNeighborBottom = new(); GameManager.NotebookMenu.FocusNeighborLeft = new();
 	}
+	
+	public Control GetDefaultFocus(FocusDirection direction) =>
+		InputManager.FindFocusableWithin(direction switch {
+			_ when DialogueManager.Runner.IsDialogueRunning => null,
+			FocusDirection.Down => PlayButton,
+			FocusDirection.Left => TopicHand,
+			FocusDirection.Right or _ => ActionHand
+		}, direction);
 
 	// If not yet started, force-run the skip_setup node, skipping to the start of gameplay even if currently in the intro
 	public void ForceSkipIntro() { if (!Started && !Ended) DialogueManager.Run($"{_suitorId}__skip_setup", true); }
@@ -141,14 +168,6 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		// Set play button to be disabled based on whether the correct number of cards are selected
 		PlayButton.Disabled = TopicHand.GetSelected().Count() != 1 || ActionHand.GetSelected().Count() != 1 || ShouldGameEnd();
 	}
-	
-	public Control GetDefaultFocus(FocusDirection direction) =>
-		InputManager.FindFocusableWithin(direction switch {
-			_ when DialogueManager.Runner.IsDialogueRunning => null,
-			FocusDirection.Down => PlayButton,
-			FocusDirection.Left => TopicHand,
-			FocusDirection.Right or _ => ActionHand
-		}, direction);
 
 	// Connected to PlayButton's Pressed signal
 	private void PlayHand() {
@@ -219,46 +238,37 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	private void Deal() {
 		if (Engine.IsEditorHint()) return;
 
-		void DealToHand(HandContainer container, int handSize, List<string> workingDeck, Vector2 startPosition, float startAngle, double waitTime = 0.2) {
+		void DealToHand(HandContainer container, int handSize, Deck deck, Vector2 startPosition, float startAngle, double waitTime = 0.2) {
 			int cardsToDeal = Math.Max(handSize - container.GetChildCount(), 0);
 			List<string> cardsInHand = [..container.FindChildrenOfType<CardDisplay>().Select(x => x.CardId.ToString())];
-			for (int i = 0; i < cardsToDeal; ++i) {
-				var cardId = (NoRepeatsInHand ? workingDeck.SkipWhile(cardsInHand.Contains) : workingDeck).FirstOrDefault() ?? workingDeck.FirstOrDefault();
+			foreach (var i in RangeOf<int>.UpTo(cardsToDeal)) {
+				var cardId = NoRepeatsInHand ? deck.DrawWhere(x => !cardsInHand.Contains(x)) : deck.Draw();
 				if (cardId is null) break;
-				cardsInHand.Add(cardId); workingDeck.Remove(cardId);
+				cardsInHand.Add(cardId);
 				var cardDisplay = new CardDisplay{ CardId = cardId, ShadowOffset = new(-10, 1), ShadowOpacity = 0.4f, GlobalPosition = startPosition, RotationDegrees = startAngle };
-				Task.Factory.StartNew(async () => {
-					await ToSignal(GetTree().CreateTimer(waitTime * i), Timer.SignalName.Timeout);
-					container.AddChild(cardDisplay);
-					cardDisplay.Owner = container;
-				});
+				GetTree().CreateTimer(waitTime * i).Timeout += () => container.AddChild(cardDisplay);
 			}
 		}
-		DealToHand(ActionHand, ActionHandSize, _actionDeckWorking, new Vector2(-200f, 100f), -30f);
-		DealToHand(TopicHand, TopicHandSize, _topicDeckWorking, new Vector2(500f, 100f), 30f);
+		DealToHand(ActionHand, ActionHandSize, ActionWorking, new Vector2(-200f, 100f), -30f);
+		DealToHand(TopicHand, TopicHandSize, TopicWorking, new Vector2(500f, 100f), 30f);
 	}
 
 	// Equivalent of Deal, but deterministic and instant (for display in the editor)
 	private void EditorUpdateHands() {
 		if (!Engine.IsEditorHint()) return;
 
-		var random = new Random(0);
-		
-		List<string> CreateConsistentShuffledDeck(Godot.Collections.Dictionary<string, int> deck) {
-			List<string> working = []; foreach (var (card, count) in deck) for (int i = 0; i < count; ++i) working.Add(card);
-			return [..working.OrderBy(x => random.Next())];
-		}
-
-		void UpdateHand(HandContainer container, int handSize, Godot.Collections.Dictionary<string, int> deck) {
-			if (!container.IsValid() || deck is null) return;
+		var seededRandom = new Random(0);
+		void UpdateHand(HandContainer container, int handSize, Godot.Collections.Dictionary<string, int> deckLayout) {
+			if (!container.IsValid() || deckLayout is null) return;
 			
 			foreach (var child in container.GetChildren()) { container.RemoveChild(child); child.QueueFree(); }
 
-			var shuffled = CreateConsistentShuffledDeck(deck);
-			for (int i = 0; i < handSize; ++i) {
-				var cardId = (NoRepeatsInHand ? shuffled.SkipWhile(id => container.FindChildrenWhere<CardDisplay>(card => card.CardId == id).Count > 0) : shuffled).FirstOrDefault();
+			var tempDeck = new Deck(deckLayout);
+			tempDeck.Shuffle(seededRandom);
+
+			foreach (var i in RangeOf<int>.UpTo(handSize)) {
+				var cardId = NoRepeatsInHand ? tempDeck.DrawWhere(id => container.FindChildrenWhere<CardDisplay>(card => card.CardId == id).Count == 0) : tempDeck.Draw();
 				if (cardId is null) break;
-				shuffled.Remove(cardId);
 				var cardDisplay = new CardDisplay{ CardId = cardId, ShadowOffset = new(-10, 1), ShadowOpacity = 0.4f };
 				container.AddChild(cardDisplay);
 			}
