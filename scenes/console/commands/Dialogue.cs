@@ -147,7 +147,7 @@ public class Dialogue : Console.Command
             }
 
             if (options.Knowledge == "all" || options.Facts) Console.Info(string.Join(", ", Knowledge.AllFacts));
-            else if (options.Knowledge == "current") Console.Info(string.Join(", ", DialogueManager.Knowledge.KnownFacts));
+            else if (options.Knowledge == "current" || options.Knowledge.IsEmpty()) Console.Info(string.Join(", ", DialogueManager.Knowledge.KnownFacts));
             else Console.Error($"Knowledge: unknown arg '{options.Knowledge}'");
 
             
