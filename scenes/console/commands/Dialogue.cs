@@ -21,6 +21,8 @@ public class Dialogue : Console.Command
         public string Scene { get; set; }
         [Option]
         public string Character { get; set; }
+        [Option]
+        public string Prop { get; set; }
 
         [Option]
         public bool Nodes { get; set; }
@@ -29,7 +31,11 @@ public class Dialogue : Console.Command
         [Option]
         public bool Characters { get; set; }
         [Option]
-        public bool Knowledge { get; set; }
+        public bool Props { get; set; }
+        [Option]
+        public string Knowledge { get; set; }
+        [Option]
+        public bool Facts { get; set; }
     }
 
     [Verb("run")]
@@ -55,7 +61,7 @@ public class Dialogue : Console.Command
         var program = DialogueManager.Runner.yarnProject.Program;
         var result = parser.ParseArguments<GetOptions, RunOptions, LearnOptions, UnlearnOptions>(args);
         result.WithParsed<GetOptions>(options => {
-            if (!string.IsNullOrEmpty(options.Node)) {
+            if (!options.Node.IsEmpty()) {
                 if (program.Nodes.TryGetValue(options.Node, out var node)) {
                     var sb = new StringBuilder();
                     sb.Append(node.Name);
@@ -117,22 +123,31 @@ public class Dialogue : Console.Command
                 }
                 else Console.Error($"No such node '{options.Node}'.");
             }
-            if (!string.IsNullOrEmpty(options.Scene)) {
+            if (!options.Scene.IsEmpty()) {
                 var items = EnvironmentManager.GetEnvironmentItems(options.Scene);
                 if (!items.Any()) Console.Error($"No such environment '{options.Scene}'", false);
-                else Console.Info(string.Join(", ", items.Select(x => $"{x.Name} ({(x.Get(CanvasItem.PropertyName.Visible).AsBool() ? "Visible" : "Hidden")})")), false);
+                else Console.Info(string.Join(", ", items.Select(x => $"{x.Name} ({(x.Get(CanvasItem.PropertyName.Visible).AsBool() ? "Visible" : "Hidden")})")));
             }
-            if (!string.IsNullOrEmpty(options.Character)) {
+            if (!options.Character.IsEmpty()) {
                 var displays = EnvironmentManager.GetCharacterDisplays(options.Character);
                 if (displays.Count == 0) Console.Error($"No such character '{options.Character}'", false);
-                else Console.Info(string.Join(", ", displays.Select(x => $"{x.Name}: {x.SpriteName}")), false);
+                else Console.Info(string.Join(", ", displays.Select(x => $"{x.Name}: {x.SpriteName}")));
             }
+            if (!options.Prop.IsEmpty()) {
+                var displays = EnvironmentManager.GetPropDisplays(options.Prop);
+                if (displays.Count == 0) Console.Error($"No such prop '{options.Prop}'", false);
+                else Console.Info(string.Join(", ", displays.Select(x => $"{x.PropName}: {x.Variant}")));
+            }
+
+            if (options.Knowledge == "all" || options.Facts) Console.Info(string.Join(", ", Knowledge.AllFacts));
+            else if (options.Knowledge == "current") Console.Info(string.Join(", ", DialogueManager.Knowledge.KnownFacts));
+            else Console.Error($"Knowledge: unknown arg '{options.Knowledge}'");
 
             
             if (options.Nodes) Console.Info(string.Join(", ", program.Nodes.Keys));
             if (options.Scenes) Console.Info(string.Join(", ", EnvironmentManager.GetEnvironmentNames()));
             if (options.Characters) Console.Info(string.Join(", ", EnvironmentManager.GetCharacterNames()));
-            if (options.Knowledge) Console.Info(string.Join(", ", DialogueManager.Knowledge.KnownFacts));
+            if (options.Props) Console.Info(string.Join(", ", EnvironmentManager.GetPropNames()));
         });
 
         result.WithParsed<RunOptions>(options => {
@@ -149,24 +164,26 @@ public class Dialogue : Console.Command
                 h.Copyright = program.Name; h.AutoHelp = true; h.AutoVersion = false;
                 return h;
             }, e => e);
-            Console.Info(helpText, false);
+            Console.Print(helpText);
         });
     }
 
     public override IEnumerable<string> GetAutofill(string[] args) {
-        if (args.Length == 1) return [ "get", "run", "learn", "unlearn" ];
-        if (args.Length > 1) {
-            if (args.First() == "get") {
-                if (args.Contains("--node")) return DialogueManager.Runner.yarnProject.Program.Nodes.Keys;
-                if (args.Contains("--scene")) return EnvironmentManager.GetEnvironmentNames();
-                if (args.Contains("--character")) return EnvironmentManager.GetCharacterNames();
-                return [ "--node", "--nodes", "--scene", "--scenes", "--character", "--characters", "--knowledge" ];
-            }
-            
-            if (args.First() == "run" && args.Length == 2) return DialogueManager.Runner.yarnProject.Program.Nodes.Keys;
-            
-            if (args.First().IsAnyOf([ "learn", "unlearn" ]) && args.Length == 2) return [];
-        }
+        if (args.Length == 1) return [ "run", "learn", "unlearn", "get" ];
+        if (args.Length > 1) return args.First() switch {
+            "get" => args.Length switch {
+                2 => [ "--node", "--nodes", "--scene", "--scenes", "--character", "--characters", "--prop", "--props", "--knowledge", "--facts" ],
+                > 2 when args.Contains("--knowledge") => [ "current", "all" ],
+                > 2 when args.Contains("--node") => DialogueManager.Runner.yarnProject.Program.Nodes.Keys,
+                > 2 when args.Contains("--scene") => EnvironmentManager.GetEnvironmentNames(),
+                > 2 when args.Contains("--character") => EnvironmentManager.GetCharacterNames(),
+                > 2 when args.Contains("--prop") => EnvironmentManager.GetPropNames(),
+                _ => []
+            },
+            "run" when args.Length == 2 => DialogueManager.Runner.yarnProject.Program.Nodes.Keys,
+            "learn" or "unlearn" when args.Length == 2 => Knowledge.AllFacts,
+            _ => []
+        };
         return [];
     }
 }

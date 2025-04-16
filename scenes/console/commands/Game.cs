@@ -93,7 +93,7 @@ public class Game : Console.Command
                     msg = $"Full {cardTypeString}{(string.IsNullOrEmpty(cardTypeString) ? "" : " ")}Deck";
                 }
                 else if (options.Remaining) {
-                    if (showTopic) cards = cards.Concat(cardGame.RemainingTopicDeck); if (showAction) cards = cards.Concat(cardGame.RemainingActionDeck);
+                    if (showTopic) cards = cards.Concat(cardGame.TopicWorking.Remaining); if (showAction) cards = cards.Concat(cardGame.ActionWorking.Remaining);
                     msg = $"{cardTypeString}{(string.IsNullOrEmpty(cardTypeString) ? "" : " Cards ")}Remaining In Deck";
                 }
                 Console.Info($"{msg}: {string.Join(", ", cards)}");
@@ -142,17 +142,18 @@ public class Game : Console.Command
                 h.Copyright = ""; h.AutoHelp = true; h.AutoVersion = false;
                 return h;
             }, e => e);
-            Console.Info(helpText, false);
+            Console.Print(helpText);
         });
     }
 
     
     public override IEnumerable<string> GetAutofill(string[] args) => args.Length switch {
-        1 => [ "get", "set", "start", "end" ],
-        >1 => args.First() switch {
+        1 => [ "start", "end", "get", "set" ],
+        > 1 => args.First() switch {
             "get" => [ "round", "card", "cards" ],
             "set" when args.Length == 2 => [ "round", "score" ],
-            "start" when args.Length == 2 || (args.Length == 3 && args[2] == "--skipintro") => [ "lady_in_waiting", "frostholm" ],
+            "start" when args.Length == 2 => [ "lady_in_waiting", "frostholm", "--skipintro" ],
+            "start" when args.Length == 3 && args[2] == "--skipintro" => [ "lady_in_waiting", "frostholm" ],
             "start" when args.Length == 3 && args[2] != "--skipintro" => [ "--skipintro" ],
             "end" => [],
             _ => []

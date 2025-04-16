@@ -10,6 +10,7 @@ using System.Reflection;
 using CsvHelper;
 using DamselsGambit.Util;
 using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
 
 namespace DamselsGambit;
 
@@ -26,6 +27,8 @@ public sealed partial class Console : Node
 
     public static event Action<string> OnPrint;
     public static event Action OnClear;
+
+    public static bool PushToStdOut = true;
     
     /// <summary> Clear in-game console. </summary>
     public static void Clear() { Instance?._logBuilder?.Clear(); OnClear?.Invoke(); }
@@ -35,28 +38,33 @@ public sealed partial class Console : Node
     /// <summary> Print <paramref name="msg"/> to in-game console with final newline. </summary>
     public static void Print(string msg) => PrintRaw($"{msg}\n");
 
+    private static string FormatCallerInfo(string member, string filePath, int lineNumber) => $"({member}, {ProjectSettings.LocalizePath(filePath)} line {lineNumber})";
+
     /// <summary> <para>Print basic info to in-game console and the standard output.</para> </summary>
-    public static void Info(string msg, bool pushToStdOut = true) { Print(msg); if (pushToStdOut) GD.Print(msg); }
+    public static void Info(string msg, bool includeCallerInfo = false, [CallerMemberName]string callerMember = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0) {
+        if (includeCallerInfo && (callerMember is not null || callerFilePath is not null)) msg = $"{FormatCallerInfo(callerMember, callerFilePath, callerLineNumber)}: {msg}";
+        Print(msg); if (PushToStdOut) GD.Print(msg);
+    }
+
     /// <summary> <para>Print warning message to in-game console and the standard output.</para> </summary>
-    public static void Warning(string msg, bool pushToStdOut = true) { string richMsg = $"[color=#ffde66]{msg}[/color]"; Print(richMsg); if (pushToStdOut) GD.PrintRich(richMsg); }
+    public static void Warning(string msg, bool includeCallerInfo = true, [CallerMemberName]string callerMember = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0) {
+        if (includeCallerInfo && (callerMember is not null || callerFilePath is not null)) msg = $"{FormatCallerInfo(callerMember, callerFilePath, callerLineNumber)}: {msg}";
+        string richMsg = $"[color=#ffde66]{msg}[/color]";
+        Print(richMsg); if (PushToStdOut) GD.PrintRich(richMsg);
+    }
+
     /// <summary> <para>Print error message to in-game console and the standard error output.</para> </summary>
-    public static void Error(string msg, bool pushToStdOut = true) { Print($"[color=red]{msg}[/color]"); if (pushToStdOut) GD.PrintErr(msg); }
+    public static void Error(string msg, bool includeCallerInfo = true, [CallerMemberName]string callerMember = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0) {
+        if (includeCallerInfo && (callerMember is not null || callerFilePath is not null)) msg = $"{FormatCallerInfo(callerMember, callerFilePath, callerLineNumber)}: {msg}";
+        Print($"[color=red]{msg}[/color]"); if (PushToStdOut) GD.PrintErr(msg);
+    }
     
     /// <summary> <inheritdoc cref="Info(string, bool)"/> <para>Converts objects to string via <see cref="ToStringExtensions.ToPrettyString{T}(T)"/></para> </summary> 
     public static void Info(params object[] args) => Info(string.Join("", args.Select(ToStringExtensions.ToPrettyString)));
     /// <summary> <inheritdoc cref="Warning(string, bool)"/> <para>Converts objects to string via <see cref="ToStringExtensions.ToPrettyString{T}(T)"/></para> </summary> 
-    public static void Warning(params object[] args) => Warning(string.Join("", args.Select(ToStringExtensions.ToPrettyString)));
+    public static void Warning(params object[] args) => Warning(string.Join("", args.Select(ToStringExtensions.ToPrettyString)), false);
     /// <summary> <inheritdoc cref="Error(string, bool)"/> <para>Converts objects to string via <see cref="ToStringExtensions.ToPrettyString{T}(T)"/></para> </summary> 
-    public static void Error(params object[] args) => Error(string.Join("", args.Select(ToStringExtensions.ToPrettyString)));
-    
-    // These have to exist as separate functions because the way you call C# methods from GdScript doesn't work with default arguments or params
-
-    /// <inheritdoc cref="Info(string, bool)"/>
-    public static void Info(string msg) => Info(msg, true);
-    /// <inheritdoc cref="Warning(string, bool)"/>
-    public static void Warning(string msg) => Warning(msg, true);
-    /// <inheritdoc cref="Error(string, bool)"/>
-    public static void Error(string msg) => Error(msg, true);
+    public static void Error(params object[] args) => Error(string.Join("", args.Select(ToStringExtensions.ToPrettyString)), false);
     
     private readonly Dictionary<string, Command> _commands = [];
     public static ReadOnlyCollection<string> CommandNames => Instance?._commands.Keys.ToList().AsReadOnly();
@@ -109,8 +117,7 @@ public sealed partial class Console : Node
         var args = inputString.Split(); var inProgressArg = args.LastOrDefault();
         return
             (args.Length switch { <= 1 => (IEnumerable<string>)[..Instance._commands.Keys], > 1 => Instance._commands.TryGetValue(args.First(), out Command command) ? [..command.GetAutofill(args[1..])] : [] })
-            .Where(arg => arg.Length >= inProgressArg.Length && arg[..inProgressArg.Length] == inProgressArg)
-            .Order();
+            .Where(arg => arg.Length >= inProgressArg.Length && arg[..inProgressArg.Length] == inProgressArg);
     }
     
     public Console() {
