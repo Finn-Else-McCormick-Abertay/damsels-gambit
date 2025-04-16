@@ -95,6 +95,8 @@ public sealed partial class GameManager : Node
 		}
 	}
 
+	private static bool _inTransition = false;
+
 	private static void ClearLoadedScenesExcept(params IEnumerable<string> ignoreLayers) {
 		if (!Instance.IsValid()) return;
 
@@ -192,11 +194,21 @@ public sealed partial class GameManager : Node
 		public SceneTransition SetInterpolation(Tween.TransitionType interpolation) { _interpolation = interpolation; return this; }
 		public SceneTransition SetFadeLayer(string name) { _fadeLayer = name; return this; }
 
-		public SignalAwaiter Run() => Instance.ToSignal(_type switch {
-			Type.Cut => PerformCut(),
-			Type.FadeToBlack => PerformFadeToBlack(),
-			Type.CrossFade => PerformCrossFade()
-		}, Tween.SignalName.Finished);
+		public SignalAwaiter Run() {
+			//Console.Info($"Transition {(_fadeLayer is not null ? $"to {_fadeLayer} " : "")}over {Duration}s : {_inTransition}");
+			if (_inTransition) {
+				Console.Error($"Failed scene transition {(_fadeLayer is not null ? $"to {_fadeLayer} " : "")}over {Duration}s: transition already in progress.");
+				return null;
+			}
+			_inTransition = true;
+			var tween = _type switch {
+				Type.Cut => PerformCut(),
+				Type.FadeToBlack => PerformFadeToBlack(),
+				Type.CrossFade => PerformCrossFade()
+			};
+			Instance.ToSignal(tween, Tween.SignalName.Finished).OnCompleted(() => _inTransition = false);
+			return Instance.ToSignal(tween, Tween.SignalName.Finished);
+		}
 
 		private Tween PerformCut() {
 			var tween = Instance.CreateTween();
