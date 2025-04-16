@@ -45,8 +45,8 @@ anchor_right = 1.0
 offset_top = 266.0
 offset_bottom = 2870.0
 grow_horizontal = 2
-theme_override_colors/default_color = Color(0.227451, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(1, 0.87451, 0.835294, 1)
+theme_override_colors/default_color = Color(0.34902, 0.0352941, 0.133333, 1)
+theme_override_colors/font_outline_color = Color(0.996078, 0.929412, 0.898039, 1)
 theme_override_constants/outline_size = 19
 theme_override_font_sizes/normal_font_size = 34
 text = "
@@ -87,7 +87,15 @@ Bug Tester and Eliminator  -  Noah Morrison
 
 Abertay University Des315 Project 
 
-Audio Assets from 
+Audio 
+
+\"Take me to Snurch\"
+A \"Take me to Church\" Parody
+Orginal song by Hozier
+Parodied by Thorn Stirling
+Performed by Eric Dowds and Callum Taylor
+Mixed by Eric Dowds
+
 
 Created in GODOT 4.4
 Dialogue powered by Yarn Spinner — https://yarnspinner.dev 
@@ -97,7 +105,7 @@ Thanks to
 Fraser Simpson
 Martin Lynagh 
 Pocket Sized Hands 
-Garry 
+Gary McCartan
 Everyone who playtested the game and gave us feedback 
 
 
@@ -179,41 +187,41 @@ anchor_right = 0.5
 grow_horizontal = 2
 
 [node name="Escargots1" type="Sprite2D" parent="CreditsText/Marginalia"]
-position = Vector2(441, 831)
+position = Vector2(447, 816)
 scale = Vector2(0.233461, 0.233461)
 texture = ExtResource("5_ox8i4")
 
 [node name="HumanTeethDress1" type="Sprite2D" parent="CreditsText/Marginalia"]
-position = Vector2(277, 1909)
+position = Vector2(321, 2246)
 rotation = 0.223011
 scale = Vector2(0.258849, 0.258849)
 texture = ExtResource("6_s70fa")
 
 [node name="RawReindeerMeat2" type="Sprite2D" parent="CreditsText/Marginalia"]
-position = Vector2(373, 2154)
+position = Vector2(391, 2535)
 rotation = -1.24652
 scale = Vector2(0.297118, 0.297118)
 texture = ExtResource("7_2tpig")
 
 [node name="VoodooDollBook2" type="Sprite2D" parent="CreditsText/Marginalia"]
-position = Vector2(411, 1551)
+position = Vector2(378, 1573)
 scale = Vector2(0.33718, 0.337179)
 texture = ExtResource("8_fq7lm")
 
 [node name="WolfPendant3" type="Sprite2D" parent="CreditsText/Marginalia"]
-position = Vector2(-414, 1120)
+position = Vector2(-442, 1135)
 rotation = -0.3018
 scale = Vector2(0.264765, 0.264765)
 texture = ExtResource("9_pq3tm")
 
 [node name="WolfClaw3" type="Sprite2D" parent="CreditsText/Marginalia"]
-position = Vector2(-417, 1825)
+position = Vector2(-329, 1933)
 rotation = -1.04738
 scale = Vector2(0.424324, 0.424324)
 texture = ExtResource("10_b15uh")
 
 [node name="Feather1" type="Sprite2D" parent="CreditsText/Marginalia"]
-position = Vector2(-395, 768)
+position = Vector2(-376, 725)
 rotation = -1.05311
 scale = Vector2(0.261236, 0.261236)
 texture = ExtResource("12_fq7lm")

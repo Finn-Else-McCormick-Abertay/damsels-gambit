@@ -21,7 +21,7 @@ public partial class EndScreen : Control
 		OnVisibilityChanged();
 	}
 
-    public override void _ExitTree() { GameManager.NotebookMenu.Visible = true; }
+	public override void _ExitTree() { GameManager.NotebookMenu.Visible = true; }
 
 	private void OnVisibilityChanged() {
 		GameManager.NotebookMenu.Visible = !Visible;
