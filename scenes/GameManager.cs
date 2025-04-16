@@ -198,7 +198,7 @@ public sealed partial class GameManager : Node
 		public SceneTransition SetFadeLayer(string name) { _fadeLayer = name; return this; }
 
 		public SignalAwaiter Run() {
-			Console.Info($"Transition of type {Enum.GetName(_type)} {(_fadeLayer is not null ? $"to {_fadeLayer} " : "")}over {Duration}s : {_inTransition}");
+			//Console.Info($"Transition of type {Enum.GetName(_type)} {(_fadeLayer is not null ? $"to {_fadeLayer} " : "")}over {Duration}s : {_inTransition}");
 			if (_inTransition) {
 				Console.Warning($"Failed scene transition {(_fadeLayer is not null ? $"to {_fadeLayer} " : "")}over {Duration}s: transition already in progress.", false);
 				return null;

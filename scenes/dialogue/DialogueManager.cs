@@ -169,7 +169,13 @@ public partial class DialogueManager : Node
 
     private void OnOptions(Yarn.OptionSet options) {
         if (!VerboseLogging) return;
-        foreach (var option in options.Options) Console.Info($"Dialogue: -> {LineToDebugString(option.Line)}{(!option.IsAvailable ? " (unavailable)" : "")}{(!option.DestinationNode.IsNullOrWhitespace() ? $" => {option.DestinationNode}" : "")}");
+        var currentNode = Runner.yarnProject.Program.Nodes[Runner.Dialogue.CurrentNode];
+        //Console.Info($"!{string.Join(", ", currentNode.Instructions.Select(x => $"[{Enum.GetName(x.Opcode)}:{string.Join(", ", x.Operands.Select(op => op.ValueCase switch { Yarn.Operand.ValueOneofCase.StringValue => op.StringValue, Yarn.Operand.ValueOneofCase.FloatValue => op.FloatValue.ToString(), Yarn.Operand.ValueOneofCase.BoolValue => op.BoolValue.ToString(), _ => "null" }))}]"))}");
+        foreach (var option in options.Options) {
+            var optionInstruction = currentNode.Instructions.Where(x => x.Opcode == Yarn.Instruction.Types.OpCode.AddOption && x.Operands.FirstOrDefault()?.StringValue == option.Line.ID).FirstOrDefault();
+            bool isDependent = optionInstruction?.Operands?.LastOrDefault()?.BoolValue ?? false;
+            Console.Info($"Dialogue: -> {LineToDebugString(option.Line)}{(!option.IsAvailable ? " (unavailable)" : "")}{(isDependent ? " (dependent)" : "")}{(!option.DestinationNode.IsNullOrWhitespace() ? $" => {option.DestinationNode}" : "")}");
+        }
     }
 
     private void OnCommand(Yarn.Command command) {
