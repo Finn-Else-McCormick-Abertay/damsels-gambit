@@ -131,18 +131,16 @@ public sealed partial class GameManager : Node
 		});
 	}
 
-	public static void BeginGame() {
-		DialogueManager.Instance.Reset();
-		SwitchToCardGameScene("res://scenes/dates/tutorial_date.tscn");
-	}
+	public static void BeginGame() => SwitchToCardGameScene("res://scenes/dates/tutorial_date.tscn", true);
 	
-	public static void SwitchToCardGameScene(string cardGameScenePath) {
+	public static void SwitchToCardGameScene(string cardGameScenePath, bool resetDialogueInstance = false) {
 		if (!Instance.IsValid()) return;
 		if (!ResourceLoader.Exists(cardGameScenePath)) { Console.Error($"No such scene '{cardGameScenePath}'"); return; }
 		
 		// Clearing other scenes is handled by the transition
 		// Cut when coming from another card game scene, otherwise crossfade
 		SceneTransition.Run(CardGameController.IsValid() ? SceneTransition.Type.Cut : SceneTransition.Type.CrossFade, "game", () => {
+			if (resetDialogueInstance) DialogueManager.Instance.Reset();
 			var cardGameScene = ResourceLoader.Load<PackedScene>(cardGameScenePath).Instantiate();
 			GetLayer("game").AddChild(cardGameScene);
 			CardGameController = cardGameScene as CardGameController ?? cardGameScene.FindChildOfType<CardGameController>();
@@ -195,7 +193,7 @@ public sealed partial class GameManager : Node
 		public SceneTransition SetFadeLayer(string name) { _fadeLayer = name; return this; }
 
 		public SignalAwaiter Run() {
-			//Console.Info($"Transition {(_fadeLayer is not null ? $"to {_fadeLayer} " : "")}over {Duration}s : {_inTransition}");
+			Console.Info($"Transition of type {Enum.GetName(_type)} {(_fadeLayer is not null ? $"to {_fadeLayer} " : "")}over {Duration}s : {_inTransition}");
 			if (_inTransition) {
 				Console.Error($"Failed scene transition {(_fadeLayer is not null ? $"to {_fadeLayer} " : "")}over {Duration}s: transition already in progress.");
 				return null;
@@ -206,7 +204,7 @@ public sealed partial class GameManager : Node
 				Type.FadeToBlack => PerformFadeToBlack(),
 				Type.CrossFade => PerformCrossFade()
 			};
-			Instance.ToSignal(tween, Tween.SignalName.Finished).OnCompleted(() => _inTransition = false);
+			tween.TweenCallback(() => _inTransition = false);
 			return Instance.ToSignal(tween, Tween.SignalName.Finished);
 		}
 
