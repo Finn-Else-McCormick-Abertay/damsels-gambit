@@ -123,4 +123,5 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_default_cursor_shape = 2
 theme_type_variation = &"ContinueButton"
+theme_override_colors/font_color = Color(0.34902, 0.0352941, 0.133333, 1)
 text = "Continue"

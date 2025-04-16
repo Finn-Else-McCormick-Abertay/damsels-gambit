@@ -52,8 +52,8 @@ AxisStretchVertical = 0
 ModulateColor = Color(1, 1, 1, 1)
 
 [resource]
-Label/colors/font_color = Color(0.4, 0.0823529, 0.196078, 1)
-Label/colors/font_outline_color = Color(1, 0.94902, 0.780392, 1)
+Label/colors/font_color = Color(0.34902, 0.0352941, 0.133333, 1)
+Label/colors/font_outline_color = Color(0.996078, 0.929412, 0.898039, 1)
 Label/constants/outline_size = 15
 Label/font_sizes/font_size = 60
 Label/fonts/font = ExtResource("1_iytsk")
