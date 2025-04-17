@@ -117,7 +117,7 @@ public sealed partial class GameManager : Node
 		// Crossfade when coming from credits or splash, otherwise fade to black
 		SceneTransition.Run(
 			0 switch {
-				_ when GetLayer("splash").FindChildOfType<SplashScreen>() is SplashScreen splash && !splash.UseSpashScreen => SceneTransition.Type.Cut,
+				_ when GetLayer("splash").FindChildOfType<SplashScreen>() is SplashScreen splash && !splash.UseSplashScreen => SceneTransition.Type.Cut,
 				_ when GetLayer("credits").GetChildCount() > 0 || GetLayer("splash").GetChildCount() > 0 => SceneTransition.Type.CrossFade,
 				_ => SceneTransition.Type.FadeToBlack
 			}, "menu", () => {
