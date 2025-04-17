@@ -72,6 +72,8 @@ public partial class DialogueManager : Node
         Runner.Dialogue.LineHandler += OnLine;
         Runner.Dialogue.OptionsHandler += OnOptions;
         Runner.Dialogue.CommandHandler += OnCommand;
+
+        foreach (var node in _dialogueViews) (node as DialogueView)?.ResetUsedOptions();
     }
 
     // Yarn project contains dialogue node with given name

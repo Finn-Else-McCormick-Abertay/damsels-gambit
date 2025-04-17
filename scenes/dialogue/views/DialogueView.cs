@@ -43,6 +43,7 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
 	public Action requestInterrupt { get; set; }
 
 	private readonly HashSet<string> _usedOptions = [];
+	public void ResetUsedOptions() => _usedOptions.Clear();
 
 	public override void _EnterTree() {
 		ContinueButton?.TryConnect(BaseButton.SignalName.Pressed, OnContinue);
