@@ -1,10 +1,18 @@
-[gd_scene load_steps=6 format=3 uid="uid://q1kh0whg1g0g"]
+[gd_scene load_steps=7 format=3 uid="uid://q1kh0whg1g0g"]
 
 [ext_resource type="Script" uid="uid://c5bi6sq63upok" path="res://scenes/menu/notebook/NotebookMenu.cs" id="2_eweoj"]
 [ext_resource type="PackedScene" uid="uid://83tks4i67hdo" path="res://scenes/menu/notebook/pages/pause_menu.tscn" id="3_bl6mr"]
 [ext_resource type="PackedScene" uid="uid://dajkw7w45mh4c" path="res://scenes/menu/notebook/pages/cover.tscn" id="4_53q5r"]
 [ext_resource type="Script" uid="uid://biqqbrij8l0km" path="res://scenes/menu/notebook/ViewportLayerContainer.cs" id="6_s6j4j"]
 [ext_resource type="PackedScene" uid="uid://2010mmkoekfk" path="res://scenes/menu/notebook/pages/profile.tscn" id="7_43gqe"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bl6mr"]
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.866667)
+shadow_size = 13
 
 [node name="NotebookMenu" type="Control" node_paths=PackedStringArray("LayerContainer", "PauseBackground", "FallbackRoot", "FallbackProfilePage", "FallbackPauseMenu")]
 process_mode = 3
@@ -28,8 +36,8 @@ PauseMenuTransitionType = 4
 LayerContainer = NodePath("Root/ViewportLayerContainer")
 PauseBackground = NodePath("PauseLayer/ColorRect")
 FallbackRoot = NodePath("Root")
-FallbackProfilePage = NodePath("Root/Profile")
-FallbackPauseMenu = NodePath("Root/PauseMenu")
+FallbackProfilePage = NodePath("Root/Profile Page")
+FallbackPauseMenu = NodePath("Root/Pause Menu")
 
 [node name="Root" type="Control" parent="."]
 layout_mode = 1
@@ -40,14 +48,36 @@ grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(453, 278)
 
-[node name="PauseMenu" parent="Root" instance=ExtResource("3_bl6mr")]
+[node name="Back Cover" parent="Root" instance=ExtResource("4_53q5r")]
+layout_mode = 1
+offset_left = 1.0
+offset_top = 6.0
+offset_right = 3.05176e-05
+offset_bottom = -6.0
+
+[node name="Shadow" type="Panel" parent="Root/Back Cover"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 2.0
+offset_right = -3.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bl6mr")
+
+[node name="Pause Menu" parent="Root" instance=ExtResource("3_bl6mr")]
 layout_mode = 1
 
-[node name="Profile" parent="Root" node_paths=PackedStringArray("ShadowFadedAlpha") instance=ExtResource("7_43gqe")]
+[node name="Profile Page" parent="Root" node_paths=PackedStringArray("ShadowFadedAlpha") instance=ExtResource("7_43gqe")]
 layout_mode = 1
 ShadowFadedAlpha = {
+NodePath(""): 0.0,
 NodePath("Pause Button"): 0.4,
-NodePath("Profile Button"): 0.0
+NodePath("Profile Button"): 0.0,
+null: 0.0
 }
 
 [node name="ViewportLayerContainer" type="Control" parent="Root"]
@@ -71,6 +101,7 @@ layer = 24
 
 [node name="ColorRect" type="ColorRect" parent="PauseLayer"]
 visible = false
+modulate = Color(1, 1, 1, 0)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
