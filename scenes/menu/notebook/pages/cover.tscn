@@ -1,8 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://dajkw7w45mh4c"]
+[gd_scene load_steps=5 format=3 uid="uid://dajkw7w45mh4c"]
 
 [ext_resource type="Texture2D" uid="uid://b8lnwq2qt7eq3" path="res://assets/ui/panels/leather cover.png" id="1_3tu7u"]
 [ext_resource type="Texture2D" uid="uid://cnmux17p4b1od" path="res://assets/ui/buttons/pause_icon_alt.png" id="2_gfsyx"]
 [ext_resource type="Script" uid="uid://cbqc0snx0l0pi" path="res://scenes/menu/notebook/PivotPoint.cs" id="3_3tu7u"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3tu7u"]
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [node name="Cover" type="Control"]
 layout_mode = 3
@@ -12,7 +18,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="Panel" type="Panel" parent="."]
+clip_children = 1
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,9 +30,22 @@ offset_right = 13.0
 offset_bottom = 11.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_3tu7u")
+
+[node name="Background" type="TextureRect" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 26.0
+offset_bottom = 22.0
+grow_horizontal = 2
+grow_vertical = 2
 pivot_offset = Vector2(229, 197)
 texture = ExtResource("1_3tu7u")
 expand_mode = 1
+stretch_mode = 6
+flip_h = true
 
 [node name="Pause Button" type="Button" parent="."]
 visible = false
