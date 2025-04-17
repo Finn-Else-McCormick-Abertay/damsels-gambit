@@ -51,14 +51,14 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 		private set {
 			ProfilePage?.PauseButton?.TryDisconnect(BaseButton.SignalName.Pressed, TogglePauseMenu);
 			ProfilePage?.ProfileButton?.TryDisconnectAll(
-				(Control.SignalName.MouseEntered, OnFocus), (Control.SignalName.MouseExited, OnUnfocus), (Control.SignalName.FocusEntered, OnFocus), (Control.SignalName.FocusExited, OnUnfocus), (BaseButton.SignalName.Pressed, ToggleOpen)
+				(Control.SignalName.MouseEntered, OnOpenButtonMouseEnter), (Control.SignalName.MouseExited, OnOpenButtonMouseExit), (Control.SignalName.FocusEntered, OnOpenButtonFocus), (Control.SignalName.FocusExited, OnOpenButtonUnfocus), (BaseButton.SignalName.Pressed, OnOpenButtonPressed)
 			);
 			field = value;
 			ProfilePage?.OnReady(() => {
 				UpdateDialogueViewNode();
 				ProfilePage?.PauseButton?.TryConnect(BaseButton.SignalName.Pressed, TogglePauseMenu);
 				ProfilePage?.ProfileButton?.ConnectAll(
-					(Control.SignalName.MouseEntered, OnFocus), (Control.SignalName.MouseExited, OnUnfocus), (Control.SignalName.FocusEntered, OnFocus), (Control.SignalName.FocusExited, OnUnfocus), (BaseButton.SignalName.Pressed, ToggleOpen)
+					(Control.SignalName.MouseEntered, OnOpenButtonMouseEnter), (Control.SignalName.MouseExited, OnOpenButtonMouseExit), (Control.SignalName.FocusEntered, OnOpenButtonFocus), (Control.SignalName.FocusExited, OnOpenButtonUnfocus), (BaseButton.SignalName.Pressed, OnOpenButtonPressed)
 				);
 			});
 		}
@@ -198,9 +198,12 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 	}
     protected virtual void PreScriptReload() { Root = null; ProfilePage = null; ProfileViewport = null; CoverPivot = null; }
 
-	private void OnFocus() => Highlighted = true;
-	private void OnUnfocus() => Highlighted = false;
-	private void ToggleOpen() => Open = !Open;
+	private void OnOpenButtonFocus() => Highlighted = true;
+	private void OnOpenButtonUnfocus() => Highlighted = false;
+	private void OnOpenButtonMouseEnter() => Highlighted = true;
+	private void OnOpenButtonMouseExit() { if (ProfilePage?.ProfileButton is Control button && !button.HasFocus()) Highlighted = false; }
+	private void OnOpenButtonPressed() => Open = !Open;
+
 	private void TogglePauseMenu() => InPauseMenu = !InPauseMenu;
 	private void TryTogglePauseMenu() { if(CanPause && !(PauseMenu?.InSettingsMenu ?? false)) TogglePauseMenu(); }
 
