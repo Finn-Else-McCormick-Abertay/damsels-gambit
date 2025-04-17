@@ -43,8 +43,12 @@ pivot_offset = Vector2(453, 278)
 [node name="PauseMenu" parent="Root" instance=ExtResource("3_bl6mr")]
 layout_mode = 1
 
-[node name="Profile" parent="Root" instance=ExtResource("7_43gqe")]
+[node name="Profile" parent="Root" node_paths=PackedStringArray("ShadowFadedAlpha") instance=ExtResource("7_43gqe")]
 layout_mode = 1
+ShadowFadedAlpha = {
+NodePath("Pause Button"): 0.4,
+NodePath("Profile Button"): 0.0
+}
 
 [node name="ViewportLayerContainer" type="Control" parent="Root"]
 layout_mode = 1
