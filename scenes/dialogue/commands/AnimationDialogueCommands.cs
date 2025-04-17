@@ -28,15 +28,17 @@ static class AnimationDialogueCommands
         else action?.Invoke();
     }
 
-    private static void CommandInfo(string msg, [CallerMemberName]string callingMethod = null) => Console.Info($"Dialogue Command [{callingMethod}]: {msg}", true, false);
-    private static void CommandWarning(string msg, [CallerMemberName]string callingMethod = null) => Console.Warning($"Dialogue Command [{callingMethod}]: {msg}", true, false);
-    private static void CommandError(string msg, [CallerMemberName]string callingMethod = null) => Console.Error($"Dialogue Command [{callingMethod}]: {msg}", true, false);
+    private static string GetPrintoutPrefix(string methodName, string methodInfo) => $"Dialogue Command [{Case.ToSnake(methodName)}{methodInfo switch { string => $" {methodInfo.StripFront('(').StripBack(')')}", null => "" }}]";
+
+    private static void CommandInfo(string msg, string extraMethodInfo = null, [CallerMemberName]string callingMethod = null) => Console.Info($"{GetPrintoutPrefix(callingMethod, extraMethodInfo)}: {msg}", false);
+    private static void CommandWarning(string msg, string extraMethodInfo = null, [CallerMemberName]string callingMethod = null) => Console.Warning($"{GetPrintoutPrefix(callingMethod, extraMethodInfo)}: {msg}", false);
+    private static void CommandError(string msg, string extraMethodInfo = null, [CallerMemberName]string callingMethod = null) => Console.Error($"{GetPrintoutPrefix(callingMethod, extraMethodInfo)}: {msg}", false);
 
     // Non-blocking wait
     [YarnCommand("after")]
     public static void After(float time) {
         if (EnvironmentManager.Instance is null) return;
-        if (time < 0) { CommandWarning($"Time '{time}' invalid. Cannot be less than zero."); }
+        if (time < 0) { CommandWarning($"Time cannot be less than zero.", $"{time}"); }
         var timer = new Timer() { OneShot = true, WaitTime = time };
         EnvironmentManager.Instance.AddChild(timer);
         Timers.Enqueue(timer);
@@ -71,15 +73,61 @@ static class AnimationDialogueCommands
         else if (action.IsAnyOf("show", "hide"))
             (sceneName.MatchN("all") ? EnvironmentManager.GetEnvironmentNames()?.SelectMany(EnvironmentManager.GetEnvironmentLayers) : EnvironmentManager.GetEnvironmentLayers(sceneName))?.ForEach(x => x.Visible = action == "show");
         else
-            CommandError($"Invalid action arg '{action}': should be one of 'switch', 'show' or 'hide'.");
+            CommandError($"Invalid action arg '{action}': should be one of 'switch', 'show' or 'hide'.", $"{sceneName} {action}");
     });
 
     [YarnCommand("variant")]
     public static void Variant(string itemName, string variant) => RunCommandDeferred(() =>
         EnvironmentManager.GetPropDisplays(itemName)?.ForEach(x => {
-            if (int.TryParse(variant, out int variantNum)) x.Variant = variantNum;
-            if (variant.ToLower().Trim() == "default") x.Variant = PropDisplay.GetValidVariants(itemName).FirstOrDefault();
-            if (variant.ToLower().Trim().IsAnyOf("random", "rand")) x.Variant = PropDisplay.GetValidVariants(itemName).OrderBy(x => Random.Shared.Next()).FirstOrDefault();
+            int newVariant = 0;
+            if (int.TryParse(variant, out int variantNum)) newVariant = variantNum;
+            else if (variant.ToLower().Trim() == "default") newVariant = PropDisplay.GetValidVariants(itemName).FirstOrDefault();
+            else if (variant.ToLower().Trim().StartsWith("random")) {
+                var randomArgs = variant.ToLower().Trim().StripFront("random");
+                var validVariants = PropDisplay.GetValidVariants(itemName).ToList();
+
+                if (randomArgs.StartsWith('[') && randomArgs.EndsWith(']')) {
+                    randomArgs = randomArgs.StripFront('[').StripBack(']');
+                    if (randomArgs.IsNullOrWhitespace()) validVariants = [];
+                    else if (!randomArgs.Equals("all", StringComparison.CurrentCultureIgnoreCase)) {
+                        var splitArgs = randomArgs.Split(',', StringSplitOptions.TrimEntries);
+                        try {
+                            IEnumerable<int> indexArgs = splitArgs.Index().Select(x => {
+                                var arg = x.Item.Trim();
+                                if (arg.Split("..") is string[] rangePoints && rangePoints.Length >= 2) {
+                                    if (rangePoints[0].IsNullOrWhitespace()) rangePoints[0] = validVariants.FirstOrDefault().ToString();
+                                    if (rangePoints[^1].IsNullOrWhitespace()) rangePoints[^1] = validVariants.LastOrDefault().ToString();
+                                    var rangeValues = rangePoints.Select(int.Parse).ToList();
+                                    List<int> fullRange = [];
+                                    bool? goingForwards = null;
+                                    foreach (var (index, value) in rangeValues.Index()) {
+                                        if (index == 0) continue;
+                                        bool forwards = value > rangeValues[index - 1];
+                                        if (goingForwards is not null && goingForwards != forwards) throw new FormatException($"({x.Index}) Range expression switched direction.");
+                                        goingForwards = forwards;
+                                        for (int i = rangeValues[index - 1]; forwards ? i < value : i > value; i = forwards ? ++i : --i) fullRange.Add(i);
+                                    }
+                                    fullRange.Add(rangeValues.Last());
+                                    return fullRange.AsEnumerable();
+                                }
+                                else return [ int.Parse(arg) ];
+                            }).SelectMany(x => x);
+                            if (indexArgs.Any(x => !validVariants.Contains(x))) CommandWarning($"Nonexistent variants passed as random args. Valid variants: [{string.Join(", ", validVariants)}]", $"{itemName} {variant}");
+                            validVariants = [..validVariants.Where(x => indexArgs.Contains(x))];
+                        }
+                        catch (FormatException fmtException) { CommandError($"Format exception while parsing random args: {fmtException.Message}", $"{itemName} {variant}"); }
+                    }
+                    else CommandError($"Invalid random args '{randomArgs}'.", $"({itemName} {variant})");
+                }
+                else if (!randomArgs.IsNullOrWhitespace()) CommandError($"Invalid variant arg.", $"({itemName} {variant})");
+
+                newVariant = validVariants.OrderBy(x => Random.Shared.Next()).FirstOrDefault();
+                CommandInfo($"Selecting variant {newVariant} at random from [{string.Join(", ", validVariants)}].", $"{itemName} {variant}");
+            }
+            else { CommandError($"Invalid variant arg. Must be an integer, 'default', 'random' or 'random[{{range expression}}]'.", $"{itemName} {variant}"); }
+
+            if (!PropDisplay.GetValidVariants(itemName).Contains(newVariant)) CommandError($"No such variant '{newVariant}'.", $"{itemName} {variant}");
+            x.Variant = newVariant;
         }));
 
     private static void PropAnimate(string itemName, string type = "") {
@@ -123,7 +171,7 @@ static class AnimationDialogueCommands
                 Variant(itemName, !firstArgIsAnimateArg ? actionArg1 : actionArg2);
                 PropAnimate(itemName, firstArgIsAnimateArg ? actionArg1 : actionArg2);
             } break;
-            default: CommandError($"Invalid arg '{action}': must be 'variant' or 'animate'."); break;
+            default: CommandError($"Invalid arg '{action}': must be 'variant' or 'animate'.", $"{action} {itemName}{(actionArg1.IsEmpty() ? "" : $" {actionArg1}")}{(actionArg2.IsEmpty() ? "" : $" {actionArg2}")}"); break;
         }
     }
 
@@ -149,23 +197,23 @@ static class AnimationDialogueCommands
             "show" or "hide" => GameManager.NotebookMenu.Visible = action == "show",
             _ => null
         };
-        if (result is null) CommandError($"Invalid arg '{action}': should be one of 'open', 'close', 'over', 'under', 'show' or 'hide'.");
+        if (result is null) CommandError($"Invalid arg '{action}': should be one of 'open', 'close', 'over', 'under', 'show' or 'hide'.", $"{action}");
     });
 
     [YarnCommand("emote")]
     public static void Emote(string characterName, string emotionName, bool from = false, string revertFrom = "") => RunCommandDeferred(() => {
-        if (from && revertFrom.IsNullOrWhitespace()) CommandWarning("Using arg 'from', but no emotion to revert from specified.");
+        if (from && revertFrom.IsNullOrWhitespace()) CommandWarning("Using arg 'from', but no emotion to revert from specified.", $"{characterName} {emotionName}{from switch { true => " from ", false => "" }}{revertFrom}");
         EnvironmentManager.GetCharacterDisplays(characterName).ForEach(display => {
             if (from && !string.IsNullOrWhiteSpace(revertFrom) && display.SpriteName != revertFrom) return;
             display.Show(); display.SpriteName = emotionName;
-            if (!display.SpriteExists) Console.Warning($"Attempted to set '{characterName}' to nonexistent emotion '{emotionName}'.");
+            if (!display.SpriteExists) Console.Warning($"{characterName} does not have an emotion called {emotionName}.", $"{characterName} {emotionName}{from switch { true => " from ", false => "" }}{revertFrom}");
         });
     });
     
     [YarnCommand("animation")]
     public static void Animation(string animationName, bool block = false) => RunCommandDeferred(() => {
         var validPlayers = EnvironmentManager.GetAllAnimationPlayers().Where(x => x.HasAnimation(animationName));
-        if (!validPlayers.Any()) Console.Warning("Animation '{animationName}' could not be found");
+        if (!validPlayers.Any()) Console.Warning("Animation could not be found", $"{animationName}{block switch { true => " block", false => "" }}");
         float timeToBlock = 0f;
         foreach (var animationPlayer in validPlayers) {
             animationPlayer.Play(animationName); animationPlayer.Advance(0);
@@ -189,7 +237,7 @@ static class AnimationDialogueCommands
     [YarnCommand("fade")]
     public static void Fade(string inOut, string itemName, float time) => RunCommandDeferred(() => {
         inOut = inOut.ToLower().Trim();
-        if (inOut != "in" && inOut != "out") { CommandError($"Invalid arg '{inOut}': must be 'in' or 'out'."); return; }
+        if (inOut != "in" && inOut != "out") { CommandError($"Invalid arg '{inOut}': must be 'in' or 'out'.", $"{inOut} {itemName} {time}"); return; }
 
         IEnumerable<CanvasItem> affectedItems = EnvironmentManager.GetCharacterDisplays(itemName).Cast<CanvasItem>().Concat(EnvironmentManager.GetPropDisplays(itemName).Cast<CanvasItem>());
 

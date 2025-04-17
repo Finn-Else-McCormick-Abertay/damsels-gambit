@@ -6,8 +6,13 @@ namespace DamselsGambit.Util;
 
 public static class StringExtensions
 {
+    public static bool IsNullOrEmpty(this string self) => string.IsNullOrEmpty(self);
     public static bool IsEmpty(this string self) => string.IsNullOrEmpty(self);
     public static bool IsNullOrWhitespace(this string self) => string.IsNullOrWhiteSpace(self);
+    
+    public static bool IsNullOrEmpty(this StringName self) => string.IsNullOrEmpty(self);
+    public static bool IsEmpty(this StringName self) => string.IsNullOrEmpty(self);
+    public static bool IsNullOrWhitespace(this StringName self) => string.IsNullOrWhiteSpace(self);
 
     public static string StripFront(this string self, char what, bool recursive = false) => self.StartsWith(what) ? recursive ? self[1..].StripFront(what, recursive) : self[1..] : self;
     public static string StripFront(this string self, string what, bool recursive = false) => self.StartsWith(what) ? recursive ? self[what.Length..].StripFront(what, recursive) : self[what.Length..] : self;
