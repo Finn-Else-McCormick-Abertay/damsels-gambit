@@ -242,8 +242,11 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 			int cardsToDeal = Math.Max(handSize - container.GetChildCount(), 0);
 			List<string> cardsInHand = [..container.FindChildrenOfType<CardDisplay>().Select(x => x.CardId.ToString())];
 			foreach (var i in RangeOf<int>.UpTo(cardsToDeal)) {
-				var cardId = NoRepeatsInHand ? deck.DrawWhere(x => !cardsInHand.Contains(x)) : deck.Draw();
-				if (cardId is null) break;
+				var cardId = NoRepeatsInHand ? deck.DrawWhere(id => !cardsInHand.Contains(id)) : deck.Draw();
+				if (cardId is null) {
+					Console.Error($"Failed to deal card from deck: {string.Join(", ", deck.Remaining)}");
+					continue;
+				}
 				cardsInHand.Add(cardId);
 				var cardDisplay = new CardDisplay{ CardId = cardId, ShadowOffset = new(-10, 1), ShadowOpacity = 0.4f, GlobalPosition = startPosition, RotationDegrees = startAngle };
 				GetTree().CreateTimer(waitTime * i).Timeout += () => container.AddChild(cardDisplay);

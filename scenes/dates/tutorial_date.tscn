@@ -25,7 +25,7 @@ TopicDeck = {
 }
 ActionDeck = {
 "action/compliment": 2,
-"action/question": 1,
+"action/question": 2,
 "action/secret": 2
 }
 NoRepeatsInHand = true
