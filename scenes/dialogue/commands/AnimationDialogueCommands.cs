@@ -119,12 +119,12 @@ static class AnimationDialogueCommands
                     }
                     else CommandError($"Invalid random args '{randomArgs}'.", $"({itemName} {variant})");
                 }
-                else if (!randomArgs.IsNullOrWhitespace()) CommandError($"Invalid variant arg.", $"({itemName} {variant})");
+                else if (!randomArgs.IsNullOrWhitespace()) CommandError($"Invalid variant arg. Must be an integer, 'default', 'random' or 'random[{{range expression}}]'.", $"({itemName} {variant})");
 
                 newVariant = validVariants.OrderBy(x => Random.Shared.Next()).FirstOrDefault();
-                CommandInfo($"Selecting variant {newVariant} at random from [{string.Join(", ", validVariants)}].", $"{itemName} {variant}");
+                //CommandInfo($"Selecting variant {newVariant} at random from [{string.Join(", ", validVariants)}].", $"{itemName} {variant}");
             }
-            else { CommandError($"Invalid variant arg. Must be an integer, 'default', 'random' or 'random[{{range expression}}]'.", $"{itemName} {variant}"); }
+            else if (!variant.IsNullOrWhitespace()) { CommandError($"Invalid variant arg. Must be an integer, 'default', 'random' or 'random[{{range expression}}]'.", $"{itemName} {variant}"); }
 
             if (!PropDisplay.GetValidVariants(itemName).Contains(newVariant)) CommandError($"No such variant '{newVariant}'.", $"{itemName} {variant}");
             x.Variant = newVariant;

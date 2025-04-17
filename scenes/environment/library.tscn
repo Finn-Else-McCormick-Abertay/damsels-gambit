@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://d4dgonbop8ygy"]
+[gd_scene load_steps=44 format=3 uid="uid://d4dgonbop8ygy"]
 
 [ext_resource type="Texture2D" uid="uid://b85kbbob2a0hh" path="res://assets/characters/frostholm/neutral.png" id="1_jtctn"]
 [ext_resource type="Texture2D" uid="uid://120j1ta6afcx" path="res://assets/environment/props/Seat.png" id="2_cqnjh"]
@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://ch3g5bal5npw0" path="res://assets/items/frog_potion_1.png" id="17_kt6u6"]
 [ext_resource type="Texture2D" uid="uid://yicavtnt2uxs" path="res://assets/items/holy_snail_painting.png" id="18_w8eku"]
 [ext_resource type="Texture2D" uid="uid://bytf0g5obmdce" path="res://assets/items/human_teeth_dress_1.png" id="19_r7o8u"]
+[ext_resource type="Texture2D" uid="uid://c348l4hwsy41e" path="res://assets/items/wolf_hunt_painting.png" id="19_sxisb"]
 [ext_resource type="Texture2D" uid="uid://dc5u7bwv4i77e" path="res://assets/items/kibble_1.png" id="20_83x1b"]
 [ext_resource type="Texture2D" uid="uid://cert080un13c6" path="res://assets/items/pitchfork_1.png" id="21_g87qu"]
 [ext_resource type="Texture2D" uid="uid://d0hal7h52iifu" path="res://assets/items/raw_reindeer_meat_1.png" id="22_1po7p"]
@@ -33,6 +34,9 @@
 [ext_resource type="Texture2D" uid="uid://cowlciskc8teb" path="res://assets/items/wolf_claw_1.png" id="31_f8oqy"]
 [ext_resource type="Texture2D" uid="uid://clqf28oqhcmis" path="res://assets/items/wolf_pendant_1.png" id="32_68ab7"]
 [ext_resource type="Texture2D" uid="uid://dsqn2fqxfkk8c" path="res://assets/items/wolf_potion_1.png" id="33_ytlul"]
+[ext_resource type="Texture2D" uid="uid://civ3n280yhefk" path="res://assets/items/skunting_gear.png" id="34_1po7p"]
+[ext_resource type="Texture2D" uid="uid://x0c0kgrd61k1" path="res://assets/items/snail_idol.png" id="34_sxisb"]
+[ext_resource type="Texture2D" uid="uid://uujitmbjqtnw" path="res://assets/items/wolf_action_figure.png" id="34_xoed5"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_gw1xy"]
 blend_mode = 1
@@ -212,7 +216,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="Frog Potion" type="Sprite2D" parent="Items/ItemsRoot"]
 visible = false
-position = Vector2(-5, 20.294)
+position = Vector2(0, -1.00001)
 scale = Vector2(0.396814, 0.396814)
 texture = ExtResource("17_kt6u6")
 script = ExtResource("13_hdk4r")
@@ -230,11 +234,21 @@ script = ExtResource("13_hdk4r")
 PropName = &"Holy Snail Painting"
 metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
+[node name="Wolf Hunt Painting" type="Sprite2D" parent="Items/ItemsRoot"]
+visible = false
+position = Vector2(25, -3)
+rotation = 0.0208837
+scale = Vector2(0.412007, 0.412007)
+texture = ExtResource("19_sxisb")
+script = ExtResource("13_hdk4r")
+PropName = &"Wolf Hunt Painting"
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
 [node name="Human Teeth Dress" type="Sprite2D" parent="Items/ItemsRoot"]
 visible = false
-position = Vector2(23.748, -38.196)
+position = Vector2(23.748, 2.99999)
 rotation = 0.0171563
-scale = Vector2(0.472363, 0.472363)
+scale = Vector2(0.502777, 0.502777)
 texture = ExtResource("19_r7o8u")
 script = ExtResource("13_hdk4r")
 PropName = &"Human Teeth Dress"
@@ -245,7 +259,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 visible = false
 position = Vector2(23.748, -38.196)
 rotation = 0.0171563
-scale = Vector2(0.472363, 0.472363)
+scale = Vector2(0.753184, 0.753184)
 texture = ExtResource("20_83x1b")
 script = ExtResource("13_hdk4r")
 PropName = &"Kibble"
@@ -267,7 +281,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 visible = false
 position = Vector2(23.748, -38.196)
 rotation = 0.0171563
-scale = Vector2(0.472363, 0.472363)
+scale = Vector2(0.427408, 0.427408)
 texture = ExtResource("22_1po7p")
 script = ExtResource("13_hdk4r")
 PropName = &"Raw Reindeer Meat"
@@ -278,7 +292,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 visible = false
 position = Vector2(23.748, -38.196)
 rotation = 0.0171563
-scale = Vector2(0.472363, 0.472363)
+scale = Vector2(0.375859, 0.375859)
 texture = ExtResource("23_xoed5")
 script = ExtResource("13_hdk4r")
 PropName = &"Shock Collar"
@@ -289,7 +303,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 visible = false
 position = Vector2(23.748, -38.196)
 rotation = 0.0171563
-scale = Vector2(0.472363, 0.472363)
+scale = Vector2(0.445109, 0.445109)
 texture = ExtResource("24_sxisb")
 script = ExtResource("13_hdk4r")
 PropName = &"Snail Bracelet"
@@ -307,11 +321,11 @@ PropName = &"Snowman"
 Variant = 1
 metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
-[node name="Snuch Gospel Book" type="Sprite2D" parent="Items/ItemsRoot"]
+[node name="Snurch Gospel Book" type="Sprite2D" parent="Items/ItemsRoot"]
 visible = false
 position = Vector2(23.748, -38.196)
 rotation = 0.0171563
-scale = Vector2(0.472363, 0.472363)
+scale = Vector2(0.402408, 0.402408)
 texture = ExtResource("26_2fs6e")
 script = ExtResource("13_hdk4r")
 PropName = &"Snurch Gospel Book"
@@ -322,7 +336,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 visible = false
 position = Vector2(23.748, -38.196)
 rotation = 0.0171563
-scale = Vector2(0.472363, 0.472363)
+scale = Vector2(0.392185, 0.392185)
 texture = ExtResource("27_fcd0m")
 script = ExtResource("13_hdk4r")
 PropName = &"Sunglasses"
@@ -344,7 +358,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 visible = false
 position = Vector2(23.748, -38.196)
 rotation = 0.0171563
-scale = Vector2(0.472363, 0.472363)
+scale = Vector2(0.396847, 0.396847)
 texture = ExtResource("29_wx4u4")
 script = ExtResource("13_hdk4r")
 PropName = &"Voodoo Doll"
@@ -355,7 +369,7 @@ metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 visible = false
 position = Vector2(23.748, -38.196)
 rotation = 0.0171563
-scale = Vector2(0.472363, 0.472363)
+scale = Vector2(0.400883, 0.400883)
 texture = ExtResource("30_hajcf")
 script = ExtResource("13_hdk4r")
 PropName = &"Voodoo Book"
@@ -393,6 +407,30 @@ texture = ExtResource("33_ytlul")
 script = ExtResource("13_hdk4r")
 PropName = &"Wolf Potion"
 Variant = 1
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Snail Idol" type="Sprite2D" parent="Items/ItemsRoot"]
+visible = false
+scale = Vector2(0.353425, 0.353425)
+texture = ExtResource("34_sxisb")
+script = ExtResource("13_hdk4r")
+PropName = &"Snail Idol"
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Wolf Action Figure" type="Sprite2D" parent="Items/ItemsRoot"]
+visible = false
+scale = Vector2(0.314, 0.314)
+texture = ExtResource("34_xoed5")
+script = ExtResource("13_hdk4r")
+PropName = &"Wolf Action Figure"
+metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
+
+[node name="Skunting Gear" type="Sprite2D" parent="Items/ItemsRoot"]
+visible = false
+scale = Vector2(0.421855, 0.421855)
+texture = ExtResource("34_1po7p")
+script = ExtResource("13_hdk4r")
+PropName = &"Skunting Gear"
 metadata/_custom_type_script = "uid://dhe8ih4jwgodq"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Items"]
