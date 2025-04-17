@@ -16,7 +16,7 @@ script = ExtResource("1_vqya7")
 [node name="CardGame" parent="." instance=ExtResource("1_4o28y")]
 layout_mode = 1
 SuitorName = "Frostholm"
-TopicDeck = {
+FullLayoutTopicDeck = {
 "topic/animals": 2,
 "topic/art": 2,
 "topic/children": 2,
@@ -27,7 +27,7 @@ TopicDeck = {
 "topic/weather": 2,
 "topic/witchcraft": 2
 }
-ActionDeck = {
+FullLayoutActionDeck = {
 "action/apologise": 0,
 "action/compliment": 0,
 "action/give": 2,

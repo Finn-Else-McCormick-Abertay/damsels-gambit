@@ -52,9 +52,9 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 
 	[Export] public bool AutoFailOnHitThreshold { get; set; } = true;
 
-	[ExportGroup("Deck")]
-	[Export] public Godot.Collections.Dictionary<string, int> TopicDeck { get; set { field = value; this.OnReady(EditorUpdateHands); } }
-	[Export] public Godot.Collections.Dictionary<string, int> ActionDeck { get; set { field = value; this.OnReady(EditorUpdateHands); } }
+	[ExportGroup("Deck", "FullLayout")]
+	[Export] public Godot.Collections.Dictionary<string, int> FullLayoutTopicDeck { get; set { field = value; this.OnReady(EditorUpdateHands); } }
+	[Export] public Godot.Collections.Dictionary<string, int> FullLayoutActionDeck { get; set { field = value; this.OnReady(EditorUpdateHands); } }
 
 	public class Deck
 	{
@@ -80,8 +80,8 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		public void Shuffle(Random random = null) => _working = [.._working.OrderBy(x => (random ?? Random.Shared).Next())];
 	}
 
-	public Deck TopicWorking { get; private set; }
-	public Deck ActionWorking { get; private set; }
+	public Deck TopicDeck { get; private set; }
+	public Deck ActionDeck { get; private set; }
 
 	[ExportSubgroup("Draw")]
 	[Export] public int ActionHandSize { get; set { field = value; ActionHand?.OnReady(x => x.HandSize = value); this.OnReady(EditorUpdateHands); } } = 3;
@@ -113,12 +113,12 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	// Trigger the start of the game
 	// This doesn't happen in ready so that GameManager is able to set whether the intro should be skipped (which it is when loading into the scene directly)
 	public void BeginGame(bool skipIntro = false) {
-		TopicWorking = new Deck(TopicDeck);
-		ActionWorking = new Deck(ActionDeck);
+		TopicDeck = new Deck(FullLayoutTopicDeck);
+		ActionDeck = new Deck(FullLayoutActionDeck);
 
 		// Shuffle decks
-		TopicWorking.Shuffle();
-		ActionWorking.Shuffle();
+		TopicDeck.Shuffle();
+		ActionDeck.Shuffle();
 		
 		EmitSignal(SignalName.GameStart);
 
@@ -252,8 +252,8 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 				GetTree().CreateTimer(waitTime * i).Timeout += () => container.AddChild(cardDisplay);
 			}
 		}
-		DealToHand(ActionHand, ActionHandSize, ActionWorking, new Vector2(-200f, 100f), -30f);
-		DealToHand(TopicHand, TopicHandSize, TopicWorking, new Vector2(500f, 100f), 30f);
+		DealToHand(ActionHand, ActionHandSize, ActionDeck, new Vector2(-200f, 100f), -30f);
+		DealToHand(TopicHand, TopicHandSize, TopicDeck, new Vector2(500f, 100f), 30f);
 	}
 
 	// Equivalent of Deal, but deterministic and instant (for display in the editor)
@@ -277,7 +277,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 			}
 		}
 
-		UpdateHand(ActionHand, ActionHandSize, ActionDeck);
-		UpdateHand(TopicHand, TopicHandSize, TopicDeck);
+		UpdateHand(ActionHand, ActionHandSize, FullLayoutActionDeck);
+		UpdateHand(TopicHand, TopicHandSize, FullLayoutTopicDeck);
 	}
 }

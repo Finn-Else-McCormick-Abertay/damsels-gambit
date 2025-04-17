@@ -54,7 +54,7 @@ grow_vertical = 2
 mouse_filter = 1
 theme = ExtResource("1_eci5x")
 script = ExtResource("1_4k8rw")
-TopicDeck = {
+FullLayoutTopicDeck = {
 "topic/animals": 1,
 "topic/art": 1,
 "topic/children": 1,
@@ -64,7 +64,7 @@ TopicDeck = {
 "topic/weather": 1,
 "topic/witchcraft": 1
 }
-ActionDeck = {
+FullLayoutActionDeck = {
 "action/give": 2,
 "action/question": 4,
 "action/secret": 2,
