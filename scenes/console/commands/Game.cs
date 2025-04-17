@@ -152,8 +152,8 @@ public class Game : Console.Command
         > 1 => args.First() switch {
             "get" => [ "round", "card", "cards" ],
             "set" when args.Length == 2 => [ "round", "score" ],
-            "start" when args.Length == 2 => [ "lady_in_waiting", "frostholm", "--skipintro" ],
-            "start" when args.Length == 3 && args[2] == "--skipintro" => [ "lady_in_waiting", "frostholm" ],
+            "start" when args.Length == 2 => [ "tutorial", "frostholm", "--skipintro" ],
+            "start" when args.Length == 3 && args[2] == "--skipintro" => [ "tutorial", "frostholm" ],
             "start" when args.Length == 3 && args[2] != "--skipintro" => [ "--skipintro" ],
             "end" => [],
             _ => []
