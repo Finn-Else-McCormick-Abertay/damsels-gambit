@@ -16,7 +16,7 @@ public sealed partial class InputManager : Node
 	public override void _EnterTree() { if (Instance is not null) throw AutoloadException.For(this); Instance = this; GetTree().Root.Connect(Node.SignalName.Ready, OnTreeReady, (uint)ConnectFlags.OneShot); }
 	
 	public static bool ShouldOverrideGuiInput { get; set; } = true;
-	public static bool ShouldDisplayFocusDebugInfo { get; set; } = OS.HasFeature("debug");
+	public static bool ShouldDisplayFocusDebugInfo { get; set; } = false;//OS.HasFeature("debug");
 
 	public static class Actions
 	{
@@ -84,6 +84,8 @@ public sealed partial class InputManager : Node
 	private readonly Dictionary<Popup, Dictionary<StringName, Action>> _popups = [];
 
 	private Control _prevFocus = null;
+	private readonly Dictionary<FocusDirection, Control> _prevFocusFromDirection = [];
+
 	private readonly Stack<NodePath> _focusStack = [];
 	
 	private Viewport _rootViewport = null;
@@ -132,11 +134,13 @@ public sealed partial class InputManager : Node
 		};
 		
 		IEnumerable<string> tags = []; Dictionary<string, string> meta = [];
-		bool HasTag(string tag, bool caseSensitive = false) => tags.Any(x => x.Match(tag, caseSensitive)) || meta.Any(x => x.Key.Match(tag, caseSensitive) && bool.Parse(x.Value) == true);
+		bool HasTag(string tag, bool caseSensitive = false) => tags.Any(x => x.Match(tag, caseSensitive)) || meta.Any(x => x.Key.Match(tag, caseSensitive) && bool.TryParse(x.Value, out bool result) && result);
+		bool HasMeta(string tag, bool caseSensitive = false) => meta.Any(x => x.Key.Match(tag, caseSensitive));
+		string GetMeta(string tag, bool caseSensitive = false) => meta.FirstOrDefault(x => x.Key.Match(tag, caseSensitive)).Value;
 
 		if (nextPath.ToString() is string pathString && pathString.Contains('!')) {
 			var bangIndex = pathString.Find('!'); string beforeBang = pathString[..bangIndex]; string afterBang = bangIndex == pathString.Length - 1 ? "" : pathString[(bangIndex+1)..];
-			nextPath = beforeBang; tags = afterBang.Split(',').Select(x => x.Trim());
+			nextPath = beforeBang; tags = afterBang.Split('!').Select(x => x.Trim());
 			meta = tags.Where(x => x.Contains('=')).Select(x => { var equalsIndex = x.Find('='); return KeyValuePair.Create(x[..equalsIndex].Trim(), equalsIndex == x.Length - 1 ? "" : x[(equalsIndex+1)..].Trim()); }).ToDictionary();
 		}
 		
@@ -144,17 +148,53 @@ public sealed partial class InputManager : Node
 
 		if (HasTag("return")) return Instance._prevFocus;
 
+		bool EvaluateIfArgs(string ifArgs, Control relevantFocus) {
+			var conditionVariants = ifArgs.StripFront("if").Split("else if");
+			conditionVariants = [..conditionVariants.Select(x => x.Trim())];
+
+			foreach (var condition in conditionVariants) {
+				if (condition.StartsWith("within")) {
+					string condArgs = condition.StripFront("within").Trim();
+					if (root.GetNode(condArgs) is Node withinNode && withinNode.IsAncestorOf(relevantFocus)) return true;
+				}
+			}
+			return false;
+		}
+
+		if (HasMeta("return")) {
+			Control returnFocus = Instance._prevFocus;
+			bool shouldUse = true;
+			foreach (var returnArg in GetMeta("return").Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)) {
+				if (returnArg.StartsWith("from", StringComparison.CurrentCultureIgnoreCase)) {
+					var fromArgs = returnArg.ToLower().StripFront("from").Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+					foreach (var arg in fromArgs) {
+						if (arg == "top" && Instance._prevFocusFromDirection.TryGetValue(FocusDirection.Down, out var topFocus)) returnFocus = topFocus;
+						else if (arg == "bottom" && Instance._prevFocusFromDirection.TryGetValue(FocusDirection.Up, out var bottomFocus)) returnFocus = bottomFocus;
+						else if (arg == "left" && Instance._prevFocusFromDirection.TryGetValue(FocusDirection.Right, out var leftFocus)) returnFocus = leftFocus;
+						else if (arg == "right" && Instance._prevFocusFromDirection.TryGetValue(FocusDirection.Left, out var rightFocus)) returnFocus = rightFocus;
+					}
+				}
+				else if (returnArg.StartsWith("if")) shouldUse = EvaluateIfArgs(returnArg, returnFocus);
+			}
+			if (returnFocus is not null && shouldUse) return returnFocus;
+		}
+
 		if (HasTag("left")) direction = FocusDirection.Left; if (HasTag("right")) direction = FocusDirection.Right; if (HasTag("up")) direction = FocusDirection.Up; if (HasTag("down")) direction = FocusDirection.Down;
 
-		if (!nextPath.IsEmpty && FindFocusableWithin(root.GetNode(nextPath), direction) is Control focusable) return focusable;
+		Control foundFocusable = null;
 
-		foreach (var parent in root.FindParentsWhere(x => x is Container || x is IFocusableContainer)) {
-			var child = parent.FindChildChainTo(root).FirstOrDefault();
-			if (parent is IFocusableContainer container && container.GetNextFocus(direction, child) is Node nextNode && FindFocusableWithin(nextNode, direction) is Control nextFocus) return nextFocus;
-			if (StandardContainerFocusLogic.GetNextFocus(root, parent, direction, child) is Node standardNextNode && FindFocusableWithin(standardNextNode, direction) is Control standardNextFocus) return standardNextFocus;
-			if (parent is Control && GetNextFocus(direction, parent as Control) is Control controlNextFocus) return controlNextFocus;
+		if (!nextPath.IsEmpty && FindFocusableWithin(root.GetNode(nextPath), direction) is Control focusable) foundFocusable = focusable;
+		else {
+			foreach (var parent in root.FindParentsWhere(x => x is Container || x is IFocusableContainer)) {
+				var child = parent.FindChildChainTo(root).FirstOrDefault();
+				if (parent is IFocusableContainer container && container.GetNextFocus(direction, child) is Node nextNode && FindFocusableWithin(nextNode, direction) is Control nextFocus) { foundFocusable = nextFocus; break; }
+				if (StandardContainerFocusLogic.GetNextFocus(root, parent, direction, child) is Node standardNextNode && FindFocusableWithin(standardNextNode, direction) is Control standardNextFocus) { foundFocusable = standardNextFocus; break; }
+				if (parent is Control && GetNextFocus(direction, parent as Control) is Control controlNextFocus) { foundFocusable = controlNextFocus; break; }
+			}
 		}
-		return null;
+
+		if (tags.Any(x => x.StartsWith("if")) && !EvaluateIfArgs(tags.First(x => x.StartsWith("if")), foundFocusable)) return null;
+		return foundFocusable;
 	}
 
 	// Connected to Accept action's Triggered signal
@@ -214,6 +254,7 @@ public sealed partial class InputManager : Node
 			}
 
 			Instance._prevFocus = focused;
+			Instance._prevFocusFromDirection[direction] = focused;
 			if (ShouldDisplayFocusDebugInfo) Console.Info(focusNext is not null ? $"Shifted focus {Enum.GetName(direction)} to {focusNext.ToPrettyString()} in {FocusedViewport.ToPrettyString()}." : $"Could not shift focus {Enum.GetName(direction)} from {focused.ToPrettyString()}.");
 			focusNext?.GrabFocus();
 		}

@@ -167,9 +167,9 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		if (Engine.IsEditorHint()) return;
 
 		// Set play button to be disabled based on whether the correct number of cards are selected
-		if (PlayButton.IsValid()) PlayButton.Disabled = !CanPlay() || ShouldGameEnd();
+		if (PlayButton.IsValid()) PlayButton.Disabled = !CanPlay || ShouldGameEnd;
 		// Set discard button to be disabled based on whether any cards are selected
-		if (DiscardButton.IsValid()) DiscardButton.Disabled = !CanDiscard() || ShouldGameEnd();
+		if (DiscardButton.IsValid()) DiscardButton.Disabled = !CanDiscard || ShouldGameEnd;
 	}
 	
 	public Control GetDefaultFocus(FocusDirection direction) =>
@@ -181,13 +181,13 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		}, direction);
 
 	// Are preconditions for playing hand met (are correct number of cards selected?)
-	private bool CanPlay() => Started && !Ended && !InDialogue && TopicHand.GetSelected().Count() == 1 && ActionHand.GetSelected().Count() == 1;
+	private bool CanPlay => Started && !Ended && !InDialogue && TopicHand.GetSelected().Count() == 1 && ActionHand.GetSelected().Count() == 1;
 
 	// Are preconditions for discarding met
-	private bool CanDiscard() => Started && !Ended && !InDialogue && (TopicHand.GetSelected().Any() || ActionHand.GetSelected().Any());
+	private bool CanDiscard => Started && !Ended && !InDialogue && (TopicHand.GetSelected().Any() || ActionHand.GetSelected().Any());
 
 	// Are preconditions for game end met
-	private bool ShouldGameEnd() => Started && !Ended && (Round > NumRounds || (AutoFailOnHitThreshold && !RangeOf<int>.Between(ScoreMin, ScoreMax).Contains(Score)));
+	private bool ShouldGameEnd => Started && !Ended && (Round > NumRounds || (AutoFailOnHitThreshold && !RangeOf<int>.Between(ScoreMin, ScoreMax).Contains(Score)));
 	
 	// If not yet started, force-run the skip_setup node, skipping to the start of gameplay even if currently in the intro
 	public void ForceSkipIntro() { if (!Started && !Ended) DialogueManager.Run($"{_suitorId}__skip_setup", true); }
@@ -200,7 +200,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		if (Engine.IsEditorHint()) return;
 
 		// Verify that attempt is valid
-		if (!CanPlay()) return;
+		if (!CanPlay) return;
 
 		CardDisplay selectedTopic = TopicHand.GetSelected().Single(), selectedAction = ActionHand.GetSelected().Single();
 
@@ -233,7 +233,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		if (Engine.IsEditorHint()) return;
 
 		// Verify that attempt is valid
-		if (!CanDiscard()) return;
+		if (!CanDiscard) return;
 
 		// Increment counters
 		UsedDiscardsThisGame++; UsedDiscardsThisRound++;
@@ -255,7 +255,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	// Triggers round start so long as end preconditions are not met. Called by BeginGame and PlayHand
 	private void AttemptStartRound() {
 		if (MidRound) { Console.Warning("Failed to start round: previous round did not end."); return; }
-		if (Engine.IsEditorHint() || ShouldGameEnd()) return;
+		if (Engine.IsEditorHint() || ShouldGameEnd) return;
 
 		PlayButton.Show(); DiscardButton?.Show(); MidRound = true;
 		Deal();
@@ -265,7 +265,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 
 	// Triggers game end if the preconditions are met. Called by the Round and Score setters.
 	private void AttemptGameEnd(bool force = false) {
-		if (Engine.IsEditorHint() || !ShouldGameEnd()) return;
+		if (Engine.IsEditorHint() || !ShouldGameEnd) return;
 
 		// If mid-round, defer ending until end of round
 		if (MidRound && !force) { this.TryConnect(SignalName.RoundEnd, Callable.From((int round) => AttemptGameEnd()), (uint)ConnectFlags.OneShot); return; }
