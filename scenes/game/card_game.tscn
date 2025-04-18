@@ -71,6 +71,7 @@ FullLayoutActionDeck = {
 "action/secret": 2,
 "action/want": 2
 }
+DiscardTriggersRoundEnd = true
 AffectionMeter = NodePath("AffectionMeter")
 RoundMeter = NodePath("RoundMeter")
 ActionHand = NodePath("LeftHandContainer")

@@ -326,7 +326,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 				return true;
 			});
 
-			Console.Info($"Variants: {variants.ToPrettyString()}, High Priority: {highPriorityVariants.ToPrettyString()}");
+			//Console.Info($"Variants: {variants.ToPrettyString()}, High Priority: {highPriorityVariants.ToPrettyString()}");
 
 			// If some possible nodes are denoted as high priority, select from only them
 			if (highPriorityVariants.Count > 0) variants = highPriorityVariants;
