@@ -27,21 +27,23 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
     [Export] public double AnimationTimeHighlight { get; set; } = 0.0;
 
     [ExportGroup("Curves", "Curve")]
-    [Export] public Curve CurveSeparation { get; set { CurveSeparation?.TryDisconnect(Resource.SignalName.Changed, QueueSort); field = value; QueueSort(); CurveSeparation?.TryConnect(Resource.SignalName.Changed, QueueSort); } }
-    [Export] public Curve CurveOffset { get; set { CurveOffset?.TryDisconnect(Resource.SignalName.Changed, QueueSort); field = value; QueueSort(); CurveOffset?.TryConnect(Resource.SignalName.Changed, QueueSort); } }
-    [Export] public Curve CurveRotation { get; set { CurveRotation?.TryDisconnect(Resource.SignalName.Changed, QueueSort); field = value; QueueSort(); CurveRotation?.TryConnect(Resource.SignalName.Changed, QueueSort); } }
-
-    private static readonly Curve s_defaultSeparationCurve, s_defaultOffsetCurve, s_defaultRotationCurve;
-
-    static HandContainer() {
-        s_defaultSeparationCurve = new Curve { MinValue = -50f, MaxValue = 50f };
-        s_defaultSeparationCurve.AddPoint(new(0f, 5f));
-
-        s_defaultOffsetCurve = new Curve { MinValue = -50f, MaxValue = 50f };
-        s_defaultOffsetCurve.AddPoint(new(0f, 0f)); s_defaultOffsetCurve.AddPoint(new(0.5f, 0f)); s_defaultOffsetCurve.AddPoint(new(1f, 0f));
-
-        s_defaultRotationCurve = new Curve { MinValue = -90f, MaxValue = 90f };
-        s_defaultRotationCurve.AddPoint(new(0f, 0f)); s_defaultRotationCurve.AddPoint(new(0.5f, 0f)); s_defaultRotationCurve.AddPoint(new(1f, 0f));
+    [Export] public Curve CurveSeparation { get; set {
+            CurveSeparation?.TryDisconnect(Resource.SignalName.Changed, this, MethodName.QueueSort);
+            field = value; QueueSort();
+            CurveSeparation?.TryConnect(Resource.SignalName.Changed, this, MethodName.QueueSort);
+        }
+    }
+    [Export] public Curve CurveOffset { get; set {
+            CurveOffset?.TryDisconnect(Resource.SignalName.Changed, this, MethodName.QueueSort);
+            field = value; QueueSort();
+            CurveOffset?.TryConnect(Resource.SignalName.Changed, this, MethodName.QueueSort);
+        }
+    }
+    [Export] public Curve CurveRotation { get; set {
+            CurveRotation?.TryDisconnect(Resource.SignalName.Changed, this, MethodName.QueueSort);
+            field = value; QueueSort();
+            CurveRotation?.TryConnect(Resource.SignalName.Changed, this, MethodName.QueueSort);
+        }
     }
 
     public override bool _PropertyCanRevert(StringName property) {
@@ -51,18 +53,42 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
         return base._PropertyCanRevert(property);
     }
     public override Variant _PropertyGetRevert(StringName property) {
-        if (property == PropertyName.CurveSeparation) return s_defaultSeparationCurve.Duplicate();
-        if (property == PropertyName.CurveOffset) return s_defaultOffsetCurve.Duplicate();
-        if (property == PropertyName.CurveRotation) return s_defaultRotationCurve.Duplicate();
+        if (property == PropertyName.CurveSeparation) {
+            var curve = new Curve { MinValue = -50f, MaxValue = 50f };
+            curve.AddPoint(new(0f, 5f));
+            return curve;
+        }
+        if (property == PropertyName.CurveOffset) {
+            var curve = new Curve { MinValue = -50f, MaxValue = 50f };
+            curve.AddPoint(new(0f, 0f)); curve.AddPoint(new(0.5f, 0f)); curve.AddPoint(new(1f, 0f));
+            return curve;
+        }
+        if (property == PropertyName.CurveRotation) {
+            var curve = new Curve { MinValue = -90f, MaxValue = 90f };
+            curve.AddPoint(new(0f, 0f)); curve.AddPoint(new(0.5f, 0f)); curve.AddPoint(new(1f, 0f));
+            return curve;
+        }
         return base._PropertyGetRevert(property);
     }
 
     public override void _Ready() {
+        if (Engine.IsEditorHint()) return;
         InputManager.Actions.SelectAt.InnerObject.Connect(GUIDEAction.SignalName.Triggered, OnSelectAt);
         InputManager.Actions.Accept.InnerObject.Connect(GUIDEAction.SignalName.Triggered, OnAccept);
     }
 
-    public override void _EnterTree() => this.TryConnectAll((Node.SignalName.ChildEnteredTree, this, MethodName.OnChildEnteredTree),(Node.SignalName.ChildExitingTree, this, MethodName.OnChildExitingTree));
+    public override void _EnterTree() {
+        this.TryConnectAll((Node.SignalName.ChildEnteredTree, this, MethodName.OnChildEnteredTree),(Node.SignalName.ChildExitingTree, this, MethodName.OnChildExitingTree));
+        /*CurveSeparation?.TryConnect(Resource.SignalName.Changed, QueueSort);
+        CurveOffset?.TryConnect(Resource.SignalName.Changed, QueueSort);
+        CurveRotation?.TryConnect(Resource.SignalName.Changed, QueueSort);*/
+    }
+    public override void _ExitTree() {
+        /*CurveSeparation?.TryDisconnect(Resource.SignalName.Changed, QueueSort);
+        CurveOffset?.TryDisconnect(Resource.SignalName.Changed, QueueSort);
+        CurveRotation?.TryDisconnect(Resource.SignalName.Changed, QueueSort);*/
+    }
+
     private void OnChildEnteredTree(Node child) {
         if (!Engine.IsEditorHint()) {
             child.TryConnectAll(
@@ -144,12 +170,12 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
     public IEnumerable<CardDisplay> GetSelected() => _selectedCards.Select(x => x as CardDisplay).Where(x => x.IsValid());
 
     // Used by the sort logic to determine which cards are selected, which are highlighted, which animation length to use for a given movement, etc
-    private readonly HashSet<Node> _newChildren = [];
-    private readonly HashSet<Node> _selectedCards = [];
-    private readonly Dictionary<Node, bool> _prevHighlightedState = [];
-    private readonly Dictionary<Node, bool> _prevSelectedState = [];
-    private readonly Dictionary<Node, int> _prevIndex = [];
-    private readonly Dictionary<Node, Tween> _tweens = [];
+    [NonSerialized] private readonly HashSet<Node> _newChildren = [];
+    [NonSerialized] private readonly HashSet<Node> _selectedCards = [];
+    [NonSerialized] private readonly Dictionary<Node, bool> _prevHighlightedState = [];
+    [NonSerialized] private readonly Dictionary<Node, bool> _prevSelectedState = [];
+    [NonSerialized] private readonly Dictionary<Node, int> _prevIndex = [];
+    [NonSerialized] private readonly Dictionary<Node, Tween> _tweens = [];
 
     // Runs on recieving Container's SortChildren notification
     // Finds the positions and rotations for all children following the exported curves, then tweens them to those positions according to the exported 'time' properties
