@@ -1,0 +1,14 @@
+[remap]
+
+importer="yarnscript"
+type="Resource"
+uid="uid://ci4m4clcfydju"
+path="res://.godot/imported/post_discard.yarn-85f520ea4bacf2b392698d4020c6c42e.tres"
+
+[deps]
+
+source_file="res://assets/dialogue/frostholm/post_discard.yarn"
+dest_files=["res://.godot/imported/post_discard.yarn-85f520ea4bacf2b392698d4020c6c42e.tres"]
+
+[params]
+

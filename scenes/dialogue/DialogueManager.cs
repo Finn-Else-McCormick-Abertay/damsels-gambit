@@ -79,6 +79,8 @@ public partial class DialogueManager : Node
     // Yarn project contains dialogue node with given name
     public static bool DialogueExists(string nodeName) => Runner.Dialogue.NodeExists(nodeName);
 
+    public static IEnumerable<string> GetNodeNames() => Runner.Dialogue.NodeNames;
+
     // Run given dialogue node. If force is true, will interrupt and overwrite whatever dialogue is already in progress
     // If orErrorDialogue is true, will run the node 'error' (which displays the text 'Invalid node') if it can't find the node
     public static DialogueResult Run(string nodeName, bool force = true, bool orErrorDialogue = true, bool autoPrintErr = true) {
@@ -144,7 +146,8 @@ public partial class DialogueManager : Node
 
         while (_onCompleteQueue.Count > 0) {
             var callable = _onCompleteQueue.Dequeue();
-            if (callable.Target.IsValid()) callable.CallDeferred();
+            if (callable.Target is null || callable.Target.IsValid()) callable.CallDeferred();
+            else Console.Error("Dialogue OnComplete callback failed: target is invalid.");
         }
     }
 

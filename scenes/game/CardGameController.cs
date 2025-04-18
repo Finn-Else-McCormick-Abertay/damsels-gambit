@@ -24,6 +24,8 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	[Signal] public delegate void HandPlayedEventHandler(StringName actionCard, StringName topicCard);
 	[Signal] public delegate void DiscardedEventHandler(StringName[] cards);
 	
+	[Signal] public delegate void DeckRanOutEventHandler();
+	
 	// Has intro ended and game started? Tracked for skip logic
 	public bool Started { get; private set; } = false;
 	public bool Ended { get; private set; } = false;
@@ -68,13 +70,24 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 
 	private Deck _topicDiscardPile, _actionDiscardPile;
 	
-	[ExportSubgroup("Draw")]
+	[ExportGroup("Draw")]
 	[Export] public int ActionHandSize { get; set { field = value; ActionHand?.OnReady(x => x.HandSize = value); this.OnReady(EditorUpdateHands); } } = 3;
 	[Export] public int TopicHandSize { get; set { field = value; TopicHand?.OnReady(x => x.HandSize = value); this.OnReady(EditorUpdateHands); } } = 3;
 	[Export] public bool NoRepeatsInHand { get; set { field = value; this.OnReady(EditorUpdateHands); } } = false;
 
 	[Export] public bool SendPlayedCardsToDiscardPile { get; set; } = false;
 	[Export] public bool ReshuffleDiscardPileOnDeckRunOut { get; set; } = true;
+	
+	[ExportGroup("Discard")]
+	[Export] public int DiscardLimitPerGame { get; set; } = -1;
+	[Export] public int DiscardLimitPerRound { get; set; } = 1;
+	[Export] public int MaxCardsPerDiscard { get; set; } = -1;
+	
+	[Export] public bool DiscardTriggersRoundEnd { get; set; } = false;
+	[Export] public bool DiscardTriggersDialogue { get; set; } = true;
+	[Export] public bool SkipAlreadySeenDiscardDialogues { get; set; } = true;
+
+	private readonly HashSet<string> _usedDiscardDialogues = [];
 
 	[ExportGroup("Nodes")]
 	[Export] public AffectionMeter AffectionMeter { get; set; }
@@ -123,6 +136,8 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		// Remove any cards remaining from the editor
 		foreach (var child in TopicHand.GetChildren()) { TopicHand.RemoveChild(child); child.QueueFree(); }
 		foreach (var child in ActionHand.GetChildren()) { ActionHand.RemoveChild(child); child.QueueFree(); }
+
+		_usedDiscardDialogues.Clear();
 		
 		AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide(); PlayButton.Hide(); DiscardButton?.Hide();
 		Round = 1;
@@ -191,7 +206,10 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	private bool CanPlay => Started && !Ended && !InDialogue && TopicHand.GetSelected().Count() == 1 && ActionHand.GetSelected().Count() == 1;
 
 	// Are preconditions for discarding met
-	private bool CanDiscard => Started && !Ended && !InDialogue && (TopicHand.GetSelected().Any() || ActionHand.GetSelected().Any());
+	private bool CanDiscard => Started && !Ended && !InDialogue &&
+		(TopicHand.GetSelected().Any() || ActionHand.GetSelected().Any())
+		&& (DiscardLimitPerGame < 0 || UsedDiscardsThisGame < DiscardLimitPerGame)
+		&& (DiscardLimitPerRound < 0 || UsedDiscardsThisRound < DiscardLimitPerRound);
 
 	// Are preconditions for game end met
 	private bool ShouldGameEnd => Started && !Ended && (Round > NumRounds || (AutoFailOnHitThreshold && !RangeOf<int>.Between(ScoreMin, ScoreMax).Contains(Score)));
@@ -250,6 +268,8 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		// Increment counters
 		UsedDiscardsThisGame++; UsedDiscardsThisRound++;
 
+		var cardsDiscarded = TopicHand.GetSelected().Concat(ActionHand.GetSelected()).Select(x => x.CardId).ToList();
+
 		void DiscardSelected(HandContainer hand) =>
 			hand.GetSelected().ForEach(card => {
 				(card.CardType switch { "action" => _actionDiscardPile, "topic" => _topicDiscardPile, _ => null })?.Add(card.CardId);
@@ -259,9 +279,78 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		DiscardSelected(TopicHand);
 		DiscardSelected(ActionHand);
 
-		/* Trigger round progress / dialogue? */
+		void AfterDiscard() { if (DiscardTriggersRoundEnd) { MidRound = false; Round++; AttemptStartRound(); } else Deal(); }
 
-		Deal();
+		if (DiscardTriggersDialogue) {
+			// Will pick at random from all nodes starting with '{suitor}__post_discard'
+			// If the nodes have tags in the format 'action={card1},{card2}' or 'topic={card}' etc, then that node will only be pickable if one of the listed cards was just discarded
+			// (If the card name starts with a !, it will instead disqualify the node if that card was just discarded)
+			// If no node can be selected, it will try '{suitor}__post_discard_fallback'. The fallback can appear multiple times, even if SkipAlreadySeenDiscardDialogues is true.
+			// If no node can resolve at all, it will simply skip past the dialogue step.
+
+			string dialogueNode = null;
+			var variants = DialogueManager.GetNodeNames().Where(x => x.StartsWith($"{_suitorId}__post_discard")).Where(x => x != $"{_suitorId}__post_discard_fallback");
+			if (SkipAlreadySeenDiscardDialogues) variants = variants.Where(x => !_usedDiscardDialogues.Contains(x));
+
+			List<string> highPriorityVariants = [];
+			variants = variants.Where(node => {
+				var tags = DialogueManager.Runner.GetTagsForNode(node);
+				foreach (var tag in tags) {
+					if (tag.Contains('=')) {
+						var equalsSplit = tag.Split('=', StringSplitOptions.TrimEntries);
+						List<string> allowedCards = [], disallowedCards = [];
+						switch (equalsSplit.First().ToLower()) {
+							case "action": {
+								var cardArgs = equalsSplit.Last().Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+								allowedCards.AddRange(cardArgs.Where(x => !x.StartsWith('!')).Select(x => $"action/{x.ToLower()}"));
+								disallowedCards.AddRange(cardArgs.Where(x => x.StartsWith('!')).Select(x => $"action/{x.StripFront('!').ToLower()}"));
+							} break;
+							case "topic": {
+								var cardArgs = equalsSplit.Last().Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+								allowedCards.AddRange(cardArgs.Where(x => !x.StartsWith('!')).Select(x => $"topic/{x.ToLower()}"));
+								disallowedCards.AddRange(cardArgs.Where(x => x.StartsWith('!')).Select(x => $"topic/{x.StripFront('!').ToLower()}"));
+							} break;
+							default: break;
+						}
+						//Console.Info($"Node: {node}, Tag: {tag} -> AllowedCards: [{string.Join(", ", allowedCards)}], DisallowedCards: [{string.Join(", ", disallowedCards)}]");
+						if (allowedCards.Count == 0 && disallowedCards.Count == 0) continue;
+						foreach (var disallowedCard in disallowedCards) { if (cardsDiscarded.Contains(disallowedCard)) return false; }
+						if (allowedCards.Count > 0) {
+							bool anyAllowed = false;
+							foreach (var allowedCard in allowedCards) anyAllowed = anyAllowed || cardsDiscarded.Contains(allowedCard);
+							if (!anyAllowed) return false;
+						}
+					}
+					if (Case.ToSnake(tag) == "high_priority") highPriorityVariants.Add(node);
+				}
+				return true;
+			});
+
+			Console.Info($"Variants: {variants.ToPrettyString()}, High Priority: {highPriorityVariants.ToPrettyString()}");
+
+			// If some possible nodes are denoted as high priority, select from only them
+			if (highPriorityVariants.Count > 0) variants = highPriorityVariants;
+
+			// Pick at random from possible options
+			variants = variants.OrderBy(x => Random.Shared.Next());
+			dialogueNode = variants.FirstOrDefault();
+
+			if (dialogueNode is null && DialogueManager.DialogueExists($"{_suitorId}__post_discard_fallback")) dialogueNode = $"{_suitorId}__post_discard_fallback";
+
+			if (dialogueNode is not null) {
+				_usedDiscardDialogues.Add(dialogueNode);
+				InDialogue = true;
+				PlayButton?.Hide(); DiscardButton?.Hide();
+				DialogueManager.TryRun(dialogueNode)
+					.AndThen(() => {
+						InDialogue = false;
+						PlayButton?.Show(); DiscardButton?.Show();
+						AfterDiscard();
+					});
+			}
+			else AfterDiscard();
+		}
+		else AfterDiscard();
 	}
 
 	// Triggers round start so long as end preconditions are not met. Called by BeginGame and PlayHand
@@ -282,6 +371,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		// If mid-round, defer ending until end of round
 		if (MidRound && !force) { this.TryConnect(SignalName.RoundEnd, Callable.From((int round) => AttemptGameEnd()), (uint)ConnectFlags.OneShot); return; }
 
+		Ended = true;
 		PlayButton.Hide(); DiscardButton?.Hide();
 
 		CallableUtils.CallDeferred(() => {
@@ -307,13 +397,20 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 			int cardsToDeal = Math.Max(handSize - container.GetChildCount(), 0);
 			List<string> cardsInHand = [..container.FindChildrenOfType<CardDisplay>().Select(x => x.CardId.ToString())];
 			foreach (var i in RangeOf<int>.UpTo(cardsToDeal)) {
-				// Reshuffle discard pile back into deck upon running out of cards
-				if (deck.IsEmpty() && ReshuffleDiscardPileOnDeckRunOut) {
-					Console.Info("Reshuffling discard pile into deck");
-					discardPile.Shuffle(); deck.Add(discardPile); discardPile.Clear();
+				string cardId = null;
+				int drawAttempts = 0;
+				while (cardId is null) {
+					drawAttempts++;
+					cardId = NoRepeatsInHand ? deck.DrawWhere(id => !cardsInHand.Contains(id)) : deck.Draw();
+					if (cardId is null) {
+						EmitSignal(SignalName.DeckRanOut);
+						// Reshuffle discard pile back into deck upon running out of cards
+						if (ReshuffleDiscardPileOnDeckRunOut) { deck.Add(discardPile); discardPile.Clear(); deck.Shuffle(); }
+						else break;
+					}
+					if (drawAttempts >= 20) break;
 				}
-				var cardId = NoRepeatsInHand ? deck.DrawWhere(id => !cardsInHand.Contains(id)) : deck.Draw();
-				if (cardId is null) { Console.Error($"Failed to deal card from deck: {string.Join(", ", deck.Remaining)}"); continue; }
+				if (cardId is null) { Console.Error($"Failed to deal card from deck [{string.Join(", ", deck.Remaining)}] in {drawAttempts} attempts."); continue; }
 				cardsInHand.Add(cardId);
 				var cardDisplay = new CardDisplay{ CardId = cardId, ShadowOffset = new(-10, 1), ShadowOpacity = 0.4f, GlobalPosition = startPosition, RotationDegrees = startAngle };
 				GetTree().CreateTimer(waitTime * i).Timeout += () => container.AddChild(cardDisplay);

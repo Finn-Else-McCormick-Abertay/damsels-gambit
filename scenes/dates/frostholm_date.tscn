@@ -28,12 +28,10 @@ FullLayoutTopicDeck = {
 "topic/witchcraft": 2
 }
 FullLayoutActionDeck = {
-"action/apologise": 0,
-"action/compliment": 0,
-"action/give": 2,
-"action/insult": 0,
-"action/question": 4,
-"action/secret": 2,
-"action/want": 2
+"action/give": 3,
+"action/question": 5,
+"action/secret": 3,
+"action/want": 3
 }
 NoRepeatsInHand = true
+SendPlayedCardsToDiscardPile = true
