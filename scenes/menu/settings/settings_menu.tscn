@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cl108jysyilp"]
+[gd_scene load_steps=15 format=3 uid="uid://cl108jysyilp"]
 
 [ext_resource type="Texture2D" uid="uid://2cbl24t405i5" path="res://assets/ui/panels/Paper texture.png" id="1_tfbc3"]
 [ext_resource type="Script" uid="uid://5mxdn2su8s3f" path="res://scenes/menu/settings/SettingsMenu.cs" id="2_0snvw"]
@@ -9,7 +9,11 @@
 [ext_resource type="Script" uid="uid://3vkxtd4o4toi" path="res://scenes/menu/settings/window_drop_down_options.gd" id="6_fkvev"]
 [ext_resource type="PackedScene" uid="uid://i8d73rmb2ldl" path="res://scenes/menu/settings/audio_slider.tscn" id="6_j6sto"]
 [ext_resource type="Script" uid="uid://bi1t25iy0eqir" path="res://scenes/menu/settings/resolution_drop_down_options.gd" id="7_d6ec4"]
+[ext_resource type="Texture2D" uid="uid://bo2jvptfw016w" path="res://assets/ui/panels/control icons/arrow_keys.png" id="9_87of6"]
 [ext_resource type="Script" uid="uid://c33xpm87kj0b4" path="res://scenes/menu/settings/FontSelection.cs" id="9_enfos"]
+[ext_resource type="Texture2D" uid="uid://dyd1i1scbccd7" path="res://assets/ui/panels/control icons/bar_button.png" id="10_or0y5"]
+[ext_resource type="Texture2D" uid="uid://s7nst8xse5d2" path="res://assets/ui/panels/control icons/left_click.png" id="11_lnrnt"]
+[ext_resource type="Texture2D" uid="uid://c6u7wfoulrb2o" path="res://assets/ui/panels/control icons/right_click.png" id="12_e2qcx"]
 
 [node name="SettingsMenu" type="Control" node_paths=PackedStringArray("TabContainer", "ExitButton")]
 layout_mode = 3
@@ -89,7 +93,7 @@ grow_vertical = 2
 size_flags_vertical = 3
 focus_neighbor_bottom = NodePath("../ExitButton")
 theme = ExtResource("5_ww2uk")
-current_tab = 3
+current_tab = 2
 
 [node name="Audio" type="Control" parent="TabContainer"]
 visible = false
@@ -171,7 +175,6 @@ mouse_default_cursor_shape = 2
 allow_reselect = true
 
 [node name="Controls" type="Control" parent="TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
@@ -184,12 +187,28 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 64
 
-[node name="TK" type="Label" parent="TabContainer/Controls/VBoxContainer"]
-layout_mode = 2
-focus_mode = 2
-text = "Options Unfinished"
+[node name="ArrowKeys" type="Sprite2D" parent="TabContainer/Controls/VBoxContainer"]
+position = Vector2(403, 190)
+scale = Vector2(0.184418, 0.184418)
+texture = ExtResource("9_87of6")
+
+[node name="BarButton" type="Sprite2D" parent="TabContainer/Controls/VBoxContainer"]
+position = Vector2(81, 249)
+scale = Vector2(0.164773, 0.164773)
+texture = ExtResource("10_or0y5")
+
+[node name="LeftClick" type="Sprite2D" parent="TabContainer/Controls/VBoxContainer"]
+position = Vector2(652, 223)
+scale = Vector2(0.159011, 0.159011)
+texture = ExtResource("11_lnrnt")
+
+[node name="RightClick" type="Sprite2D" parent="TabContainer/Controls/VBoxContainer"]
+position = Vector2(650, 55)
+scale = Vector2(0.1596, 0.1596)
+texture = ExtResource("12_e2qcx")
 
 [node name="Accessibility" type="Control" parent="TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 3
 
