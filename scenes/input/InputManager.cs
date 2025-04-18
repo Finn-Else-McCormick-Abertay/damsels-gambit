@@ -20,7 +20,7 @@ public sealed partial class InputManager : Node
 
 	public static class Actions
 	{
-    	public static readonly GUIDEAction Accept, Back, UIDirection, Pause, SelectAt, Cursor, CursorRelative, Drag, Click, ClickHold;
+    	public static readonly GUIDEAction Play, Discard, Accept, Back, UIDirection, Pause, SelectAt, Cursor, CursorRelative, Drag, Click, ClickHold;
 
 		// Load all actions during static construction
 		static Actions() => typeof(Actions).GetFields().ForEach(field => field.SetValue(null, GUIDEAction.From(ResourceLoader.Load($"res://assets/input/actions/{Case.ToSnake(field.Name)}.tres"))));

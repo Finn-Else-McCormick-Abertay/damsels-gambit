@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using YarnSpinnerGodot;
+using Bridge;
 
 namespace DamselsGambit;
 
@@ -132,6 +133,9 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 
 		if (PlayButton.IsValid()) { PlayButton.TryConnect(BaseButton.SignalName.Pressed, AttemptPlayHand); PlayButton.Disabled = true; }
 		if (DiscardButton.IsValid()) { DiscardButton.TryConnect(BaseButton.SignalName.Pressed, AttemptDiscard); DiscardButton.Disabled = true; }
+
+		InputManager.Actions.Play.InnerObject.Connect(GUIDEAction.SignalName.Completed, AttemptPlayHand);
+		InputManager.Actions.Discard.InnerObject.Connect(GUIDEAction.SignalName.Completed, AttemptDiscard);
 
 		// Remove any cards remaining from the editor
 		foreach (var child in TopicHand.GetChildren()) { TopicHand.RemoveChild(child); child.QueueFree(); }
