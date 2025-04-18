@@ -55,15 +55,6 @@ grow_vertical = 2
 mouse_filter = 1
 theme = ExtResource("1_eci5x")
 script = ExtResource("1_4k8rw")
-Started = false
-Ended = false
-MidRound = false
-InDialogue = false
-Round = 0
-Score = 0
-UsedDiscardsThisGame = 0
-UsedDiscardsThisRound = 0
-IntroSkippable = false
 FullLayoutTopicDeck = {
 "topic/animals": 1,
 "topic/art": 1,
@@ -86,7 +77,6 @@ ActionHand = NodePath("LeftHandContainer")
 TopicHand = NodePath("RightHandContainer")
 PlayButton = NodePath("ButtonsFocusContainer/HBoxContainer/PlayHandButton")
 DiscardButton = NodePath("ButtonsFocusContainer/HBoxContainer/DiscardButton")
-_suitorId = ""
 
 [node name="Vignette" type="TextureRect" parent="."]
 layout_mode = 1

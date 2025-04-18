@@ -62,6 +62,27 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	[ExportGroup("Deck", "FullLayout")]
 	[Export] public Godot.Collections.Dictionary<string, int> FullLayoutTopicDeck { get; set { field = value; this.OnReady(EditorUpdateHands); } }
 	[Export] public Godot.Collections.Dictionary<string, int> FullLayoutActionDeck { get; set { field = value; this.OnReady(EditorUpdateHands); } }
+	
+	public Deck TopicDeck { get; private set; }
+	public Deck ActionDeck { get; private set; }
+
+	private Deck _topicDiscardPile, _actionDiscardPile;
+	
+	[ExportSubgroup("Draw")]
+	[Export] public int ActionHandSize { get; set { field = value; ActionHand?.OnReady(x => x.HandSize = value); this.OnReady(EditorUpdateHands); } } = 3;
+	[Export] public int TopicHandSize { get; set { field = value; TopicHand?.OnReady(x => x.HandSize = value); this.OnReady(EditorUpdateHands); } } = 3;
+	[Export] public bool NoRepeatsInHand { get; set { field = value; this.OnReady(EditorUpdateHands); } } = false;
+
+	[Export] public bool SendPlayedCardsToDiscardPile { get; set; } = false;
+	[Export] public bool ReshuffleDiscardPileOnDeckRunOut { get; set; } = true;
+
+	[ExportGroup("Nodes")]
+	[Export] public AffectionMeter AffectionMeter { get; set; }
+	[Export] public RoundMeter RoundMeter { get; set; }
+	[Export] public HandContainer ActionHand { get; set { field = value; this.OnReady(EditorUpdateHands); } }
+	[Export] public HandContainer TopicHand { get; set { field = value; this.OnReady(EditorUpdateHands); } }
+	[Export] public Button PlayButton { get; set; }
+	[Export] public Button DiscardButton { get; set; }
 
 	public class Deck
 	{
@@ -83,28 +104,14 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		public string DrawWhere(Func<string, bool> predicate) { var card = _working.FirstOrDefault(predicate); if (card is not null) _working.Remove(card); return card; }
 
 		public void Add(string card) => _working.Add(card);
+		public void Add(IEnumerable<string> cards) => _working.AddRange(cards);
+		public void Add(Deck deck) => _working.AddRange(deck._working);
 		public void Clear() => _working.Clear();
+
+		public bool IsEmpty() => _working.Count == 0;
 
 		public void Shuffle(Random random = null) => _working = [.._working.OrderBy(x => (random ?? Random.Shared).Next())];
 	}
-
-	public Deck TopicDeck { get; private set; }
-	public Deck ActionDeck { get; private set; }
-
-	private Deck _topicDiscardPile, _actionDiscardPile;
-
-	[ExportSubgroup("Draw")]
-	[Export] public int ActionHandSize { get; set { field = value; ActionHand?.OnReady(x => x.HandSize = value); this.OnReady(EditorUpdateHands); } } = 3;
-	[Export] public int TopicHandSize { get; set { field = value; TopicHand?.OnReady(x => x.HandSize = value); this.OnReady(EditorUpdateHands); } } = 3;
-	[Export] public bool NoRepeatsInHand { get; set { field = value; this.OnReady(EditorUpdateHands); } } = false;
-
-	[ExportGroup("Nodes")]
-	[Export] public AffectionMeter AffectionMeter { get; set; }
-	[Export] public RoundMeter RoundMeter { get; set; }
-	[Export] public HandContainer ActionHand { get; set { field = value; this.OnReady(EditorUpdateHands); } }
-	[Export] public HandContainer TopicHand { get; set { field = value; this.OnReady(EditorUpdateHands); } }
-	[Export] public Button PlayButton { get; set; }
-	[Export] public Button DiscardButton { get; set; }
 
 	public override void _Ready() {
 		EditorUpdateHands();
@@ -208,8 +215,13 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		var dialogueNode = $"{_suitorId}__{selectedAction.CardId.ToString().StripFront("action/")}_{selectedTopic.CardId.ToString().StripFront("topic/")}";
 
 		// Remove cards from hand
-		TopicHand.RemoveChild(selectedTopic); selectedTopic.QueueFree();
-		ActionHand.RemoveChild(selectedAction); selectedAction.QueueFree();
+		void RemoveCardFromHand(CardDisplay card) {
+			if (SendPlayedCardsToDiscardPile) (card.CardType switch { "action" => _actionDiscardPile, "topic" => _topicDiscardPile, _ => null })?.Add(card.CardId);
+			card.GetParent().RemoveChild(card); card.QueueFree();
+		}
+
+		RemoveCardFromHand(selectedTopic);
+		RemoveCardFromHand(selectedAction);
 
 		PlayButton.Hide(); DiscardButton?.Hide();
 
@@ -238,14 +250,14 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		// Increment counters
 		UsedDiscardsThisGame++; UsedDiscardsThisRound++;
 
-		static void DiscardSelected(HandContainer hand, Deck discardPile) =>
+		void DiscardSelected(HandContainer hand) =>
 			hand.GetSelected().ForEach(card => {
-				discardPile.Add(card.CardId);
+				(card.CardType switch { "action" => _actionDiscardPile, "topic" => _topicDiscardPile, _ => null })?.Add(card.CardId);
 				hand.RemoveChild(card); card.QueueFree();
 			});
 
-		DiscardSelected(TopicHand, _topicDiscardPile);
-		DiscardSelected(ActionHand, _actionDiscardPile);
+		DiscardSelected(TopicHand);
+		DiscardSelected(ActionHand);
 
 		/* Trigger round progress / dialogue? */
 
@@ -291,22 +303,24 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	private void Deal() {
 		if (Engine.IsEditorHint()) return;
 
-		void DealToHand(HandContainer container, int handSize, Deck deck, Vector2 startPosition, float startAngle, double waitTime = 0.2) {
+		void DealToHand(HandContainer container, int handSize, Deck deck, Deck discardPile, Vector2 startPosition, float startAngle, double waitTime = 0.2) {
 			int cardsToDeal = Math.Max(handSize - container.GetChildCount(), 0);
 			List<string> cardsInHand = [..container.FindChildrenOfType<CardDisplay>().Select(x => x.CardId.ToString())];
 			foreach (var i in RangeOf<int>.UpTo(cardsToDeal)) {
-				var cardId = NoRepeatsInHand ? deck.DrawWhere(id => !cardsInHand.Contains(id)) : deck.Draw();
-				if (cardId is null) {
-					Console.Error($"Failed to deal card from deck: {string.Join(", ", deck.Remaining)}");
-					continue;
+				// Reshuffle discard pile back into deck upon running out of cards
+				if (deck.IsEmpty() && ReshuffleDiscardPileOnDeckRunOut) {
+					Console.Info("Reshuffling discard pile into deck");
+					discardPile.Shuffle(); deck.Add(discardPile); discardPile.Clear();
 				}
+				var cardId = NoRepeatsInHand ? deck.DrawWhere(id => !cardsInHand.Contains(id)) : deck.Draw();
+				if (cardId is null) { Console.Error($"Failed to deal card from deck: {string.Join(", ", deck.Remaining)}"); continue; }
 				cardsInHand.Add(cardId);
 				var cardDisplay = new CardDisplay{ CardId = cardId, ShadowOffset = new(-10, 1), ShadowOpacity = 0.4f, GlobalPosition = startPosition, RotationDegrees = startAngle };
 				GetTree().CreateTimer(waitTime * i).Timeout += () => container.AddChild(cardDisplay);
 			}
 		}
-		DealToHand(ActionHand, ActionHandSize, ActionDeck, new Vector2(-200f, 100f), -30f);
-		DealToHand(TopicHand, TopicHandSize, TopicDeck, new Vector2(500f, 100f), 30f);
+		DealToHand(ActionHand, ActionHandSize, ActionDeck, _actionDiscardPile, new Vector2(-200f, 100f), -30f);
+		DealToHand(TopicHand, TopicHandSize, TopicDeck, _topicDiscardPile, new Vector2(500f, 100f), 30f);
 	}
 
 	// Equivalent of Deal, but deterministic and instant (for display in the editor)
