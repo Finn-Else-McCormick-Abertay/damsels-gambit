@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="GUIDEMappingContext" load_steps=73 format=3 uid="uid://j6jajptjp6hb"]
+[gd_resource type="Resource" script_class="GUIDEMappingContext" load_steps=78 format=3 uid="uid://j6jajptjp6hb"]
 
 [ext_resource type="Script" uid="uid://cq3bkn31plngn" path="res://addons/guide/guide_action_mapping.gd" id="1_fo03c"]
 [ext_resource type="Script" uid="uid://du2fnmaoh0xqd" path="res://addons/guide/guide_mapping_context.gd" id="2_dcpd2"]
@@ -22,6 +22,7 @@
 [ext_resource type="Script" uid="uid://dtju0nf8ctqn0" path="res://addons/guide/triggers/guide_trigger_chorded_action.gd" id="16_7qn63"]
 [ext_resource type="Resource" uid="uid://ditthmpiul2vd" path="res://assets/input/actions/play.tres" id="20_1c8ha"]
 [ext_resource type="Resource" uid="uid://c8h1lorbsw87x" path="res://assets/input/actions/discard.tres" id="21_3fbhh"]
+[ext_resource type="Resource" uid="uid://v2ll6ehf6jnr" path="res://assets/input/actions/profile.tres" id="22_3fbhh"]
 
 [sub_resource type="Resource" id="Resource_xsm2d"]
 script = ExtResource("4_hb457")
@@ -349,7 +350,31 @@ script = ExtResource("1_fo03c")
 action = ExtResource("21_3fbhh")
 input_mappings = Array[ExtResource("3_axd73")]([SubResource("Resource_065ce")])
 
+[sub_resource type="Resource" id="Resource_euqtt"]
+script = ExtResource("4_hb457")
+button = 10
+joy_index = -1
+
+[sub_resource type="Resource" id="Resource_vavjk"]
+script = ExtResource("7_1k1qq")
+actuation_threshold = 0.5
+
+[sub_resource type="Resource" id="Resource_123ax"]
+script = ExtResource("3_axd73")
+override_action_settings = false
+is_remappable = false
+display_name = ""
+display_category = ""
+input = SubResource("Resource_euqtt")
+modifiers = Array[ExtResource("5_h5nfx")]([])
+triggers = Array[ExtResource("6_tdnw0")]([SubResource("Resource_vavjk")])
+
+[sub_resource type="Resource" id="Resource_dfppa"]
+script = ExtResource("1_fo03c")
+action = ExtResource("22_3fbhh")
+input_mappings = Array[ExtResource("3_axd73")]([SubResource("Resource_123ax")])
+
 [resource]
 script = ExtResource("2_dcpd2")
 display_name = "Controller"
-mappings = Array[ExtResource("1_fo03c")]([SubResource("Resource_iemin"), SubResource("Resource_kxrog"), SubResource("Resource_py31b"), SubResource("Resource_vjgr6"), SubResource("Resource_quevx"), SubResource("Resource_wsa0j"), SubResource("Resource_b3rht"), SubResource("Resource_yiqoh")])
+mappings = Array[ExtResource("1_fo03c")]([SubResource("Resource_iemin"), SubResource("Resource_kxrog"), SubResource("Resource_py31b"), SubResource("Resource_vjgr6"), SubResource("Resource_quevx"), SubResource("Resource_wsa0j"), SubResource("Resource_b3rht"), SubResource("Resource_yiqoh"), SubResource("Resource_dfppa")])

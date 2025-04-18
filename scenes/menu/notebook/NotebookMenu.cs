@@ -181,6 +181,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 
 		UpdateLayerReferences();
 		InputManager.Actions.Pause.InnerObject.Connect(GUIDEAction.SignalName.Completed, TryTogglePauseMenu);
+		InputManager.Actions.Profile.InnerObject.Connect(GUIDEAction.SignalName.Completed, TryToggleProfile);
 	}
 	public override void _EnterTree() {
 		RestoreAnimationState();
@@ -206,6 +207,14 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 
 	private void TogglePauseMenu() => InPauseMenu = !InPauseMenu;
 	private void TryTogglePauseMenu() { if(CanPause && !(PauseMenu?.InSettingsMenu ?? false)) TogglePauseMenu(); }
+
+	private void TryToggleProfile() {
+		if (InPauseMenu) {
+			InPauseMenu = false;
+			Open = true;
+		}
+		else Open = !Open;
+	}
 
 	public void UpdateDialogueViewNode() {
 		if (Engine.IsEditorHint() || string.IsNullOrEmpty(SuitorName) || ProfilePage?.DialogueView is not ProfileDialogueView dialogueView) return;
