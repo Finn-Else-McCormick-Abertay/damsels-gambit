@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://ccmhxutm5bcmr"]
+[gd_scene load_steps=21 format=3 uid="uid://ccmhxutm5bcmr"]
 
 [ext_resource type="Script" uid="uid://bonisd2egs36k" path="res://scenes/game/credits.gd" id="1_oap8i"]
 [ext_resource type="Texture2D" uid="uid://2cbl24t405i5" path="res://assets/ui/panels/Paper texture.png" id="2_n7njp"]
@@ -10,7 +10,16 @@
 [ext_resource type="Texture2D" uid="uid://ci03jl2ag3tue" path="res://assets/items/wolf_pendant_3.png" id="9_pq3tm"]
 [ext_resource type="Texture2D" uid="uid://bssfinpc78nsb" path="res://assets/items/wolf_claw_3.png" id="10_b15uh"]
 [ext_resource type="Texture2D" uid="uid://bwi1pgcvna3uj" path="res://assets/items/wolf_pendant_2.png" id="11_2tpig"]
+[ext_resource type="Texture2D" uid="uid://fg5mi66sbqqd" path="res://assets/items/pitchfork_2.png" id="11_3j7ls"]
 [ext_resource type="Texture2D" uid="uid://crf7bw24tayfj" path="res://assets/items/feather_1.png" id="12_fq7lm"]
+[ext_resource type="Texture2D" uid="uid://du8hu5rmlw1cq" path="res://assets/items/snail_bracelet_3.png" id="12_prakm"]
+[ext_resource type="Texture2D" uid="uid://dlhnrkati3jqc" path="res://assets/items/snowman_3.png" id="13_nje8h"]
+[ext_resource type="Texture2D" uid="uid://ct3k800fg6tky" path="res://assets/items/sunglasses_2.png" id="14_rkwiw"]
+[ext_resource type="Texture2D" uid="uid://ddwu6sbrningc" path="res://assets/items/snowman_2.png" id="15_ocr8b"]
+[ext_resource type="Texture2D" uid="uid://b2nhmndhkf5ld" path="res://assets/items/frog_potion_2.png" id="16_rlg0f"]
+[ext_resource type="Texture2D" uid="uid://crb4dd5ovpjos" path="res://assets/items/umbrella_1.png" id="17_386d5"]
+[ext_resource type="Texture2D" uid="uid://cn45roe4co83a" path="res://assets/items/wolf_potion_3.png" id="19_urne1"]
+[ext_resource type="Texture2D" uid="uid://b5o0vnr01plwn" path="res://assets/logo/team logo.png" id="20_prakm"]
 
 [node name="Credits" type="Control" node_paths=PackedStringArray("credits_text", "skip_button")]
 layout_mode = 3
@@ -60,6 +69,7 @@ text = "
 
 
 
+
 Design
 
 Producer   -  Vera Silva 
@@ -82,19 +92,10 @@ Lead Programmer   -  Finn Else-McCormick
 
 Audio Programmer  -  Bea Parsons 
 
-Bug Tester and Eliminator  -  Noah Morrison 
+QA Tester -  Noah Morrison 
 
 
-Abertay University Des315 Project 
-
-Audio 
-
-\"Take me to Snurch\"
-A \"Take me to Church\" Parody
-Orginal song by Hozier
-Parodied by Thorn Stirling
-Performed by Eric Dowds and Callum Taylor
-Mixed by Eric Dowds
+An Abertay University Des315 Project 
 
 
 Created in GODOT 4.4
@@ -104,9 +105,50 @@ Thanks to
 
 Fraser Simpson
 Martin Lynagh 
-Pocket Sized Hands 
 Gary McCartan
-Everyone who playtested the game and gave us feedback 
+Pocket Sized Hands 
+Everyone who playtested the game and gave us feedback  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -125,6 +167,74 @@ scroll_following = true
 tab_size = 5
 horizontal_alignment = 1
 
+[node name="Audio" type="RichTextLabel" parent="CreditsText"]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 2120.0
+offset_right = 1149.0
+offset_bottom = 3837.0
+theme_override_colors/default_color = Color(0.34902, 0.0352941, 0.133333, 1)
+theme_override_colors/font_outline_color = Color(0.996078, 0.929412, 0.898039, 1)
+theme_override_constants/outline_size = 9
+theme_override_font_sizes/normal_font_size = 25
+text = "Audio 
+
+\"Take me to Snurch\"
+A \"Take me to Church\" Parody
+Orginal song by Hozier
+Parodied by Thorn Stirling
+Performed by Eric Dowds and Callum Taylor
+Mixed by Eric Dowds 
+
+Jaszunio15, freesounds.org, link:
+\"https://freesound.org/people/Jaszunio15/sounds/421398/\"
+Creative Commons 0
+
+xkeril, freesounds.org, link: 
+\"https://freesound.org/people/xkeril/sounds/757869/\"
+Creative Commons 0
+
+VKProduktion, freesounds.org, link: 
+\"https://freesound.org/people/VKProduktion/sounds/217501/\"
+Creative Commons 0
+
+Robinhood76, freesounds.org, link:
+\"https://freesound.org/people/Robinhood76/sounds/534017/\"
+Attribution NonCommercial 4.0
+
+deraj, freesounds.org, link:
+\"https://freesound.org/people/deraj/sounds/202544/\"
+Creative Commons 0
+
+DeVern, freesounds.org, link:
+\"https://freesound.org/people/DeVern/sounds/512490/\"
+Creative Commons 0
+
+solarpsychedelic, freesounds.org, link:
+\"https://freesound.org/people/solarpsychedelic/sounds/751995/\"
+Creative Commons 0
+
+TheoJT, freesounds.org, link:
+\"https://freesound.org/people/TheoJT/sounds/511311/\"
+Attribution 4.0
+
+szegvari, freesounds.org, link:
+\"https://freesound.org/people/szegvari/sounds/609900/\"
+Creative Commons 0
+
+szegvari, freesounds.org, link:
+\"https://freesound.org/people/szegvari/sounds/611098/\"
+Creative Commons 0
+
+sonically_sound, freesounds.org, link:
+\"https://freesound.org/people/sonically_sound/sounds/624644/\"
+Attribution 4.0
+
+Other SFX via Pixabay
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="LicenceText" type="RichTextLabel" parent="CreditsText"]
 layout_mode = 1
 anchors_preset = 12
@@ -135,8 +245,8 @@ offset_top = -489.0
 offset_bottom = -159.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_colors/default_color = Color(0.227451, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(1, 0.87451, 0.835294, 1)
+theme_override_colors/default_color = Color(0.34902, 0.0352941, 0.133333, 1)
+theme_override_colors/font_outline_color = Color(0.996078, 0.929412, 0.898039, 1)
 theme_override_constants/outline_size = 9
 theme_override_constants/shadow_outline_size = 0
 theme_override_font_sizes/normal_font_size = 12
@@ -164,6 +274,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE."
 fit_content = true
 horizontal_alignment = 1
+metadata/_edit_lock_ = true
 
 [node name="Logo" type="TextureRect" parent="CreditsText"]
 layout_mode = 1
@@ -171,13 +282,14 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -200.0
-offset_top = 113.0
+offset_top = 13.0
 offset_right = 210.0
-offset_bottom = 457.0
+offset_bottom = 357.0
 grow_horizontal = 2
 texture = ExtResource("3_pqmjv")
 expand_mode = 1
 stretch_mode = 5
+metadata/_edit_lock_ = true
 
 [node name="Marginalia" type="Control" parent="CreditsText"]
 layout_mode = 1
@@ -187,24 +299,24 @@ anchor_right = 0.5
 grow_horizontal = 2
 
 [node name="Escargots1" type="Sprite2D" parent="CreditsText/Marginalia"]
-position = Vector2(447, 816)
+position = Vector2(440, 835)
 scale = Vector2(0.233461, 0.233461)
 texture = ExtResource("5_ox8i4")
 
 [node name="HumanTeethDress1" type="Sprite2D" parent="CreditsText/Marginalia"]
-position = Vector2(321, 2246)
+position = Vector2(401, 2270)
 rotation = 0.223011
 scale = Vector2(0.258849, 0.258849)
 texture = ExtResource("6_s70fa")
 
 [node name="RawReindeerMeat2" type="Sprite2D" parent="CreditsText/Marginalia"]
-position = Vector2(391, 2535)
-rotation = -1.24652
-scale = Vector2(0.297118, 0.297118)
+position = Vector2(469, 2868)
+rotation = 0.161484
+scale = Vector2(0.221007, 0.221007)
 texture = ExtResource("7_2tpig")
 
 [node name="VoodooDollBook2" type="Sprite2D" parent="CreditsText/Marginalia"]
-position = Vector2(378, 1573)
+position = Vector2(427, 1530)
 scale = Vector2(0.33718, 0.337179)
 texture = ExtResource("8_fq7lm")
 
@@ -215,16 +327,67 @@ scale = Vector2(0.264765, 0.264765)
 texture = ExtResource("9_pq3tm")
 
 [node name="WolfClaw3" type="Sprite2D" parent="CreditsText/Marginalia"]
-position = Vector2(-329, 1933)
+position = Vector2(-410, 1887)
 rotation = -1.04738
 scale = Vector2(0.424324, 0.424324)
 texture = ExtResource("10_b15uh")
 
 [node name="Feather1" type="Sprite2D" parent="CreditsText/Marginalia"]
-position = Vector2(-376, 725)
+position = Vector2(-373, 639)
 rotation = -1.05311
 scale = Vector2(0.261236, 0.261236)
 texture = ExtResource("12_fq7lm")
+
+[node name="Pitchfork2" type="Sprite2D" parent="CreditsText/Marginalia"]
+position = Vector2(-445, 2700)
+rotation = -0.444578
+scale = Vector2(0.264286, 0.264286)
+texture = ExtResource("11_3j7ls")
+
+[node name="SnailBracelet3" type="Sprite2D" parent="CreditsText/Marginalia"]
+position = Vector2(-412, 2239)
+rotation = -0.54494
+scale = Vector2(0.171667, 0.171667)
+texture = ExtResource("12_prakm")
+
+[node name="Snowman3" type="Sprite2D" parent="CreditsText/Marginalia"]
+position = Vector2(-458, 3589)
+scale = Vector2(0.232685, 0.232685)
+texture = ExtResource("13_nje8h")
+
+[node name="Sunglasses2" type="Sprite2D" parent="CreditsText/Marginalia"]
+position = Vector2(329, 3882)
+rotation = 0.517371
+scale = Vector2(0.176435, 0.176435)
+texture = ExtResource("14_rkwiw")
+
+[node name="Snowman2" type="Sprite2D" parent="CreditsText/Marginalia"]
+position = Vector2(435.188, 3580.19)
+scale = Vector2(0.238609, 0.238609)
+texture = ExtResource("15_ocr8b")
+
+[node name="FrogPotion2" type="Sprite2D" parent="CreditsText/Marginalia"]
+position = Vector2(429, 3258)
+rotation = 0.270672
+scale = Vector2(0.285347, 0.285347)
+texture = ExtResource("16_rlg0f")
+
+[node name="WolfPotion3" type="Sprite2D" parent="CreditsText/Marginalia"]
+position = Vector2(-393, 3904)
+rotation = -0.337483
+scale = Vector2(0.23516, 0.23516)
+texture = ExtResource("19_urne1")
+
+[node name="TeamLogo" type="Sprite2D" parent="CreditsText/Marginalia"]
+position = Vector2(2.99999, 420.125)
+scale = Vector2(0.195823, 0.195823)
+texture = ExtResource("20_prakm")
+
+[node name="Umbrella1" type="Sprite2D" parent="CreditsText/Marginalia"]
+position = Vector2(-487, 3127)
+rotation = -0.500913
+scale = Vector2(0.304124, 0.304124)
+texture = ExtResource("17_386d5")
 
 [node name="End Graphic" type="Control" parent="CreditsText"]
 layout_mode = 1
@@ -237,6 +400,7 @@ offset_top = -56.0
 offset_bottom = -56.0
 grow_horizontal = 2
 grow_vertical = 0
+metadata/_edit_lock_ = true
 
 [node name="WolfPendant2" type="Sprite2D" parent="CreditsText/End Graphic"]
 position = Vector2(84.2172, -49.1519)
