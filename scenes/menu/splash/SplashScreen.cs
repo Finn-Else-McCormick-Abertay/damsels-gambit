@@ -8,6 +8,9 @@ namespace DamselsGambit;
 public partial class SplashScreen : Control
 {
     [Export] public bool UseSplashScreen = true;
+    [Export] public bool SkipInEditorBuilds = false;
+
+    [ExportGroup("Animation")]
     [Export] public double BootHoldTime = 0.05;
     [Export] public double BootFadeTime = 1.5;
     [Export] public double SplashHoldTime = 0;
@@ -20,6 +23,8 @@ public partial class SplashScreen : Control
     private AnimationPlayer _animationPlayer;
 
     public override void _Ready() {
+        if (SkipInEditorBuilds && OS.HasFeature("editor")) UseSplashScreen = false;
+
         if (!UseSplashScreen) { MouseFilter = MouseFilterEnum.Ignore; foreach (var child in GetChildren().Where(x => x is CanvasItem).Cast<CanvasItem>()) child.Hide(); }
 
         if (UseSplashScreen) {
