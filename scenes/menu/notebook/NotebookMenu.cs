@@ -209,6 +209,7 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 	private void TryTogglePauseMenu() { if(CanPause && !(PauseMenu?.InSettingsMenu ?? false)) TogglePauseMenu(); }
 
 	private void TryToggleProfile() {
+		if (!Visible) return;
 		if (InPauseMenu) {
 			InPauseMenu = false;
 			Open = true;

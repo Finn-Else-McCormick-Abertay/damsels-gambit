@@ -90,6 +90,9 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 
 	private readonly HashSet<string> _usedDiscardDialogues = [];
 
+	[ExportGroup("Animation")]
+	[Export] public double MeterSlideInTime { get; set; } = 0.5;
+
 	[ExportGroup("Nodes")]
 	[Export] public AffectionMeter AffectionMeter { get; set; }
 	[Export] public RoundMeter RoundMeter { get; set; }
@@ -126,6 +129,64 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 
 		public void Shuffle(Random random = null) => _working = [.._working.OrderBy(x => (random ?? Random.Shared).Next())];
 	}
+	
+	private enum GameVisibilityState { AllVisible, AllHidden, ButtonsHidden, AllHiddenInstant }
+
+	private Tween _meterTween;
+	private void AnimateMetersIn() {
+		if (GodotObject.IsInstanceValid(_meterTween)) _meterTween.Kill();
+		_meterTween = CreateTween();
+		float affectionMeterDistance = AffectionMeter.Position.X + AffectionMeter.Size.X + 10f; float roundMeterDistance = RoundMeter.Position.Y + RoundMeter.Size.Y + 20f;
+		_meterTween.TweenProperty(AffectionMeter, "position:x", -affectionMeterDistance, 0).AsRelative(); _meterTween.TweenProperty(RoundMeter, "position:y", -roundMeterDistance, 0).AsRelative();
+		_meterTween.TweenCallback(AffectionMeter.Show); _meterTween.TweenCallback(RoundMeter.Show);
+		_meterTween.TweenProperty(AffectionMeter, "position:x", affectionMeterDistance, MeterSlideInTime).AsRelative(); _meterTween.Parallel().TweenProperty(RoundMeter, "position:y", roundMeterDistance, MeterSlideInTime).AsRelative();
+
+	}
+	private void AnimateMetersOut() {
+		if (GodotObject.IsInstanceValid(_meterTween)) _meterTween.Kill();
+		_meterTween = CreateTween();
+		float affectionMeterDistance = AffectionMeter.Position.X + AffectionMeter.Size.X + 10f; float roundMeterDistance = RoundMeter.Position.Y + RoundMeter.Size.Y + 20f;
+		_meterTween.TweenProperty(AffectionMeter, "position:x", -affectionMeterDistance, MeterSlideInTime).AsRelative(); _meterTween.Parallel().TweenProperty(RoundMeter, "position:y", -roundMeterDistance, MeterSlideInTime).AsRelative();
+		_meterTween.TweenCallback(AffectionMeter.Hide); _meterTween.TweenCallback(RoundMeter.Hide);
+		_meterTween.TweenProperty(AffectionMeter, "position:x", affectionMeterDistance, 0).AsRelative(); _meterTween.TweenProperty(RoundMeter, "position:y", roundMeterDistance, 0).AsRelative();
+	}
+
+	private GameVisibilityState VisibilityState {
+		get;
+		set {
+			var oldState = field;
+			field = value;
+			if (Engine.IsEditorHint()) return;
+			switch (VisibilityState) {
+				case GameVisibilityState.AllVisible: {
+					TopicHand?.Show(); ActionHand?.Show();
+					PlayButton?.Show(); DiscardButton?.Show();
+					GameManager.NotebookMenu.Show();
+					if (!oldState.IsAnyOf(GameVisibilityState.AllVisible, GameVisibilityState.ButtonsHidden)) AnimateMetersIn();
+				} break;
+				case GameVisibilityState.ButtonsHidden: {
+					TopicHand?.Show(); ActionHand?.Show();
+					PlayButton?.Show(); DiscardButton?.Show();
+					PlayButton?.Hide(); DiscardButton?.Hide();
+					GameManager.NotebookMenu.Show();
+					if (!oldState.IsAnyOf(GameVisibilityState.AllVisible, GameVisibilityState.ButtonsHidden)) AnimateMetersIn();
+				} break;
+				case GameVisibilityState.AllHidden: {
+					TopicHand?.Hide(); ActionHand?.Hide();
+					PlayButton?.Hide(); DiscardButton?.Hide();
+					GameManager.NotebookMenu.Hide();
+					if (!oldState.IsAnyOf(GameVisibilityState.AllHidden, GameVisibilityState.AllHiddenInstant)) AnimateMetersOut();
+				} break;
+				case GameVisibilityState.AllHiddenInstant: {
+					AffectionMeter?.Hide(); RoundMeter?.Hide();
+					TopicHand?.Hide(); ActionHand?.Hide();
+					PlayButton?.Hide(); DiscardButton?.Hide();
+					GameManager.NotebookMenu.Hide();
+				} break;
+				default: break;
+			}
+		}
+	}
 
 	public override void _Ready() {
 		EditorUpdateHands();
@@ -143,7 +204,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 
 		_usedDiscardDialogues.Clear();
 		
-		AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide(); PlayButton.Hide(); DiscardButton?.Hide();
+		VisibilityState = GameVisibilityState.AllHiddenInstant;
 		Round = 1;
 	}
 
@@ -168,7 +229,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		
 		EmitSignal(SignalName.GameStart);
 		
-		GameManager.NotebookMenu.Hide();
+		VisibilityState = GameVisibilityState.AllHidden;
 		
 		// Run intro node or (skip_setup node, if skipping), then unhide and handle round start.
 		// (Due to how AndThen works, if this dialogue is interrupted by another then the callback will still run when that dialogue ends, which is why force-running the skip setup (see ForceSkipIntro) doesn't break everything)
@@ -176,8 +237,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		DialogueManager.TryRun(skipIntro ? $"{_suitorId}__skip_setup" : $"{_suitorId}__intro")
 			.AndThen(() => {
 				InDialogue = false;
-				AffectionMeter.Show(); RoundMeter.Show(); TopicHand.Show(); ActionHand.Show(); PlayButton.Show(); DiscardButton?.Show();
-				GameManager.NotebookMenu.Show();
+				VisibilityState = GameVisibilityState.AllVisible;
 				Started = true;
 				Round = 1; UsedDiscardsThisGame = 0; UsedDiscardsThisRound = 0;
 				AttemptStartRound();
@@ -344,11 +404,12 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 			if (dialogueNode is not null) {
 				_usedDiscardDialogues.Add(dialogueNode);
 				InDialogue = true;
-				PlayButton?.Hide(); DiscardButton?.Hide();
+				
+				VisibilityState = GameVisibilityState.ButtonsHidden;
 				DialogueManager.TryRun(dialogueNode)
 					.AndThen(() => {
 						InDialogue = false;
-						PlayButton?.Show(); DiscardButton?.Show();
+						VisibilityState = GameVisibilityState.AllVisible;
 						AfterDiscard();
 					});
 			}
@@ -362,7 +423,9 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		if (MidRound) { Console.Warning("Failed to start round: previous round did not end."); return; }
 		if (Engine.IsEditorHint() || ShouldGameEnd) return;
 
-		PlayButton.Show(); DiscardButton?.Show(); MidRound = true;
+		UsedDiscardsThisRound = 0;
+		VisibilityState = GameVisibilityState.AllVisible;
+		MidRound = true;
 		Deal();
 		
 		EmitSignal(SignalName.RoundStart, Round);
@@ -376,17 +439,18 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		if (MidRound && !force) { this.TryConnect(SignalName.RoundEnd, Callable.From((int round) => AttemptGameEnd()), (uint)ConnectFlags.OneShot); return; }
 
 		Ended = true;
-		PlayButton.Hide(); DiscardButton?.Hide();
+		VisibilityState = GameVisibilityState.ButtonsHidden;
 
 		CallableUtils.CallDeferred(() => {
 			// Trigger the pre ending node if it exists (the tutorial uses this to run the profile explanation, so the UI can't be hidden yet).
 			// Once it is finished (or if it didn't exist) then hide the UI and trigger the correct ending dialogue.
 			// Once that is finished, emit the game end signal.
 			InDialogue = true;
+			VisibilityState = GameVisibilityState.ButtonsHidden;
 			DialogueManager.TryRun($"{_suitorId}__pre_ending")
 				.AndThen(() => {
 					InDialogue = false;
-					AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide(); PlayButton.Hide(); DiscardButton?.Hide();
+					VisibilityState = GameVisibilityState.AllHidden;
 					DialogueManager.TryRun($"{_suitorId}__ending__{AffectionState switch { AffectionState.Love => "love", AffectionState.Hate => "hate", AffectionState.Neutral => "neutral"}}")
 						.AndThen(() => EmitSignal(SignalName.GameEnd));
 				});
