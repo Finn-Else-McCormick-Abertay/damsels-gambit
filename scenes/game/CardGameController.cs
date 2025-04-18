@@ -20,16 +20,23 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	[Signal] public delegate void IntroStartEventHandler(); 			[Signal] public delegate void IntroEndEventHandler();
 	[Signal] public delegate void GameStartEventHandler(); 				[Signal] public delegate void GameEndEventHandler();
 	[Signal] public delegate void RoundStartEventHandler(int round); 	[Signal] public delegate void RoundEndEventHandler(int round);
+
+	[Signal] public delegate void HandPlayedEventHandler(StringName actionCard, StringName topicCard);
+	[Signal] public delegate void DiscardedEventHandler(StringName[] cards);
 	
 	// Has intro ended and game started? Tracked for skip logic
 	public bool Started { get; private set; } = false;
 	public bool Ended { get; private set; } = false;
 	public bool MidRound { get; private set; } = false;
+	public bool InDialogue { get; private set; } = false;
 	
 	// Current round. Triggers game end when it exceeds NumRounds
 	public int Round { get; set { field = value; RoundMeter?.OnReady(x => x.CurrentRound = Round); AttemptGameEnd(); } }
 	// Current score. When AutoFailOnHitThreshold is true, triggers game end when it exceeds score minimum or maximum
 	public int Score { get; set { field = value; AffectionMeter?.CreateTween()?.TweenProperty(AffectionMeter, AffectionMeter.PropertyName.Value, int.Clamp(Score, ScoreMin, ScoreMax), 1.0); AttemptGameEnd(); } }
+
+	public int UsedDiscardsThisGame { get; private set; } = 0;
+	public int UsedDiscardsThisRound { get; private set; } = 0;
 
 	// Current affection state based on score and thresholds
 	public AffectionState AffectionState => Score switch { _ when Score >= LoveThreshold => AffectionState.Love, _ when Score <= HateThreshold => AffectionState.Hate, _ => AffectionState.Neutral };
@@ -103,34 +110,24 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		EditorUpdateHands();
 		if (Engine.IsEditorHint()) return;
 
-		PlayButton?.TryConnect(BaseButton.SignalName.Pressed, PlayHand);
-		PlayButton.Disabled = true;
-
-		DiscardButton?.TryConnect(BaseButton.SignalName.Pressed, Discard);
-		DiscardButton.Disabled = true;
+		if (PlayButton.IsValid()) { PlayButton.TryConnect(BaseButton.SignalName.Pressed, AttemptPlayHand); PlayButton.Disabled = true; }
+		if (DiscardButton.IsValid()) { DiscardButton.TryConnect(BaseButton.SignalName.Pressed, AttemptDiscard); DiscardButton.Disabled = true; }
 
 		// Remove any cards remaining from the editor
 		foreach (var child in TopicHand.GetChildren()) { TopicHand.RemoveChild(child); child.QueueFree(); }
 		foreach (var child in ActionHand.GetChildren()) { ActionHand.RemoveChild(child); child.QueueFree(); }
 		
-		AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide(); PlayButton.Hide(); DiscardButton.Hide();
+		AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide(); PlayButton.Hide(); DiscardButton?.Hide();
 		Round = 1;
 	}
 
 	// Trigger the start of the game
 	// This doesn't happen in ready so that GameManager is able to set whether the intro should be skipped (which it is when loading into the scene directly)
 	public void BeginGame(bool skipIntro = false) {
-		TopicDeck = new(FullLayoutTopicDeck);
-		ActionDeck = new(FullLayoutActionDeck);
+		TopicDeck = new(FullLayoutTopicDeck); ActionDeck = new(FullLayoutActionDeck); // Create decks from exported deck layout dictionaries
+		TopicDeck.Shuffle(); ActionDeck.Shuffle(); // Shuffle decks
 
-		_topicDiscardPile = new();
-		_actionDiscardPile = new();
-
-		// Shuffle decks
-		TopicDeck.Shuffle();
-		ActionDeck.Shuffle();
-		
-		EmitSignal(SignalName.GameStart);
+		_topicDiscardPile = new(); _actionDiscardPile = new(); // Create empty discard piles
 
 		// Make NotebookMenu the focus neighbour of topic hand, so it can be accessed via keyboard controls
 		TopicHand.FocusNeighborTop = GameManager.NotebookMenu.GetPath(); TopicHand.FocusNeighborRight = GameManager.NotebookMenu.GetPath();
@@ -142,16 +139,21 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 			if (tag.MatchN("skippable")) IntroSkippable = true; else if (tag.MatchN("unskippable")) IntroSkippable = false;
 			else if (args.Length == 2 && args[0].Trim().ToLower().IsAnyOf([ "skip", "skippable" ]) && bool.TryParse(args[1].Trim(), out bool val)) IntroSkippable = val;
 		}
-
+		
+		EmitSignal(SignalName.GameStart);
+		
 		GameManager.NotebookMenu.Hide();
 		
 		// Run intro node or (skip_setup node, if skipping), then unhide and handle round start.
 		// (Due to how AndThen works, if this dialogue is interrupted by another then the callback will still run when that dialogue ends, which is why force-running the skip setup (see ForceSkipIntro) doesn't break everything)
+		InDialogue = true;
 		DialogueManager.TryRun(skipIntro ? $"{_suitorId}__skip_setup" : $"{_suitorId}__intro")
 			.AndThen(() => {
-				AffectionMeter.Show(); RoundMeter.Show(); TopicHand.Show(); ActionHand.Show(); PlayButton.Show(); DiscardButton.Show();
+				InDialogue = false;
+				AffectionMeter.Show(); RoundMeter.Show(); TopicHand.Show(); ActionHand.Show(); PlayButton.Show(); DiscardButton?.Show();
 				GameManager.NotebookMenu.Show();
-				Started = true; Round = 1;
+				Started = true;
+				Round = 1; UsedDiscardsThisGame = 0; UsedDiscardsThisRound = 0;
 				AttemptStartRound();
 			});
 	}
@@ -159,6 +161,15 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	public override void _ExitTree() {
 		if (Engine.IsEditorHint()) return;
 		GameManager.NotebookMenu.FocusNeighborBottom = new(); GameManager.NotebookMenu.FocusNeighborLeft = new();
+	}
+	
+	public override void _Process(double delta) {
+		if (Engine.IsEditorHint()) return;
+
+		// Set play button to be disabled based on whether the correct number of cards are selected
+		if (PlayButton.IsValid()) PlayButton.Disabled = !CanPlay() || ShouldGameEnd();
+		// Set discard button to be disabled based on whether any cards are selected
+		if (DiscardButton.IsValid()) DiscardButton.Disabled = !CanDiscard() || ShouldGameEnd();
 	}
 	
 	public Control GetDefaultFocus(FocusDirection direction) =>
@@ -169,71 +180,86 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 			FocusDirection.Right or _ => ActionHand
 		}, direction);
 
+	// Are preconditions for playing hand met (are correct number of cards selected?)
+	private bool CanPlay() => Started && !Ended && !InDialogue && TopicHand.GetSelected().Count() == 1 && ActionHand.GetSelected().Count() == 1;
+
+	// Are preconditions for discarding met
+	private bool CanDiscard() => Started && !Ended && !InDialogue && (TopicHand.GetSelected().Any() || ActionHand.GetSelected().Any());
+
+	// Are preconditions for game end met
+	private bool ShouldGameEnd() => Started && !Ended && (Round > NumRounds || (AutoFailOnHitThreshold && !RangeOf<int>.Between(ScoreMin, ScoreMax).Contains(Score)));
+	
 	// If not yet started, force-run the skip_setup node, skipping to the start of gameplay even if currently in the intro
 	public void ForceSkipIntro() { if (!Started && !Ended) DialogueManager.Run($"{_suitorId}__skip_setup", true); }
 
-	public override void _Process(double delta) {
+	// Force-end the game without deferring until end of round. Used by debug commands
+	public void ForceGameEnd() { Round = NumRounds + 1; if (MidRound) AttemptGameEnd(true); }
+
+	// Plays hand so long as end preconditions are not met. Connected to PlayButton's Pressed signal.
+	private void AttemptPlayHand() {
 		if (Engine.IsEditorHint()) return;
 
-		// Set play button to be disabled based on whether the correct number of cards are selected
-		PlayButton.Disabled = TopicHand.GetSelected().Count() != 1 || ActionHand.GetSelected().Count() != 1 || ShouldGameEnd();
-		// Set discard button to be disabled based on whether any cards are selected
-		DiscardButton.Disabled = (!TopicHand.GetSelected().Any() && !ActionHand.GetSelected().Any()) || ShouldGameEnd();
-	}
+		// Verify that attempt is valid
+		if (!CanPlay()) return;
 
-	// Connected to PlayButton's Pressed signal
-	private void PlayHand() {
-		if (Engine.IsEditorHint()) return;
-		if (!Started) { Console.Warning("Attempted to play hand before game start."); return; }
-		if (Ended) { Console.Warning("Attempted to play hand after game end."); return; }
+		CardDisplay selectedTopic = TopicHand.GetSelected().Single(), selectedAction = ActionHand.GetSelected().Single();
 
-		CardDisplay selectedTopic = TopicHand.GetSelected().SingleOrDefault();
-		CardDisplay selectedAction = ActionHand.GetSelected().SingleOrDefault();
-
-		// Verify that the correct number of cards were selected
-		if (selectedTopic.IsInvalid() || selectedAction.IsInvalid()) { Console.Error("Failed to play hand. Topic: ", selectedTopic, ", Action: ", selectedAction); return; }
-
+		// Get dialogue node name for given cards
 		var dialogueNode = $"{_suitorId}__{selectedAction.CardId.ToString().StripFront("action/")}_{selectedTopic.CardId.ToString().StripFront("topic/")}";
 
+		// Remove cards from hand
 		TopicHand.RemoveChild(selectedTopic); selectedTopic.QueueFree();
 		ActionHand.RemoveChild(selectedAction); selectedAction.QueueFree();
-		PlayButton.Hide();
-		DiscardButton.Hide();
+
+		PlayButton.Hide(); DiscardButton?.Hide();
+
+		EmitSignal(SignalName.HandPlayed, selectedAction.CardId, selectedTopic.CardId);
 
 		// Run dialogue node, or error dialogue if it does not exist.
 		// Then, emit round signal, increment round, and handle next round start
+		InDialogue = true;
 		DialogueManager.Run(dialogueNode)
 			.AndThen(() => {
+				InDialogue = false;
 				MidRound = false;
 				EmitSignal(SignalName.RoundEnd, Round);
+				UsedDiscardsThisRound = 0;
 				++Round; AttemptStartRound();
 			});
 	}
 
-	// Connected to discard button's pressed signal
-	private void Discard() {
+	// Discards selected cards so long as end preconditions are not met. Connected to DiscardButton's pressed signal.
+	private void AttemptDiscard() {
 		if (Engine.IsEditorHint()) return;
-		if (!Started) { Console.Warning("Attempted to discard before game start."); return; }
-		if (Ended) { Console.Warning("Attempted to discard after game end."); return; }
 
-		foreach (var card in TopicHand.GetSelected()) { _topicDiscardPile.Add(card.CardId); TopicHand.RemoveChild(card); card.QueueFree(); }
-		foreach (var card in ActionHand.GetSelected()) { _actionDiscardPile.Add(card.CardId); ActionHand.RemoveChild(card); card.QueueFree(); }
+		// Verify that attempt is valid
+		if (!CanDiscard()) return;
+
+		// Increment counters
+		UsedDiscardsThisGame++; UsedDiscardsThisRound++;
+
+		static void DiscardSelected(HandContainer hand, Deck discardPile) =>
+			hand.GetSelected().ForEach(card => {
+				discardPile.Add(card.CardId);
+				hand.RemoveChild(card); card.QueueFree();
+			});
+
+		DiscardSelected(TopicHand, _topicDiscardPile);
+		DiscardSelected(ActionHand, _actionDiscardPile);
 
 		/* Trigger round progress / dialogue? */
 
 		Deal();
 	}
 
-	// Are preconditions for game end met
-	private bool ShouldGameEnd() => Started && !Ended && (Round > NumRounds || (AutoFailOnHitThreshold && !RangeOf<int>.Between(ScoreMin, ScoreMax).Contains(Score)));
-
 	// Triggers round start so long as end preconditions are not met. Called by BeginGame and PlayHand
 	private void AttemptStartRound() {
 		if (MidRound) { Console.Warning("Failed to start round: previous round did not end."); return; }
 		if (Engine.IsEditorHint() || ShouldGameEnd()) return;
 
-		PlayButton.Show(); Deal();
-		MidRound = true;
+		PlayButton.Show(); DiscardButton?.Show(); MidRound = true;
+		Deal();
+		
 		EmitSignal(SignalName.RoundStart, Round);
 	}
 
@@ -244,23 +270,22 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		// If mid-round, defer ending until end of round
 		if (MidRound && !force) { this.TryConnect(SignalName.RoundEnd, Callable.From((int round) => AttemptGameEnd()), (uint)ConnectFlags.OneShot); return; }
 
-		PlayButton.Hide();
-		DiscardButton.Hide();
+		PlayButton.Hide(); DiscardButton?.Hide();
 
 		CallableUtils.CallDeferred(() => {
 			// Trigger the pre ending node if it exists (the tutorial uses this to run the profile explanation, so the UI can't be hidden yet).
 			// Once it is finished (or if it didn't exist) then hide the UI and trigger the correct ending dialogue.
 			// Once that is finished, emit the game end signal.
+			InDialogue = true;
 			DialogueManager.TryRun($"{_suitorId}__pre_ending")
 				.AndThen(() => {
-					AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide(); PlayButton.Hide(); DiscardButton.Hide();
+					InDialogue = false;
+					AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide(); PlayButton.Hide(); DiscardButton?.Hide();
 					DialogueManager.TryRun($"{_suitorId}__ending__{AffectionState switch { AffectionState.Love => "love", AffectionState.Hate => "hate", AffectionState.Neutral => "neutral"}}")
 						.AndThen(() => EmitSignal(SignalName.GameEnd));
 				});
 		});
 	}
-
-	public void ForceGameEnd() { Round = NumRounds + 1; if (MidRound) AttemptGameEnd(true); }
 
 	// Deal up to each HandContainer's hand size, drawing from the working decks. Automatically handles tweens to animate them flying in from offscreen.
 	private void Deal() {
