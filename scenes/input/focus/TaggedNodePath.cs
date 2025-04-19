@@ -14,7 +14,7 @@ public class TaggedNodePath
     private static readonly char TagDelimiter = '$';
     private static readonly char EvaluationPlaceholder = '\uFFFC';
     
-    public TaggedNodePath(string nodePath, params IEnumerable<Func<string, bool>> predicates) {
+    public TaggedNodePath(string nodePath, params IEnumerable<(string StartingArg, Func<string, bool>)> predicates) {
         RawText = nodePath ?? "";
         Dictionary<string, string> tags = [];
         if (nodePath?.Contains(TagDelimiter) ?? false) {
@@ -55,7 +55,7 @@ public class TaggedNodePath
     }
     public bool GetComplexFlagOrDefault(string flagType, string flag, bool caseSensitive = false) => GetComplexFlag(flagType, flag, caseSensitive) ?? default;
     
-    public static bool TryEvaluateCondition(string condition, out bool result, params IEnumerable<Func<string, bool>> predicates) {
+    public static bool TryEvaluateCondition(string condition, out bool result, params IEnumerable<(string StartingArg, Func<string, bool>)> predicates) {
         try {
             result = EvaluateCondition(condition, predicates);
             return true;
@@ -64,7 +64,7 @@ public class TaggedNodePath
         result = false; return false;
     }
 
-    public static bool EvaluateCondition(string condition, params IEnumerable<Func<string, bool>> predicates) {
+    public static bool EvaluateCondition(string condition, params IEnumerable<(string StartingArg, Func<string, bool>)> predicates) {
         condition = condition.Trim().StripFront('(').StripBack(')').Trim();
 
         List<(int Start, int End)> nonOverlappingBracedConditions = [];
@@ -128,7 +128,10 @@ public class TaggedNodePath
         if (bool.TryParse(condition, out bool booleanVar)) return booleanVar;
 
         // Situation-specific cases
-        foreach (var predicate in predicates) { if (predicate(condition)) return true; }
+        foreach (var (startingArg, predicate) in predicates) {
+            if (startingArg.IsNullOrWhitespace()) { if (predicate(condition)) return true; }
+            else if (condition.StartsWith(startingArg) && predicate(condition.StripFront(startingArg).Trim())) return true;
+        }
 
         return false;
     }

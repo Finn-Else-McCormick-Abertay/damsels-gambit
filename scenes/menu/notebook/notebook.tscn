@@ -74,7 +74,6 @@ layout_mode = 1
 [node name="Profile Page" parent="Root" node_paths=PackedStringArray("ShadowFadedAlpha") instance=ExtResource("7_43gqe")]
 layout_mode = 1
 ShadowFadedAlpha = {
-NodePath(""): 0.0,
 NodePath("Pause Button"): 0.4,
 NodePath("Profile Button"): 0.0,
 null: 0.0
