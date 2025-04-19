@@ -185,6 +185,7 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
         }
 
         var childCount = GetChildCount();
+        var imaginaryCards = Math.Max(0, HandSize - childCount) + GetChildren().Where(x => !(x as CanvasItem)?.IsVisibleInTree() ?? false).Count();
 
         var maxCardWidth = 0f;
         var theoreticalCardsTotalWidth = GetChildren().Index().Aggregate(0f,
@@ -210,59 +211,64 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
             BoxContainer.AlignmentMode.End => Size.X - (Size.X > maxCardWidth ? totalWidth : maxCardWidth)
         };
 
-        var _ = GetChildren().Index().Aggregate(startPoint,
-            (runningTotal, pair) => {
-                if (pair.Item is not Control card || !card.Visible) { return runningTotal; }
-                var samplePoint = (pair.Index + 0.5f) / Math.Max(childCount, HandSize);
-                if (pair.Index > 0) { runningTotal += Fill ? maxSeparation : MathF.Min(CurveSeparation?.Sample(samplePoint) ?? 0f, maxSeparation); }
+        float runningTotal = startPoint;
 
-                Vector2 newPosition = new(runningTotal, -CurveOffset?.Sample(samplePoint) ?? 0f);
-                float newRotation = CurveRotation is not null ? CurveRotation.Sample(samplePoint) / 180 * MathF.PI : 0f;
+        if (Alignment == BoxContainer.AlignmentMode.End && !Fill) { foreach (int i in RangeOf<int>.UpTo(imaginaryCards)) runningTotal += maxCardWidth; }
 
-                bool selected = _selectedCards.Contains(card);
-                if (selected) { newPosition += new Vector2(0f, -40f); }
-                
-                _prevSelectedState.TryGetValue(card, out bool wasSelected);
+        foreach (var pair in GetChildren().Index()) {
+            if (pair.Item is not Control card || !card.Visible) continue;
+            var sampleIndex = pair.Index;
+            if (Alignment == BoxContainer.AlignmentMode.End) sampleIndex += imaginaryCards;
+            var samplePoint = (sampleIndex + 0.5f) / Math.Max(childCount, HandSize);
+            if (pair.Index > 0) { runningTotal += Fill ? maxSeparation : MathF.Min(CurveSeparation?.Sample(samplePoint) ?? 0f, maxSeparation); }
 
-                bool highlighted = ((card as CardDisplay)?.IsMousedOver ?? false) || card.HasFocus();
-                if (highlighted && !Engine.IsEditorHint()) { newPosition += new Vector2(0f, -20f); }
-                
-                _prevHighlightedState.TryGetValue(card, out bool prevHighlighted);
+            Vector2 newPosition = new(runningTotal, -CurveOffset?.Sample(samplePoint) ?? 0f);
+            float newRotation = CurveRotation is not null ? CurveRotation.Sample(samplePoint) / 180 * MathF.PI : 0f;
 
-                int prevIndex = _prevIndex.GetValueOr(card, -1);
-                _prevIndex[card] = pair.Index;
+            bool selected = _selectedCards.Contains(card);
+            if (selected) { newPosition += new Vector2(0f, -40f); }
+            
+            _prevSelectedState.TryGetValue(card, out bool wasSelected);
 
-                bool hasTween = _tweens.TryGetValue(card, out Tween oldTween);
-                if (!(prevHighlighted && hasTween && oldTween.IsRunning())) { _prevHighlightedState[card] = highlighted; }
-                if (!(wasSelected && hasTween && oldTween.IsRunning())) { _prevSelectedState[card] = selected; }
+            bool highlighted = ((card as CardDisplay)?.IsMousedOver ?? false) || card.HasFocus();
+            if (highlighted && !Engine.IsEditorHint()) { newPosition += new Vector2(0f, -20f); }
+            
+            _prevHighlightedState.TryGetValue(card, out bool prevHighlighted);
 
-                bool skipAnimation = false;
+            int prevIndex = _prevIndex.GetValueOr(card, -1);
+            _prevIndex[card] = pair.Index;
 
-                if (hasTween) {
-                    if (oldTween.IsRunning() && prevIndex == pair.Index) {
-                        skipAnimation = true;
-                        oldTween.TryConnect(Tween.SignalName.Finished, QueueSort);
-                    }
-                    else { oldTween.Kill(); _tweens.Remove(card); }
+            bool hasTween = _tweens.TryGetValue(card, out Tween oldTween);
+            if (!(prevHighlighted && hasTween && oldTween.IsRunning())) { _prevHighlightedState[card] = highlighted; }
+            if (!(wasSelected && hasTween && oldTween.IsRunning())) { _prevSelectedState[card] = selected; }
+
+            bool skipAnimation = false;
+
+            if (hasTween) {
+                if (oldTween.IsRunning() && prevIndex == pair.Index) {
+                    skipAnimation = true;
+                    oldTween.TryConnect(Tween.SignalName.Finished, QueueSort);
                 }
-                
-                if (!skipAnimation) {
-                    var isNew = _newChildren.Contains(card); if (isNew) _newChildren.Remove(card);
-                    var animationTime = isNew ? AnimationTimeAdd : (highlighted != prevHighlighted || selected != wasSelected) ? AnimationTimeHighlight : AnimationTimeReorder;
+                else { oldTween.Kill(); _tweens.Remove(card); }
+            }
+            
+            if (!skipAnimation) {
+                var isNew = _newChildren.Contains(card); if (isNew) _newChildren.Remove(card);
+                var animationTime = isNew ? AnimationTimeAdd : (highlighted != prevHighlighted || selected != wasSelected) ? AnimationTimeHighlight : AnimationTimeReorder;
 
-                    if (animationTime > 0.0 && !Engine.IsEditorHint()) {
-                        var tween = CreateTween().SetParallel(true);
-                        tween.TweenProperty(card, "position", newPosition, animationTime).SetEase(Tween.EaseType.InOut);
-                        tween.TweenProperty(card, "rotation", newRotation, animationTime).SetEase(Tween.EaseType.InOut);
-                        _tweens.Add(card, tween);
-                    }
-                    else {
-                        card.Position = newPosition;
-                        card.Rotation = newRotation;
-                    }
+                if (animationTime > 0.0 && !Engine.IsEditorHint()) {
+                    var tween = CreateTween().SetParallel(true);
+                    tween.TweenProperty(card, "position", newPosition, animationTime).SetEase(Tween.EaseType.InOut);
+                    tween.TweenProperty(card, "rotation", newRotation, animationTime).SetEase(Tween.EaseType.InOut);
+                    _tweens.Add(card, tween);
                 }
-                return runningTotal + card.Size.X;
-            });
+                else {
+                    card.Position = newPosition;
+                    card.Rotation = newRotation;
+                }
+            }
+            runningTotal += card.Size.X;
+        }
     }
     
     protected void OnScriptReload() => QueueSort();
