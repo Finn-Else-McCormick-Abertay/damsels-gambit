@@ -127,45 +127,19 @@ public sealed partial class InputManager : Node
 	public static Control GetNextFocus(FocusDirection direction, Control root) {
 		if (!root.IsValid()) return null;
 
-		var nextPath = direction switch {
+		var nextPath = new TaggedNodePath(direction switch {
 			FocusDirection.Up => root.FocusNeighborTop, FocusDirection.Down => root.FocusNeighborBottom,
 			FocusDirection.Left => root.FocusNeighborLeft, FocusDirection.Right => root.FocusNeighborRight,
 			FocusDirection.None => root.FocusNext
-		};
+		});
 		
-		IEnumerable<string> tags = []; Dictionary<string, string> meta = [];
-		bool HasTag(string tag, bool caseSensitive = false) => tags.Any(x => x.Match(tag, caseSensitive)) || meta.Any(x => x.Key.Match(tag, caseSensitive) && bool.TryParse(x.Value, out bool result) && result);
-		bool HasMeta(string tag, bool caseSensitive = false) => meta.Any(x => x.Key.Match(tag, caseSensitive));
-		string GetMeta(string tag, bool caseSensitive = false) => meta.FirstOrDefault(x => x.Key.Match(tag, caseSensitive)).Value;
+		if (ShouldDisplayFocusDebugInfo) Console.Info($"Next path: {nextPath.RootPath.ToPrettyString()}, Tags: {nextPath.Tags.ToPrettyString()}");
 
-		if (nextPath.ToString() is string pathString && pathString.Contains('!')) {
-			var bangIndex = pathString.Find('!'); string beforeBang = pathString[..bangIndex]; string afterBang = bangIndex == pathString.Length - 1 ? "" : pathString[(bangIndex+1)..];
-			nextPath = beforeBang; tags = afterBang.Split('!').Select(x => x.Trim());
-			meta = tags.Where(x => x.Contains('=')).Select(x => { var equalsIndex = x.Find('='); return KeyValuePair.Create(x[..equalsIndex].Trim(), equalsIndex == x.Length - 1 ? "" : x[(equalsIndex+1)..].Trim()); }).ToDictionary();
-		}
-		nextPath = nextPath.ToString().Trim();
-		
-		if (ShouldDisplayFocusDebugInfo) Console.Info($"Next path: {nextPath.ToPrettyString()}, Tags: {string.Join(", ", tags)}");
-
-		if (HasTag("return")) return Instance._prevFocus;
-
-		bool EvaluateIfArgs(string ifArgs, Control relevantFocus) {
-			var conditionVariants = ifArgs.StripFront("if").Split("else if");
-			conditionVariants = [..conditionVariants.Select(x => x.Trim())];
-
-			foreach (var condition in conditionVariants) {
-				if (condition.StartsWith("within")) {
-					string condArgs = condition.StripFront("within").Trim();
-					if (root.GetNode(condArgs) is Node withinNode && withinNode.IsAncestorOf(relevantFocus)) return true;
-				}
-			}
-			return false;
-		}
-
-		if (HasMeta("return")) {
+		if (nextPath.GetFlagOrDefault("return")) return Instance._prevFocus;
+		else if (nextPath.HasTag("return")) {
 			Control returnFocus = Instance._prevFocus;
 			bool shouldUse = true;
-			foreach (var returnArg in GetMeta("return").Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)) {
+			foreach (var returnArg in nextPath.GetTag("return").Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)) {
 				if (returnArg.StartsWith("from", StringComparison.CurrentCultureIgnoreCase)) {
 					var fromArgs = returnArg.ToLower().StripFront("from").Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 					foreach (var arg in fromArgs) {
@@ -175,16 +149,30 @@ public sealed partial class InputManager : Node
 						else if (arg == "right" && Instance._prevFocusFromDirection.TryGetValue(FocusDirection.Left, out var rightFocus)) returnFocus = rightFocus;
 					}
 				}
-				else if (returnArg.StartsWith("if")) shouldUse = EvaluateIfArgs(returnArg, returnFocus);
+				else if (returnArg.StartsWith("if") && TaggedNodePath.TryEvaluateCondition(returnArg.StripFront("if"), out bool result,
+						condition => condition.StartsWith("within") && root.GetNode(condition.StripFront("within").Trim()) is Node withinNode && withinNode.IsAncestorOf(returnFocus),
+						condition => condition.StartsWith("from") && condition.StripFront("from").Trim().ToLower() switch {
+							"left" when direction == FocusDirection.Right => true, "right" when direction == FocusDirection.Left => true,
+							"top" when direction == FocusDirection.Down => true, "bottom" when direction == FocusDirection.Up => true,
+							_ => false
+						}
+					)) shouldUse = result;
 			}
 			if (returnFocus is not null && shouldUse) return returnFocus;
 		}
 
-		if (HasTag("left")) direction = FocusDirection.Left; if (HasTag("right")) direction = FocusDirection.Right; if (HasTag("up")) direction = FocusDirection.Up; if (HasTag("down")) direction = FocusDirection.Down;
+		direction = direction switch {
+			_ when nextPath.GetComplexFlagOrDefault("from", "left") => FocusDirection.Right,
+			_ when nextPath.GetComplexFlagOrDefault("from", "right") => FocusDirection.Left,
+			_ when nextPath.GetComplexFlagOrDefault("from", "top") => FocusDirection.Down,
+			_ when nextPath.GetComplexFlagOrDefault("from", "bottom") => FocusDirection.Up,
+			_ => direction
+		};
 
 		Control foundFocusable = null;
+		var rootPath = nextPath.RootPath;
 
-		if (!nextPath.IsEmpty && FindFocusableWithin(root.GetNode(nextPath), direction) is Control focusable) foundFocusable = focusable;
+		if (!rootPath.IsEmpty && FindFocusableWithin(root.GetNode(rootPath), direction) is Control focusable) foundFocusable = focusable;
 		else {
 			foreach (var parent in root.FindParentsWhere(x => x is Container || x is IFocusableContainer)) {
 				var child = parent.FindChildChainTo(root).FirstOrDefault();
@@ -194,7 +182,7 @@ public sealed partial class InputManager : Node
 			}
 		}
 
-		if (tags.Any(x => x.StartsWith("if")) && !EvaluateIfArgs(tags.First(x => x.StartsWith("if")), foundFocusable)) return null;
+		//foreach (var tag in tags) if (TaggedNodePath.EvaluateNodePathIfArgs(tag, foundFocusable) is bool ifVal && !ifVal) return null;
 		return foundFocusable;
 	}
 

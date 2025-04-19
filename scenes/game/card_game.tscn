@@ -187,7 +187,6 @@ offset_bottom = -29.0
 grow_horizontal = 2
 grow_vertical = 0
 focus_neighbor_left = NodePath("../LeftHandContainer")
-focus_neighbor_top = NodePath("!return=from top")
 focus_neighbor_right = NodePath("../RightHandContainer")
 script = ExtResource("8_61rky")
 metadata/_custom_type_script = "uid://ojpkfmffiits"
@@ -210,7 +209,7 @@ alignment = 1
 custom_minimum_size = Vector2(166.98, 0)
 layout_mode = 2
 size_flags_horizontal = 5
-focus_neighbor_top = NodePath("../../../LeftHandContainer\n!left\n!return=from top, if within ../../../LeftHandContainer")
+focus_neighbor_top = NodePath("../../../LeftHandContainer\n!from right\n!return=from top, if within ../../../LeftHandContainer")
 theme = ExtResource("6_7wss3")
 text = "Play Hand"
 
@@ -218,6 +217,6 @@ text = "Play Hand"
 custom_minimum_size = Vector2(166.98, 0)
 layout_mode = 2
 size_flags_horizontal = 5
-focus_neighbor_top = NodePath("../../../RightHandContainer\n!right\n!return=from top, if within ../../../RightHandContainer")
+focus_neighbor_top = NodePath("../../../RightHandContainer\n!from left\n!return=from top, if within ../../../RightHandContainer")
 theme = ExtResource("6_7wss3")
 text = "Discard"
