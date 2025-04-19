@@ -23,7 +23,7 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[node name="Profile" type="Control" node_paths=PackedStringArray("DialogueView", "PauseButton", "ProfileButton")]
+[node name="Profile" type="Control" node_paths=PackedStringArray("DialogueView", "PauseButton", "ProfileButton", "ShadowFadedAlpha")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,12 +35,9 @@ script = ExtResource("2_scbxg")
 DialogueView = NodePath("ProfileView")
 PauseButton = NodePath("Pause Button")
 ProfileButton = NodePath("Profile Button")
-ShadowFadedAlpha = Dictionary[Node, float]({
-Object(Button,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":2,"auto_translate_mode":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":2,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"clip_contents":false,"custom_minimum_size":Vector2(0, 0),"layout_direction":0,"layout_mode":1,"anchors_preset":-1,"anchor_left":0.0,"anchor_top":0.039,"anchor_right":0.0,"anchor_bottom":0.039,"offset_left":-90.0,"offset_top":-32.272,"offset_right":5.0,"offset_bottom":32.728,"grow_horizontal":1,"grow_vertical":0,"rotation":0.0,"scale":Vector2(1, 1),"pivot_offset":Vector2(0, 0),"size_flags_horizontal":1,"size_flags_vertical":1,"size_flags_stretch_ratio":1.0,"localize_numeral_system":true,"tooltip_text":"","tooltip_auto_translate_mode":0,"focus_neighbor_left":NodePath(""),"focus_neighbor_top":NodePath(""),"focus_neighbor_right":NodePath(""),"focus_neighbor_bottom":NodePath("../Profile Button"),"focus_next":NodePath(""),"focus_previous":NodePath(""),"focus_mode":2,"mouse_filter":0,"mouse_force_pass_scroll_events":true,"mouse_default_cursor_shape":2,"shortcut_context":null,"theme":null,"theme_type_variation":&"PauseButton","disabled":false,"toggle_mode":false,"button_pressed":false,"action_mode":1,"button_mask":1,"keep_pressed_outside":false,"button_group":null,"shortcut":null,"shortcut_feedback":true,"shortcut_in_tooltip":true,"text":"Pause","icon":ExtResource("3_54un2"),"flat":false,"alignment":0,"text_overrun_behavior":0,"autowrap_mode":0,"clip_text":false,"icon_alignment":0,"vertical_icon_alignment":1,"expand_icon":false,"text_direction":0,"language":"","script":null)
-: 0.0,
-Object(Button,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":2,"auto_translate_mode":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":2,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"clip_contents":false,"custom_minimum_size":Vector2(0, 0),"layout_direction":0,"layout_mode":1,"anchors_preset":-1,"anchor_left":0.0,"anchor_top":0.122,"anchor_right":0.0,"anchor_bottom":0.122,"offset_left":-139.0,"offset_top":-41.056,"offset_right":5.0,"offset_bottom":39.944,"grow_horizontal":1,"grow_vertical":0,"rotation":0.0,"scale":Vector2(1, 1),"pivot_offset":Vector2(0, 0),"size_flags_horizontal":1,"size_flags_vertical":1,"size_flags_stretch_ratio":1.0,"localize_numeral_system":true,"tooltip_text":"","tooltip_auto_translate_mode":0,"focus_neighbor_left":NodePath(""),"focus_neighbor_top":NodePath("../Pause Button"),"focus_neighbor_right":NodePath(""),"focus_neighbor_bottom":NodePath(""),"focus_next":NodePath(""),"focus_previous":NodePath(""),"focus_mode":2,"mouse_filter":0,"mouse_force_pass_scroll_events":true,"mouse_default_cursor_shape":2,"shortcut_context":null,"theme":null,"theme_type_variation":&"TabBanner","disabled":false,"toggle_mode":false,"button_pressed":false,"action_mode":1,"button_mask":1,"keep_pressed_outside":false,"button_group":null,"shortcut":null,"shortcut_feedback":true,"shortcut_in_tooltip":true,"text":"Suitor Profile","icon":null,"flat":false,"alignment":0,"text_overrun_behavior":0,"autowrap_mode":0,"clip_text":false,"icon_alignment":0,"vertical_icon_alignment":1,"expand_icon":false,"text_direction":0,"language":"","script":null)
-: 0.0
-})
+ShadowFadedAlpha = {
+NodePath(""): 0.0
+}
 metadata/_edit_use_anchors_ = true
 
 [node name="ProfileView" type="Node" parent="." node_paths=PackedStringArray("Title", "Subtitle", "Label", "Portrait")]

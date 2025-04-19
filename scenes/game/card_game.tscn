@@ -209,7 +209,7 @@ alignment = 1
 custom_minimum_size = Vector2(166.98, 0)
 layout_mode = 2
 size_flags_horizontal = 5
-focus_neighbor_top = NodePath("../../../LeftHandContainer\n!from right\n!return=from top, if within ../../../LeftHandContainer")
+focus_neighbor_top = NodePath("../../../LeftHandContainer\n$from right\n$return=from top, if within ../../../LeftHandContainer")
 theme = ExtResource("6_7wss3")
 text = "Play Hand"
 
@@ -217,6 +217,6 @@ text = "Play Hand"
 custom_minimum_size = Vector2(166.98, 0)
 layout_mode = 2
 size_flags_horizontal = 5
-focus_neighbor_top = NodePath("../../../RightHandContainer\n!from left\n!return=from top, if within ../../../RightHandContainer")
+focus_neighbor_top = NodePath("../../../RightHandContainer\n$from left\n$return=from top, if within ../../../RightHandContainer")
 theme = ExtResource("6_7wss3")
 text = "Discard"

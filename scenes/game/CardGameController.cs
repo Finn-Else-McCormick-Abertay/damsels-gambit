@@ -218,7 +218,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 
 		// Make NotebookMenu the focus neighbour of topic hand, so it can be accessed via keyboard controls
 		TopicHand.FocusNeighborTop = GameManager.NotebookMenu.GetPath(); TopicHand.FocusNeighborRight = GameManager.NotebookMenu.GetPath();
-		GameManager.NotebookMenu.FocusNeighborBottom = TopicHand.GetPath().ToString() + "!left"; GameManager.NotebookMenu.FocusNeighborLeft = TopicHand.GetPath().ToString() + "!right";
+		GameManager.NotebookMenu.FocusNeighborBottom = TopicHand.GetPath().ToString() + "$from right"; GameManager.NotebookMenu.FocusNeighborLeft = TopicHand.GetPath().ToString() + "$from left";
 
 		// Set whether intro skippable based on intro tags
 		foreach (var tag in DialogueManager.Runner.GetTagsForNode($"{_suitorId}__intro")) {

@@ -11,10 +11,10 @@ namespace DamselsGambit;
 
 public class TaggedNodePath
 {
-    private static readonly char TagDelimiter = '!';
+    private static readonly char TagDelimiter = '$';
     private static readonly char EvaluationPlaceholder = '\uFFFC';
     
-    public TaggedNodePath(string nodePath) {
+    public TaggedNodePath(string nodePath, params IEnumerable<Func<string, bool>> predicates) {
         RawText = nodePath ?? "";
         Dictionary<string, string> tags = [];
         if (nodePath?.Contains(TagDelimiter) ?? false) {
