@@ -284,6 +284,13 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	// Force-end the game without deferring until end of round. Used by debug commands
 	public void ForceGameEnd() { Round = NumRounds + 1; if (MidRound) AttemptGameEnd(true); }
 
+	private void AnimateCardRemoval(CardDisplay card) {
+		double exitAnimTime = 0.5;
+		card.Reparent(this); var tween = CreateTween();
+		tween.TweenProperty(card, "position", new Vector2(5, 350), exitAnimTime).AsRelative(); tween.Parallel().TweenProperty(card, "rotation_degrees", 20, exitAnimTime).AsRelative();
+		tween.TweenCallback(card.QueueFree);
+	}
+
 	// Plays hand so long as end preconditions are not met. Connected to PlayButton's Pressed signal.
 	private void AttemptPlayHand() {
 		if (Engine.IsEditorHint()) return;
@@ -299,7 +306,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		// Remove cards from hand
 		void RemoveCardFromHand(CardDisplay card) {
 			if (SendPlayedCardsToDiscardPile) (card.CardType switch { "action" => _actionDiscardPile, "topic" => _topicDiscardPile, _ => null })?.Add(card.CardId);
-			card.GetParent().RemoveChild(card); card.QueueFree();
+			AnimateCardRemoval(card);
 		}
 
 		RemoveCardFromHand(selectedTopic);
@@ -337,7 +344,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		void DiscardSelected(HandContainer hand) =>
 			hand.GetSelected().ForEach(card => {
 				(card.CardType switch { "action" => _actionDiscardPile, "topic" => _topicDiscardPile, _ => null })?.Add(card.CardId);
-				hand.RemoveChild(card); card.QueueFree();
+				AnimateCardRemoval(card);
 			});
 
 		DiscardSelected(TopicHand);

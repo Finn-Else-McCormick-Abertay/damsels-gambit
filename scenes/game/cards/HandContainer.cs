@@ -180,6 +180,10 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
     // Runs on recieving Container's SortChildren notification
     // Finds the positions and rotations for all children following the exported curves, then tweens them to those positions according to the exported 'time' properties
     private void OnSortChildren() {
+        foreach (var (node, tween) in _tweens) {
+            if (!IsAncestorOf(node)) { if (GodotObject.IsInstanceValid(tween)) tween.Kill(); _tweens.Remove(node); }
+        }
+
         var childCount = GetChildCount();
 
         var maxCardWidth = 0f;
