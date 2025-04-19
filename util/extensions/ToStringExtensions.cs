@@ -22,6 +22,7 @@ internal partial class ToPrettyStringInternal
 			_ => $"{obj.GetInstanceId()}"
 		} + ')'),
 		Type type when type.IsEnum => $"enum{{{string.Join(", ", type.GetEnumNames())}}}",
+		_ when typeof(T).IsEnum => Enum.GetName(typeof(T), val),
         _ when typeof(T).Name == "KeyValuePair`2" && typeof(T).GenericTypeArguments is Type[] typeArgs && typeArgs.Length == 2
             => typeof(ToPrettyStringInternal).GetMethod(nameof(KeyValuePairToPrettyString))?.MakeGenericMethod(typeArgs)?.Invoke(null, [val]) as string,
         _ when typeof(T).Name.StartsWith("ValueTuple`") && typeof(T).CustomAttributes is IEnumerable<CustomAttributeData> attributes => $"({string.Join(", ", typeof(T).GetFields().Index().Select(pair => $"{ToPrettyString(pair.Item.GetValue(val))}"))})",
