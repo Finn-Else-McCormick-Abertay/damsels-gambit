@@ -14,6 +14,7 @@ public partial class TaggedNodePathProperty : EditorProperty
     private TextEdit _textEdit;
 
     private string _currentValue;
+    private bool _isNodePathSelected = false;
 
     private bool _updating = false;
     private bool _hasInitialised = false;
@@ -28,7 +29,7 @@ public partial class TaggedNodePathProperty : EditorProperty
 
     public TaggedNodePathProperty() {
         _openButton = new() { Alignment = HorizontalAlignment.Left, TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis };
-        _textEdit = new() { CustomMinimumSize = new (0, 100), DrawTabs = true, IndentWrappedLines = true, EmojiMenuEnabled = false, CaretMoveOnRightClick = false, ShortcutKeysEnabled = false };
+        _textEdit = new() { CustomMinimumSize = new (0, 100), DrawTabs = true, IndentWrappedLines = true, EmojiMenuEnabled = false, CaretMoveOnRightClick = false, AutowrapMode = TextServer.AutowrapMode.WordSmart };
         var textEditMenu = _textEdit.GetMenu();
 
         // Remove pointless options
@@ -53,6 +54,7 @@ public partial class TaggedNodePathProperty : EditorProperty
         _openButton.Connect(Button.SignalName.Pressed, this, MethodName.OnButtonPressed);
         _textEdit.Connect(TextEdit.SignalName.TextChanged, this, MethodName.OnTextEditChanged);
         _textEdit.Connect(TextEdit.SignalName.TextSet, this, MethodName.OnTextEditSet);
+        _textEdit.Connect(TextEdit.SignalName.CaretChanged, this, MethodName.OnCaretChanged);
 
         Refresh();
     }
@@ -82,6 +84,15 @@ public partial class TaggedNodePathProperty : EditorProperty
             }
             EditorInterface.Singleton.PopupNodeSelector(Callable.From<NodePath>(OnNodeSelected), [ "Control" ], (GetEditedObject() as Node)?.GetNodeOrNull(_textEdit.GetSelectedText()));
         }
+    }
+
+    private void OnCaretChanged() {
+        bool isNodePathSelected = (GetEditedObject() as Node)?.GetNodeOrNull(_textEdit.GetSelectedText()) is not null;
+        if (isNodePathSelected != _isNodePathSelected) {
+            var textEditMenu = _textEdit.GetMenu();
+            textEditMenu.SetItemText(textEditMenu.GetItemIndex((int)RightClickMenuButtons.InsertNodePath), isNodePathSelected ? "Edit NodePath" : "Insert NodePath");
+        }
+        _isNodePathSelected = isNodePathSelected;
     }
 
     private void OnButtonPressed() {

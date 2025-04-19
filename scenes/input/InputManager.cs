@@ -143,6 +143,7 @@ public sealed partial class InputManager : Node
 			nextPath = beforeBang; tags = afterBang.Split('!').Select(x => x.Trim());
 			meta = tags.Where(x => x.Contains('=')).Select(x => { var equalsIndex = x.Find('='); return KeyValuePair.Create(x[..equalsIndex].Trim(), equalsIndex == x.Length - 1 ? "" : x[(equalsIndex+1)..].Trim()); }).ToDictionary();
 		}
+		nextPath = nextPath.ToString().Trim();
 		
 		if (ShouldDisplayFocusDebugInfo) Console.Info($"Next path: {nextPath.ToPrettyString()}, Tags: {string.Join(", ", tags)}");
 
