@@ -160,13 +160,13 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 			switch (VisibilityState) {
 				case GameVisibilityState.AllVisible: {
 					TopicHand?.Show(); ActionHand?.Show();
-					PlayButton?.Show(); DiscardButton?.Show();
+					PlayButton?.Show();
+					if (DiscardLimitPerGame == 0 || DiscardLimitPerRound == 0 || MaxCardsPerDiscard == 0) DiscardButton?.Hide(); else DiscardButton?.Show();
 					GameManager.NotebookMenu.Show();
 					if (!oldState.IsAnyOf(GameVisibilityState.AllVisible, GameVisibilityState.ButtonsHidden)) AnimateMetersIn();
 				} break;
 				case GameVisibilityState.ButtonsHidden: {
 					TopicHand?.Show(); ActionHand?.Show();
-					PlayButton?.Show(); DiscardButton?.Show();
 					PlayButton?.Hide(); DiscardButton?.Hide();
 					GameManager.NotebookMenu.Show();
 					if (!oldState.IsAnyOf(GameVisibilityState.AllVisible, GameVisibilityState.ButtonsHidden)) AnimateMetersIn();

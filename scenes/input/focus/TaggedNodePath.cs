@@ -20,7 +20,17 @@ public class TaggedNodePath
         if (nodePath?.Contains(TagDelimiter) ?? false) {
             var tagSplit = RawText.Split(TagDelimiter, StringSplitOptions.TrimEntries);
             tags.Add("root", tagSplit[0]);
-            foreach (var tag in tagSplit[1..]) { if (tag.Contains('=')) { var split = tag.Split('=', 2, StringSplitOptions.TrimEntries); tags[split.First()] = split.Last(); } else tags[tag] = ""; }
+            foreach (var tag in tagSplit[1..]) {
+                if (tag.StartsWith("if")) {
+                    if (tag.Contains("then") || tag.Contains("else")) {
+                        var result = EvaluateIfThenElse(tag, predicates);
+                        if (result != $"{true}" && result is not null) tags["root"] = result;
+                    }
+                    else if (TryEvaluateCondition(tag.StripFront("if").Trim(), out bool result, predicates) && !result) tags["root"] = "";
+                }
+                else if (tag.Contains('=')) { var split = tag.Split('=', 2, StringSplitOptions.TrimEntries); tags[split.First()] = split.Last(); }
+                else tags[tag] = "";
+            }
         }
         else tags.Add("root", nodePath?.Trim() ?? "");
         Tags = tags.AsReadOnly();
@@ -54,6 +64,35 @@ public class TaggedNodePath
         return null;
     }
     public bool GetComplexFlagOrDefault(string flagType, string flag, bool caseSensitive = false) => GetComplexFlag(flagType, flag, caseSensitive) ?? default;
+
+    public static string? EvaluateIfThenElse(string? text, params IEnumerable<(string StartingArg, Func<string, bool>)> predicates) {
+        if (text is null || !text.StartsWith("if")) return null;
+        text = text.StripFront("if").Trim();
+
+        string? elseStr = null;
+        if (text.Contains("else")) {
+            var split = text.Split("else", 2);
+            text = split[0].Trim();
+            elseStr = split[1].Trim();
+        }
+        
+        string? thenStr = null;
+        if (text.Contains("then")) {
+            var split = text.Split("then", 2);
+            text = split[0].Trim();
+            thenStr = split[1].Trim();
+        }
+
+        //Console.Info($"if ({text}){(thenStr is null ? "" : $" then {thenStr}")}{(elseStr is null ? "" : $" else {elseStr}")} Predicates: {predicates.Select(x => x.StartingArg).ToPrettyString()}");
+
+        if (TryEvaluateCondition(text, out bool result, predicates)) {
+            string? relevantString = result switch { true => thenStr, false => elseStr };
+            //Console.Info($" - eval({text}) => {result} => {relevantString.ToPrettyString()}");
+            if (relevantString is null) return $"{true}";
+            return EvaluateIfThenElse(relevantString, predicates) ?? relevantString;
+        }
+        return null;
+    }
     
     public static bool TryEvaluateCondition(string condition, out bool result, params IEnumerable<(string StartingArg, Func<string, bool>)> predicates) {
         try {
@@ -66,6 +105,8 @@ public class TaggedNodePath
 
     public static bool EvaluateCondition(string condition, params IEnumerable<(string StartingArg, Func<string, bool>)> predicates) {
         condition = condition.Trim().StripFront('(').StripBack(')').Trim();
+
+        //Console.Info($"Evaluating {condition} with predicates {predicates.Select(x => x.StartingArg).ToPrettyString()}");
 
         List<(int Start, int End)> nonOverlappingBracedConditions = [];
         Stack<int> openBrackets = [];
@@ -113,16 +154,16 @@ public class TaggedNodePath
 
         // Handle or
         var orSplit = condition.Split("||", StringSplitOptions.TrimEntries);
-        if (orSplit.Length > 1) { foreach (string cond in orSplit) { if (EvaluateCondition(ConvertBack(cond))) return true; } }
+        if (orSplit.Length > 1) { foreach (string cond in orSplit) { if (EvaluateCondition(ConvertBack(cond), predicates)) return true; } }
         
         // Handle and
         var andSplit = condition.Split("&&", StringSplitOptions.TrimEntries);
-        if (andSplit.Length > 1) { foreach (string cond in andSplit) { if (!EvaluateCondition(ConvertBack(cond))) return false; } }
+        if (andSplit.Length > 1) { foreach (string cond in andSplit) { if (!EvaluateCondition(ConvertBack(cond), predicates)) return false; } }
         
         condition = ConvertBack(condition);
 
         // Handle not
-        if (condition.StartsWith('!')) return !EvaluateCondition(condition.StripFront('!'));
+        if (condition.StartsWith('!')) return !EvaluateCondition(condition.StripFront('!'), predicates);
 
         // Handle parsing true and false directly
         if (bool.TryParse(condition, out bool booleanVar)) return booleanVar;
@@ -130,7 +171,11 @@ public class TaggedNodePath
         // Situation-specific cases
         foreach (var (startingArg, predicate) in predicates) {
             if (startingArg.IsNullOrWhitespace()) { if (predicate(condition)) return true; }
-            else if (condition.StartsWith(startingArg) && predicate(condition.StripFront(startingArg).Trim())) return true;
+            else if (condition.StartsWith(startingArg)) {
+                var result = predicate(condition.StripFront(startingArg).Trim());
+                //Console.Info($"Pred '{startingArg}' => {result}");
+                if (result) return true;
+            } 
         }
 
         return false;

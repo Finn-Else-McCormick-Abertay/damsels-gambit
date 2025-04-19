@@ -127,31 +127,33 @@ public sealed partial class InputManager : Node
 	public static Control GetNextFocus(FocusDirection direction, Control root) {
 		if (!root.IsValid()) return null;
 
+		IEnumerable<(string, Func<string, bool>)> predicates = [
+			("exists", arg => root.GetNode(arg) is Node node),
+			("visible", arg => root.GetNode(arg) is CanvasItem canvasItem && canvasItem.Visible),
+			("from", arg => arg switch {
+				"left" when direction == FocusDirection.Right => true, "right" when direction == FocusDirection.Left => true,
+				"top" when direction == FocusDirection.Down => true, "bottom" when direction == FocusDirection.Up => true,
+				_ => false
+			})
+		];
+
 		var nextPath = new TaggedNodePath(
 			direction switch {
 				FocusDirection.Up => root.FocusNeighborTop, FocusDirection.Down => root.FocusNeighborBottom,
 				FocusDirection.Left => root.FocusNeighborLeft, FocusDirection.Right => root.FocusNeighborRight, FocusDirection.None => root.FocusNext
 			},
-			("exists", arg => root.GetNode(arg) is Node node && (node is not CanvasItem canvasItem || canvasItem.IsVisibleInTree()))
+			predicates
 		);
 		
 		if (ShouldDisplayFocusDebugInfo) Console.Info($"Next path: {nextPath.RootPath.ToPrettyString()}, Tags: {nextPath.Tags.ToPrettyString()}");
 
-		if (nextPath.GetFlagOrDefault("return")) return Instance._prevFocus;
-		else if (nextPath.HasTag("return")) {
+		if (nextPath.HasTag("return")) {
 			Control returnFocus = Instance._prevFocus;
 			var returnTag = nextPath.GetTag("return");
 			bool shouldUse = true;
 			if (returnTag.Contains("if")) {
 				var split = returnTag.Split("if", 2, StringSplitOptions.TrimEntries);
-				if (TaggedNodePath.TryEvaluateCondition(split[1], out bool result,
-						("within", arg => root.GetNode(arg) is Node node && node.IsAncestorOf(returnFocus)),
-						("from", arg => arg switch {
-							"left" when direction == FocusDirection.Right => true, "right" when direction == FocusDirection.Left => true,
-							"top" when direction == FocusDirection.Down => true, "bottom" when direction == FocusDirection.Up => true,
-							_ => false
-						}))
-					) shouldUse = result;
+				if (TaggedNodePath.TryEvaluateCondition(split[1], out bool result, predicates.Append(("within", arg => root.GetNode(arg) is Node node && node.IsAncestorOf(returnFocus))))) shouldUse = result;
 				returnTag = split[0];
 			}
 			if (returnTag.StartsWith("from", StringComparison.CurrentCultureIgnoreCase)) {

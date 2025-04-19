@@ -118,7 +118,7 @@ offset_bottom = -40.0
 grow_horizontal = 2
 grow_vertical = 2
 focus_neighbor_right = NodePath("../RightHandContainer")
-focus_neighbor_bottom = NodePath("../ButtonsFocusContainer/HBoxContainer/PlayHandButton")
+focus_neighbor_bottom = NodePath("../ButtonsFocusContainer\n$from left")
 mouse_default_cursor_shape = 5
 script = ExtResource("4_xg83y")
 Alignment = 0
@@ -146,7 +146,7 @@ offset_bottom = -40.0
 grow_horizontal = 2
 grow_vertical = 2
 focus_neighbor_left = NodePath("../LeftHandContainer")
-focus_neighbor_bottom = NodePath("../ButtonsFocusContainer/HBoxContainer/DiscardButton")
+focus_neighbor_bottom = NodePath("../ButtonsFocusContainer\n$from right")
 script = ExtResource("4_xg83y")
 Alignment = 2
 HandSize = 3
@@ -209,7 +209,7 @@ alignment = 1
 custom_minimum_size = Vector2(166.98, 0)
 layout_mode = 2
 size_flags_horizontal = 5
-focus_neighbor_top = NodePath("../../../LeftHandContainer\n$from right\n$return=from top if within ../../../LeftHandContainer")
+focus_neighbor_top = NodePath("../../../LeftHandContainer\n$from right\n$return=from top if within ../../../LeftHandContainer || !visible ../DiscardButton")
 theme = ExtResource("6_7wss3")
 text = "Play Hand"
 

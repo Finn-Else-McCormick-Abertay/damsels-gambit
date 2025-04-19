@@ -36,7 +36,7 @@ DialogueView = NodePath("ProfileView")
 PauseButton = NodePath("Pause Button")
 ProfileButton = NodePath("Profile Button")
 ShadowFadedAlpha = {
-NodePath(""): 0.0
+null: 0.0
 }
 metadata/_edit_use_anchors_ = true
 
