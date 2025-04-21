@@ -72,6 +72,8 @@ FullLayoutActionDeck = {
 "action/want": 2
 }
 DiscardTriggersRoundEnd = true
+DiscardDialogueTriggerChance = 0.5
+DiscardOnlyEndsRoundOnDialogueHit = true
 AffectionMeter = NodePath("AffectionMeter")
 RoundMeter = NodePath("RoundMeter")
 ActionHand = NodePath("LeftHandContainer")

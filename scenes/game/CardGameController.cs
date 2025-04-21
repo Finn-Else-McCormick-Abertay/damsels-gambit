@@ -88,6 +88,9 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	[Export] public bool DiscardTriggersDialogue { get; set; } = true;
 	[Export] public bool SkipAlreadySeenDiscardDialogues { get; set; } = true;
 
+	[Export(PropertyHint.Range, "0,1,")] public double DiscardDialogueTriggerChance { get; set; } = 1;
+	[Export] public bool DiscardOnlyEndsRoundOnDialogueHit { get; set; } = false;
+
 	private readonly HashSet<string> _usedDiscardDialogues = [];
 
 	[ExportGroup("Animation")]
@@ -350,9 +353,12 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		DiscardSelected(TopicHand);
 		DiscardSelected(ActionHand);
 
-		void AfterDiscard() { if (DiscardTriggersRoundEnd) { MidRound = false; Round++; AttemptStartRound(); } else Deal(); }
+		void AfterDiscard(bool dialogueHit) {
+			if (DiscardTriggersRoundEnd && (dialogueHit || !DiscardOnlyEndsRoundOnDialogueHit)) { MidRound = false; Round++; AttemptStartRound(); }
+			else Deal();
+		}
 
-		if (DiscardTriggersDialogue) {
+		if (DiscardTriggersDialogue && DiscardDialogueTriggerChance switch { <= 0 => false, >= 1 => true, _ => Random.Shared.NextDouble() < DiscardDialogueTriggerChance }) {
 			// Will pick at random from all nodes starting with '{suitor}__post_discard'
 			// If the nodes have tags in the format 'action={card1},{card2}' or 'topic={card}' etc, then that node will only be pickable if one of the listed cards was just discarded
 			// (If the card name starts with a !, it will instead disqualify the node if that card was just discarded)
@@ -417,12 +423,12 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 					.AndThen(() => {
 						InDialogue = false;
 						VisibilityState = GameVisibilityState.AllVisible;
-						AfterDiscard();
+						AfterDiscard(true);
 					});
 			}
-			else AfterDiscard();
+			else AfterDiscard(false);
 		}
-		else AfterDiscard();
+		else AfterDiscard(false);
 	}
 
 	// Triggers round start so long as end preconditions are not met. Called by BeginGame and PlayHand
