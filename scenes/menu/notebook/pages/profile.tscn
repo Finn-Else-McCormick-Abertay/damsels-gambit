@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://cbqc0snx0l0pi" path="res://scenes/menu/notebook/PivotPoint.cs" id="4_bpofr"]
 [ext_resource type="Texture2D" uid="uid://bfoqt200g8dkj" path="res://assets/characters/frostholm/suitor_card.png" id="5_n3mgi"]
 [ext_resource type="Texture2D" uid="uid://bcb71840w4jl2" path="res://assets/ui/panels/decals/pattern_flowers.png" id="8_sijwl"]
-[ext_resource type="Texture2D" uid="uid://cdjygku28fiqf" path="res://assets/ui/panels/decals/flower_lattice_preview.png" id="9_87e4f"]
+[ext_resource type="Texture2D" uid="uid://cey4rr5f4gke8" path="res://assets/ui/panels/decals/flower_lattice_wide.png" id="9_87e4f"]
 [ext_resource type="Texture2D" uid="uid://diq3t6n8ygmf7" path="res://assets/ui/panels/decals/flower_decal_yellow_left.png" id="9_jm44t"]
 
 [sub_resource type="Gradient" id="Gradient_fkj1o"]
