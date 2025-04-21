@@ -61,13 +61,13 @@ public sealed partial class GameManager : Node
 
 		Input.SetCustomMouseCursor(_cursorPointing, Input.CursorShape.PointingHand);
 
-		var gameLayer = AddLayer("game", 20);
+		var gameLayer = AddLayer("game", 20); gameLayer.ProcessMode = ProcessModeEnum.Pausable;
 		var dialogueLayer = AddLayer("dialogue", GetTree().Root.FindChildWhere<CanvasLayer>(x => x.SceneFilePath.Equals(_dialogueLayerScene.ResourcePath)) ?? _dialogueLayerScene.Instantiate<CanvasLayer>(), false);
 		var notebookLayer = AddLayer("notebook", GetTree().Root.FindChildWhere<CanvasLayer>(x => x.SceneFilePath.Equals(_notebookLayerScene.ResourcePath)) ?? _notebookLayerScene.Instantiate<CanvasLayer>(), false);
 		
 		var menuLayer = AddLayer("main_menu", 26);
 		var settingsLayer = AddLayer("settings", 27);
-		var creditsLayer = AddLayer("credits", 30);
+		var creditsLayer = AddLayer("credits", 30); creditsLayer.ProcessMode = ProcessModeEnum.Pausable;
 		var splashLayer = AddLayer("splash", 30);
 
 		var transitionLayer = AddLayer("transition", 99, false);
