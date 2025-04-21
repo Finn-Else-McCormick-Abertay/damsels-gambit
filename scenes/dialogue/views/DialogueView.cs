@@ -64,6 +64,7 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
     public void DialogueStarted() {
 		Root.Show();
 		ContinueButton.Hide();
+		foreach (var child in OptionRoot.GetChildren().Where(x => x != OptionArchetype)) child.QueueFree();
 		State = DialogueState.Waiting;
 	}
 
