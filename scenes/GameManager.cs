@@ -141,7 +141,7 @@ public sealed partial class GameManager : Node
 	public static void SwitchToSettings() {
 		if (!Instance.IsValid()) return;
 
-	    InputManager.PushToFocusStack();
+		InputManager.PushToFocusStack();
 
 		float settingsFadeDuration = 0.8f;
 
