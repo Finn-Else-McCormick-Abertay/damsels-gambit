@@ -33,7 +33,12 @@ public partial class CardDisplay : Control, IReloadableToolScript
 			else Texture = ThemeDB.FallbackIcon;
 		}
 	}
-	public string CardType { get; private set { field = value; DisplayType = CardType.Capitalize(); } }
+	public string CardType { get; private set {
+			//GetTypeParams()?.TryDisconnect(Resource.SignalName.Changed, QueueRedraw);
+			field = value; DisplayType = CardType.Capitalize();
+			//GetTypeParams()?.TryConnect(Resource.SignalName.Changed, QueueRedraw);
+		}
+	}
 	public string CardName { get; private set { field = value; DisplayName = CardName.Capitalize(); } }
 
 	public string DisplayType { get; private set; }
@@ -47,22 +52,25 @@ public partial class CardDisplay : Control, IReloadableToolScript
 	[Export] public float ShadowOpacity { get; set { field = value; QueueRedraw(); } } = 0.5f;
 
 	public Texture2D Texture { get; private set { field = value; RebuildMeshes(); UpdatePivot(); (GetParent() as Container)?.QueueSort(); } }
-	private static readonly GradientTexture1D s_shadowGradientTexture;
-	
-	// Create shared static gradient texture used for shadows
-	static CardDisplay() {
-		var gradient = new Gradient{ InterpolationColorSpace = Gradient.ColorSpace.Oklab };
-		gradient.SetColor(0, Colors.Black); gradient.SetColor(1, new Color(Colors.Black, 0f));
-		s_shadowGradientTexture = new GradientTexture1D { Gradient = gradient };
-	}
+	private static GradientTexture1D s_shadowGradientTexture;
 	
 	// Shared static CardSharedParams resource. Determines shared properties like corner radius
-	private static CardSharedParams SharedParams { get { if (field.IsInvalid()) field = ResourceLoader.Load<CardSharedParams>("res://assets/cards/card_shared.tres") ?? new(); return field; } }
+	private static CardSharedParams _sharedParams = null;
+	private static CardSharedParams SharedParams {
+		get {
+			if (_sharedParams.IsInvalid()) {
+				if (ResourceLoader.Exists("res://assets/cards/card_shared.tres")) _sharedParams = ResourceLoader.Load<CardSharedParams>("res://assets/cards/card_shared.tres") ?? new();
+				else _sharedParams = new();
+			}
+			return _sharedParams;
+		}
+	}
 	
 	// Static cache of CardTypeParams so we only have to load each once
 	private static readonly Dictionary<string, CardTypeParams> _typeParams = [];
 	// Get CardTypeParams resource for current card type. Determines type properties like name position and curvature.
 	private CardTypeParams GetTypeParams() {
+		if (CardType.IsNullOrEmpty()) return null;
 		if (_typeParams.TryGetValue(CardType, out var @params)) return @params;
 		var filePath = $"res://assets/cards/{CardType}/type_params.tres";
 		if (ResourceLoader.Exists(filePath)) {
@@ -76,6 +84,13 @@ public partial class CardDisplay : Control, IReloadableToolScript
 	// Set default focus mode & mouse cursor shape
 	public CardDisplay() { MouseFilter = MouseFilterEnum.Pass; FocusMode = FocusModeEnum.All; MouseDefaultCursorShape = CursorShape.PointingHand; }
 
+	protected virtual void PreScriptReload() {
+		GetTypeParams().TryDisconnect(Resource.SignalName.Changed, QueueRedraw);
+		_typeParams.Clear(); 
+		_sharedParams = null;
+		s_shadowGradientTexture = null;
+	}
+
 	public bool IsMousedOver { get; private set; } = false;
 	private void OnMouseEntered() { IsMousedOver = true; QueueRedraw(); }
 	private void OnMouseExited() { IsMousedOver = false; QueueRedraw(); }
@@ -85,13 +100,20 @@ public partial class CardDisplay : Control, IReloadableToolScript
 
 	public override void _EnterTree() {
 		RebuildMeshes(); UpdatePivot();
-		SharedParams?.TryConnect(Resource.SignalName.Changed, RebuildMeshes);
+		//SharedParams?.TryConnect(Resource.SignalName.Changed, RebuildMeshes);
 		this.TryConnect(CanvasItem.SignalName.ItemRectChanged, UpdatePivot);
 		this.TryConnect(Control.SignalName.MouseEntered, OnMouseEntered);
 		this.TryConnect(Control.SignalName.MouseExited, OnMouseExited);
+
+		// Create shared static gradient texture used for shadows
+		if (s_shadowGradientTexture is null) {
+			var gradient = new Gradient{ InterpolationColorSpace = Gradient.ColorSpace.Oklab };
+			gradient.SetColor(0, Colors.Black); gradient.SetColor(1, new Color(Colors.Black, 0f));
+			s_shadowGradientTexture = new GradientTexture1D { Gradient = gradient };
+		}
 	}
 	public override void _ExitTree() {
-		SharedParams?.TryDisconnect(Resource.SignalName.Changed, RebuildMeshes);
+		//SharedParams?.TryDisconnect(Resource.SignalName.Changed, RebuildMeshes); 
 		this.TryDisconnect(CanvasItem.SignalName.ItemRectChanged, UpdatePivot);
 		this.TryDisconnect(Control.SignalName.MouseEntered, OnMouseEntered);
 		this.TryDisconnect(Control.SignalName.MouseExited, OnMouseExited);
@@ -128,7 +150,7 @@ public partial class CardDisplay : Control, IReloadableToolScript
 		if (ShadowOpacity > 0) DrawMesh(_shadowMesh, s_shadowGradientTexture, trans.Translated(ShadowOffset.Rotated(-Rotation)), new Color(Colors.White, ShadowOpacity));
 		DrawMesh(_cardMesh, Texture, trans);
 
-		var typeParams = GetTypeParams(); typeParams.TryConnect(Resource.SignalName.Changed, QueueRedraw);
+		var typeParams = GetTypeParams(); //typeParams.TryConnect(Resource.SignalName.Changed, QueueRedraw);
 
 		if (!string.IsNullOrEmpty(DisplayType)) {
 			var font = GetThemeFont(ThemeProperties.Font.Type, ThemeClassName);

@@ -20,9 +20,9 @@ public partial class CardTypeParams : Resource
     public Curve NameCurve {
         get;
         set {
-            field?.TryDisconnect(Resource.SignalName.Changed, new Callable(this, Resource.MethodName.EmitChanged));
+            field?.TryDisconnect(Resource.SignalName.Changed, EmitChanged);
             field = value; EmitChanged();
-            field?.TryConnect(Resource.SignalName.Changed, new Callable(this, Resource.MethodName.EmitChanged));
+            field?.TryConnect(Resource.SignalName.Changed, EmitChanged);
         }
-    } = new();
+    }
 }

@@ -1,0 +1,26 @@
+title: frostholm__post_discard_random_1
+---
+King Ráðúlfr: Random post-discard dialogue. Option 1
+===
+
+title: frostholm__post_discard_random_2
+---
+King Ráðúlfr: Random post-discard dialogue. Option 2
+===
+
+title: frostholm__post_discard_random_3
+---
+King Ráðúlfr: Random post-discard dialogue. Option 3
+===
+
+title: frostholm__post_discard_topic_food
+tags: topic=food, high_priority
+---
+King Ráðúlfr: Topic food post-discard dialogue.
+===
+
+title: frostholm__post_discard_topic_not_food
+tags: topic=!food
+---
+King Ráðúlfr: Topic not food post-discard dialogue.
+===

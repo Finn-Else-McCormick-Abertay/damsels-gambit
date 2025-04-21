@@ -15,47 +15,15 @@ public partial class MainMenu : Control, IFocusContext
 	private SettingsMenu _settingsMenu;
 
 	public override void _EnterTree() {
-		StartButton?.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnStartPressed));
-		SettingsButton?.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnSettingsPressed));
-		ExitButton?.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnExitPressed));
+		StartButton?.TryConnect(BaseButton.SignalName.Pressed, GameManager.BeginGame);
+		SettingsButton?.TryConnect(BaseButton.SignalName.Pressed, GameManager.SwitchToSettings);
+		ExitButton?.TryConnect(BaseButton.SignalName.Pressed, GameManager.Quit);
 	}
 	public override void _ExitTree() {
-		StartButton?.TryDisconnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnStartPressed));
-		SettingsButton?.TryDisconnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnSettingsPressed));
-		ExitButton?.TryDisconnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnExitPressed));
+		StartButton?.TryDisconnect(BaseButton.SignalName.Pressed, GameManager.BeginGame);
+		SettingsButton?.TryDisconnect(BaseButton.SignalName.Pressed, GameManager.SwitchToSettings);
+		ExitButton?.TryDisconnect(BaseButton.SignalName.Pressed, GameManager.Quit);
 	}
-
-	private void OnStartPressed() => GameManager.BeginGame();
-
-	private void OnSettingsPressed() {
-		InputManager.PushToFocusStack();
-
-		if (_settingsMenu.IsValid()) {
-			_settingsMenu.QueueFree();
-			_settingsMenu = null;
-		}
-
-		_settingsMenu = SettingsMenuScene?.Instantiate<SettingsMenu>();
-		AddChild(_settingsMenu);
-
-		_settingsMenu.OnExit += OnExitSettingsMenu;
-		
-		ButtonRoot.Hide();
-	}
-
-	private void OnExitSettingsMenu() {
-		_settingsMenu.OnExit -= OnExitSettingsMenu;
-		
-		ButtonRoot.Show();
-		
-		_settingsMenu.Hide();
-		_settingsMenu.QueueFree();
-		_settingsMenu = null;
-		
-		InputManager.PopFromFocusStack();
-	}
-
-	private void OnExitPressed() => GameManager.Quit();
 	
 	public virtual int FocusContextPriority => 8;
 

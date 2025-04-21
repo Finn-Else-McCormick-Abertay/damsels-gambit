@@ -18,14 +18,15 @@ layout_mode = 1
 SuitorName = "Lady in Waiting"
 NumRounds = 2
 AutoFailOnHitThreshold = false
-TopicDeck = {
+FullLayoutTopicDeck = {
 "topic/animals": 2,
 "topic/children": 2,
 "topic/witchcraft": 2
 }
-ActionDeck = {
+FullLayoutActionDeck = {
 "action/compliment": 2,
-"action/question": 1,
+"action/question": 2,
 "action/secret": 2
 }
 NoRepeatsInHand = true
+DiscardLimitPerRound = 0

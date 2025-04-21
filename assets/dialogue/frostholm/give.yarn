@@ -30,11 +30,13 @@ title: frostholm__give_art
 Princess Penelope: I got this for you...
 	-> Have this wolf action figure made of sticks! <<if knows("abstract_sculptures")>>
 		<<score 6>>
+		<<prop animate wolf_action_figure>>
 	-> Have this painting of the holy snail!
 		<<score 3>>
 		<<prop animate holy_snail_painting>>
 	-> Have this painting of last season's wolf hunting…
 		<<score -3>>
+		<<prop animate wolf_hunt_painting>>
 ===
 
 title: frostholm__give_witchcraft
@@ -42,6 +44,7 @@ title: frostholm__give_witchcraft
 Princess Penelope: I thought you might like this...
 	-> Voodoo doll! <<if knows("witch_opinion")>>
 		<<score -6>>
+		<<prop animate voodoo_doll random>>
 	-> Pitchfork. Crafted by yours truly. Perfect for witch hunting! <<if knows("witch_opinion")>>
 		<<score 6>>
 		<<prop animate pitchfork random>>
@@ -58,6 +61,7 @@ title: frostholm__give_religion
 Princess Penelope: I got this for you. It's a...
 	-> Snail idol! It'll portect you from evil!
 		<<score 3>>
+		<<prop animate snail_idol>>
 	-> Book disproving Snurch... <<if knows("afterlife_ring")>>
 		<<score -6>>
 		<<prop animate book_disproving_snurch random>>
@@ -79,6 +83,7 @@ title: frostholm__give_hobbies
 Princess Penelope: Here this...
 	-> Skunting gear!
 		<<score 3>>
+		<<prop animate skunting_gear>>
 	-> Snail bracelet! (Designer too!)
 		<<score -3>>
 		<<prop animate snail_bracelet random>>

@@ -72,10 +72,14 @@ public partial class DialogueManager : Node
         Runner.Dialogue.LineHandler += OnLine;
         Runner.Dialogue.OptionsHandler += OnOptions;
         Runner.Dialogue.CommandHandler += OnCommand;
+
+        foreach (var node in _dialogueViews) (node as DialogueView)?.ResetUsedOptions();
     }
 
     // Yarn project contains dialogue node with given name
     public static bool DialogueExists(string nodeName) => Runner.Dialogue.NodeExists(nodeName);
+
+    public static IEnumerable<string> GetNodeNames() => Runner.Dialogue.NodeNames;
 
     // Run given dialogue node. If force is true, will interrupt and overwrite whatever dialogue is already in progress
     // If orErrorDialogue is true, will run the node 'error' (which displays the text 'Invalid node') if it can't find the node
@@ -142,7 +146,8 @@ public partial class DialogueManager : Node
 
         while (_onCompleteQueue.Count > 0) {
             var callable = _onCompleteQueue.Dequeue();
-            if (callable.Target.IsValid()) callable.CallDeferred();
+            if (callable.Target is null || callable.Target.IsValid()) callable.CallDeferred();
+            else Console.Error("Dialogue OnComplete callback failed: target is invalid.");
         }
     }
 
@@ -169,7 +174,13 @@ public partial class DialogueManager : Node
 
     private void OnOptions(Yarn.OptionSet options) {
         if (!VerboseLogging) return;
-        foreach (var option in options.Options) Console.Info($"Dialogue: -> {LineToDebugString(option.Line)}{(!option.IsAvailable ? " (unavailable)" : "")}{(!option.DestinationNode.IsNullOrWhitespace() ? $" => {option.DestinationNode}" : "")}");
+        var currentNode = Runner.yarnProject.Program.Nodes[Runner.Dialogue.CurrentNode];
+        //Console.Info($"!{string.Join(", ", currentNode.Instructions.Select(x => $"[{Enum.GetName(x.Opcode)}:{string.Join(", ", x.Operands.Select(op => op.ValueCase switch { Yarn.Operand.ValueOneofCase.StringValue => op.StringValue, Yarn.Operand.ValueOneofCase.FloatValue => op.FloatValue.ToString(), Yarn.Operand.ValueOneofCase.BoolValue => op.BoolValue.ToString(), _ => "null" }))}]"))}");
+        foreach (var option in options.Options) {
+            var optionInstruction = currentNode.Instructions.Where(x => x.Opcode == Yarn.Instruction.Types.OpCode.AddOption && x.Operands.FirstOrDefault()?.StringValue == option.Line.ID).FirstOrDefault();
+            bool isDependent = optionInstruction?.Operands?.LastOrDefault()?.BoolValue ?? false;
+            Console.Info($"Dialogue: -> {LineToDebugString(option.Line)}{(!option.IsAvailable ? " (unavailable)" : "")}{(isDependent ? " (dependent)" : "")}{(!option.DestinationNode.IsNullOrWhitespace() ? $" => {option.DestinationNode}" : "")}");
+        }
     }
 
     private void OnCommand(Yarn.Command command) {

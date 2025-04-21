@@ -9,12 +9,6 @@
 [ext_resource type="Texture2D" uid="uid://bfoqt200g8dkj" path="res://assets/characters/frostholm/suitor_card.png" id="5_n3mgi"]
 [ext_resource type="Texture2D" uid="uid://bcb71840w4jl2" path="res://assets/ui/panels/decals/pattern_flowers.png" id="8_sijwl"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n3mgi"]
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
 [sub_resource type="Gradient" id="Gradient_fkj1o"]
 interpolation_mode = 2
 interpolation_color_space = 2
@@ -24,7 +18,13 @@ colors = PackedColorArray(0, 0, 0, 0.545098, 0, 0, 0, 0.276534, 0, 0, 0, 0)
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_n3mgi"]
 gradient = SubResource("Gradient_fkj1o")
 
-[node name="Profile" type="Control" node_paths=PackedStringArray("DialogueView", "PauseButton", "ProfileButton")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n3mgi"]
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="Profile" type="Control" node_paths=PackedStringArray("DialogueView", "PauseButton", "ProfileButton", "ShadowFadedAlpha")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -36,6 +36,9 @@ script = ExtResource("2_scbxg")
 DialogueView = NodePath("ProfileView")
 PauseButton = NodePath("Pause Button")
 ProfileButton = NodePath("Profile Button")
+ShadowFadedAlpha = {
+null: 0.0
+}
 metadata/_edit_use_anchors_ = true
 
 [node name="ProfileView" type="Node" parent="." node_paths=PackedStringArray("Title", "Subtitle", "Label", "Portrait")]
@@ -45,7 +48,44 @@ Subtitle = NodePath("../Subtitle")
 Label = NodePath("../Info")
 Portrait = NodePath("../Portrait")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Pause Button" type="Button" parent="."]
+clip_children = 2
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.039
+anchor_bottom = 0.039
+offset_left = -90.0
+offset_top = -32.272
+offset_right = 5.0
+offset_bottom = 32.728
+grow_vertical = 0
+focus_neighbor_bottom = NodePath("../Profile Button")
+mouse_default_cursor_shape = 2
+theme_type_variation = &"PauseButton"
+text = "Pause"
+icon = ExtResource("3_54un2")
+alignment = 0
+
+[node name="Shadow" type="TextureRect" parent="Pause Button"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.123
+anchor_right = 1.0
+anchor_bottom = 0.908
+offset_left = 12.0
+offset_top = 51.005
+offset_right = 67.0
+offset_bottom = 50.98
+grow_horizontal = 2
+grow_vertical = 2
+rotation = 3.14159
+mouse_filter = 2
+texture = SubResource("GradientTexture1D_n3mgi")
+expand_mode = 1
+
+[node name="Background" type="Panel" parent="."]
 clip_children = 1
 layout_mode = 1
 anchors_preset = -1
@@ -53,11 +93,11 @@ anchor_right = 1.0
 anchor_bottom = 0.994
 offset_left = -1.0
 offset_top = 1.0
-offset_right = -3.0
+offset_right = 9.0
 offset_bottom = 3.888
 theme_override_styles/panel = SubResource("StyleBoxFlat_n3mgi")
 
-[node name="Background" type="TextureRect" parent="Panel"]
+[node name="Paper" type="TextureRect" parent="Background"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -71,6 +111,7 @@ grow_vertical = 2
 pivot_offset = Vector2(229, 197)
 texture = ExtResource("2_w88ru")
 expand_mode = 1
+stretch_mode = 6
 
 [node name="Portrait" type="TextureRect" parent="."]
 layout_mode = 1
@@ -138,43 +179,6 @@ This will extend over multiple lines.
 [i]Italics[/i] [b]bold[/b] [i][b]bold italics[/b][/i]"
 tab_size = 12
 
-[node name="Pause Button" type="Button" parent="."]
-clip_children = 2
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.039
-anchor_bottom = 0.039
-offset_left = -90.0
-offset_top = -32.272
-offset_right = 5.0
-offset_bottom = 32.728
-grow_vertical = 0
-focus_neighbor_bottom = NodePath("../Profile Button")
-mouse_default_cursor_shape = 2
-theme_type_variation = &"PauseButton"
-text = "Pause"
-icon = ExtResource("3_54un2")
-alignment = 0
-
-[node name="Shadow" type="TextureRect" parent="Pause Button"]
-visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 1.0
-anchor_top = 0.123
-anchor_right = 1.0
-anchor_bottom = 0.908
-offset_left = 12.0
-offset_top = 51.005
-offset_right = 67.0
-offset_bottom = 50.98
-grow_horizontal = 2
-grow_vertical = 2
-rotation = 3.14159
-mouse_filter = 2
-texture = SubResource("GradientTexture1D_n3mgi")
-expand_mode = 1
-
 [node name="Profile Button" type="Button" parent="."]
 clip_children = 2
 layout_mode = 1
@@ -219,6 +223,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 0
 grow_vertical = 2
+pivot_offset = Vector2(-2, 271)
 script = ExtResource("4_bpofr")
 metadata/_custom_type_script = "uid://cbqc0snx0l0pi"
 

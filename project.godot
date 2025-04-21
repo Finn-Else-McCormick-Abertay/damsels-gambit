@@ -46,7 +46,7 @@ project/assembly_name="Damsels Gambit"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/AnchorsOnlyPreset/plugin.cfg", "res://addons/YarnSpinner-Godot/plugin.cfg", "res://addons/guide/plugin.cfg")
+enabled=PackedStringArray("res://addons/AnchorsOnlyPreset/plugin.cfg", "res://addons/FocusTagEditor/plugin.cfg", "res://addons/YarnSpinner-Godot/plugin.cfg", "res://addons/guide/plugin.cfg")
 
 [file_customization]
 

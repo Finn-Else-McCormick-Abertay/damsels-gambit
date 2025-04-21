@@ -43,6 +43,7 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
 	public Action requestInterrupt { get; set; }
 
 	private readonly HashSet<string> _usedOptions = [];
+	public void ResetUsedOptions() => _usedOptions.Clear();
 
 	public override void _EnterTree() {
 		ContinueButton?.TryConnect(BaseButton.SignalName.Pressed, OnContinue);
@@ -124,6 +125,8 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
 		_onLineFinishedAction = null;
 		CleanupOptions();
 
+        var currentNode = DialogueManager.Runner.yarnProject.Program.Nodes[DialogueManager.Runner.Dialogue.CurrentNode];
+
 		Control toFocus = null;
 
 		foreach (var option in dialogueOptions) {
@@ -133,11 +136,14 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
 			OptionRoot.AddChild(optionControl);
 			
 			bool alreadyUsed = _usedOptions.Contains(option.Line.TextID);
+            var optionInstruction = currentNode.Instructions.Where(x => x.Opcode == Yarn.Instruction.Types.OpCode.AddOption && x.Operands.FirstOrDefault()?.StringValue == option.Line.TextID).FirstOrDefault();
+            bool isDependent = optionInstruction?.Operands?.LastOrDefault()?.BoolValue ?? false;
 
 			var button = optionControl as Button ?? optionControl.FindChildOfType<Button>();
 			button.Text = option.Line.Text.Text;
 			button.ThemeTypeVariation = 0 switch {
 				_ when alreadyUsed => ThemeTypeVariations.OptionUsed,
+				_ when isDependent => ThemeTypeVariations.OptionNewlyUnlocked,
 				_ => ThemeTypeVariations.OptionNormal
 			};
 			button.Pressed += () => {

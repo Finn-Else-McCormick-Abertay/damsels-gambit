@@ -147,7 +147,7 @@ public class Dialogue : Console.Command
             }
 
             if (options.Knowledge == "all" || options.Facts) Console.Info(string.Join(", ", Knowledge.AllFacts));
-            else if (options.Knowledge == "current") Console.Info(string.Join(", ", DialogueManager.Knowledge.KnownFacts));
+            else if (options.Knowledge == "current" || options.Knowledge.IsEmpty()) Console.Info(string.Join(", ", DialogueManager.Knowledge.KnownFacts));
             else Console.Error($"Knowledge: unknown arg '{options.Knowledge}'");
 
             
@@ -159,9 +159,15 @@ public class Dialogue : Console.Command
 
         result.WithParsed<RunOptions>(options => DialogueManager.Run(options.Node, true));
 
-        result.WithParsed<LearnOptions>(options => DialogueManager.Knowledge.Learn(options.Fact));
+        result.WithParsed<LearnOptions>(options => {
+            if (options.Fact.Trim().Equals("all", StringComparison.CurrentCultureIgnoreCase)) foreach (var fact in Knowledge.AllFacts) DialogueManager.Knowledge.Learn(fact);
+            else DialogueManager.Knowledge.Learn(options.Fact);
+        });
 
-        result.WithParsed<UnlearnOptions>(options => DialogueManager.Knowledge.Unlearn(options.Fact));
+        result.WithParsed<UnlearnOptions>(options => {
+            if (options.Fact.Trim().Equals("all", StringComparison.CurrentCultureIgnoreCase)) foreach (var fact in Knowledge.AllFacts) DialogueManager.Knowledge.Unlearn(fact);
+            else DialogueManager.Knowledge.Unlearn(options.Fact);
+        });
 
         result.WithParsed<LoggingOptions>(options => ((Action)(options.State.ToLower() switch {
             "enable" or "verbose" => () => DialogueManager.VerboseLogging = true,
@@ -180,19 +186,37 @@ public class Dialogue : Console.Command
     }
 
     public override IEnumerable<string> GetAutofill(string[] args) {
+        static IEnumerable<string> GetNodeAutofill() {
+            var nodes = DialogueManager.Runner.yarnProject.Program.Nodes.Keys;
+            var split = nodes.Select(x => x.Split("__")).Where(x => x.Length > 1);
+            return
+                split.Select(x => {
+                    List<string> list = [];
+                    for (int i = 1; i < x.Length; ++i) {
+                        string pre = $"{string.Join("__", x[..i])}__";
+                        list.Add(pre);
+                        var parts = x[i].Split('_', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                        for (int j = 0; j < parts.Length; ++j) list.Add($"{pre}{string.Join('_', parts[..j])}{(j > 0 ? "_" : "")}");
+                    }
+                    return list.AsEnumerable();
+                }).SelectMany(x => x)
+                .Concat(nodes)
+                .Distinct();
+        }
+
         if (args.Length == 1) return [ "run", "learn", "unlearn", "get", "logging" ];
         if (args.Length > 1) return args.First() switch {
             "get" => args.Length switch {
                 2 => [ "--node", "--nodes", "--scene", "--scenes", "--character", "--characters", "--prop", "--props", "--knowledge", "--facts" ],
                 > 2 when args.Contains("--knowledge") => [ "current", "all" ],
-                > 2 when args.Contains("--node") => DialogueManager.Runner.yarnProject.Program.Nodes.Keys,
+                > 2 when args.Contains("--node") => GetNodeAutofill(),
                 > 2 when args.Contains("--scene") => EnvironmentManager.GetEnvironmentNames(),
                 > 2 when args.Contains("--character") => EnvironmentManager.GetCharacterNames(),
                 > 2 when args.Contains("--prop") => EnvironmentManager.GetPropNames(),
                 _ => []
             },
-            "run" when args.Length == 2 => DialogueManager.Runner.yarnProject.Program.Nodes.Keys,
-            "learn" or "unlearn" when args.Length == 2 => Knowledge.AllFacts,
+            "run" when args.Length == 2 => GetNodeAutofill(),
+            "learn" or "unlearn" when args.Length == 2 => new string[]{ "all" }.Concat(Knowledge.AllFacts),
             "logging" when args.Length == 2 => [ "enable", "disable", "verbose" ],
             _ => []
         };

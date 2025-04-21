@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dipd7bv4d85ws"]
+[gd_scene load_steps=16 format=3 uid="uid://dipd7bv4d85ws"]
 
 [ext_resource type="Script" uid="uid://fhn7dbryyxai" path="res://scenes/game/CardGameController.cs" id="1_4k8rw"]
 [ext_resource type="Theme" uid="uid://jf72vigx3i2b" path="res://assets/ui/theme/card_theme.tres" id="1_eci5x"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://dbwnt4443aqcc" path="res://scenes/game/AffectionMeter.cs" id="4_dw2x6"]
 [ext_resource type="Script" uid="uid://cq1ndckdbfugt" path="res://scenes/game/cards/HandContainer.cs" id="4_xg83y"]
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/theme/default_theme.tres" id="6_7wss3"]
+[ext_resource type="Script" uid="uid://ojpkfmffiits" path="res://scenes/input/focus/LogicalFocusContainer.cs" id="8_61rky"]
 [ext_resource type="PackedScene" uid="uid://c8warv5k2winh" path="res://scenes/game/round_meter/round_meter.tscn" id="8_oypvw"]
 
 [sub_resource type="Gradient" id="Gradient_xf1xp"]
@@ -44,7 +45,7 @@ _limits = [-90.0, 90.0, 0.0, 1.0]
 _data = [Vector2(0, 5.12277), 0.0, 0.0, 0, 0, Vector2(0.502959, 9.04018), 20.9715, 20.9715, 0, 0, Vector2(1, 15.5692), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "RoundMeter", "ActionHand", "TopicHand", "PlayButton")]
+[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "RoundMeter", "ActionHand", "TopicHand", "PlayButton", "DiscardButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -54,7 +55,7 @@ grow_vertical = 2
 mouse_filter = 1
 theme = ExtResource("1_eci5x")
 script = ExtResource("1_4k8rw")
-TopicDeck = {
+FullLayoutTopicDeck = {
 "topic/animals": 1,
 "topic/art": 1,
 "topic/children": 1,
@@ -64,17 +65,21 @@ TopicDeck = {
 "topic/weather": 1,
 "topic/witchcraft": 1
 }
-ActionDeck = {
+FullLayoutActionDeck = {
 "action/give": 2,
 "action/question": 4,
 "action/secret": 2,
 "action/want": 2
 }
+DiscardTriggersRoundEnd = true
+DiscardDialogueTriggerChance = 0.5
+DiscardOnlyEndsRoundOnDialogueHit = true
 AffectionMeter = NodePath("AffectionMeter")
 RoundMeter = NodePath("RoundMeter")
 ActionHand = NodePath("LeftHandContainer")
 TopicHand = NodePath("RightHandContainer")
-PlayButton = NodePath("PlayHandButton")
+PlayButton = NodePath("ButtonsFocusContainer/HBoxContainer/PlayHandButton")
+DiscardButton = NodePath("ButtonsFocusContainer/HBoxContainer/DiscardButton")
 
 [node name="Vignette" type="TextureRect" parent="."]
 layout_mode = 1
@@ -115,7 +120,7 @@ offset_bottom = -40.0
 grow_horizontal = 2
 grow_vertical = 2
 focus_neighbor_right = NodePath("../RightHandContainer")
-focus_neighbor_bottom = NodePath("../PlayHandButton")
+focus_neighbor_bottom = NodePath("../ButtonsFocusContainer\n$from left")
 mouse_default_cursor_shape = 5
 script = ExtResource("4_xg83y")
 Alignment = 0
@@ -143,7 +148,7 @@ offset_bottom = -40.0
 grow_horizontal = 2
 grow_vertical = 2
 focus_neighbor_left = NodePath("../LeftHandContainer")
-focus_neighbor_bottom = NodePath("../PlayHandButton")
+focus_neighbor_bottom = NodePath("../ButtonsFocusContainer\n$from right")
 script = ExtResource("4_xg83y")
 Alignment = 2
 HandSize = 3
@@ -155,25 +160,6 @@ CurveSeparation = SubResource("Curve_6espp")
 CurveOffset = SubResource("Curve_5nabb")
 CurveRotation = SubResource("Curve_mupma")
 metadata/_edit_group_ = true
-
-[node name="PlayHandButton" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.472
-anchor_top = 0.853
-anchor_right = 0.528
-anchor_bottom = 1.0
-offset_left = -52.744
-offset_top = 0.255981
-offset_right = 52.744
-offset_bottom = -14.0
-grow_horizontal = 2
-grow_vertical = 2
-focus_neighbor_left = NodePath("../LeftHandContainer")
-focus_neighbor_top = NodePath("!return")
-focus_neighbor_right = NodePath("../RightHandContainer")
-theme = ExtResource("6_7wss3")
-text = "Play Hand"
 
 [node name="RoundMeter" parent="." instance=ExtResource("8_oypvw")]
 layout_mode = 1
@@ -188,3 +174,51 @@ offset_right = 293.0
 offset_bottom = 0.103996
 grow_vertical = 1
 CurrentRound = 2
+
+[node name="ButtonsFocusContainer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -172.0
+offset_top = -61.0
+offset_right = 173.0
+offset_bottom = -29.0
+grow_horizontal = 2
+grow_vertical = 0
+focus_neighbor_left = NodePath("../LeftHandContainer")
+focus_neighbor_right = NodePath("../RightHandContainer")
+script = ExtResource("8_61rky")
+metadata/_custom_type_script = "uid://ojpkfmffiits"
+metadata/_edit_group_ = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ButtonsFocusContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -55.0
+offset_top = -24.0
+offset_right = 55.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="PlayHandButton" type="Button" parent="ButtonsFocusContainer/HBoxContainer"]
+custom_minimum_size = Vector2(166.98, 0)
+layout_mode = 2
+size_flags_horizontal = 5
+focus_neighbor_top = NodePath("../../../LeftHandContainer\n$from right\n$return=from top if within ../../../LeftHandContainer || !visible ../DiscardButton")
+theme = ExtResource("6_7wss3")
+text = "Play Hand"
+
+[node name="DiscardButton" type="Button" parent="ButtonsFocusContainer/HBoxContainer"]
+custom_minimum_size = Vector2(166.98, 0)
+layout_mode = 2
+size_flags_horizontal = 5
+focus_neighbor_top = NodePath("../../../RightHandContainer\n$from left\n$return=from top if within ../../../RightHandContainer")
+theme = ExtResource("6_7wss3")
+text = "Discard"

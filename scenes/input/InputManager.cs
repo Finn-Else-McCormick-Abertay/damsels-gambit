@@ -16,11 +16,11 @@ public sealed partial class InputManager : Node
 	public override void _EnterTree() { if (Instance is not null) throw AutoloadException.For(this); Instance = this; GetTree().Root.Connect(Node.SignalName.Ready, OnTreeReady, (uint)ConnectFlags.OneShot); }
 	
 	public static bool ShouldOverrideGuiInput { get; set; } = true;
-	public static bool ShouldDisplayFocusDebugInfo { get; set; } = OS.HasFeature("debug");
+	public static bool ShouldDisplayFocusDebugInfo { get; set; } = false;//OS.HasFeature("debug");
 
 	public static class Actions
 	{
-    	public static readonly GUIDEAction Accept, Back, UIDirection, Pause, SelectAt, Cursor, CursorRelative, Drag, Click, ClickHold;
+    	public static readonly GUIDEAction Play, Discard, Profile, Accept, Back, UIDirection, Pause, SelectAt, Cursor, CursorRelative, Drag, Click, ClickHold;
 
 		// Load all actions during static construction
 		static Actions() => typeof(Actions).GetFields().ForEach(field => field.SetValue(null, GUIDEAction.From(ResourceLoader.Load($"res://assets/input/actions/{Case.ToSnake(field.Name)}.tres"))));
@@ -84,6 +84,8 @@ public sealed partial class InputManager : Node
 	private readonly Dictionary<Popup, Dictionary<StringName, Action>> _popups = [];
 
 	private Control _prevFocus = null;
+	private readonly Dictionary<FocusDirection, Control> _prevFocusFromDirection = [];
+
 	private readonly Stack<NodePath> _focusStack = [];
 	
 	private Viewport _rootViewport = null;
@@ -125,34 +127,63 @@ public sealed partial class InputManager : Node
 	public static Control GetNextFocus(FocusDirection direction, Control root) {
 		if (!root.IsValid()) return null;
 
-		var nextPath = direction switch {
-			FocusDirection.Up => root.FocusNeighborTop, FocusDirection.Down => root.FocusNeighborBottom,
-			FocusDirection.Left => root.FocusNeighborLeft, FocusDirection.Right => root.FocusNeighborRight,
-			FocusDirection.None => root.FocusNext
-		};
-		
-		IEnumerable<string> tags = []; Dictionary<string, string> meta = [];
-		bool HasTag(string tag, bool caseSensitive = false) => tags.Any(x => x.Match(tag, caseSensitive)) || meta.Any(x => x.Key.Match(tag, caseSensitive) && bool.Parse(x.Value) == true);
+		IEnumerable<(string, Func<string, bool>)> predicates = [
+			("exists", arg => root.GetNode(arg) is Node node),
+			("visible", arg => root.GetNode(arg) is CanvasItem canvasItem && canvasItem.Visible),
+			("from", arg => arg switch {
+				"left" when direction == FocusDirection.Right => true, "right" when direction == FocusDirection.Left => true,
+				"top" when direction == FocusDirection.Down => true, "bottom" when direction == FocusDirection.Up => true,
+				_ => false
+			})
+		];
 
-		if (nextPath.ToString() is string pathString && pathString.Contains('!')) {
-			var bangIndex = pathString.Find('!'); string beforeBang = pathString[..bangIndex]; string afterBang = bangIndex == pathString.Length - 1 ? "" : pathString[(bangIndex+1)..];
-			nextPath = beforeBang; tags = afterBang.Split(',').Select(x => x.Trim());
-			meta = tags.Where(x => x.Contains('=')).Select(x => { var equalsIndex = x.Find('='); return KeyValuePair.Create(x[..equalsIndex].Trim(), equalsIndex == x.Length - 1 ? "" : x[(equalsIndex+1)..].Trim()); }).ToDictionary();
+		var nextPath = new TaggedNodePath(
+			direction switch {
+				FocusDirection.Up => root.FocusNeighborTop, FocusDirection.Down => root.FocusNeighborBottom,
+				FocusDirection.Left => root.FocusNeighborLeft, FocusDirection.Right => root.FocusNeighborRight, FocusDirection.None => root.FocusNext
+			},
+			predicates
+		);
+		
+		if (ShouldDisplayFocusDebugInfo) Console.Info($"Next path: {nextPath.RootPath.ToPrettyString()}, Tags: {nextPath.Tags.ToPrettyString()}");
+
+		if (nextPath.HasTag("return")) {
+			Control returnFocus = Instance._prevFocus;
+			var returnTag = nextPath.GetTag("return");
+			bool shouldUse = true;
+			if (returnTag.Contains("if")) {
+				var split = returnTag.Split("if", 2, StringSplitOptions.TrimEntries);
+				if (TaggedNodePath.TryEvaluateCondition(split[1], out bool result, predicates.Append(("within", arg => root.GetNode(arg) is Node node && node.IsAncestorOf(returnFocus))))) shouldUse = result;
+				returnTag = split[0];
+			}
+			if (returnTag.StartsWith("from", StringComparison.CurrentCultureIgnoreCase)) {
+				returnFocus = null;
+				var fromArgs = returnTag.ToLower().StripFront("from").Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+				foreach (var arg in fromArgs) {
+					if (arg == "top" && Instance._prevFocusFromDirection.TryGetValue(FocusDirection.Down, out var topFocus)) returnFocus = topFocus;
+					else if (arg == "bottom" && Instance._prevFocusFromDirection.TryGetValue(FocusDirection.Up, out var bottomFocus)) returnFocus = bottomFocus;
+					else if (arg == "left" && Instance._prevFocusFromDirection.TryGetValue(FocusDirection.Right, out var leftFocus)) returnFocus = leftFocus;
+					else if (arg == "right" && Instance._prevFocusFromDirection.TryGetValue(FocusDirection.Left, out var rightFocus)) returnFocus = rightFocus;
+				}
+			}
+			if (returnFocus is not null && shouldUse) return returnFocus;
 		}
-		
-		if (ShouldDisplayFocusDebugInfo) Console.Info($"Next path: {nextPath.ToPrettyString()}, Tags: {string.Join(", ", tags)}");
 
-		if (HasTag("return")) return Instance._prevFocus;
+		direction = direction switch {
+			_ when nextPath.GetComplexFlagOrDefault("from", "left") => FocusDirection.Right, _ when nextPath.GetComplexFlagOrDefault("from", "right") => FocusDirection.Left,
+			_ when nextPath.GetComplexFlagOrDefault("from", "top") => FocusDirection.Down, _ when nextPath.GetComplexFlagOrDefault("from", "bottom") => FocusDirection.Up,
+			_ => direction
+		};
 
-		if (HasTag("left")) direction = FocusDirection.Left; if (HasTag("right")) direction = FocusDirection.Right; if (HasTag("up")) direction = FocusDirection.Up; if (HasTag("down")) direction = FocusDirection.Down;
-
-		if (!nextPath.IsEmpty && FindFocusableWithin(root.GetNode(nextPath), direction) is Control focusable) return focusable;
-
-		foreach (var parent in root.FindParentsWhere(x => x is Container || x is IFocusableContainer)) {
-			var child = parent.FindChildChainTo(root).FirstOrDefault();
-			if (parent is IFocusableContainer container && container.GetNextFocus(direction, child) is Node nextNode && FindFocusableWithin(nextNode, direction) is Control nextFocus) return nextFocus;
-			if (StandardContainerFocusLogic.GetNextFocus(root, parent, direction, child) is Node standardNextNode && FindFocusableWithin(standardNextNode, direction) is Control standardNextFocus) return standardNextFocus;
-			if (parent is Control && GetNextFocus(direction, parent as Control) is Control controlNextFocus) return controlNextFocus;
+		var rootPath = nextPath.RootPath;
+		if (!rootPath.IsEmpty && FindFocusableWithin(root.GetNode(rootPath), direction) is Control focusable) return focusable;
+		else {
+			foreach (var parent in root.FindParentsWhere(x => x is Container || x is IFocusableContainer)) {
+				var child = parent.FindChildChainTo(root).FirstOrDefault();
+				if (parent is IFocusableContainer container && container.GetNextFocus(direction, child) is Node nextNode && FindFocusableWithin(nextNode, direction) is Control nextFocus) return nextFocus;
+				if (StandardContainerFocusLogic.GetNextFocus(root, parent, direction, child) is Node standardNextNode && FindFocusableWithin(standardNextNode, direction) is Control standardNextFocus) return standardNextFocus;
+				if (parent is Control && GetNextFocus(direction, parent as Control) is Control controlNextFocus) return controlNextFocus;
+			}
 		}
 		return null;
 	}
@@ -214,6 +245,7 @@ public sealed partial class InputManager : Node
 			}
 
 			Instance._prevFocus = focused;
+			Instance._prevFocusFromDirection[direction] = focused;
 			if (ShouldDisplayFocusDebugInfo) Console.Info(focusNext is not null ? $"Shifted focus {Enum.GetName(direction)} to {focusNext.ToPrettyString()} in {FocusedViewport.ToPrettyString()}." : $"Could not shift focus {Enum.GetName(direction)} from {focused.ToPrettyString()}.");
 			focusNext?.GrabFocus();
 		}

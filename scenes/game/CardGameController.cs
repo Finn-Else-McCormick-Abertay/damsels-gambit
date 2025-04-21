@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using YarnSpinnerGodot;
+using Bridge;
 
 namespace DamselsGambit;
 
@@ -20,16 +21,25 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	[Signal] public delegate void IntroStartEventHandler(); 			[Signal] public delegate void IntroEndEventHandler();
 	[Signal] public delegate void GameStartEventHandler(); 				[Signal] public delegate void GameEndEventHandler();
 	[Signal] public delegate void RoundStartEventHandler(int round); 	[Signal] public delegate void RoundEndEventHandler(int round);
+
+	[Signal] public delegate void HandPlayedEventHandler(StringName actionCard, StringName topicCard);
+	[Signal] public delegate void DiscardedEventHandler(StringName[] cards);
+	
+	[Signal] public delegate void DeckRanOutEventHandler();
 	
 	// Has intro ended and game started? Tracked for skip logic
 	public bool Started { get; private set; } = false;
 	public bool Ended { get; private set; } = false;
 	public bool MidRound { get; private set; } = false;
+	public bool InDialogue { get; private set; } = false;
 	
 	// Current round. Triggers game end when it exceeds NumRounds
 	public int Round { get; set { field = value; RoundMeter?.OnReady(x => x.CurrentRound = Round); AttemptGameEnd(); } }
 	// Current score. When AutoFailOnHitThreshold is true, triggers game end when it exceeds score minimum or maximum
 	public int Score { get; set { field = value; AffectionMeter?.CreateTween()?.TweenProperty(AffectionMeter, AffectionMeter.PropertyName.Value, int.Clamp(Score, ScoreMin, ScoreMax), 1.0); AttemptGameEnd(); } }
+
+	public int UsedDiscardsThisGame { get; private set; } = 0;
+	public int UsedDiscardsThisRound { get; private set; } = 0;
 
 	// Current affection state based on score and thresholds
 	public AffectionState AffectionState => Score switch { _ when Score >= LoveThreshold => AffectionState.Love, _ when Score <= HateThreshold => AffectionState.Hate, _ => AffectionState.Neutral };
@@ -52,9 +62,47 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 
 	[Export] public bool AutoFailOnHitThreshold { get; set; } = true;
 
-	[ExportGroup("Deck")]
-	[Export] public Godot.Collections.Dictionary<string, int> TopicDeck { get; set { field = value; this.OnReady(EditorUpdateHands); } }
-	[Export] public Godot.Collections.Dictionary<string, int> ActionDeck { get; set { field = value; this.OnReady(EditorUpdateHands); } }
+	[ExportGroup("Deck", "FullLayout")]
+	[Export] public Godot.Collections.Dictionary<string, int> FullLayoutTopicDeck { get; set { field = value; this.OnReady(EditorUpdateHands); } }
+	[Export] public Godot.Collections.Dictionary<string, int> FullLayoutActionDeck { get; set { field = value; this.OnReady(EditorUpdateHands); } }
+	
+	public Deck TopicDeck { get; private set; }
+	public Deck ActionDeck { get; private set; }
+
+	private Deck _topicDiscardPile, _actionDiscardPile;
+	
+	[ExportGroup("Draw")]
+	[Export] public int ActionHandSize { get; set { field = value; ActionHand?.OnReady(x => x.HandSize = value); this.OnReady(EditorUpdateHands); } } = 3;
+	[Export] public int TopicHandSize { get; set { field = value; TopicHand?.OnReady(x => x.HandSize = value); this.OnReady(EditorUpdateHands); } } = 3;
+	[Export] public bool NoRepeatsInHand { get; set { field = value; this.OnReady(EditorUpdateHands); } } = false;
+
+	[Export] public bool SendPlayedCardsToDiscardPile { get; set; } = false;
+	[Export] public bool ReshuffleDiscardPileOnDeckRunOut { get; set; } = true;
+	
+	[ExportGroup("Discard")]
+	[Export] public int DiscardLimitPerGame { get; set; } = -1;
+	[Export] public int DiscardLimitPerRound { get; set; } = 1;
+	[Export] public int MaxCardsPerDiscard { get; set; } = -1;
+	
+	[Export] public bool DiscardTriggersRoundEnd { get; set; } = false;
+	[Export] public bool DiscardTriggersDialogue { get; set; } = true;
+	[Export] public bool SkipAlreadySeenDiscardDialogues { get; set; } = true;
+
+	[Export(PropertyHint.Range, "0,1,")] public double DiscardDialogueTriggerChance { get; set; } = 1;
+	[Export] public bool DiscardOnlyEndsRoundOnDialogueHit { get; set; } = false;
+
+	private readonly HashSet<string> _usedDiscardDialogues = [];
+
+	[ExportGroup("Animation")]
+	[Export] public double MeterSlideInTime { get; set; } = 0.5;
+
+	[ExportGroup("Nodes")]
+	[Export] public AffectionMeter AffectionMeter { get; set; }
+	[Export] public RoundMeter RoundMeter { get; set; }
+	[Export] public HandContainer ActionHand { get; set { field = value; this.OnReady(EditorUpdateHands); } }
+	[Export] public HandContainer TopicHand { get; set { field = value; this.OnReady(EditorUpdateHands); } }
+	[Export] public Button PlayButton { get; set; }
+	[Export] public Button DiscardButton { get; set; }
 
 	public class Deck
 	{
@@ -75,56 +123,105 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		public string Draw() { var card = _working.FirstOrDefault(); if (card is not null) _working.Remove(card); return card; }
 		public string DrawWhere(Func<string, bool> predicate) { var card = _working.FirstOrDefault(predicate); if (card is not null) _working.Remove(card); return card; }
 
+		public void Add(string card) => _working.Add(card);
+		public void Add(IEnumerable<string> cards) => _working.AddRange(cards);
+		public void Add(Deck deck) => _working.AddRange(deck._working);
 		public void Clear() => _working.Clear();
+
+		public bool IsEmpty() => _working.Count == 0;
 
 		public void Shuffle(Random random = null) => _working = [.._working.OrderBy(x => (random ?? Random.Shared).Next())];
 	}
+	
+	private enum GameVisibilityState { AllVisible, AllHidden, ButtonsHidden, AllHiddenInstant }
 
-	public Deck TopicWorking { get; private set; }
-	public Deck ActionWorking { get; private set; }
+	private Tween _meterTween;
+	private void AnimateMetersIn() {
+		if (GodotObject.IsInstanceValid(_meterTween)) _meterTween.Kill();
+		_meterTween = CreateTween();
+		float affectionMeterDistance = AffectionMeter.Position.X + AffectionMeter.Size.X + 10f; float roundMeterDistance = RoundMeter.Position.Y + RoundMeter.Size.Y + 20f;
+		_meterTween.TweenProperty(AffectionMeter, "position:x", -affectionMeterDistance, 0).AsRelative(); _meterTween.TweenProperty(RoundMeter, "position:y", -roundMeterDistance, 0).AsRelative();
+		_meterTween.TweenCallback(AffectionMeter.Show); _meterTween.TweenCallback(RoundMeter.Show);
+		_meterTween.TweenProperty(AffectionMeter, "position:x", affectionMeterDistance, MeterSlideInTime).AsRelative(); _meterTween.Parallel().TweenProperty(RoundMeter, "position:y", roundMeterDistance, MeterSlideInTime).AsRelative();
 
-	[ExportSubgroup("Draw")]
-	[Export] public int ActionHandSize { get; set { field = value; ActionHand?.OnReady(x => x.HandSize = value); this.OnReady(EditorUpdateHands); } } = 3;
-	[Export] public int TopicHandSize { get; set { field = value; TopicHand?.OnReady(x => x.HandSize = value); this.OnReady(EditorUpdateHands); } } = 3;
-	[Export] public bool NoRepeatsInHand { get; set { field = value; this.OnReady(EditorUpdateHands); } } = false;
+	}
+	private void AnimateMetersOut() {
+		if (GodotObject.IsInstanceValid(_meterTween)) _meterTween.Kill();
+		_meterTween = CreateTween();
+		float affectionMeterDistance = AffectionMeter.Position.X + AffectionMeter.Size.X + 10f; float roundMeterDistance = RoundMeter.Position.Y + RoundMeter.Size.Y + 20f;
+		_meterTween.TweenProperty(AffectionMeter, "position:x", -affectionMeterDistance, MeterSlideInTime).AsRelative(); _meterTween.Parallel().TweenProperty(RoundMeter, "position:y", -roundMeterDistance, MeterSlideInTime).AsRelative();
+		_meterTween.TweenCallback(AffectionMeter.Hide); _meterTween.TweenCallback(RoundMeter.Hide);
+		_meterTween.TweenProperty(AffectionMeter, "position:x", affectionMeterDistance, 0).AsRelative(); _meterTween.TweenProperty(RoundMeter, "position:y", roundMeterDistance, 0).AsRelative();
+	}
 
-	[ExportGroup("Nodes")]
-	[Export] public AffectionMeter AffectionMeter { get; set; }
-	[Export] public RoundMeter RoundMeter { get; set; }
-	[Export] public HandContainer ActionHand { get; set { field = value; this.OnReady(EditorUpdateHands); } }
-	[Export] public HandContainer TopicHand { get; set { field = value; this.OnReady(EditorUpdateHands); } }
-	[Export] public Button PlayButton { get; set; }
+	private GameVisibilityState VisibilityState {
+		get;
+		set {
+			var oldState = field;
+			field = value;
+			if (Engine.IsEditorHint()) return;
+			switch (VisibilityState) {
+				case GameVisibilityState.AllVisible: {
+					TopicHand?.Show(); ActionHand?.Show();
+					PlayButton?.Show();
+					if (DiscardLimitPerGame == 0 || DiscardLimitPerRound == 0 || MaxCardsPerDiscard == 0) DiscardButton?.Hide(); else DiscardButton?.Show();
+					GameManager.NotebookMenu.Show();
+					if (!oldState.IsAnyOf(GameVisibilityState.AllVisible, GameVisibilityState.ButtonsHidden)) AnimateMetersIn();
+				} break;
+				case GameVisibilityState.ButtonsHidden: {
+					TopicHand?.Show(); ActionHand?.Show();
+					PlayButton?.Hide(); DiscardButton?.Hide();
+					GameManager.NotebookMenu.Show();
+					if (!oldState.IsAnyOf(GameVisibilityState.AllVisible, GameVisibilityState.ButtonsHidden)) AnimateMetersIn();
+				} break;
+				case GameVisibilityState.AllHidden: {
+					TopicHand?.Hide(); ActionHand?.Hide();
+					PlayButton?.Hide(); DiscardButton?.Hide();
+					GameManager.NotebookMenu.Hide();
+					if (!oldState.IsAnyOf(GameVisibilityState.AllHidden, GameVisibilityState.AllHiddenInstant)) AnimateMetersOut();
+				} break;
+				case GameVisibilityState.AllHiddenInstant: {
+					AffectionMeter?.Hide(); RoundMeter?.Hide();
+					TopicHand?.Hide(); ActionHand?.Hide();
+					PlayButton?.Hide(); DiscardButton?.Hide();
+					GameManager.NotebookMenu.Hide();
+				} break;
+				default: break;
+			}
+		}
+	}
 
 	public override void _Ready() {
 		EditorUpdateHands();
 		if (Engine.IsEditorHint()) return;
 
-		PlayButton?.TryConnect(BaseButton.SignalName.Pressed, PlayHand);
-		PlayButton.Disabled = true;
+		if (PlayButton.IsValid()) { PlayButton.TryConnect(BaseButton.SignalName.Pressed, AttemptPlayHand); PlayButton.Disabled = true; }
+		if (DiscardButton.IsValid()) { DiscardButton.TryConnect(BaseButton.SignalName.Pressed, AttemptDiscard); DiscardButton.Disabled = true; }
+
+		InputManager.Actions.Play.InnerObject.Connect(GUIDEAction.SignalName.Completed, AttemptPlayHand);
+		InputManager.Actions.Discard.InnerObject.Connect(GUIDEAction.SignalName.Completed, AttemptDiscard);
 
 		// Remove any cards remaining from the editor
 		foreach (var child in TopicHand.GetChildren()) { TopicHand.RemoveChild(child); child.QueueFree(); }
 		foreach (var child in ActionHand.GetChildren()) { ActionHand.RemoveChild(child); child.QueueFree(); }
+
+		_usedDiscardDialogues.Clear();
 		
-		AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide(); PlayButton.Hide();
+		VisibilityState = GameVisibilityState.AllHiddenInstant;
 		Round = 1;
 	}
 
 	// Trigger the start of the game
 	// This doesn't happen in ready so that GameManager is able to set whether the intro should be skipped (which it is when loading into the scene directly)
 	public void BeginGame(bool skipIntro = false) {
-		TopicWorking = new Deck(TopicDeck);
-		ActionWorking = new Deck(ActionDeck);
+		TopicDeck = new(FullLayoutTopicDeck); ActionDeck = new(FullLayoutActionDeck); // Create decks from exported deck layout dictionaries
+		TopicDeck.Shuffle(); ActionDeck.Shuffle(); // Shuffle decks
 
-		// Shuffle decks
-		TopicWorking.Shuffle();
-		ActionWorking.Shuffle();
-		
-		EmitSignal(SignalName.GameStart);
+		_topicDiscardPile = new(); _actionDiscardPile = new(); // Create empty discard piles
 
 		// Make NotebookMenu the focus neighbour of topic hand, so it can be accessed via keyboard controls
 		TopicHand.FocusNeighborTop = GameManager.NotebookMenu.GetPath(); TopicHand.FocusNeighborRight = GameManager.NotebookMenu.GetPath();
-		GameManager.NotebookMenu.FocusNeighborBottom = TopicHand.GetPath().ToString() + "!left"; GameManager.NotebookMenu.FocusNeighborLeft = TopicHand.GetPath().ToString() + "!right";
+		GameManager.NotebookMenu.FocusNeighborBottom = TopicHand.GetPath().ToString() + "$from right"; GameManager.NotebookMenu.FocusNeighborLeft = TopicHand.GetPath().ToString() + "$from left";
 
 		// Set whether intro skippable based on intro tags
 		foreach (var tag in DialogueManager.Runner.GetTagsForNode($"{_suitorId}__intro")) {
@@ -132,16 +229,20 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 			if (tag.MatchN("skippable")) IntroSkippable = true; else if (tag.MatchN("unskippable")) IntroSkippable = false;
 			else if (args.Length == 2 && args[0].Trim().ToLower().IsAnyOf([ "skip", "skippable" ]) && bool.TryParse(args[1].Trim(), out bool val)) IntroSkippable = val;
 		}
-
-		GameManager.NotebookMenu.Hide();
+		
+		EmitSignal(SignalName.GameStart);
+		
+		VisibilityState = GameVisibilityState.AllHidden;
 		
 		// Run intro node or (skip_setup node, if skipping), then unhide and handle round start.
 		// (Due to how AndThen works, if this dialogue is interrupted by another then the callback will still run when that dialogue ends, which is why force-running the skip setup (see ForceSkipIntro) doesn't break everything)
+		InDialogue = true;
 		DialogueManager.TryRun(skipIntro ? $"{_suitorId}__skip_setup" : $"{_suitorId}__intro")
 			.AndThen(() => {
-				AffectionMeter.Show(); RoundMeter.Show(); TopicHand.Show(); ActionHand.Show(); PlayButton.Show();
-				GameManager.NotebookMenu.Show();
-				Started = true; Round = 1;
+				InDialogue = false;
+				VisibilityState = GameVisibilityState.AllVisible;
+				Started = true;
+				Round = 1; UsedDiscardsThisGame = 0; UsedDiscardsThisRound = 0;
 				AttemptStartRound();
 			});
 	}
@@ -149,6 +250,15 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	public override void _ExitTree() {
 		if (Engine.IsEditorHint()) return;
 		GameManager.NotebookMenu.FocusNeighborBottom = new(); GameManager.NotebookMenu.FocusNeighborLeft = new();
+	}
+	
+	public override void _Process(double delta) {
+		if (Engine.IsEditorHint()) return;
+
+		// Set play button to be disabled based on whether the correct number of cards are selected
+		if (PlayButton.IsValid()) PlayButton.Disabled = !CanPlay || ShouldGameEnd;
+		// Set discard button to be disabled based on whether any cards are selected
+		if (DiscardButton.IsValid()) DiscardButton.Disabled = !CanDiscard || ShouldGameEnd;
 	}
 	
 	public Control GetDefaultFocus(FocusDirection direction) =>
@@ -159,98 +269,229 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 			FocusDirection.Right or _ => ActionHand
 		}, direction);
 
+	// Are preconditions for playing hand met (are correct number of cards selected?)
+	private bool CanPlay => Started && !Ended && !InDialogue && TopicHand.GetSelected().Count() == 1 && ActionHand.GetSelected().Count() == 1;
+
+	// Are preconditions for discarding met
+	private bool CanDiscard => Started && !Ended && !InDialogue &&
+		(TopicHand.GetSelected().Any() || ActionHand.GetSelected().Any())
+		&& (DiscardLimitPerGame < 0 || UsedDiscardsThisGame < DiscardLimitPerGame)
+		&& (DiscardLimitPerRound < 0 || UsedDiscardsThisRound < DiscardLimitPerRound);
+
+	// Are preconditions for game end met
+	private bool ShouldGameEnd => Started && !Ended && (Round > NumRounds || (AutoFailOnHitThreshold && !RangeOf<int>.Between(ScoreMin, ScoreMax).Contains(Score)));
+	
 	// If not yet started, force-run the skip_setup node, skipping to the start of gameplay even if currently in the intro
 	public void ForceSkipIntro() { if (!Started && !Ended) DialogueManager.Run($"{_suitorId}__skip_setup", true); }
 
-	public override void _Process(double delta) {
-		if (Engine.IsEditorHint()) return;
+	// Force-end the game without deferring until end of round. Used by debug commands
+	public void ForceGameEnd() { Round = NumRounds + 1; if (MidRound) AttemptGameEnd(true); }
 
-		// Set play button to be disabled based on whether the correct number of cards are selected
-		PlayButton.Disabled = TopicHand.GetSelected().Count() != 1 || ActionHand.GetSelected().Count() != 1 || ShouldGameEnd();
+	private void AnimateCardRemoval(CardDisplay card) {
+		double exitAnimTime = 0.5;
+		card.Reparent(this); var tween = CreateTween();
+		tween.TweenProperty(card, "position", new Vector2(5, 350), exitAnimTime).AsRelative(); tween.Parallel().TweenProperty(card, "rotation_degrees", 20, exitAnimTime).AsRelative();
+		tween.TweenCallback(card.QueueFree);
 	}
 
-	// Connected to PlayButton's Pressed signal
-	private void PlayHand() {
+	// Plays hand so long as end preconditions are not met. Connected to PlayButton's Pressed signal.
+	private void AttemptPlayHand() {
 		if (Engine.IsEditorHint()) return;
-		if (!Started) { Console.Warning("Attempted to play hand before game start."); return; }
-		if (Ended) { Console.Warning("Attempted to play hand after game end."); return; }
 
-		CardDisplay selectedTopic = TopicHand.GetSelected().SingleOrDefault();
-		CardDisplay selectedAction = ActionHand.GetSelected().SingleOrDefault();
+		// Verify that attempt is valid
+		if (!CanPlay) return;
 
-		// Verify that the correct number of cards were selected
-		if (selectedTopic.IsInvalid() || selectedAction.IsInvalid()) { Console.Error("Failed to play hand. Topic: ", selectedTopic, ", Action: ", selectedAction); return; }
+		CardDisplay selectedTopic = TopicHand.GetSelected().Single(), selectedAction = ActionHand.GetSelected().Single();
 
+		// Get dialogue node name for given cards
 		var dialogueNode = $"{_suitorId}__{selectedAction.CardId.ToString().StripFront("action/")}_{selectedTopic.CardId.ToString().StripFront("topic/")}";
 
-		TopicHand.RemoveChild(selectedTopic); selectedTopic.QueueFree();
-		ActionHand.RemoveChild(selectedAction); selectedAction.QueueFree();
-		PlayButton.Hide();
+		// Remove cards from hand
+		void RemoveCardFromHand(CardDisplay card) {
+			if (SendPlayedCardsToDiscardPile) (card.CardType switch { "action" => _actionDiscardPile, "topic" => _topicDiscardPile, _ => null })?.Add(card.CardId);
+			AnimateCardRemoval(card);
+		}
+
+		RemoveCardFromHand(selectedTopic);
+		RemoveCardFromHand(selectedAction);
+
+		PlayButton.Hide(); DiscardButton?.Hide();
+
+		EmitSignal(SignalName.HandPlayed, selectedAction.CardId, selectedTopic.CardId);
 
 		// Run dialogue node, or error dialogue if it does not exist.
 		// Then, emit round signal, increment round, and handle next round start
+		InDialogue = true;
 		DialogueManager.Run(dialogueNode)
 			.AndThen(() => {
+				InDialogue = false;
 				MidRound = false;
 				EmitSignal(SignalName.RoundEnd, Round);
+				UsedDiscardsThisRound = 0;
 				++Round; AttemptStartRound();
 			});
 	}
 
-	// Are preconditions for game end met
-	private bool ShouldGameEnd() => Started && !Ended && (Round > NumRounds || (AutoFailOnHitThreshold && !RangeOf<int>.Between(ScoreMin, ScoreMax).Contains(Score)));
+	// Discards selected cards so long as end preconditions are not met. Connected to DiscardButton's pressed signal.
+	private void AttemptDiscard() {
+		if (Engine.IsEditorHint()) return;
+
+		// Verify that attempt is valid
+		if (!CanDiscard) return;
+
+		// Increment counters
+		UsedDiscardsThisGame++; UsedDiscardsThisRound++;
+
+		var cardsDiscarded = TopicHand.GetSelected().Concat(ActionHand.GetSelected()).Select(x => x.CardId).Select(x => x.ToString()).ToArray();
+
+		void DiscardSelected(HandContainer hand) =>
+			hand.GetSelected().ForEach(card => {
+				(card.CardType switch { "action" => _actionDiscardPile, "topic" => _topicDiscardPile, _ => null })?.Add(card.CardId);
+				AnimateCardRemoval(card);
+			});
+
+		DiscardSelected(TopicHand);
+		DiscardSelected(ActionHand);
+
+		void AfterDiscard(bool dialogueHit) {
+			if (DiscardTriggersRoundEnd && (dialogueHit || !DiscardOnlyEndsRoundOnDialogueHit)) { MidRound = false; Round++; AttemptStartRound(); }
+			else Deal();
+		}
+
+		if (DiscardTriggersDialogue && DiscardDialogueTriggerChance switch { <= 0 => false, >= 1 => true, _ => Random.Shared.NextDouble() < DiscardDialogueTriggerChance }) {
+			// Will pick at random from all nodes starting with '{suitor}__post_discard'
+			// If the nodes have tags in the format 'action={card1},{card2}' or 'topic={card}' etc, then that node will only be pickable if one of the listed cards was just discarded
+			// (If the card name starts with a !, it will instead disqualify the node if that card was just discarded)
+			// If no node can be selected, it will try '{suitor}__post_discard_fallback'. The fallback can appear multiple times, even if SkipAlreadySeenDiscardDialogues is true.
+			// If no node can resolve at all, it will simply skip past the dialogue step.
+
+			var variants = DialogueManager.GetNodeNames().Where(x => x.StartsWith($"{_suitorId}__post_discard")).Where(x => x != $"{_suitorId}__post_discard_fallback");
+			if (SkipAlreadySeenDiscardDialogues) variants = variants.Where(x => !_usedDiscardDialogues.Contains(x));
+
+			List<string> highPriorityVariants = [];
+			variants = variants.Where(node => {
+				var tags = DialogueManager.Runner.GetTagsForNode(node);
+				List<string> allowedCards = [], disallowedCards = [];
+				bool isHighPriority = false;
+				foreach (var tag in tags) {
+					if (tag.Contains('=')) {
+						var equalsSplit = tag.Split('=', 2, StringSplitOptions.TrimEntries);
+						string cardType = equalsSplit.First().ToLower();
+						string[] args = equalsSplit.Last().Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+						allowedCards.AddRange(args.Where(x => !x.StartsWith('!')).Select(x => $"{cardType}/{x.ToLower()}"));
+						disallowedCards.AddRange(args.Where(x => x.StartsWith('!')).Select(x => $"{cardType}/{x.StripFront('!').ToLower()}"));
+						if (allowedCards.Count == 0 && disallowedCards.Count == 0) continue;
+						foreach (var disallowedCard in disallowedCards) { if (cardsDiscarded.Contains(disallowedCard)) return false; }
+						if (allowedCards.Count > 0) {
+							bool anyAllowed = false;
+							foreach (var allowedCard in allowedCards) anyAllowed = anyAllowed || cardsDiscarded.Contains(allowedCard);
+							if (!anyAllowed) return false;
+						}
+					}
+					if (Case.ToSnake(tag) == "high_priority") isHighPriority = true;
+				}
+				//Console.Info($"Node: {node}, AllowedCards: [{string.Join(", ", allowedCards)}], DisallowedCards: [{string.Join(", ", disallowedCards)}]{isHighPriority switch { true => ", HighPriority", false => "" }}");
+				if (disallowedCards.Any(cardsDiscarded.Contains) || (allowedCards.Count > 0 && !allowedCards.Any(cardsDiscarded.Contains))) return false;
+				if (isHighPriority) highPriorityVariants.Add(node);
+				return true;
+			});
+
+			//Console.Info($"Variants: {variants.ToPrettyString()}, High Priority: {highPriorityVariants.ToPrettyString()}");
+
+			// If some possible nodes are denoted as high priority, select from only them
+			if (highPriorityVariants.Count > 0) variants = highPriorityVariants;
+
+			// Pick at random from possible options
+			variants = variants.OrderBy(x => Random.Shared.Next());
+			string dialogueNode = variants.FirstOrDefault();
+
+			if (dialogueNode is null && DialogueManager.DialogueExists($"{_suitorId}__post_discard_fallback")) dialogueNode = $"{_suitorId}__post_discard_fallback";
+
+			if (dialogueNode is not null) {
+				_usedDiscardDialogues.Add(dialogueNode);
+				InDialogue = true;
+				
+				VisibilityState = GameVisibilityState.ButtonsHidden;
+				DialogueManager.TryRun(dialogueNode)
+					.AndThen(() => {
+						InDialogue = false;
+						VisibilityState = GameVisibilityState.AllVisible;
+						AfterDiscard(true);
+					});
+			}
+			else AfterDiscard(false);
+		}
+		else AfterDiscard(false);
+	}
 
 	// Triggers round start so long as end preconditions are not met. Called by BeginGame and PlayHand
 	private void AttemptStartRound() {
 		if (MidRound) { Console.Warning("Failed to start round: previous round did not end."); return; }
-		if (Engine.IsEditorHint() || ShouldGameEnd()) return;
+		if (Engine.IsEditorHint() || ShouldGameEnd) return;
 
-		PlayButton.Show(); Deal();
+		UsedDiscardsThisRound = 0;
+		VisibilityState = GameVisibilityState.AllVisible;
 		MidRound = true;
+		Deal();
+		
 		EmitSignal(SignalName.RoundStart, Round);
 	}
 
 	// Triggers game end if the preconditions are met. Called by the Round and Score setters.
 	private void AttemptGameEnd(bool force = false) {
-		if (Engine.IsEditorHint() || !ShouldGameEnd()) return;
+		if (Engine.IsEditorHint() || !ShouldGameEnd) return;
 
 		// If mid-round, defer ending until end of round
 		if (MidRound && !force) { this.TryConnect(SignalName.RoundEnd, Callable.From((int round) => AttemptGameEnd()), (uint)ConnectFlags.OneShot); return; }
 
-		PlayButton.Hide();
+		Ended = true;
+		VisibilityState = GameVisibilityState.ButtonsHidden;
 
 		CallableUtils.CallDeferred(() => {
 			// Trigger the pre ending node if it exists (the tutorial uses this to run the profile explanation, so the UI can't be hidden yet).
 			// Once it is finished (or if it didn't exist) then hide the UI and trigger the correct ending dialogue.
 			// Once that is finished, emit the game end signal.
+			InDialogue = true;
+			VisibilityState = GameVisibilityState.ButtonsHidden;
 			DialogueManager.TryRun($"{_suitorId}__pre_ending")
 				.AndThen(() => {
-					AffectionMeter.Hide(); RoundMeter.Hide(); TopicHand.Hide(); ActionHand.Hide(); PlayButton.Hide();
+					InDialogue = false;
+					VisibilityState = GameVisibilityState.AllHidden;
 					DialogueManager.TryRun($"{_suitorId}__ending__{AffectionState switch { AffectionState.Love => "love", AffectionState.Hate => "hate", AffectionState.Neutral => "neutral"}}")
 						.AndThen(() => EmitSignal(SignalName.GameEnd));
 				});
 		});
 	}
 
-	public void ForceGameEnd() { Round = NumRounds + 1; if (MidRound) AttemptGameEnd(true); }
-
 	// Deal up to each HandContainer's hand size, drawing from the working decks. Automatically handles tweens to animate them flying in from offscreen.
 	private void Deal() {
 		if (Engine.IsEditorHint()) return;
 
-		void DealToHand(HandContainer container, int handSize, Deck deck, Vector2 startPosition, float startAngle, double waitTime = 0.2) {
+		void DealToHand(HandContainer container, int handSize, Deck deck, Deck discardPile, Vector2 startPosition, float startAngle, double waitTime = 0.2) {
 			int cardsToDeal = Math.Max(handSize - container.GetChildCount(), 0);
 			List<string> cardsInHand = [..container.FindChildrenOfType<CardDisplay>().Select(x => x.CardId.ToString())];
 			foreach (var i in RangeOf<int>.UpTo(cardsToDeal)) {
-				var cardId = NoRepeatsInHand ? deck.DrawWhere(x => !cardsInHand.Contains(x)) : deck.Draw();
-				if (cardId is null) break;
+				string cardId = null;
+				int drawAttempts = 0;
+				while (cardId is null) {
+					drawAttempts++;
+					cardId = NoRepeatsInHand ? deck.DrawWhere(id => !cardsInHand.Contains(id)) : deck.Draw();
+					if (cardId is null) {
+						EmitSignal(SignalName.DeckRanOut);
+						// Reshuffle discard pile back into deck upon running out of cards
+						if (ReshuffleDiscardPileOnDeckRunOut) { deck.Add(discardPile); discardPile.Clear(); deck.Shuffle(); }
+						else break;
+					}
+					if (drawAttempts >= 20) break;
+				}
+				if (cardId is null) { Console.Error($"Failed to deal card from deck [{string.Join(", ", deck.Remaining)}] in {drawAttempts} attempts."); continue; }
 				cardsInHand.Add(cardId);
 				var cardDisplay = new CardDisplay{ CardId = cardId, ShadowOffset = new(-10, 1), ShadowOpacity = 0.4f, GlobalPosition = startPosition, RotationDegrees = startAngle };
 				GetTree().CreateTimer(waitTime * i).Timeout += () => container.AddChild(cardDisplay);
 			}
 		}
-		DealToHand(ActionHand, ActionHandSize, ActionWorking, new Vector2(-200f, 100f), -30f);
-		DealToHand(TopicHand, TopicHandSize, TopicWorking, new Vector2(500f, 100f), 30f);
+		DealToHand(ActionHand, ActionHandSize, ActionDeck, _actionDiscardPile, new Vector2(-200f, 100f), -30f);
+		DealToHand(TopicHand, TopicHandSize, TopicDeck, _topicDiscardPile, new Vector2(500f, 100f), 30f);
 	}
 
 	// Equivalent of Deal, but deterministic and instant (for display in the editor)
@@ -274,7 +515,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 			}
 		}
 
-		UpdateHand(ActionHand, ActionHandSize, ActionDeck);
-		UpdateHand(TopicHand, TopicHandSize, TopicDeck);
+		UpdateHand(ActionHand, ActionHandSize, FullLayoutActionDeck);
+		UpdateHand(TopicHand, TopicHandSize, FullLayoutTopicDeck);
 	}
 }
