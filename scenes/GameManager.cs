@@ -15,9 +15,10 @@ public sealed partial class GameManager : Node
 	
 	public static CardGameController CardGameController { get; private set; }
 
-	public static Control MainMenu { get; private set; }
+	public static MainMenu MainMenu { get; private set; }
+	public static SettingsMenu SettingsMenu { get; private set; }
 	public static Control Credits { get; private set; }
-	public static Control SplashScreen { get; private set; }
+	public static SplashScreen SplashScreen { get; private set; }
 	public static NotebookMenu NotebookMenu { get; private set; }
 
 	public static event Action CardGameChanged;
@@ -41,6 +42,7 @@ public sealed partial class GameManager : Node
 		_dialogueLayerScene = ResourceLoader.Load<PackedScene>("res://scenes/dialogue/dialogue_layer.tscn"),
 		_notebookLayerScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/notebook/notebook_layer.tscn"),
 		_mainMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/main/main_menu.tscn"),
+		_settingsMenuScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/settings/settings_menu.tscn"),
 		_creditsScene = ResourceLoader.Load<PackedScene>("res://scenes/game/credits.tscn"),
 		_splashScene = ResourceLoader.Load<PackedScene>("res://scenes/menu/splash/splash_screen.tscn");
 	
@@ -50,6 +52,7 @@ public sealed partial class GameManager : Node
 	public override void _EnterTree() {
 		if (Instance is not null) throw AutoloadException.For(this);
 		Instance = this;
+		ProcessMode = ProcessModeEnum.Always;
 		GetTree().Root.Connect(Node.SignalName.Ready, new Callable(this, MethodName.OnTreeReady), (uint)ConnectFlags.OneShot);
 	}
 	private void OnTreeReady() {
@@ -59,11 +62,12 @@ public sealed partial class GameManager : Node
 		Input.SetCustomMouseCursor(_cursorPointing, Input.CursorShape.PointingHand);
 
 		var gameLayer = AddLayer("game", 20);
-		var creditsLayer = AddLayer("credits", 30);
 		var dialogueLayer = AddLayer("dialogue", GetTree().Root.FindChildWhere<CanvasLayer>(x => x.SceneFilePath.Equals(_dialogueLayerScene.ResourcePath)) ?? _dialogueLayerScene.Instantiate<CanvasLayer>(), false);
 		var notebookLayer = AddLayer("notebook", GetTree().Root.FindChildWhere<CanvasLayer>(x => x.SceneFilePath.Equals(_notebookLayerScene.ResourcePath)) ?? _notebookLayerScene.Instantiate<CanvasLayer>(), false);
 		
-		var menuLayer = AddLayer("menu", 26);
+		var menuLayer = AddLayer("main_menu", 26);
+		var settingsLayer = AddLayer("settings", 27);
+		var creditsLayer = AddLayer("credits", 30);
 		var splashLayer = AddLayer("splash", 30);
 
 		var transitionLayer = AddLayer("transition", 99, false);
@@ -73,10 +77,13 @@ public sealed partial class GameManager : Node
 
 		NotebookMenu = notebookLayer.FindChildOfType<NotebookMenu>();
 
-		MainMenu = GetTree().Root.FindChildWhere<Control>(x => x.SceneFilePath.Equals(_mainMenuScene.ResourcePath));
+		MainMenu = GetTree().Root.FindChildWhere<MainMenu>(x => x.SceneFilePath.Equals(_mainMenuScene.ResourcePath));
 		if (MainMenu.IsValid()) menuLayer.AddOwnedChild(MainMenu, true);
 
-		SplashScreen = GetTree().Root.FindChildWhere<Control>(x => x.SceneFilePath.Equals(_splashScene.ResourcePath));
+		SettingsMenu = GetTree().Root.FindChildWhere<SettingsMenu>(x => x.SceneFilePath.Equals(_settingsMenuScene.ResourcePath));
+		if (SettingsMenu.IsValid()) settingsLayer.AddOwnedChild(SettingsMenu, true);
+
+		SplashScreen = GetTree().Root.FindChildWhere<SplashScreen>(x => x.SceneFilePath.Equals(_splashScene.ResourcePath));
 		if (SplashScreen.IsValid()) splashLayer.AddOwnedChild(SplashScreen, true);
 		
 		Credits = GetTree().Root.FindChildWhere<Control>(x => x.SceneFilePath.Equals(_creditsScene.ResourcePath));
@@ -91,11 +98,16 @@ public sealed partial class GameManager : Node
 		}
 
 		if (MainMenu.IsValid() && !SplashScreen.IsValid() && !CardGameController.IsValid() && !SplashScreen.IsValid()) {
-			SplashScreen = _splashScene.Instantiate<Control>(); GetLayer("splash").AddChild(SplashScreen);
+			SplashScreen = _splashScene.Instantiate<SplashScreen>(); GetLayer("splash").AddChild(SplashScreen);
 		}
 	}
 
 	private static bool _inTransition = false;
+
+	private static void ClearLayer(string name) {
+		var layer = GetLayer(name);
+		foreach (var child in layer?.GetChildren() ?? []) { layer.RemoveChild(child); child.QueueFree(); }
+	}
 
 	private static void ClearLoadedScenesExcept(params IEnumerable<string> ignoreLayers) {
 		if (!Instance.IsValid()) return;
@@ -120,10 +132,31 @@ public sealed partial class GameManager : Node
 				_ when GetLayer("splash").FindChildOfType<SplashScreen>() is SplashScreen splash && !splash.UseSplashScreen => SceneTransition.Type.Cut,
 				_ when GetLayer("credits").GetChildCount() > 0 || GetLayer("splash").GetChildCount() > 0 => SceneTransition.Type.CrossFade,
 				_ => SceneTransition.Type.FadeToBlack
-			}, "menu", () => {
-			MainMenu = _mainMenuScene.Instantiate<Control>(); GetLayer("menu").AddChild(MainMenu);
+			}, "main_menu", () => {
+			MainMenu = _mainMenuScene.Instantiate<MainMenu>(); GetLayer("main_menu").AddChild(MainMenu);
 			SetNotebookActive(false);
 		});
+	}
+
+	public static void SwitchToSettings() {
+		if (!Instance.IsValid()) return;
+
+	    InputManager.PushToFocusStack();
+
+		float settingsFadeDuration = 0.8f;
+
+		SceneTransition.Create(
+			SceneTransition.Type.CrossFade, "settings", settingsFadeDuration,
+			() => {
+				SettingsMenu = _settingsMenuScene.Instantiate<SettingsMenu>(); GetLayer("settings").AddChild(SettingsMenu);
+				SettingsMenu.OnExit += () => {
+					SceneTransition.Create(SceneTransition.Type.FadeOut, "settings", settingsFadeDuration)
+						.SetClearScenes(false)
+						.SetPostStep(() => { InputManager.PopFromFocusStack(); ClearLayer("settings"); })
+						.Run();
+				};
+			}
+		).SetClearScenes(false).Run();
 	}
 	
 	public static void SwitchToCredits() {
@@ -170,21 +203,22 @@ public sealed partial class GameManager : Node
 
 	private class SceneTransition
 	{
-		public enum Type { Cut, FadeToBlack, CrossFade }
+		public enum Type { Cut, FadeToBlack, CrossFade, FadeOut }
 
-		private readonly Action _loadStep;
+		private Action _loadStep = null; private Action _postStep = null;
 		private Type _type; private float? _duration; private string _fadeLayer;
 		private Tween.TransitionType _interpolation = Tween.TransitionType.Quad;
+		private bool _clearScenes = true; private IEnumerable<string> _clearIgnoreLayers = [];
 
 		public float Duration => _duration switch { null or <0 => _type switch { Type.Cut => 0f, _ => 1.5f }, _ => (float)_duration };
 
 		private SceneTransition(Action loadStep, Type type, float? duration = null, string fadeLayer = null) { _type = type; _loadStep = loadStep; _duration = duration; _fadeLayer = fadeLayer; }
 
-		public static SceneTransition Create(Action loadStep) => new(loadStep, Type.Cut);
-		public static SceneTransition Create(Type type, Action loadStep) => new(loadStep, type);
-		public static SceneTransition Create(Type type, float duration, Action loadStep) => new(loadStep, type, duration);
-		public static SceneTransition Create(Type type, string fadeLayer, float duration, Action loadStep) => new(loadStep, type, duration, fadeLayer);
-		public static SceneTransition Create(Type type, string fadeLayer, Action loadStep) => new(loadStep, type, null, fadeLayer);
+		public static SceneTransition Create(Action loadStep = null) => new(loadStep, Type.Cut);
+		public static SceneTransition Create(Type type, Action loadStep = null) => new(loadStep, type);
+		public static SceneTransition Create(Type type, float duration, Action loadStep = null) => new(loadStep, type, duration);
+		public static SceneTransition Create(Type type, string fadeLayer, Action loadStep = null) => new(loadStep, type, null, fadeLayer);
+		public static SceneTransition Create(Type type, string fadeLayer, float duration, Action loadStep = null) => new(loadStep, type, duration, fadeLayer);
 		
 		public static SignalAwaiter Run(Action loadStep) => Create(loadStep).Run();
 		public static SignalAwaiter Run(Type type, Action loadStep) => Create(type, loadStep).Run();
@@ -192,10 +226,14 @@ public sealed partial class GameManager : Node
 		public static SignalAwaiter Run(Type type, string fadeLayer, float duration, Action loadStep) => Create(type, fadeLayer, duration, loadStep).Run();
 		public static SignalAwaiter Run(Type type, string fadeLayer, Action loadStep) => Create(type, fadeLayer, loadStep).Run();
 
+		public SceneTransition SetLoadStep(Action loadStep) { _loadStep = loadStep; return this; }
+		public SceneTransition SetPostStep(Action postStep) { _postStep = postStep; return this; }
 		public SceneTransition SetType(Type type) { _type = type; return this; }
 		public SceneTransition SetDuration(float duration) { _duration = duration; return this; }
 		public SceneTransition SetInterpolation(Tween.TransitionType interpolation) { _interpolation = interpolation; return this; }
 		public SceneTransition SetFadeLayer(string name) { _fadeLayer = name; return this; }
+		public SceneTransition SetClearScenes(bool clearScenes) { _clearScenes = clearScenes; return this; }
+		public SceneTransition SetClearIgnoreLayers(IEnumerable<string> ignoreLayers) { _clearIgnoreLayers = ignoreLayers; return this; }
 
 		public SignalAwaiter Run() {
 			//Console.Info($"Transition of type {Enum.GetName(_type)} {(_fadeLayer is not null ? $"to {_fadeLayer} " : "")}over {Duration}s : {_inTransition}");
@@ -207,22 +245,33 @@ public sealed partial class GameManager : Node
 			var tween = _type switch {
 				Type.Cut => PerformCut(),
 				Type.FadeToBlack => PerformFadeToBlack(),
-				Type.CrossFade => PerformCrossFade()
+				Type.CrossFade => PerformCrossFade(),
+				Type.FadeOut => PerformFadeOut()
 			};
 			tween.TweenCallback(() => _inTransition = false);
 			return Instance.ToSignal(tween, Tween.SignalName.Finished);
 		}
 
+		private void AttemptClearScenes(bool ignoreFadeLayer = false) { if (_clearScenes) ClearLoadedScenesExcept(ignoreFadeLayer ? _clearIgnoreLayers.Append(_fadeLayer) : _clearIgnoreLayers); }
+
 		private Tween PerformCut() {
 			var tween = Instance.CreateTween();
-			var callbackTweener = tween.TweenCallback(() => { ClearLoadedScenes(); _loadStep?.Invoke(); foreach (var (name, layer) in _layers.Where(x => x.Key != "transition")) layer.Show(); });
+			var callbackTweener = tween.TweenCallback(() => {
+				AttemptClearScenes(); _loadStep?.Invoke();
+				foreach (var (name, layer) in _layers.Where(x => x.Key != "transition")) layer.Show();
+				_postStep?.Invoke();
+			});
 			if (Duration > 0) callbackTweener.SetDelay(Duration);
 			return tween;
 		}
 
 		private Tween PerformFadeToBlack() {
 			var tween = FadeLayer("transition", FadeType.In, Duration / 2, _interpolation);
-			tween.TweenCallback(() => { ClearLoadedScenes(); _loadStep?.Invoke(); foreach (var (name, layer) in _layers.Where(x => x.Key != "transition")) layer.Show(); });
+			tween.TweenCallback(() => {
+				AttemptClearScenes(); _loadStep?.Invoke();
+				foreach (var (name, layer) in _layers.Where(x => x.Key != "transition")) layer.Show();
+				_postStep?.Invoke();
+			});
 			FadeLayer("transition", FadeType.Out, Duration / 2, _interpolation, tween);
 			return tween;
 		}
@@ -244,7 +293,22 @@ public sealed partial class GameManager : Node
 			}
 			else FadeLayer(_fadeLayer, FadeType.In, Duration, _interpolation, tween);
 
-			tween.TweenCallback(() => ClearLoadedScenesExcept(_fadeLayer));
+			tween.TweenCallback(() => {
+				AttemptClearScenes(true);
+				_postStep?.Invoke();
+			});
+			return tween;
+		}
+
+		private Tween PerformFadeOut() {
+			_loadStep?.Invoke();
+			var tween = Instance.CreateTween();
+			if (_fadeLayer is null) return tween;
+			FadeLayer(_fadeLayer, FadeType.Out, Duration, _interpolation, tween);
+			tween.TweenCallback(() => {
+				AttemptClearScenes();
+				_postStep?.Invoke();
+			});
 			return tween;
 		}
 
