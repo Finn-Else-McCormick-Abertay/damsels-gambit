@@ -16,7 +16,7 @@ public partial class EndScreen : Control
 		RetryButton?.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnRetry));
 		QuitButton?.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnQuit));
 		CreditsButton?.TryConnect(BaseButton.SignalName.Pressed, new Callable(this, MethodName.OnCredits));
-		RetryButton?.GrabFocus();
+		//RetryButton?.GrabFocus();
 		this.TryConnect(CanvasItem.SignalName.VisibilityChanged, new Callable(this, MethodName.OnVisibilityChanged));
 		OnVisibilityChanged();
 	}

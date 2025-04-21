@@ -18,6 +18,8 @@ public sealed partial class InputManager : Node
 	public static bool ShouldOverrideGuiInput { get; set; } = true;
 	public static bool ShouldDisplayFocusDebugInfo { get; set; } = false;//OS.HasFeature("debug");
 
+	public static readonly string InputConfigPath = "user://input_config.tres";
+
 	public static class Actions
 	{
     	public static readonly GUIDEAction Play, Discard, Profile, Accept, Back, UIDirection, Pause, SelectAt, Cursor, CursorRelative, Drag, Click, ClickHold;

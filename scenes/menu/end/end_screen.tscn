@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://bbcqsg3cgg3xq"]
+[gd_scene load_steps=6 format=3 uid="uid://bbcqsg3cgg3xq"]
 
 [ext_resource type="Theme" uid="uid://bf1esp424fk84" path="res://assets/ui/theme/default_theme.tres" id="1_vmqh1"]
 [ext_resource type="Script" uid="uid://fp5bkpodn2kg" path="res://scenes/menu/end/EndScreen.cs" id="2_g0krg"]
+[ext_resource type="Script" uid="uid://dqd1s3evebw6g" path="res://scenes/input/focus/FocusContext.cs" id="3_iqr2r"]
 
 [sub_resource type="Gradient" id="Gradient_hjb8g"]
 colors = PackedColorArray(0, 0, 0, 0.47451, 0, 0, 0, 0)
@@ -24,6 +25,12 @@ MessageLabel = NodePath("Label")
 RetryButton = NodePath("VBoxContainer/Play Again")
 QuitButton = NodePath("VBoxContainer/Quit To Title")
 CreditsButton = NodePath("VBoxContainer/Credits")
+
+[node name="FocusContext" type="Node" parent="."]
+script = ExtResource("3_iqr2r")
+Priority = 4
+FocusDefault = "../VBoxContainer"
+metadata/_custom_type_script = "uid://dqd1s3evebw6g"
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1

@@ -1,7 +1,8 @@
-[gd_scene load_steps=21 format=3 uid="uid://ccmhxutm5bcmr"]
+[gd_scene load_steps=22 format=3 uid="uid://ccmhxutm5bcmr"]
 
 [ext_resource type="Script" uid="uid://bonisd2egs36k" path="res://scenes/game/credits.gd" id="1_oap8i"]
 [ext_resource type="Texture2D" uid="uid://2cbl24t405i5" path="res://assets/ui/panels/Paper texture.png" id="2_n7njp"]
+[ext_resource type="Script" uid="uid://dqd1s3evebw6g" path="res://scenes/input/focus/FocusContext.cs" id="2_nje8h"]
 [ext_resource type="Texture2D" uid="uid://347p4fnedn1a" path="res://assets/logo/logo.png" id="3_pqmjv"]
 [ext_resource type="Texture2D" uid="uid://w7eint5yll7f" path="res://assets/items/escargot_1.png" id="5_ox8i4"]
 [ext_resource type="Texture2D" uid="uid://bytf0g5obmdce" path="res://assets/items/human_teeth_dress_1.png" id="6_s70fa"]
@@ -31,6 +32,12 @@ grow_vertical = 2
 script = ExtResource("1_oap8i")
 credits_text = NodePath("CreditsText")
 skip_button = NodePath("Skip")
+
+[node name="FocusContext" type="Node" parent="."]
+script = ExtResource("2_nje8h")
+Priority = 8
+FocusDefault = "../Skip"
+metadata/_custom_type_script = "uid://dqd1s3evebw6g"
 
 [node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
