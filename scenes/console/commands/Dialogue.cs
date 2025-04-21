@@ -159,9 +159,15 @@ public class Dialogue : Console.Command
 
         result.WithParsed<RunOptions>(options => DialogueManager.Run(options.Node, true));
 
-        result.WithParsed<LearnOptions>(options => DialogueManager.Knowledge.Learn(options.Fact));
+        result.WithParsed<LearnOptions>(options => {
+            if (options.Fact.Trim().Equals("all", StringComparison.CurrentCultureIgnoreCase)) foreach (var fact in Knowledge.AllFacts) DialogueManager.Knowledge.Learn(fact);
+            else DialogueManager.Knowledge.Learn(options.Fact);
+        });
 
-        result.WithParsed<UnlearnOptions>(options => DialogueManager.Knowledge.Unlearn(options.Fact));
+        result.WithParsed<UnlearnOptions>(options => {
+            if (options.Fact.Trim().Equals("all", StringComparison.CurrentCultureIgnoreCase)) foreach (var fact in Knowledge.AllFacts) DialogueManager.Knowledge.Unlearn(fact);
+            else DialogueManager.Knowledge.Unlearn(options.Fact);
+        });
 
         result.WithParsed<LoggingOptions>(options => ((Action)(options.State.ToLower() switch {
             "enable" or "verbose" => () => DialogueManager.VerboseLogging = true,
@@ -210,7 +216,7 @@ public class Dialogue : Console.Command
                 _ => []
             },
             "run" when args.Length == 2 => GetNodeAutofill(),
-            "learn" or "unlearn" when args.Length == 2 => Knowledge.AllFacts,
+            "learn" or "unlearn" when args.Length == 2 => new string[]{ "all" }.Concat(Knowledge.AllFacts),
             "logging" when args.Length == 2 => [ "enable", "disable", "verbose" ],
             _ => []
         };

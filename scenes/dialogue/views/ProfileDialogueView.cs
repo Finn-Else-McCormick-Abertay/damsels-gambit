@@ -60,8 +60,6 @@ public partial class ProfileDialogueView : Node, DialogueViewBase
 
 		var lineText = line.Text.AsBBCode(out var metaData);
 
-		Console.Info(metaData.ToPrettyString());
-
 		foreach (var marginaliaName in metaData) { if (Marginalia.TryGetValue(marginaliaName, out var nodePath) && GetNodeOrNull<CanvasItem>(nodePath) is CanvasItem item && item.IsValid()) item.Show(); }
 
 		if (HasTag("title")) Title.Text = lineText;

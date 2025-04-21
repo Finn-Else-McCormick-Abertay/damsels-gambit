@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://gqmapmoqb22o"]
+[gd_scene load_steps=4 format=3 uid="uid://gqmapmoqb22o"]
 
 [ext_resource type="Theme" uid="uid://cj01ghso8eli6" path="res://assets/ui/theme/dialogue/default.tres" id="1_jkk5n"]
 [ext_resource type="Script" uid="uid://bvc0jwckt327w" path="res://scenes/dialogue/views/DialogueView.cs" id="2_jkk5n"]
+[ext_resource type="Script" uid="uid://dqd1s3evebw6g" path="res://scenes/input/focus/FocusContext.cs" id="3_lx6dg"]
 
 [node name="DialogueView" type="Control" node_paths=PackedStringArray("Root", "TitleRoot", "LineRoot", "OptionVisualRoot", "OptionRoot", "OptionArchetype", "ContinueButton")]
 layout_mode = 3
@@ -20,9 +21,19 @@ OptionRoot = NodePath("Root/VBoxContainer/OptionPaddingContainer/OptionContainer
 OptionArchetype = NodePath("Root/VBoxContainer/OptionPaddingContainer/OptionContainer/OptionArchetype")
 ContinueButton = NodePath("Root/Continue")
 
+[node name="FocusContext" type="Node" parent="."]
+script = ExtResource("3_lx6dg")
+Priority = 5
+FocusDefault = "../Root/Continue"
+FocusFromLeft = "../Root/Continue"
+FocusFromRight = "../Root/Continue"
+FocusFromTop = "$if exists ../../SkipIntro then ../../SkipIntro else ../Root/Continue"
+FocusFromBottom = "../Root/Continue"
+metadata/_custom_type_script = "uid://dqd1s3evebw6g"
+
 [node name="Root" type="Control" parent="."]
-layout_mode = 2
-anchors_preset = 0
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
