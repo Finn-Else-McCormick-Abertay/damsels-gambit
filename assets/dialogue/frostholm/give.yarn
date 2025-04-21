@@ -59,7 +59,7 @@ Princess Penelope: I thought you might like this...
 title: frostholm__give_religion
 ---
 Princess Penelope: I got this for you. It's a...
-	-> Snail idol! It'll portect you from evil!
+	-> Snail idol! It'll protect you from evil!
 		<<score 3>>
 		<<prop animate snail_idol>>
 	-> Book disproving Snurch... <<if knows("afterlife_ring")>>
@@ -67,6 +67,7 @@ Princess Penelope: I got this for you. It's a...
 		<<prop animate book_disproving_snurch random>>
 	-> Gospel of our kingdom's religion!
 		<<score -3>>
+		<<prop animate gospel>>
 ===
 
 title: frostholm__give_children
