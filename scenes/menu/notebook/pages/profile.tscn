@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://dxgjxwnt0yhqf" path="res://scenes/dialogue/views/ProfileDialogueView.cs" id="3_a4plf"]
 [ext_resource type="Script" uid="uid://cbqc0snx0l0pi" path="res://scenes/menu/notebook/PivotPoint.cs" id="4_bpofr"]
 [ext_resource type="Texture2D" uid="uid://bfoqt200g8dkj" path="res://assets/characters/frostholm/suitor_card.png" id="5_n3mgi"]
-[ext_resource type="Texture2D" uid="uid://bcb71840w4jl2" path="res://assets/ui/panels/decals/pattern_flowers.png" id="8_sijwl"]
+[ext_resource type="Texture2D" uid="uid://b2f25ys4j45j0" path="res://assets/ui/panels/decals/pattern_flowers_lighter.png" id="8_sijwl"]
 
 [sub_resource type="Gradient" id="Gradient_fkj1o"]
 interpolation_mode = 2
