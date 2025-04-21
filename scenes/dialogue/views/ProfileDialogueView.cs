@@ -18,6 +18,8 @@ public partial class ProfileDialogueView : Node, DialogueViewBase
 	[Export] private RichTextLabel Label { get; set; }
 	[Export] private TextureRect Portrait { get; set; }
 
+	[Export] private Godot.Collections.Dictionary<string, NodePath> Marginalia { get; set; }
+
 	private StringBuilder _stringBuilder;
 
 	public override void _EnterTree() {
@@ -46,6 +48,8 @@ public partial class ProfileDialogueView : Node, DialogueViewBase
 
 		if (Portrait.IsValid() && complexTags.TryGetValue("portrait", out var path)) Portrait.Texture = ResourceLoader.Load<Texture2D>($"res://{path.Replace('\\','/').StripFront("res://")}");
 
+		foreach (var (name, nodePath) in Marginalia) { var item = GetNodeOrNull<CanvasItem>(nodePath); if (item.IsValid()) item.Hide(); }
+
 		Title.Text = ""; Subtitle.Text = ""; Label.Text = "";
 	}
 
@@ -54,7 +58,11 @@ public partial class ProfileDialogueView : Node, DialogueViewBase
 
 		bool HasTag(string tag) => line.Metadata?.Any(x => x.MatchN(tag)) ?? false;
 
-		var lineText = line.Text.AsBBCode();
+		var lineText = line.Text.AsBBCode(out var metaData);
+
+		Console.Info(metaData.ToPrettyString());
+
+		foreach (var marginaliaName in metaData) { if (Marginalia.TryGetValue(marginaliaName, out var nodePath) && GetNodeOrNull<CanvasItem>(nodePath) is CanvasItem item && item.IsValid()) item.Show(); }
 
 		if (HasTag("title")) Title.Text = lineText;
 		else if (HasTag("subtitle")) Subtitle.Text = lineText;

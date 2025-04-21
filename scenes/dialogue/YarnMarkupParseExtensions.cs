@@ -8,12 +8,17 @@ namespace DamselsGambit.Dialogue;
 
 public static class YarnMarkupParseExtensions
 {
-    public static string AsBBCode(this Yarn.Markup.MarkupParseResult result) {
+    public static string AsBBCode(this Yarn.Markup.MarkupParseResult result) => result.AsBBCode(out var _);
 
+    public static string AsBBCode(this Yarn.Markup.MarkupParseResult result, out IEnumerable<string> metaData) {
+
+        List<string> metaDataList = [];
         Dictionary<int, List<string>> insertions = [];
         Dictionary<int, int> removals = [];
+
+        var interpretedAttributes = result.Attributes.Select(InterpretAttribute);
         
-        foreach (var (Position, Length, Name, Properties, UseTag, UseText, ReplacementText) in result.Attributes.Select(InterpretAttribute)) {
+        foreach (var (Position, Length, Name, Properties, UseTag, UseText, ReplacementText) in interpretedAttributes) {
             if (UseTag) {
                 var sb = new StringBuilder();
                 sb.Append('[').Append(Name);
@@ -47,6 +52,11 @@ public static class YarnMarkupParseExtensions
             });
         }
 
+        foreach (var validMarginaliaAttribute in interpretedAttributes.Where(x => x.Name == "marginalia" && !removals.Any(removal => x.Position >= removal.Key && x.Position <= removal.Key + removal.Value))) {
+            if (validMarginaliaAttribute.Properties.TryGetValue("marginalia", out var marginaliaName)) metaDataList.Add(marginaliaName);
+        }
+
+        metaData = metaDataList;
         return text;
     }
 
@@ -83,6 +93,9 @@ public static class YarnMarkupParseExtensions
         if (tuple.Name.Match("br")) {
             tuple.UseTag = false;
             tuple.ReplacementText = "\n";
+        }
+        if (tuple.Name.Match("marginalia")) {
+            tuple.UseTag = false;
         }
         return tuple;
     }
