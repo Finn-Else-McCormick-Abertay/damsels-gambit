@@ -342,7 +342,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		// Increment counters
 		UsedDiscardsThisGame++; UsedDiscardsThisRound++;
 
-		var cardsDiscarded = TopicHand.GetSelected().Concat(ActionHand.GetSelected()).Select(x => x.CardId).ToList();
+		var cardsDiscarded = TopicHand.GetSelected().Concat(ActionHand.GetSelected()).Select(x => x.CardId).Select(x => x.ToString()).ToArray();
 
 		void DiscardSelected(HandContainer hand) =>
 			hand.GetSelected().ForEach(card => {
@@ -365,31 +365,21 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 			// If no node can be selected, it will try '{suitor}__post_discard_fallback'. The fallback can appear multiple times, even if SkipAlreadySeenDiscardDialogues is true.
 			// If no node can resolve at all, it will simply skip past the dialogue step.
 
-			string dialogueNode = null;
 			var variants = DialogueManager.GetNodeNames().Where(x => x.StartsWith($"{_suitorId}__post_discard")).Where(x => x != $"{_suitorId}__post_discard_fallback");
 			if (SkipAlreadySeenDiscardDialogues) variants = variants.Where(x => !_usedDiscardDialogues.Contains(x));
 
 			List<string> highPriorityVariants = [];
 			variants = variants.Where(node => {
 				var tags = DialogueManager.Runner.GetTagsForNode(node);
+				List<string> allowedCards = [], disallowedCards = [];
+				bool isHighPriority = false;
 				foreach (var tag in tags) {
 					if (tag.Contains('=')) {
-						var equalsSplit = tag.Split('=', StringSplitOptions.TrimEntries);
-						List<string> allowedCards = [], disallowedCards = [];
-						switch (equalsSplit.First().ToLower()) {
-							case "action": {
-								var cardArgs = equalsSplit.Last().Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-								allowedCards.AddRange(cardArgs.Where(x => !x.StartsWith('!')).Select(x => $"action/{x.ToLower()}"));
-								disallowedCards.AddRange(cardArgs.Where(x => x.StartsWith('!')).Select(x => $"action/{x.StripFront('!').ToLower()}"));
-							} break;
-							case "topic": {
-								var cardArgs = equalsSplit.Last().Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-								allowedCards.AddRange(cardArgs.Where(x => !x.StartsWith('!')).Select(x => $"topic/{x.ToLower()}"));
-								disallowedCards.AddRange(cardArgs.Where(x => x.StartsWith('!')).Select(x => $"topic/{x.StripFront('!').ToLower()}"));
-							} break;
-							default: break;
-						}
-						//Console.Info($"Node: {node}, Tag: {tag} -> AllowedCards: [{string.Join(", ", allowedCards)}], DisallowedCards: [{string.Join(", ", disallowedCards)}]");
+						var equalsSplit = tag.Split('=', 2, StringSplitOptions.TrimEntries);
+						string cardType = equalsSplit.First().ToLower();
+						string[] args = equalsSplit.Last().Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+						allowedCards.AddRange(args.Where(x => !x.StartsWith('!')).Select(x => $"{cardType}/{x.ToLower()}"));
+						disallowedCards.AddRange(args.Where(x => x.StartsWith('!')).Select(x => $"{cardType}/{x.StripFront('!').ToLower()}"));
 						if (allowedCards.Count == 0 && disallowedCards.Count == 0) continue;
 						foreach (var disallowedCard in disallowedCards) { if (cardsDiscarded.Contains(disallowedCard)) return false; }
 						if (allowedCards.Count > 0) {
@@ -398,19 +388,22 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 							if (!anyAllowed) return false;
 						}
 					}
-					if (Case.ToSnake(tag) == "high_priority") highPriorityVariants.Add(node);
+					if (Case.ToSnake(tag) == "high_priority") isHighPriority = true;
 				}
+				Console.Info($"Node: {node}, AllowedCards: [{string.Join(", ", allowedCards)}], DisallowedCards: [{string.Join(", ", disallowedCards)}]{isHighPriority switch { true => ", HighPriority", false => "" }}");
+				if (disallowedCards.Any(cardsDiscarded.Contains) || (allowedCards.Count > 0 && !allowedCards.Any(cardsDiscarded.Contains))) return false;
+				if (isHighPriority) highPriorityVariants.Add(node);
 				return true;
 			});
 
-			//Console.Info($"Variants: {variants.ToPrettyString()}, High Priority: {highPriorityVariants.ToPrettyString()}");
+			Console.Info($"Variants: {variants.ToPrettyString()}, High Priority: {highPriorityVariants.ToPrettyString()}");
 
 			// If some possible nodes are denoted as high priority, select from only them
 			if (highPriorityVariants.Count > 0) variants = highPriorityVariants;
 
 			// Pick at random from possible options
 			variants = variants.OrderBy(x => Random.Shared.Next());
-			dialogueNode = variants.FirstOrDefault();
+			string dialogueNode = variants.FirstOrDefault();
 
 			if (dialogueNode is null && DialogueManager.DialogueExists($"{_suitorId}__post_discard_fallback")) dialogueNode = $"{_suitorId}__post_discard_fallback";
 
