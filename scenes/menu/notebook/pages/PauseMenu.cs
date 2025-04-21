@@ -32,30 +32,8 @@ public partial class PauseMenu : Control, IFocusContext, IFocusableContainer, IB
 
     public override void _Ready() {
         Active = false;
-        SettingsButton?.Connect(BaseButton.SignalName.Pressed, OnSettingsPressed);
+        SettingsButton?.Connect(BaseButton.SignalName.Pressed, GameManager.SwitchToSettings);
         QuitButton?.Connect(BaseButton.SignalName.Pressed, OnQuit);
-    }
-
-    private void OnSettingsPressed() {
-	    InputManager.PushToFocusStack();
-
-        if (_settingsMenu.IsValid()) { _settingsMenu.QueueFree(); _settingsMenu = null; }
-
-        _settingsMenu = SettingsMenuScene?.Instantiate<SettingsMenu>();
-        GameManager.GetLayer("menu").AddChild(_settingsMenu);
-        _settingsMenu.ProcessMode = ProcessModeEnum.WhenPaused;
-
-        _settingsMenu.OnExit += OnExitSettingsMenu;
-    }
-
-    private void OnExitSettingsMenu() {
-        _settingsMenu.OnExit -= OnExitSettingsMenu;
-
-        _settingsMenu.Hide();
-        _settingsMenu.QueueFree();
-        _settingsMenu = null;
-
-	    InputManager.PopFromFocusStack();
     }
 
     private void OnQuit() {

@@ -390,13 +390,13 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 					}
 					if (Case.ToSnake(tag) == "high_priority") isHighPriority = true;
 				}
-				Console.Info($"Node: {node}, AllowedCards: [{string.Join(", ", allowedCards)}], DisallowedCards: [{string.Join(", ", disallowedCards)}]{isHighPriority switch { true => ", HighPriority", false => "" }}");
+				//Console.Info($"Node: {node}, AllowedCards: [{string.Join(", ", allowedCards)}], DisallowedCards: [{string.Join(", ", disallowedCards)}]{isHighPriority switch { true => ", HighPriority", false => "" }}");
 				if (disallowedCards.Any(cardsDiscarded.Contains) || (allowedCards.Count > 0 && !allowedCards.Any(cardsDiscarded.Contains))) return false;
 				if (isHighPriority) highPriorityVariants.Add(node);
 				return true;
 			});
 
-			Console.Info($"Variants: {variants.ToPrettyString()}, High Priority: {highPriorityVariants.ToPrettyString()}");
+			//Console.Info($"Variants: {variants.ToPrettyString()}, High Priority: {highPriorityVariants.ToPrettyString()}");
 
 			// If some possible nodes are denoted as high priority, select from only them
 			if (highPriorityVariants.Count > 0) variants = highPriorityVariants;
