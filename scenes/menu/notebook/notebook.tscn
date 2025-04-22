@@ -35,6 +35,7 @@ PauseMenuTurnDuration = 0.25
 PauseMenuTransitionType = 4
 KnowledgeAnimOffset = Vector2(-50, 0)
 KnowledgeAnimAngle = 0.0872665
+KnowledgeAnimRepeats = 2
 LayerContainer = NodePath("Root/ViewportLayerContainer")
 PauseBackground = NodePath("PauseLayer/ColorRect")
 FallbackRoot = NodePath("Root")
