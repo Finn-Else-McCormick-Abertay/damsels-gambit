@@ -44,7 +44,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	public bool IntroSkippable { get; private set; } = false;
 
 	[ExportCategory("Rounds")]
-	[Export(PropertyHint.Range, "0,20,")] public int NumRounds { get; private set { field = value; RoundMeter?.OnReady(() => RoundMeter.NumRounds = NumRounds); } } = 8;
+	[Export(PropertyHint.Range, "0,20,")] public int NumRounds { get; private set { field = value; this.OnReady(() => RoundMeter.NumRounds = NumRounds); } } = 8;
 	[Export] private bool QuestionsTriggerRoundEnd { get; set; } = false;
 	
 	[ExportGroup("Score")]
