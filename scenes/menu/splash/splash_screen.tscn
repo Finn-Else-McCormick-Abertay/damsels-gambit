@@ -204,7 +204,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_j8que")
 script = ExtResource("1_j8que")
-UseSplashScreen = false
 SplashHoldTime = 2.3
 
 [node name="Background" type="Control" parent="."]

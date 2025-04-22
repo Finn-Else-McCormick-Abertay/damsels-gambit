@@ -86,7 +86,7 @@ Princess Penelope: Here this...
 		<<score 3>>
 		<<prop animate skunting_gear>>
 	-> Snail bracelet! (Designer too!)
-		<<score -3>>
+		<<score -4>>
 		<<prop animate snail_bracelet random>>
 ===
 
