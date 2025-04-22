@@ -38,8 +38,9 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 	[ExportSubgroup("Knowledge Animation", "KnowledgeAnim")]
 	[Export] public Vector2 KnowledgeAnimOffset { get; set; }
 	[Export(PropertyHint.Range, "-90,90,0.001,radians")] public double KnowledgeAnimAngle { get; set; } = 0.0;
-	[Export(PropertyHint.Range, "0,1,or_greater,suffix:s")] private double KnowledgeAnimDuration { get; set; } = 0.3;
+	[Export(PropertyHint.Range, "0,1,or_greater,suffix:s")] private double KnowledgeAnimDuration { get; set; } = 0.6;
 	[Export] private Tween.TransitionType KnowledgeAnimTransitionType { get; set; } = Tween.TransitionType.Linear;
+	[Export] private int KnowledgeAnimRepeats { get; set; } = 1;
 
 	[ExportGroup("Nodes")]
 	[Export] private ViewportLayerContainer LayerContainer { get; set { field = value; UpdateLayerReferences(); } }
@@ -154,11 +155,19 @@ public partial class NotebookMenu : Control, IFocusableContainer, IReloadableToo
 			backgroundTween?.TweenCallback(UpdateLayer);
 		}
 	}
+
 	private void TriggerOneshotAnimation(OneshotAnimation animation) {
 		if (animation == OneshotAnimation.KnowledgeGained && !State.IsAnyOf(AnimationState.Open, AnimationState.PauseMenu)) {
 			var rootTween = CreateTweenFor(Root);
-			rootTween?.TweenProperty(Root, Control.PropertyName.Position, KnowledgeAnimOffset, KnowledgeAnimDuration)?.AsRelative()?.SetTrans(KnowledgeAnimTransitionType);
-			CreateTweenFor(CoverPivot)?.TweenProperty(CoverPivot, Control.PropertyName.Rotation + ":y", KnowledgeAnimAngle, KnowledgeAnimDuration)?.AsRelative()?.SetTrans(KnowledgeAnimTransitionType);
+			var coverTween = CreateTweenFor(CoverPivot);
+
+			foreach (int i in RangeOf<int>.UpTo(KnowledgeAnimRepeats)) {
+				rootTween?.TweenProperty(Root, Control.PropertyName.Position, KnowledgeAnimOffset, KnowledgeAnimDuration / KnowledgeAnimRepeats / 2)?.AsRelative()?.SetTrans(KnowledgeAnimTransitionType);
+				rootTween?.TweenProperty(Root, Control.PropertyName.Position, -KnowledgeAnimOffset, KnowledgeAnimDuration / KnowledgeAnimRepeats / 2)?.AsRelative()?.SetTrans(KnowledgeAnimTransitionType);
+
+				coverTween?.TweenProperty(CoverPivot, Control.PropertyName.Rotation + ":y", KnowledgeAnimAngle, KnowledgeAnimDuration / KnowledgeAnimRepeats / 2)?.AsRelative()?.SetTrans(KnowledgeAnimTransitionType);
+				coverTween?.TweenProperty(CoverPivot, Control.PropertyName.Rotation + ":y", -KnowledgeAnimAngle, KnowledgeAnimDuration / KnowledgeAnimRepeats / 2)?.AsRelative()?.SetTrans(KnowledgeAnimTransitionType);
+			}
 			
 			rootTween?.TweenCallback(() => CallableUtils.CallDeferred(() => AnimateStateChange(State, State, true)));
 		}
