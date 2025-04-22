@@ -15,7 +15,7 @@ jobs:
   build:
     uses: ./.github/workflows/build.yml
   release:
-    name: Release pushed tag
+    name: Create Release
     needs: build
     runs-on: ubuntu-latest
     steps:
