@@ -41,13 +41,13 @@ jobs:
           path: linux
       - name: Zip up Linux Artifact
         run: zip -r linux.zip linux/*
-      - name: Download Mac Artifact
+      - name: Download MacOS Artifact
         uses: actions/download-artifact@v4
         with:
-          name: mac
-          path: mac
-      - name: Zip up Mac Artifact
-        run: zip -r mac.zip mac/*
+          name: macos
+          path: macos
+      - name: Zip up MacOS Artifact
+        run: zip -r macos.zip macos/*
       - name: Upload artifacts to release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -56,6 +56,6 @@ jobs:
           gh release upload "$tag" \
             windows.zip \
             linux.zip \
-            mac.zip \
+            macos.zip \
             --repo="$GITHUB_REPOSITORY"
       
