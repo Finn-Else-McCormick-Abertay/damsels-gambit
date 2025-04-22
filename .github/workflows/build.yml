@@ -1,10 +1,5 @@
 name: "build"
 
-env:
-  GODOT_VERSION: 4.4
-  EXPORT_NAME: damsels-gambit
-  PROJECT_PATH: .
-
 on:
   workflow_call:
   workflow_dispatch:
@@ -34,24 +29,23 @@ jobs:
       - name: .NET installation
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: "8.0.x"
+          dotnet-version: "9.0.x"
       - name: Setup
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
           mkdir -v -p ~/.config/
           mv /root/.config/godot ~/.config/godot
-          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono
+          mv /root/.local/share/godot/export_templates/4.4.stable.mono ~/.local/share/godot/export_templates/4.4.stable.mono
       - name: Build
         run: |
           mkdir -v -p build
           EXPORT_DIR="$(readlink -f build)"
-          cd $PROJECT_PATH
-          godot --headless --verbose --export-release "Windows Desktop" "$EXPORT_DIR/$EXPORT_NAME.zip"
+          godot --headless --verbose --export-release "Windows Desktop" "$EXPORT_DIR/build.zip"
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows
-          path: build/$EXPORT_NAME.zip
+          path: build/build.zip
 
   macos:
     name: MacOS Build
@@ -66,19 +60,18 @@ jobs:
       - name: .NET installation
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: "8.0.x"
+          dotnet-version: "9.0.x"
       - name: Setup
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
-          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono
+          mv /root/.local/share/godot/export_templates/4.4.stable.mono ~/.local/share/godot/export_templates/4.4.stable.mono
       - name: Build
         run: |
           mkdir -v -p build
           EXPORT_DIR="$(readlink -f build)"
-          cd $PROJECT_PATH
-          godot --headless --verbose --export-release "macOS" "$EXPORT_DIR/$EXPORT_NAME.zip"
+          godot --headless --verbose --export-release "macOS" "$EXPORT_DIR/build.zip"
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: macos
-          path: build/$EXPORT_NAME.zip
+          path: build/build.zip
