@@ -6,10 +6,11 @@
 layer = 25
 
 [node name="Notebook" parent="." instance=ExtResource("1_iyyib")]
+anchors_preset = -1
 anchor_left = 1.0
 anchor_top = 0.012
-anchor_right = 1.0
 offset_left = -16.0
 offset_top = 16.224
 offset_right = 488.0
 offset_bottom = -16.0
+KnowledgeAnimDuration = 0.3

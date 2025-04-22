@@ -16,7 +16,7 @@ Princess Penelope: So what about...
         <<learn little_brother>>
         King Ráðúlfr: He was the one who gave me this scar across my eye.
         <<emote frostholm neutral>>
-    -> How were you lost? <<if knows("lost_child")>>
+    -> How were you lost? <<if knows("lost_child")>> #score_color=positive #if=food_fact
         <<emote frostholm arm_up_2>>
         King Ráðúlfr: I was kidnapped by bounty hunters who had been told I was a bastard. 
         <<emote frostholm arm_up>>
@@ -85,31 +85,49 @@ title: frostholm__question_art
 ---
 Princess Penelope: I have a question...
     -> What is your opinion on art?
+        <<emote frostholm holding_heart>>
         King Ráðúlfr: I believe it holds significant meaning.
-        King Ráðúlfr: So much so, our kingdom keeps all our art in a storage vault. Locked. Away. Forever.
+        <<emote frostholm holding_heart_3>>
         <<learn kingdom_art>>
+        King Ráðúlfr: So much so, our kingdom keeps all our art in a storage vault. Locked. Away. Forever.
+        <<emote frostholm neutral>>
     -> What is your favourite form of art?
-        King Ráðúlfr: Poetry. The howls of wolves at night are a form of poetry, you know.
+        <<emote frostholm happy_2>>
         <<learn howl_poetry>>
+        King Ráðúlfr: Poetry. The howls of wolves at night are a form of poetry, you know.
+        <<emote frostholm neutral>>
     -> Do you ever make your own art? <<if knows("art_children")>>
-        King Ráðúlfr: Yes. I create abstract sculptures out of carefully arranged piles of sticks.
+        <<emote frostholm happy_1>>
         <<learn abstract_sculptures>>
+        <<score 2>>
+        King Ráðúlfr: Yes. I create abstract sculptures out of carefully arranged piles of sticks.
+        <<score -1>>
+        <<emote frostholm worried>>
+        <<after 1.5>>
+        <<emote frostholm neutral>>
 ===
 
 title: frostholm__question_witchcraft
 ---
 Princess Penelope: I was wondering...
     -> How are witches treated in your kingdom?
+        <<emote frostholm upset_looking_down>>
         King Ráðúlfr: Tricksters is what they are, and they are treated as such.
-        King Ráðúlfr: They are to be captured and banished or killed.
         <<learn witch_treatment>>
+        King Ráðúlfr: They are to be captured and banished or killed.
+        <<emote frostholm neutral>>
     -> What are your thoughts on witchcraft?
-        King Ráðúlfr: Terrible. Absolutely terrible. Magic has a habit of working too well, in the most unexpected ways. 
-        King Ráðúlfr: It can not be trusted.
+        <<emote frostholm angry>>
+        King Ráðúlfr: Terrible. Absolutely terrible. Magic has a habit of working too well, in the most unexpected ways.
         <<learn witch_opinion>>
+        <<emote frostholm upset_looking_down>>
+        King Ráðúlfr: It can not be trusted.
+        <<emote frostholm neutral>>
     -> Have you ever dabbled in witchcraft?
-        King Ráðúlfr: Yes. I attempted to make my brother love wolves with the help of a witch. Now he is one.
         <<learn wolf_potion>>
+        <<emote frostholm sad_1>>
+        King Ráðúlfr: Yes. I attempted to make my brother love wolves with the help of a witch. Now he is one.
+        <<emote frostholm neutral>>
 ===
 
 title: frostholm__question_religion
