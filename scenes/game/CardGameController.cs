@@ -213,7 +213,6 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		}
 		
 		EmitSignal(SignalName.GameStart);
-		
 		VisibilityState = GameVisibilityState.AllHidden;
 		
 		// Run intro node or (skip_setup node, if skipping), then unhide and handle round start.
@@ -286,27 +285,20 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		RemoveFromHand(selectedAction); RemoveFromHand(selectedTopic);
 		
 		EmitSignal(SignalName.HandPlayed, selectedAction.CardId, selectedTopic.CardId);
+		VisibilityState = GameVisibilityState.ButtonsHidden; 
 
 		// Get dialogue node name for given cards
 		var dialogueNode = $"{_suitorId}__{selectedAction.CardId.ToString().StripFront("action/")}_{selectedTopic.CardId.ToString().StripFront("topic/")}";
-
-		bool shouldEndRound = !QuestionsTriggerRoundEnd || selectedAction.CardId != "action/question";
+		bool shouldEndRound = QuestionsTriggerRoundEnd || selectedAction.CardId != "action/question";
 
 		// Run dialogue node, or error dialogue if it does not exist.
 		// Then, emit round signal, increment round, and handle next round start
-		VisibilityState = GameVisibilityState.ButtonsHidden; InDialogue = true;
+		InDialogue = true;
 		DialogueManager.Run(dialogueNode)
 			.AndThen(() => {
 				InDialogue = false;
-				if (shouldEndRound) {
-					MidRound = false;
-					EmitSignal(SignalName.RoundEnd, Round);
-					UsedDiscardsThisRound = 0;
-					++Round; AttemptStartRound();
-				}
-				else {
-					VisibilityState = GameVisibilityState.AllVisible; 
-				}
+				if (shouldEndRound) { MidRound = false; EmitSignal(SignalName.RoundEnd, Round); ++Round; AttemptStartRound(); }
+				else { VisibilityState = GameVisibilityState.AllVisible; Deal(); }
 			});
 	}
 
@@ -321,7 +313,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		void DiscardSelected(HandContainer hand) => hand.GetSelected().ForEach(card => { (card.CardType switch { "action" => _actionDiscardPile, "topic" => _topicDiscardPile, _ => null })?.Add(card.CardId); AnimateCardRemoval(card); });
 		DiscardSelected(ActionHand); DiscardSelected(TopicHand);
 
-		void AfterDiscard(bool dialogueHit) { if (DiscardTriggersRoundEnd && (dialogueHit || !DiscardOnlyEndsRoundOnDialogueHit)) { MidRound = false; Round++; AttemptStartRound(); } else Deal(); }
+		void AfterDiscard(bool dialogueHit) { if (DiscardTriggersRoundEnd && (dialogueHit || !DiscardOnlyEndsRoundOnDialogueHit)) { MidRound = false; ++Round; AttemptStartRound(); } else Deal(); }
 
 		if (DiscardDialogueTriggerChance switch { <= 0 => false, >= 1 => true, _ => Random.Shared.NextDouble() < DiscardDialogueTriggerChance }) {
 			// Will pick at random from all nodes starting with '{suitor}__post_discard'
