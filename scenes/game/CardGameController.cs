@@ -27,7 +27,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	
 	[Signal] public delegate void DeckRanOutEventHandler();
 	
-	// Has intro ended and game started? Tracked for skip logic
+	private bool _initialised = false;
 	public bool Started { get; private set; } = false;
 	public bool Ended { get; private set; } = false;
 	public bool MidRound { get; private set; } = false;
@@ -36,7 +36,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	// Current round. Triggers game end when it exceeds NumRounds
 	public int Round { get; set { field = value; RoundMeter?.OnReady(x => x.CurrentRound = Round); AttemptGameEnd(); } }
 	// Current score. When AutoFailOnHitThreshold is true, triggers game end when it exceeds score minimum or maximum
-	public int Score { get; set { field = value; AffectionMeter?.CreateTween()?.TweenProperty(AffectionMeter, AffectionMeter.PropertyName.Value, int.Clamp(Score, ScoreMin, ScoreMax), 1.0); AttemptGameEnd(); } }
+	public int Score { get; set { field = value; AffectionMeter?.CreateTween()?.TweenProperty(AffectionMeter, AffectionMeter.PropertyName.Value, int.Clamp(Score, ScoreMin, ScoreMax), ScoreChangeTime); AttemptGameEnd(); } }
 
 	public int UsedDiscardsThisGame { get; private set; } = 0;
 	public int UsedDiscardsThisRound { get; private set; } = 0;
@@ -52,6 +52,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	public bool IntroSkippable { get; private set; } = false;
 
 	[Export(PropertyHint.Range, "0,20,")] public int NumRounds { get; private set { field = value; RoundMeter?.OnReady(() => RoundMeter.NumRounds = NumRounds); } } = 8;
+	[Export] private bool QuestionsTriggerRoundEnd { get; set; } = false;
 	
 	[ExportGroup("Score")]
 	[Export(PropertyHint.Range, "-30,30,")] public int ScoreMin { get; private set { field = value; AffectionMeter?.OnReady(x => x.MinValue = ScoreMin); } } = -10;
@@ -94,7 +95,9 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	private readonly HashSet<string> _usedDiscardDialogues = [];
 
 	[ExportGroup("Animation")]
+	[Export] public double ScoreChangeTime { get; set; } = 1;
 	[Export] public double MeterSlideInTime { get; set; } = 0.5;
+	[Export] public double CardFallTime { get; set; } = 0.5;
 
 	[ExportGroup("Nodes")]
 	[Export] public AffectionMeter AffectionMeter { get; set; }
@@ -162,29 +165,22 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 			if (Engine.IsEditorHint()) return;
 			switch (VisibilityState) {
 				case GameVisibilityState.AllVisible: {
-					TopicHand?.Show(); ActionHand?.Show();
-					PlayButton?.Show();
-					if (DiscardLimitPerGame == 0 || DiscardLimitPerRound == 0 || MaxCardsPerDiscard == 0) DiscardButton?.Hide(); else DiscardButton?.Show();
+					TopicHand.Show(); ActionHand.Show();
+					PlayButton.Show(); DiscardButton.Visible = DiscardLimitPerGame != 0 && DiscardLimitPerRound != 0 && MaxCardsPerDiscard != 0;
 					GameManager.NotebookMenu.Show();
 					if (!oldState.IsAnyOf(GameVisibilityState.AllVisible, GameVisibilityState.ButtonsHidden)) AnimateMetersIn();
 				} break;
 				case GameVisibilityState.ButtonsHidden: {
-					TopicHand?.Show(); ActionHand?.Show();
-					PlayButton?.Hide(); DiscardButton?.Hide();
+					TopicHand.Show(); ActionHand.Show();
+					PlayButton.Hide(); DiscardButton.Hide();
 					GameManager.NotebookMenu.Show();
 					if (!oldState.IsAnyOf(GameVisibilityState.AllVisible, GameVisibilityState.ButtonsHidden)) AnimateMetersIn();
 				} break;
 				case GameVisibilityState.AllHidden: {
-					TopicHand?.Hide(); ActionHand?.Hide();
-					PlayButton?.Hide(); DiscardButton?.Hide();
+					TopicHand.Hide(); ActionHand.Hide();
+					PlayButton.Hide(); DiscardButton.Hide();
 					GameManager.NotebookMenu.Hide();
-					if (!oldState.IsAnyOf(GameVisibilityState.AllHidden, GameVisibilityState.AllHiddenInstant)) AnimateMetersOut();
-				} break;
-				case GameVisibilityState.AllHiddenInstant: {
-					AffectionMeter?.Hide(); RoundMeter?.Hide();
-					TopicHand?.Hide(); ActionHand?.Hide();
-					PlayButton?.Hide(); DiscardButton?.Hide();
-					GameManager.NotebookMenu.Hide();
+					if (_initialised && oldState != GameVisibilityState.AllHidden) AnimateMetersOut(); else { AffectionMeter.Hide(); RoundMeter.Hide(); }
 				} break;
 				default: break;
 			}
@@ -202,13 +198,10 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		InputManager.Actions.Discard.InnerObject.Connect(GUIDEAction.SignalName.Completed, AttemptDiscard);
 
 		// Remove any cards remaining from the editor
-		foreach (var child in TopicHand.GetChildren()) { TopicHand.RemoveChild(child); child.QueueFree(); }
-		foreach (var child in ActionHand.GetChildren()) { ActionHand.RemoveChild(child); child.QueueFree(); }
-
-		_usedDiscardDialogues.Clear();
+		foreach (var child in TopicHand.GetChildren().Concat(ActionHand.GetChildren())) { child.GetParent().RemoveChild(child); child.QueueFree(); }
 		
-		VisibilityState = GameVisibilityState.AllHiddenInstant;
-		Round = 1;
+		VisibilityState = GameVisibilityState.AllHidden;
+		_initialised = true; Round = 1;
 	}
 
 	// Trigger the start of the game
@@ -218,6 +211,8 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		TopicDeck.Shuffle(); ActionDeck.Shuffle(); // Shuffle decks
 
 		_topicDiscardPile = new(); _actionDiscardPile = new(); // Create empty discard piles
+		_usedDiscardDialogues.Clear();
+		UsedDiscardsThisGame = 0; UsedDiscardsThisRound = 0;
 
 		// Make NotebookMenu the focus neighbour of topic hand, so it can be accessed via keyboard controls
 		TopicHand.FocusNeighborTop = GameManager.NotebookMenu.GetPath(); TopicHand.FocusNeighborRight = GameManager.NotebookMenu.GetPath();
@@ -241,9 +236,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 			.AndThen(() => {
 				InDialogue = false;
 				VisibilityState = GameVisibilityState.AllVisible;
-				Started = true;
-				Round = 1; UsedDiscardsThisGame = 0; UsedDiscardsThisRound = 0;
-				AttemptStartRound();
+				Started = true; Round = 1; AttemptStartRound();
 			});
 	}
 
@@ -288,9 +281,9 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	public void ForceGameEnd() { Round = NumRounds + 1; if (MidRound) AttemptGameEnd(true); }
 
 	private void AnimateCardRemoval(CardDisplay card) {
-		double exitAnimTime = 0.5;
 		card.Reparent(this); var tween = CreateTween();
-		tween.TweenProperty(card, "position", new Vector2(5, 350), exitAnimTime).AsRelative(); tween.Parallel().TweenProperty(card, "rotation_degrees", 20, exitAnimTime).AsRelative();
+		tween.TweenProperty(card, "position", new Vector2(5, 350), CardFallTime).AsRelative();
+		tween.Parallel().TweenProperty(card, "rotation_degrees", 20, CardFallTime).AsRelative();
 		tween.TweenCallback(card.QueueFree);
 	}
 
@@ -315,7 +308,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		RemoveCardFromHand(selectedTopic);
 		RemoveCardFromHand(selectedAction);
 
-		PlayButton.Hide(); DiscardButton?.Hide();
+		VisibilityState = GameVisibilityState.ButtonsHidden;
 
 		EmitSignal(SignalName.HandPlayed, selectedAction.CardId, selectedTopic.CardId);
 
