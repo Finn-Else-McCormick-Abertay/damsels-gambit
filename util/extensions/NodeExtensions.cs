@@ -144,7 +144,8 @@ static class NodeExtensions
     /// <summary> Find first <typeparamref name="TNode"/> above this node in the hierarchy for which <paramref name="predicate"/> returns true. </summary>
     /// <returns>First valid ancestor of type <typeparamref name="TNode"/>, or <see langword="null"/> if none exist.</returns>
     public static TNode FindParentWhere<TNode>(this Node self, Func<TNode, bool> predicate) where TNode : Node {
-        var parent = self.GetParent();
+        var parent = self?.GetParent();
+        if (parent is null) return null;
         if (parent is TNode tParent && predicate(tParent)) return tParent;
         return parent?.FindParentWhere(predicate);
     }
