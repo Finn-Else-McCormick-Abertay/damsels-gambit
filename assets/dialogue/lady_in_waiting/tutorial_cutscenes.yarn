@@ -93,6 +93,12 @@ title: lady_in_waiting__explain_profile
 <<endif>>
 ===
 
+title: lady_in_waiting__explain_discard_end
+---
+Lady in Waiting: Explain discard end.
+<<pop>>
+===
+
 
 title: lady_in_waiting__explain_frostholm
 ---
@@ -102,6 +108,10 @@ title: lady_in_waiting__explain_frostholm
 title: lady_in_waiting__pre_ending
 ---
 <<wait 1>>
+<<if !visited("lady_in_waiting__post_discard_explain") && !visited("lady_in_waiting__explain_discard_end")>>
+    <<push lady_in_waiting__pre_ending>>
+    <<jump lady_in_waiting__explain_discard_end>>
+<<endif>>
 <<jump lady_in_waiting__explain_profile>>
 ===
 

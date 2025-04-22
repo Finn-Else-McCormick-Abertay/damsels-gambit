@@ -1,0 +1,14 @@
+[remap]
+
+importer="yarnscript"
+type="Resource"
+uid="uid://cx84r7fmexrnh"
+path="res://.godot/imported/post_discard.yarn-6bc11f21174617fa01133419cd281b39.tres"
+
+[deps]
+
+source_file="res://assets/dialogue/lady_in_waiting/post_discard.yarn"
+dest_files=["res://.godot/imported/post_discard.yarn-6bc11f21174617fa01133419cd281b39.tres"]
+
+[params]
+
