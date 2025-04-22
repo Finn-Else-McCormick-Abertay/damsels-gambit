@@ -22,7 +22,7 @@ on:
 jobs:
   windows:
     name: Windows Build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     container:
       image: barichello/godot-ci:mono-4.4
     steps:
