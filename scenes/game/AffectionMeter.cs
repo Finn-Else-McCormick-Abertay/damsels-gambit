@@ -31,7 +31,7 @@ public partial class AffectionMeter : Control, IReloadableToolScript
 			public static readonly StringName ValueBoundary = "value_boundary";
 		}
 		public static class Icon {
-			public static readonly StringName Marker = "marker";
+			public static readonly StringName Marker = "marker"; 
 			public static readonly StringName Love = "love";
 			public static readonly StringName Hate = "hate";
 		}

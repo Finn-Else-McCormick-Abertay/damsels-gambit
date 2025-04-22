@@ -24,8 +24,10 @@ public partial class AudioManager : Node
 	}
 
 	public override void _Process(double delta) {
-		if(!IsMusicPlaying){ PlayMusic("res://assets/audio/menu.mp3"); }
-	}
+
+		if(!IsMusicPlaying){ PlayMusic(_activeMusic); }
+
+		}	
 
 	public override void _EnterTree() {
 		if (Instance is not null) throw AutoloadException.For(this);
@@ -33,7 +35,6 @@ public partial class AudioManager : Node
 
 		_musicPlayer = new AudioStreamPlayer() { Bus = "Music" };
 		AddChild(_musicPlayer); _musicPlayer.Owner = this;
-		
 		
 		for (int i = 0; i < 8; ++i) {
 			var sfxPlayer = new AudioStreamPlayer() { Bus = "SFX" };
