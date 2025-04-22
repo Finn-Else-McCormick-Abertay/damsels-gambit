@@ -31,6 +31,7 @@ GUIDE="*res://addons/guide/guide.gd"
 Console="*res://scenes/console/Console.cs"
 InputManager="*res://scenes/input/InputManager.cs"
 AudioManager="*res://scenes/AudioManager.cs"
+SettingsManager="*res://scenes/SettingsManager.cs"
 
 [display]
 
