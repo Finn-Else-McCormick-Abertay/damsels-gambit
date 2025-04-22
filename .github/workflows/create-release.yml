@@ -1,4 +1,4 @@
-name: Create release
+name: Create Release
 
 env:
   ACTIONS_RUNNER_DEBUG: true

@@ -1,4 +1,4 @@
-name: "build"
+name: "Godot Build"
 
 on:
   workflow_call:
