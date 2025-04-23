@@ -13,6 +13,10 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_ydkkc")
 script = ExtResource("2_vhvy2")
+CurrentRound = 2
+NumRounds = 4
+AnimationDuration = 1.0
+AnimationTransitionType = 1
 ProgressBar = NodePath("ProgressBar")
 Container = NodePath("HBoxContainer")
 NodeScene = ExtResource("3_jsgwv")
@@ -29,7 +33,7 @@ offset_bottom = 14.0
 grow_horizontal = 2
 grow_vertical = 2
 step = 0.001
-value = 5.642
+value = 38.845
 show_percentage = false
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
