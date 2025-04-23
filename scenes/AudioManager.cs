@@ -12,22 +12,32 @@ public partial class AudioManager : Node
 
 	private readonly List<AudioStreamPlayer> _sfxPlayers = [];
 	private AudioStreamPlayer _musicPlayer;
-	private string _activeMusic;
+	public string _activeMusic;
+	public int lastValue;
 
 	public static bool IsMusicPlaying => Instance?._musicPlayer?.Playing ?? false;
 
 	public override void _Ready(){
-		// Continue running when paused
-		ProcessMode = ProcessModeEnum.Always;
 
-		PlayMusic("res://assets/audio/menu.mp3");
+		PlayMusic("res://assets/audio/Menu.mp3");
+
 	}
 
 	public override void _Process(double delta) {
+		if(!IsMusicPlaying){
+				PlayMusic(Instance._activeMusic);
+		}
 
-		if(!IsMusicPlaying){ PlayMusic(_activeMusic); }
+		if (GameManager.CardGameController.IsValid()){
+		if (lastValue != (GameManager.CardGameController.Score)){
+			if(lastValue > GameManager.CardGameController.Score){
+				PlaySFX("res://assets/audio/AffMinus.mp3");
+			}else{PlaySFX("res://assets/audio/AffPlus.mp3");}
+			lastValue = GameManager.CardGameController.Score;
+		}}
+	}
 
-		}	
+	
 
 	public override void _EnterTree() {
 		if (Instance is not null) throw AutoloadException.For(this);
@@ -35,6 +45,7 @@ public partial class AudioManager : Node
 
 		_musicPlayer = new AudioStreamPlayer() { Bus = "Music" };
 		AddChild(_musicPlayer); _musicPlayer.Owner = this;
+		
 		
 		for (int i = 0; i < 8; ++i) {
 			var sfxPlayer = new AudioStreamPlayer() { Bus = "SFX" };
@@ -62,12 +73,12 @@ public partial class AudioManager : Node
 	}
 
 	public static void PlayMusic(string filePath) {
-
+		Instance._activeMusic = filePath;
 		filePath = $"res://{filePath.Replace('\\', '/').StripFront("res://")}";
 
 		if (!ResourceLoader.Exists(filePath) || !Instance.IsValid() || (IsMusicPlaying && Instance._activeMusic == filePath)) return;
 
-		Instance._activeMusic = filePath;
+	
 		Instance._musicPlayer.Stream = ResourceLoader.Load<AudioStream>(filePath);
 		Instance._musicPlayer.Play();
 

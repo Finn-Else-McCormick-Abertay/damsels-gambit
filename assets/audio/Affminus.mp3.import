@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://bdaybskvl8ht3"
-path="res://.godot/imported/Affminus.mp3-0cc3ec5fc063e4057e422a5c6dfec45f.mp3str"
+path="res://.godot/imported/AffMinus.mp3-18af70daf546c1e6a102915360ddb3bf.mp3str"
 
 [deps]
 
-source_file="res://assets/audio/Affminus.mp3"
-dest_files=["res://.godot/imported/Affminus.mp3-0cc3ec5fc063e4057e422a5c6dfec45f.mp3str"]
+source_file="res://assets/audio/AffMinus.mp3"
+dest_files=["res://.godot/imported/AffMinus.mp3-18af70daf546c1e6a102915360ddb3bf.mp3str"]
 
 [params]
 

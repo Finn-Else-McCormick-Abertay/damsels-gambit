@@ -45,7 +45,7 @@ _limits = [-90.0, 90.0, 0.0, 1.0]
 _data = [Vector2(0, 5.12277), 0.0, 0.0, 0, 0, Vector2(0.502959, 9.04018), 20.9715, 20.9715, 0, 0, Vector2(1, 15.5692), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "RoundMeter", "ActionHand", "TopicHand", "PlayButton", "DiscardButton")]
+[node name="CardGame" type="Control" node_paths=PackedStringArray("AffectionMeter", "RoundMeter", "ActionHand", "TopicHand", "PlayButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -55,31 +55,11 @@ grow_vertical = 2
 mouse_filter = 1
 theme = ExtResource("1_eci5x")
 script = ExtResource("1_4k8rw")
-FullLayoutTopicDeck = {
-"topic/animals": 1,
-"topic/art": 1,
-"topic/children": 1,
-"topic/food": 1,
-"topic/hobbies": 1,
-"topic/religion": 1,
-"topic/weather": 1,
-"topic/witchcraft": 1
-}
-FullLayoutActionDeck = {
-"action/give": 2,
-"action/question": 4,
-"action/secret": 2,
-"action/want": 2
-}
-DiscardTriggersRoundEnd = true
-DiscardDialogueTriggerChance = 0.5
-DiscardOnlyEndsRoundOnDialogueHit = true
 AffectionMeter = NodePath("AffectionMeter")
 RoundMeter = NodePath("RoundMeter")
 ActionHand = NodePath("LeftHandContainer")
 TopicHand = NodePath("RightHandContainer")
 PlayButton = NodePath("ButtonsFocusContainer/HBoxContainer/PlayHandButton")
-DiscardButton = NodePath("ButtonsFocusContainer/HBoxContainer/DiscardButton")
 
 [node name="Vignette" type="TextureRect" parent="."]
 layout_mode = 1

@@ -136,7 +136,7 @@ public sealed partial class GameManager : Node
 				_ => SceneTransition.Type.FadeToBlack
 			}, "main_menu", () => {
 			MainMenu = _mainMenuScene.Instantiate<MainMenu>(); GetLayer("main_menu").AddChild(MainMenu);
-			AudioManager.PlayMusic("res://assets/audio/menu.mp3")
+			AudioManager.PlayMusic("res://assets/audio/menu.mp3");
 			SetNotebookActive(false);
 		});
 	}
@@ -144,7 +144,7 @@ public sealed partial class GameManager : Node
 	public static void SwitchToSettings() {
 		if (!Instance.IsValid()) return;
 
-	    InputManager.PushToFocusStack();
+		InputManager.PushToFocusStack();
 
 		float settingsFadeDuration = 0.8f;
 
@@ -165,6 +165,7 @@ public sealed partial class GameManager : Node
 	public static void SwitchToCredits() {
 		if (!Instance.IsValid()) return;
 
+		AudioManager.PlayMusic("res://assets/audio/Credits.mp3");
 		// Clearing other scenes is handled by the transition
 		SceneTransition.Run(SceneTransition.Type.CrossFade, "credits", () => {
 			Credits = _creditsScene.Instantiate<Control>(); GetLayer("credits").AddChild(Credits);
@@ -179,7 +180,7 @@ public sealed partial class GameManager : Node
 		if (!ResourceLoader.Exists(cardGameScenePath)) { Console.Error($"No such scene '{cardGameScenePath}'"); return; }
 		
 		
-		AudioManager.PlayMusic("res://assets/audio/Date.mp3")
+		AudioManager.PlayMusic("res://assets/audio/Date.mp3");
 
 		// Clearing other scenes is handled by the transition
 		// Cut when coming from another card game scene, otherwise crossfade
