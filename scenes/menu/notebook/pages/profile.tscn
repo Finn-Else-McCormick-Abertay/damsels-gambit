@@ -49,7 +49,6 @@ Title = NodePath("../Title")
 Subtitle = NodePath("../Subtitle")
 Label = NodePath("../Info")
 Portrait = NodePath("../Portrait")
-Marginalia = Dictionary[String, String]({})
 
 [node name="Pause Button" type="Button" parent="."]
 clip_children = 2
