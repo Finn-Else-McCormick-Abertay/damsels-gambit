@@ -28,6 +28,7 @@ jobs:
         with:
           tag-as-title: true
           prerelease: auto
+          prerelease-pattern: v*.*.*-*pre*
       - name: Download Windows Artifact
         uses: actions/download-artifact@v4
         with:
