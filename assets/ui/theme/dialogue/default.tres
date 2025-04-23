@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=31 format=3 uid="uid://cj01ghso8eli6"]
+[gd_resource type="Theme" load_steps=32 format=3 uid="uid://cj01ghso8eli6"]
 
 [ext_resource type="Texture2D" uid="uid://s3jpe4fop37b" path="res://assets/ui/buttons/text_button_focus.png" id="1_7stpd"]
 [ext_resource type="StyleBox" uid="uid://da8adt55nihca" path="res://assets/ui/panels/dialogue_box.tres" id="1_51q1c"]
@@ -90,6 +90,11 @@ texture = ExtResource("1_7stpd")
 expand_margin_top = 6.0
 expand_margin_bottom = 6.0
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_deb1n"]
+texture = ExtResource("3_qyl7g")
+expand_margin_top = 6.0
+expand_margin_bottom = 6.0
+
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wtdr7"]
 texture = ExtResource("8_n4x27")
 expand_margin_top = 6.0
@@ -141,7 +146,7 @@ DialogueOptionButtonUsed/colors/font_hover_pressed_color = Color(0.996078, 0.929
 DialogueOptionButtonUsed/colors/font_outline_color = Color(0.996078, 0.929412, 0.898039, 1)
 DialogueOptionButtonUsed/colors/font_pressed_color = Color(0.996078, 0.929412, 0.898039, 1)
 DialogueOptionButtonUsed/styles/focus = SubResource("StyleBoxTexture_6odcm")
-DialogueOptionButtonUsed/styles/hover = null
+DialogueOptionButtonUsed/styles/hover = SubResource("StyleBoxTexture_deb1n")
 DialogueOptionButtonUsed/styles/normal = SubResource("StyleBoxTexture_wtdr7")
 DialogueVBoxContainer/base_type = &"VBoxContainer"
 DialogueVBoxContainer/constants/separation = 12

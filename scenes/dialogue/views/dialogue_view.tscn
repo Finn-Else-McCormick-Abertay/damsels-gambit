@@ -116,6 +116,8 @@ size_flags_horizontal = 3
 size_flags_stretch_ratio = 5.0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"DialogueOptionButtonUnlocked"
+theme_override_colors/font_hover_pressed_color = Color(0.996078, 0.929412, 0.898039, 1)
+theme_override_colors/font_hover_color = Color(0.996078, 0.929412, 0.898039, 1)
 text = "Option Text"
 
 [node name="PaddingRight" type="Control" parent="Root/VBoxContainer/OptionPaddingContainer"]
