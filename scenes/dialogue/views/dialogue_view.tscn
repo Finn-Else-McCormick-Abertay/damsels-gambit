@@ -24,11 +24,6 @@ ContinueButton = NodePath("Root/Continue")
 [node name="FocusContext" type="Node" parent="."]
 script = ExtResource("3_lx6dg")
 Priority = 5
-FocusDefault = "../Root/Continue"
-FocusFromLeft = "../Root/Continue"
-FocusFromRight = "../Root/Continue"
-FocusFromTop = "$if exists ../../SkipIntro then ../../SkipIntro else ../Root/Continue"
-FocusFromBottom = "../Root/Continue"
 metadata/_custom_type_script = "uid://dqd1s3evebw6g"
 
 [node name="Root" type="Control" parent="."]
