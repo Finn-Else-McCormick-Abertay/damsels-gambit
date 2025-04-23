@@ -16,7 +16,7 @@ Princess Penelope: So what about...
         <<learn little_brother>>
         King Ráðúlfr: He was the one who gave me this scar across my eye.
         <<emote frostholm neutral>>
-    -> How were you lost? <<if knows("lost_child")>> #score_color=positive #if=food_fact
+    -> How were you lost? <<if knows("lost_child")>>
         <<emote frostholm arm_up_2>>
         King Ráðúlfr: I was kidnapped by bounty hunters who had been told I was a bastard. 
         <<emote frostholm arm_up>>
@@ -24,6 +24,7 @@ Princess Penelope: So what about...
         <<emote frostholm holding_heart_2>>
         <<learn wolf_adoption>>
         <<score 1>>
+        <<learn wolf_adoption>>
         King Ráðúlfr: I was found and adopted by wolfs.
         <<emote frostholm neutral>>
 ===
