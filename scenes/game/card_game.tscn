@@ -55,6 +55,7 @@ grow_vertical = 2
 mouse_filter = 1
 theme = ExtResource("1_eci5x")
 script = ExtResource("1_4k8rw")
+NumRounds = 9
 FullLayoutTopicDeck = {
 "topic/animals": 1,
 "topic/art": 1,
@@ -177,6 +178,7 @@ offset_right = 293.0
 offset_bottom = 0.103996
 grow_vertical = 1
 CurrentRound = 2
+NumRounds = 9
 
 [node name="ButtonsFocusContainer" type="Control" parent="."]
 layout_mode = 1
