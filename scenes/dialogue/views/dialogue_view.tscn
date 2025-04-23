@@ -24,11 +24,6 @@ ContinueButton = NodePath("Root/Continue")
 [node name="FocusContext" type="Node" parent="."]
 script = ExtResource("3_lx6dg")
 Priority = 5
-FocusDefault = "../Root/Continue"
-FocusFromLeft = "../Root/Continue"
-FocusFromRight = "../Root/Continue"
-FocusFromTop = "$if exists ../../SkipIntro then ../../SkipIntro else ../Root/Continue"
-FocusFromBottom = "../Root/Continue"
 metadata/_custom_type_script = "uid://dqd1s3evebw6g"
 
 [node name="Root" type="Control" parent="."]
@@ -121,6 +116,8 @@ size_flags_horizontal = 3
 size_flags_stretch_ratio = 5.0
 mouse_default_cursor_shape = 2
 theme_type_variation = &"DialogueOptionButtonUnlocked"
+theme_override_colors/font_hover_pressed_color = Color(0.996078, 0.929412, 0.898039, 1)
+theme_override_colors/font_hover_color = Color(0.996078, 0.929412, 0.898039, 1)
 text = "Option Text"
 
 [node name="PaddingRight" type="Control" parent="Root/VBoxContainer/OptionPaddingContainer"]

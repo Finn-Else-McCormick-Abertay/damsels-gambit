@@ -105,6 +105,9 @@ theme = ExtResource("2_ko4o6")
 script = ExtResource("4_dw2x6")
 LoveThreshold = 4.0
 HateThreshold = -4.0
+ValueAnimationSpeed = 1.5
+ValueAnimationMaxDuration = 2.5
+ValueAnimationTransitionType = 1
 
 [node name="LeftHandContainer" type="Container" parent="."]
 layout_mode = 1
@@ -173,7 +176,7 @@ offset_top = 0.103996
 offset_right = 293.0
 offset_bottom = 0.103996
 grow_vertical = 1
-CurrentRound = 2
+NumRounds = 8
 
 [node name="ButtonsFocusContainer" type="Control" parent="."]
 layout_mode = 1

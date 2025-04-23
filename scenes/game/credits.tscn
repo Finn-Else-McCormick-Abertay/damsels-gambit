@@ -36,7 +36,6 @@ skip_button = NodePath("Skip")
 [node name="FocusContext" type="Node" parent="."]
 script = ExtResource("2_nje8h")
 Priority = 8
-FocusDefault = "../Skip"
 metadata/_custom_type_script = "uid://dqd1s3evebw6g"
 
 [node name="Background" type="TextureRect" parent="."]
