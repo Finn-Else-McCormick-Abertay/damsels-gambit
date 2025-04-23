@@ -23,11 +23,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
-      - name: Create release
+      - name: Create Release
+        id: create-release
         uses: spenserblack/actions-tag-to-release@main
         with:
           tag-as-title: true
           prerelease: auto
+          prerelease-pattern: v*.*.*-*pre*
       - name: Download Windows Artifact
         uses: actions/download-artifact@v4
         with:
@@ -59,4 +61,45 @@ jobs:
             linux.zip \
             macos.zip \
             --repo="$GITHUB_REPOSITORY"
+    outputs:
+      prerelease: ${{ steps.create-release.outputs.prerelease }}
+  
+  itch:
+    name: Upload to Itch
+    needs: release
+    runs-on: ubuntu-latest
+    if: ${{ !needs.release.outputs.prerelease }}
+    steps:
+      - name: Download Windows Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: windows
+          path: windows
+      - name: Zip up Windows Artifact
+        run: zip -r windows.zip windows/*
+      - name: Download Linux Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: linux
+          path: linux
+      - name: Zip up Linux Artifact
+        run: zip -r linux.zip linux/*
+      - name: Download MacOS Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: macos
+          path: macos
+      - name: Zip up MacOS Artifact
+        run: zip -r macos.zip macos/*
+      - name: Upload artifacts to itch.io
+        uses: Ayowel/butler-to-itch@v1
+        with:
+          butler_key: ${{ secrets.BUTLER_CREDENTIALS }}
+          itch_user: Roxo Hyrax
+          itch_game: damsels-gambit
+          version: ${{ github.ref_name }}
+          files: |
+            windows windows.zip
+            linux linux.zip
+            macos macos.zip
       
