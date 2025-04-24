@@ -176,7 +176,7 @@ offset_top = 0.103996
 offset_right = 293.0
 offset_bottom = 0.103996
 grow_vertical = 1
-NumRounds = 9
+NumRounds = 8
 AnimationDuration = 0.0
 AnimationTransitionType = 0
 
