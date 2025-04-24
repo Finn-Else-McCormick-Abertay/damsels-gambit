@@ -5,7 +5,7 @@ Princess Penelope: I want...
 		<<emote frostholm holding_heart_3>>
 		King Ráðúlfr: Oh, you're familiar with the sport! What made you interested in it?
 			-> I'm not a runner so I figured it would make wolf hunting easier!
-				<<score -3>>
+				<<score -5>>
 				<<emote frostholm neutral>>
 			-> I just thought I'd look cool. Ladies seem to like hunters.
 				<<score -3>>
@@ -17,11 +17,11 @@ Princess Penelope: I want...
 		<<emote frostholm angry>>
 		King Ráðúlfr: This is blasphemy! What made you think I'd like to partake in such cruelty?
 			-> They have pretty shells, so why not use them after they are dead?
-				<<score -3>>
+				<<score -4>>
 			-> They're just snails, be for real.
 				<<score -10>>
 			-> They're carved from wood to look like snails, I think it's very respectful.
-				<<score 3>>
+				<<score -2>>
 				<<emote frostholm concerned_2>>
 				<<after 1.0>>
 				<<emote frostholm sad_1>>
@@ -33,14 +33,18 @@ title: frostholm__want_food
 ---
 Princess Penelope: I want...
 	-> To try your kingdom's national dish!
-		<<score 3>>
-		<<emote frostholm holding_heart_2>>
+		<<score 4>>
+		<<emote frostholm holding_heart>>
 		King Ráðúlfr: That's epic, I love it, I can make it for you some time!
 			-> Perhaps I will absorb your culture through it and naturally fit in there.
 				<<score 3>>
+				<<emote frostholm holding_heart_2>>	
+				<<after 1.5>>
 				<<emote frostholm neutral>>
 			-> Oh, please don't. You're a bad cook. I can tell from your face.
-				<<score -3>>
+				<<score -4>>
+				<<emote frostholm sad_2>>	
+				<<after 1.5>>
 				<<emote frostholm neutral>>
 			-> I need to compare which of our dishes is the best!
 				<<score 3>>
@@ -52,13 +56,19 @@ Princess Penelope: I want...
 		<<emote frostholm happy_2>>
 		King Ráðúlfr: Oh! I didn't know you could bake!
 			-> I can't usually but it's a very simple recipe just honey, bread crumbs and pepper!
-				<<score -3>>
+				<<score 3>>
+				<<emote frostholm happy_1>>	
+				<<after 1.5>>
 				<<emote frostholm neutral>>
 			-> I am also a keen scone maker, cheese scones are my favourite thing to bake!
 				<<score 3>>
+				<<emote frostholm happy_2>>	
+				<<after 1.5>>
 				<<emote frostholm neutral>>
 			-> I hate baking, this is magic gingerbread that I squeezed out of my bumhole.
 				<<score -3>>
+				<<emote frostholm worried>>	
+				<<after 1.5>>
 				<<emote frostholm neutral>>
 ===
 
@@ -67,156 +77,305 @@ title: frostholm__want_animals
 Princess Penelope: I want...
 	-> Nine cats when I'm old. They can eat me when I die!
 		<<score -3>>
+		<<emote frostholm upset_looking_down>>	
 		King Ráðúlfr: This is why I despise cats. My wolf family would never. Probably.
 			-> How would you know? It's not like you speak wolf.
 				<<score -3>>
+				<<emote frostholm angry>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>					
 			-> I think cats deserve to have a snack if they're starving. Not like I could feed them...
-				<<score -3>>
-			-> It's only fair. I might do the same to them.
 				<<score 3>>
+				<<emote frostholm happy_1>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
+			-> It's only fair. I might do the same to them.
+				<<score -3>>
+				<<emote frostholm worried>>
+				<<after 1.5>>
+				<<emote frostholm neutral>>		
 	-> To rescue all the dogs in the kingdom!
 		<<score 3>>
+		<<emote frostholm happy_2>>	
 		King Ráðúlfr: Wow, really? What's your reasoning? Do tell me.
 			-> Free meat for my chefs to cook for me. I've heard it's supposed to taste good.
 				<<score -3>>
+				<<emote frostholm worried>>
+				<<after 1.5>>
+				<<emote frostholm neutral>>		
 			-> I just want to save them, just for peace of mind I guess?
 				<<score 3>>
+				<<emote frostholm holding_hand_2>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 			-> I want to give all of my soldiers a pet dog.
 				<<score 3>>
+				<<emote frostholm happy_1>>	
+				<<after 1.5>> 
+				<<emote frostholm neutral>>	
 	-> To make wolf hunting our kingdom's national sport!
 		<<score -3>>
+		<<emote frostholm upset_looking_down>>	
 		King Ráðúlfr: Why would you possibly want to do that?!
 			-> Well, we need to do something! Or else they'll eat all the livestock! There would be nothing left for us to eat!
 				<<score 3>>
+				<<emote frostholm concerned>>
+				<<after 1.5>>
+				<<emote frostholm neutral>>					
 			-> I think it would be great if more people actively hated wolves.
 				<<score -3>>
+				<<emote frostholm angry>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 			-> I think all our fashion should be based on fur and teeth, especially wolf fur...
 				<<score -3>>
+				<<emote frostholm angry>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 ===
 
 title: frostholm__want_art
 ---
 Princess Penelope: I want...
-	-> To make abstract stick sculptures with you! <<if knows("abstract_sculptures")>>
-		<<score 3>>
+	-> To make abstract stick sculptures with you!
+		<<score 4>>
+		<<emote frostholm thinking>>	
 		King Ráðúlfr: I did not see you as the artistic type!
 			-> I think it'd be fun! We could make something weird and meaningful...
 				<<score 3>>
+				<<emote frostholm happy_2>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 			-> Honestly, I just wanted to judge your stick selecting methods.
 				<<score -3>>
+				<<emote frostholm sad_1>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>			
 			-> It's less about art and more about spending time together.
 				<<score -3>>
+				<<emote frostholm happy_1>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 	-> To break into your family vault and put a curse on your portrait!
-		<<score -3>>
+		<<score -4>>
+    <<emote frostholm arm_up_2>>	
 		King Ráðúlfr: Do you hear yourself?
 			-> Think about it, what if it makes the painting legendary?
 				<<score -3>>
+				<<emote frostholm confused_2>>
+				<<after 1.5>>	
+				<<emote frostholm neutral>>	
 			-> It's just a little harmless mischief! A bit of magic, a bit of fun.
 				<<score -3>>
+				<<emote frostholm upset_looking_down>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 			-> Fine, I'll settle for blessing it instead.
 				<<score 3>>
+				<<emote frostholm holding_heart_3>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 ===
 
 title: frostholm__want_witchcraft
 ---
 Princess Penelope: I want...
 	-> To make a voodoo doll of you!
-		<<score -3>>
+		<<score -4>>
+		<<emote frostholm worried>>	
 		King Ráðúlfr: So that you can kill me without touching me?
 			-> No. It's so that I can be in a long-distance relationship with you, instead of there in person!
-				<<score -3>>
+				<<score -2>>
+				<<emote frostholm concerned>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>		
 			-> Yeah, I can't wait to stick a pin in your eyes!
-				<<score -3>>
+				<<score -4>>
+				<<emote frostholm blank_stare>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>				
 			-> I would never want to kill you, I just it's cool to have a collection for all my friends and family!
 				<<score 3>>
+				<<emote frostholm >>	
+				<<emote frostholm neutral>>				
 	-> To put a curse on your family's bloodline...
 		<<score -3>>
+		<<emote frostholm concerned>>	
 		King Ráðúlfr: What kind of curse?
 			-> A shrinking curse, you're far too tall.
-				<<score -3>>
+				<<score -5>>
+				<<emote frostholm sad_2>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 			-> A familial curse that makes all of your descendants have really bad hairlines!
-				<<score -3>>
+				<<score -4>>
+				<<emote frostholm worried>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 			-> A good one, I promise! It'll make you have power over your parent's opinions...
-				<<score 3>>
+				<<score 4>>
+				<<emote frostholm silly>>
+				<<after 1.5>>	
+				<<emote frostholm neutral>>	
 ===
 
 title: frostholm__want_religion
 ---
 Princess Penelope: I want...
 	-> To become a nun!
+		<<emote frostholm confused>>	
 		King Ráðúlfr: That is such an honourable position. However, would you not have to leave the royal family?
 			-> That's the point, I'm sick of them controlling my future.
-				<<score -3>>
+				<<score -4>>
+				<<emote frostholm upset_looking_down>>
+				<<after 1.5>>
+				<<emote frostholm neutral>>		
 			-> It's still just a thought. I want to be able to follow our god in the best way possible...
-				<<score 3>>
+				<<score 4>>
+				<<emote frostholm happy_1>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>		
 			-> It's the easiest way to spend the rest of my life only surrounded by women!
-				<<score 3>>
+				<<score -3>>
+				<<emote frostholm confused_2>>
+				<<after 1.5>>	
+				<<emote frostholm neutral>>		
 	-> To do away with religion within this kingdom!
+		<<emote frostholm holding_heart>>	
 		King Ráðúlfr: To replace it with a better one?
 			-> I want to destroy all organized religion and replace it with small cults!
 				<<score -3>>
+				<<emote frostholm worried>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 			-> Yes, witchcraft should be the dominant religion!
-				<<score -3>>
+				<<score -6>>
+				<<emote frostholm angry>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 			-> It has caused so much war and pain; we should replace it with Snailientology!
-				<<score 3>>
+				<<score 6>>
+				<<emote frostholm happy_2>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 	-> To adopt your kingdom's religion!
+		<<emote frostholm holding_heart_2>>	
 		King Ráðúlfr: The Snurch would be so glad to welcome you. We adore new members!
 			-> It's been a dream of mine to dip my hands in the sacred mucus bowl!
 				<<score 3>>
+				<<emote frostholm happy_2>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 			-> I was joking. Religion sucks.
 				<<score -3>>
+				<<emote frostholm sad_2>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 			-> What is the first step to converting?
 				<<score 3>>
+				<<emote frostholm happy_2>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 	-> You to convert to our kingdom's religion!
 		King Ráðúlfr: I am not sure I feel comfortable with that. I love my Snail God too much to leave them...
 			-> You wouldn't have to. We'd be in Frostholm...
-				<<score -3>>
+				<<score 5>>
+				<<emote frostholm happy_1>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 			-> You could just stay here?
 				<<score -3>>
+				<<emote frostholm concerned>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 			-> I guess that's an easy way to avoid getting married to you...
-				<<score 3>>
+				<<score -6>>
+				<<emote frostholm sad_2>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>		
 ===
 
 title: frostholm__want_children
 ---
 Princess Penelope: I want...
 	-> To have a litter amount of children!
+		<<emote frostholm thinking>>	
 		King Ráðúlfr: Which animal's litter?
 			-> Cats, I think 4 is a good amount.
-				<<score 3>>
+				<<score 4>>
+				<<emote frostholm happy_1>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 			-> Wolves, I would love to end up with 8!
-				<<score 3>>
+				<<score 6>>
+				<<emote frostholm happy_2>>
+				<<after 1.5>>	
+				<<emote frostholm neutral>>				
 			-> Goldfish. 150. Eat the annoying ones.
-				<<score -3>>
+				<<score -4>>
+				<<emote frostholm blank_stare>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>					
 	-> To not have children, they disgust me...
+		<<emote frostholm upset_looking_down>>	
 		King Ráðúlfr: Even if we need an heir to continue our line?
 			-> I could never bring a child into this life of nobility...
-				<<score -3>>
+				<<score -5>>
+				<<emote frostholm sad_2>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>			
 			-> Give the line to the people! Vive La Revolution!
-				<<score -3>>
+				<<score -4>>
+				<<emote frostholm concerned_2>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>				
 			-> I could do just one child. Would just need a nanny.
-				<<score 3>>
+				<<score 4>>
+				<<emote frostholm happy_1>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>				
 	-> To abolish child labour.
+		<<emote frostholm holding_heart>>	
 		King Ráðúlfr: We already abolished it in Frostholm!
 			-> That's incredible. Your family should be proud!
-				<<score 3>>
+				<<score 5>>
+				<<emote frostholm holding_heart_2>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>		
 			-> Don't suppose you have mandatory pastry breaks as well?
-				<<score 3>>
+				<<score 5>>
+				<<emote frostholm happy_2>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 			-> Yeah... We're lagging behind the kingdoms...
-				<<score -3>>
+				<<score -4>>
+				<<emote frostholm sad_2>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
+				
+				
 ===
 
 title: frostholm__want_weather
 ---
 Princess Penelope: I want...
 	-> To control the weather, I'd make it snow all the time!
-		<<score 3>>
+		<<score 5>>
+		<<emote frostholm happy_2>>	
+		<<after 1.5>>
+		<<emote frostholm neutral>>	
 		King Ráðúlfr: I love the snow!
 	-> To control the weather, I'd make it extremely hot all the time.
-		<<score -3>>
+		<<score -6>>
+		<<emote frostholm upset_looking_down>>	
+		<<after 1.5>>
+		<<emote frostholm neutral>>	
 		King Ráðúlfr: I hate the heat, I get so sweaty in my furs...
 	-> To see the northern lights!
-		<<score 3>>
+		<<score 4>>
+		<<emote frostholm holding_heart_3>>	
+		<<after 1.5>>	
+		<<emote frostholm neutral>>	
 		King Ráðúlfr: They truly are beautiful!
 ===
 
@@ -225,26 +384,54 @@ title: frostholm__want_family
 Princess Penelope: I want...
 	-> To give my mother a dress made of human teeth!
 		<<score -3>>
+		<<emote frostholm worried>>	
 		King Ráðúlfr: ...Why?
 			-> You wouldn't question if it it were pearls...
 				<<score -3>>
+				<<emote frostholm blank_stare>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 			-> It's a symbol of strength!
 				<<score 3>>
+				<<emote frostholm happy_1>>
+				<<after 1.5>>
+				<<emote frostholm neutral>>		
 	-> To get to know your family!
 		<<score 3>>
+		<<emote frostholm thinking>>	
 		King Ráðúlfr: My human family or my wolf family?
 			-> Your wolf family! I can learn their hunting techniques.
 				<<score 3>>
+				<<emote frostholm happy_2>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 			-> Your human family! I can learn their hunting techniques.
 				<<score -3>>
+				<<emote frostholm concerned>>
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 			-> Your wolf family! I love anthropomorphized animals!
 				<<score 3>>
+				<<emote frostholm holding_heart_2>>	
+				<<after 1.5>>
+				<<emote frostholm neutral>>	
 	-> To make your parent a set of snail necklaces
+   		<<emote frostholm upset_looking_down>>
 		King Ráðúlfr: ...Why?
 			-> Silver snail necklaces! To honour the divine wisdom of the Snail Gods, of course.
 				<<score 3>>
+				<<emote frostholm happy_2>>
+				<<after 1.5>>
+				<<emote frostholm neutral>>		
 			-> Silver snail necklaces! Snails represent patience and endurance. Like our future marriage. *wink*
 				<<score 3>>
+				<<emote frostholm holding_heart_2>>
+				<<after 1.5>>
+				<<emote frostholm neutral>>			
 			-> Because that's how I show my love!
 				<<score -3>>
+				<<emote frostholm angry>>
+				<<after 1.5>>
+				<<emote frostholm neutral>>
+				
 ===
