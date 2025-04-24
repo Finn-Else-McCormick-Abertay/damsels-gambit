@@ -158,6 +158,8 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
 				if (shouldUse) styleString = tag.StripFront("style=");
 			}
 
+			Console.Info($"{option.Line.Text.Text} : {tags.ToPrettyString()} : Style = {styleString.ToPrettyString()}");
+			
 			var button = optionControl as Button ?? optionControl.FindChildOfType<Button>();
 			button.Text = option.Line.Text.Text;
 			button.ThemeTypeVariation = 0 switch {

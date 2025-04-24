@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=45 format=3 uid="uid://cj01ghso8eli6"]
+[gd_resource type="Theme" load_steps=46 format=3 uid="uid://cj01ghso8eli6"]
 
 [ext_resource type="Texture2D" uid="uid://s3jpe4fop37b" path="res://assets/ui/buttons/text_button_focus.png" id="1_7stpd"]
 [ext_resource type="StyleBox" uid="uid://da8adt55nihca" path="res://assets/ui/panels/dialogue_box.tres" id="1_51q1c"]
@@ -18,6 +18,7 @@
 [ext_resource type="Texture2D" uid="uid://bsqbm4d36mru0" path="res://assets/ui/buttons/text_button_blue_normal.png" id="10_y7va3"]
 [ext_resource type="Texture2D" uid="uid://dnivovoba8s1a" path="res://assets/ui/buttons/text_button_blue_pressed.png" id="11_vjthp"]
 [ext_resource type="Texture2D" uid="uid://ok1basv1nfbv" path="res://assets/ui/buttons/text_button_pink_normal.png" id="12_56hcy"]
+[ext_resource type="Texture2D" uid="uid://c2ewu2qom22et" path="res://assets/ui/buttons/text_button_pink_hovered.png" id="12_y7va3"]
 [ext_resource type="Texture2D" uid="uid://dy8o2jcssxn4k" path="res://assets/ui/buttons/text_button_pink_pressed.png" id="13_e2ua8"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_56hcy"]
@@ -72,6 +73,8 @@ expand_margin_bottom = 6.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_33rgk"]
 texture = ExtResource("1_7stpd")
+expand_margin_top = 6.0
+expand_margin_bottom = 6.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sf5cn"]
 texture = ExtResource("9_wtdr7")
@@ -90,9 +93,11 @@ expand_margin_bottom = 6.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_iedkl"]
 texture = ExtResource("1_7stpd")
+expand_margin_top = 6.0
+expand_margin_bottom = 6.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_36hxf"]
-texture = ExtResource("1_xpd0t")
+texture = ExtResource("12_y7va3")
 expand_margin_top = 6.0
 expand_margin_bottom = 6.0
 
