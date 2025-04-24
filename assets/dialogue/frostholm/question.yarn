@@ -2,30 +2,30 @@ title: frostholm__question_family
 ---
 Princess Penelope: So what about...
     -> Your relationship with your parents?
+        <<learn wolf_parents>>
         <<emote frostholm arm_up_3>>
         King Ráðúlfr: My human parents or my wolf parents? I get along with both.
-        <<learn wolf_parents>>
+        <<learn lost_child>>
         <<emote frostholm arm_up_2>>
         King Ráðúlfr: Although my human parents and I can't seem to see eye to eye on a few issues. On account of how they lost me when I was 5.
-        <<learn lost_child>>
         <<emote frostholm neutral>>
     -> Your relationship with your siblings?
         <<emote frostholm looking_right>>
         King Ráðúlfr: I have only one younger brother. Our relationship is rather tense, since he was the heir to the throne until I came back. 
         <<emote frostholm thinking>>
-        King Ráðúlfr: He was the one who gave me this scar across my eye.
         <<learn little_brother>>
+        King Ráðúlfr: He was the one who gave me this scar across my eye.
         <<emote frostholm neutral>>
-    -> How were you lost? <<if knows("lost_child")>>
+    -> How were you lost? <<if knows("lost_child")>> #score_color=positive #if=food_fact
         <<emote frostholm arm_up_2>>
         King Ráðúlfr: I was kidnapped by bounty hunters who had been told I was a bastard. 
         <<emote frostholm arm_up>>
         King Ráðúlfr: During their escape, they lost me in the woods.
         <<emote frostholm holding_heart_2>>
+        <<learn wolf_adoption>>
         <<score 1>>
         King Ráðúlfr: I was found and adopted by wolfs.
         <<emote frostholm neutral>>
-        <<learn wolf_adoption>>
 ===
 
 title: frostholm__question_food
@@ -33,18 +33,18 @@ title: frostholm__question_food
 Princess Penelope: What is...
     -> The nation dish of your kingdom?
         <<emote frostholm silly>>
-        King Ráðúlfr: Reindeer pie with dill pickles, but I find it is better when it is raw.
         <<learn national_dish>>
-        <<emote frostholm neutral>>
         <<score 1>>
+        King Ráðúlfr: Reindeer pie with dill pickles, but I find it is better when it is raw.
+        <<emote frostholm neutral>>
     -> Your favourite food?
         <<emote frostholm happy_2>>
-        King Ráðúlfr: Dog kibble, it reminds me of my childhood. It was the first recipe I have ever created. 
         <<learn favourite_food>>
+        King Ráðúlfr: Dog kibble, it reminds me of my childhood. It was the first recipe I have ever created. 
         <<emote frostholm holding_heart_3>>
+        <<learn caring_leader>>
         <<score 1>>
         King Ráðúlfr: I wanted my pack to always have provisions, even when hunting bore no fruit.
-        <<learn caring_leader>>
         <<emote frostholm neutral>>
 ===
 
@@ -54,30 +54,30 @@ Princess Penelope: Can I ask?...
     -> What's your favourite animal?
         <<emote frostholm happy_2>>
         King Ráðúlfr: Wolves, of course. I was raised by them. They are a lovely pack.
+        <<learn favourite_animal>>
         <<emote frostholm holding_heart_2>>
         <<score 1>>
         King Ráðúlfr: They taught me almost everything I know!
-        <<learn favourite_animal>>
         <<emote frostholm neutral>>
     -> Do you have any pets?
         <<emote frostholm concerned>>
         King Ráðúlfr: Does my brother count?
+        <<learn wolf_brother>>
         <<emote frostholm concerned_2>>
         King Ráðúlfr: He used to be human, but there was a rather unfortunate accident, and he became a wolf.
-        <<learn wolf_brother>>
         <<emote frostholm neutral>>
     -> What animals are native to your kingdom?
         <<emote frostholm thinking>>
         King Ráðúlfr: We have many, but the most known one is reindeer. A rarer species, larger than the ones in other kingdoms.
+        <<learn native_animals>>
         <<emote frostholm concerned>>
         King Ráðúlfr: However, we're running out because we keep eating them.
-        <<learn native_animals>>
         <<emote frostholm neutral>>
     -> Are you afraid of any animals?
+        <<learn animal_fears>>
         <<emote frostholm kissy_face>>
         <<score 1>>
         King Ráðúlfr: No. Like a strong wolf, I have no fears. I was taught to be an apex predator.
-        <<learn animal_fears>>
         <<emote frostholm neutral>>
 ===
 
@@ -85,31 +85,49 @@ title: frostholm__question_art
 ---
 Princess Penelope: I have a question...
     -> What is your opinion on art?
+        <<emote frostholm holding_heart>>
         King Ráðúlfr: I believe it holds significant meaning.
-        King Ráðúlfr: So much so, our kingdom keeps all our art in a storage vault. Locked. Away. Forever.
+        <<emote frostholm holding_heart_3>>
         <<learn kingdom_art>>
+        King Ráðúlfr: So much so, our kingdom keeps all our art in a storage vault. Locked. Away. Forever.
+        <<emote frostholm neutral>>
     -> What is your favourite form of art?
-        King Ráðúlfr: Poetry. The howls of wolves at night are a form of poetry, you know.
+        <<emote frostholm happy_2>>
         <<learn howl_poetry>>
+        King Ráðúlfr: Poetry. The howls of wolves at night are a form of poetry, you know.
+        <<emote frostholm neutral>>
     -> Do you ever make your own art? <<if knows("art_children")>>
-        King Ráðúlfr: Yes. I create abstract sculptures out of carefully arranged piles of sticks.
+        <<emote frostholm happy_1>>
         <<learn abstract_sculptures>>
+        <<score 2>>
+        King Ráðúlfr: Yes. I create abstract sculptures out of carefully arranged piles of sticks.
+        <<score -1>>
+        <<emote frostholm worried>>
+        <<after 1.5>>
+        <<emote frostholm neutral>>
 ===
 
 title: frostholm__question_witchcraft
 ---
 Princess Penelope: I was wondering...
     -> How are witches treated in your kingdom?
+        <<emote frostholm upset_looking_down>>
         King Ráðúlfr: Tricksters is what they are, and they are treated as such.
-        King Ráðúlfr: They are to be captured and banished or killed.
         <<learn witch_treatment>>
+        King Ráðúlfr: They are to be captured and banished or killed.
+        <<emote frostholm neutral>>
     -> What are your thoughts on witchcraft?
-        King Ráðúlfr: Terrible. Absolutely terrible. Magic has a habit of working too well, in the most unexpected ways. 
-        King Ráðúlfr: It can not be trusted.
+        <<emote frostholm angry>>
+        King Ráðúlfr: Terrible. Absolutely terrible. Magic has a habit of working too well, in the most unexpected ways.
         <<learn witch_opinion>>
+        <<emote frostholm upset_looking_down>>
+        King Ráðúlfr: It can not be trusted.
+        <<emote frostholm neutral>>
     -> Have you ever dabbled in witchcraft?
-        King Ráðúlfr: Yes. I attempted to make my brother love wolves with the help of a witch. Now he is one.
         <<learn wolf_potion>>
+        <<emote frostholm sad_1>>
+        King Ráðúlfr: Yes. I attempted to make my brother love wolves with the help of a witch. Now he is one.
+        <<emote frostholm neutral>>
 ===
 
 title: frostholm__question_religion

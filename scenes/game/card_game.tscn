@@ -103,8 +103,8 @@ offset_bottom = -19.216
 grow_vertical = 2
 theme = ExtResource("2_ko4o6")
 script = ExtResource("4_dw2x6")
-LoveThreshold = 4.0
-HateThreshold = -4.0
+LoveThreshold = 1.1
+HateThreshold = -1.1
 ValueAnimationSpeed = 1.5
 ValueAnimationMaxDuration = 2.5
 ValueAnimationTransitionType = 1
@@ -176,7 +176,9 @@ offset_top = 0.103996
 offset_right = 293.0
 offset_bottom = 0.103996
 grow_vertical = 1
-NumRounds = 8
+NumRounds = 9
+AnimationDuration = 0.0
+AnimationTransitionType = 0
 
 [node name="ButtonsFocusContainer" type="Control" parent="."]
 layout_mode = 1

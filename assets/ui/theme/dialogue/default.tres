@@ -14,6 +14,12 @@
 [ext_resource type="Texture2D" uid="uid://bdnxlpxjn5q3i" path="res://assets/ui/buttons/text_button_pressed.png" id="3_qyl7g"]
 [ext_resource type="Texture2D" uid="uid://de4pwjr8nlv1v" path="res://assets/ui/buttons/text_button_unlocked_pressed.png" id="4_jdlf5"]
 [ext_resource type="Texture2D" uid="uid://c6imtmed6h3d1" path="res://assets/ui/buttons/text_button_used.png" id="8_n4x27"]
+[ext_resource type="Texture2D" uid="uid://b1xig4j7y6bf7" path="res://assets/ui/buttons/text_button_blue_hovered.png" id="9_wtdr7"]
+[ext_resource type="Texture2D" uid="uid://bsqbm4d36mru0" path="res://assets/ui/buttons/text_button_blue_normal.png" id="10_y7va3"]
+[ext_resource type="Texture2D" uid="uid://dnivovoba8s1a" path="res://assets/ui/buttons/text_button_blue_pressed.png" id="11_vjthp"]
+[ext_resource type="Texture2D" uid="uid://ok1basv1nfbv" path="res://assets/ui/buttons/text_button_pink_normal.png" id="12_56hcy"]
+[ext_resource type="Texture2D" uid="uid://c2ewu2qom22et" path="res://assets/ui/buttons/text_button_pink_hovered.png" id="12_y7va3"]
+[ext_resource type="Texture2D" uid="uid://dy8o2jcssxn4k" path="res://assets/ui/buttons/text_button_pink_pressed.png" id="13_e2ua8"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_56hcy"]
 texture = ExtResource("1_n4x27")
@@ -62,6 +68,46 @@ expand_margin_bottom = 6.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_mxsuy"]
 texture = ExtResource("3_qyl7g")
+expand_margin_top = 6.0
+expand_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_33rgk"]
+texture = ExtResource("1_7stpd")
+expand_margin_top = 6.0
+expand_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sf5cn"]
+texture = ExtResource("9_wtdr7")
+expand_margin_top = 6.0
+expand_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_f1idg"]
+texture = ExtResource("10_y7va3")
+expand_margin_top = 6.0
+expand_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5y7ar"]
+texture = ExtResource("11_vjthp")
+expand_margin_top = 6.0
+expand_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_iedkl"]
+texture = ExtResource("1_7stpd")
+expand_margin_top = 6.0
+expand_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_36hxf"]
+texture = ExtResource("12_y7va3")
+expand_margin_top = 6.0
+expand_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hepqp"]
+texture = ExtResource("12_56hcy")
+expand_margin_top = 6.0
+expand_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1wmxf"]
+texture = ExtResource("13_e2ua8")
 expand_margin_top = 6.0
 expand_margin_bottom = 6.0
 
@@ -126,6 +172,26 @@ DialogueOptionButton/styles/focus = SubResource("StyleBoxTexture_vjthp")
 DialogueOptionButton/styles/hover = SubResource("StyleBoxTexture_gbjwl")
 DialogueOptionButton/styles/normal = SubResource("StyleBoxTexture_3x1i2")
 DialogueOptionButton/styles/pressed = SubResource("StyleBoxTexture_mxsuy")
+DialogueOptionButtonNegative/base_type = &"Button"
+DialogueOptionButtonNegative/colors/font_color = Color(0.996078, 0.929412, 0.898039, 1)
+DialogueOptionButtonNegative/colors/font_disabled_color = Color(0.996078, 0.929412, 0.898039, 1)
+DialogueOptionButtonNegative/colors/font_focus_color = Color(0.996078, 0.929412, 0.898039, 1)
+DialogueOptionButtonNegative/colors/font_hover_color = Color(0.996078, 0.929412, 0.898039, 1)
+DialogueOptionButtonNegative/colors/font_pressed_color = Color(0.996078, 0.929412, 0.898039, 1)
+DialogueOptionButtonNegative/styles/focus = SubResource("StyleBoxTexture_33rgk")
+DialogueOptionButtonNegative/styles/hover = SubResource("StyleBoxTexture_sf5cn")
+DialogueOptionButtonNegative/styles/normal = SubResource("StyleBoxTexture_f1idg")
+DialogueOptionButtonNegative/styles/pressed = SubResource("StyleBoxTexture_5y7ar")
+DialogueOptionButtonPositive/base_type = &"Button"
+DialogueOptionButtonPositive/colors/font_color = Color(0.996078, 0.929412, 0.898039, 1)
+DialogueOptionButtonPositive/colors/font_disabled_color = Color(0.996078, 0.929412, 0.898039, 1)
+DialogueOptionButtonPositive/colors/font_focus_color = Color(0.996078, 0.929412, 0.898039, 1)
+DialogueOptionButtonPositive/colors/font_hover_color = Color(0.996078, 0.929412, 0.898039, 1)
+DialogueOptionButtonPositive/colors/font_pressed_color = Color(0.996078, 0.929412, 0.898039, 1)
+DialogueOptionButtonPositive/styles/focus = SubResource("StyleBoxTexture_iedkl")
+DialogueOptionButtonPositive/styles/hover = SubResource("StyleBoxTexture_36hxf")
+DialogueOptionButtonPositive/styles/normal = SubResource("StyleBoxTexture_hepqp")
+DialogueOptionButtonPositive/styles/pressed = SubResource("StyleBoxTexture_1wmxf")
 DialogueOptionButtonUnlocked/base_type = &"Button"
 DialogueOptionButtonUnlocked/colors/font_color = Color(0.996078, 0.929412, 0.898039, 1)
 DialogueOptionButtonUnlocked/colors/font_disabled_color = Color(0.996078, 0.929412, 0.898039, 1)
