@@ -1,28 +1,31 @@
 title: frostholm__pre_ending
 ---
-<<wait 1>>
+<<wait 2.5>>
 ===
 
 title: frostholm__ending__love
 ---
 <<flush_command_queue>>
+The date is over.
 <<emote frostholm happy_1>>
-The date is over; the prince liked you, and you are soon to be wed. You will soon leave for his kingdom in the north, never to return.
+The prince liked you, and you are soon to be wed. You will soon leave for his kingdom in the north, never to return.
 <<fade in endings/marriage 2>>
 ===
 
 title: frostholm__ending__hate
 ---
 <<flush_command_queue>>
+The date is over.
 <<emote frostholm angry>>
-The date is over; the prince took such a hating to you that he declared war on your kingdom. His armies begin to march south for battle.
+The prince took such a hating to you that he declared war on your kingdom. His armies begin to march south for battle.
 <<fade in endings/war 2>>
 ===
 
 title: frostholm__ending__neutral
 ---
 <<flush_command_queue>>
+The date is over.
 <<emote frostholm sad_1>>
-The date is over; the prince seemed unimpressed, and elects to leave you be.
+The prince seemed unimpressed, and elects to leave you be.
 <<fade in endings/happy 2>>
 ===
