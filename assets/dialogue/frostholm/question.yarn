@@ -134,67 +134,106 @@ title: frostholm__question_religion
 ---
 Princess Penelope: I was thinking...
     -> It's so strange to think that people would worship a snail...
+        <<emote frostholm arm_up_3>>
         King Ráðúlfr: Your people worship gods who live in the sky.
+        <<emote frostholm arm_up_2>>
         King Ráðúlfr: My people worship gods who took the humblest form on Earth.
+        <<emote frostholm arm_up>>
         King Ráðúlfr: To watch over us and teach us how to live.
-        King Ráðúlfr: Life itself is meant to be enjoyed. 
-        King Ráðúlfr: “Focus on the journey and not on the destination, and when you forget to, look back at your trail, and see how far you've come”. 
+        <<emote frostholm holding_heart>>
+        King Ráðúlfr: Life itself is meant to be enjoyed.
         <<learn snurch_quote>>
+        <<emote frostholm holding_heart_3>>
+        King Ráðúlfr: “Focus on the journey and not on the destination, and when you forget to, look back at your trail, and see how far you've come”. 
+        <<emote frostholm holding_heart_2>>
         King Ráðúlfr: To live like a snail is to live to the fullest.
+        <<emote frostholm neutral>>
     -> What do you believe happens after you die?
-        King Ráðúlfr: We will become the next ring on the shell of the Great Snail!
         <<learn afterlife_ring>>
+        <<emote frostholm holding_heart>>
+        King Ráðúlfr: We will become the next ring on the shell of the Great Snail!
+        <<emote frostholm neutral>>
 ===
 
 title: frostholm__question_children
 ---
 Princess Penelope: So...
     -> Do you have children? <<if knows("abstract_sculptures")>>
-        King Ráðúlfr: No. I suppose I could count my stick sculptures, I treat them as such. 
+        <<emote frostholm thumbs_up>>
+        King Ráðúlfr: No. 
         <<learn art_children>>
+        <<emote frostholm thinking>>
+        King Ráðúlfr: I suppose I could count my stick sculptures, I treat them as such. 
+        <<emote frostholm neutral>>
     -> Do you want to have children in the future?
-        King Ráðúlfr: Yes. I must. The crown needs an heir, after all.
         <<learn heir_need>>
+        <<emote frostholm looking_left>>
+        King Ráðúlfr: Yes. I must. The crown needs an heir, after all.
         <<emote frostholm sad_1>>
-        <<after 1>>
+        <<after 1.5>>
         <<emote frostholm neutral from sad_1>>
     -> How would you like to raise your children?
-        King Ráðúlfr: In the wild. Up the mountain. In the way of the forest.
-        King Ráðúlfr: If they survive, they are meant to be rulers.
         <<learn parenting_method>>
+        <<emote frostholm thumbs_up>>
+        King Ráðúlfr: In the wild. Up the mountain. In the way of the forest.
+        <<emote frostholm neutral>>
+        King Ráðúlfr: If they survive, they are meant to be rulers.
+        <<emote frostholm thinking>>
+        <<after 1.5>>
+        <<emote frostholm neutral>>
 ===
 
 title: frostholm__question_weather
 ---
 Princess Penelope: Um...
     -> What is the weather like in your kingdom?
+        <<emote frostholm upset_looking_down>>
         King Ráðúlfr: Cold. Freezing. Windy.
+        <<emote frostholm worried>>
         King Ráðúlfr: Ice storms that can flay the flesh from your bones.
-        King Ráðúlfr: Beautiful, really.
         <<learn frostholm_weather>>
+        <<emote frostholm happy_2>>
+        King Ráðúlfr: Beautiful, really.
+        <<emote frostholm neutral>>
     -> What do you think of the weather in my kingdom?
-        King Ráðúlfr: Too hot.
-        King Ráðúlfr: How do you wear so many layers without bursting into flame?
         <<learn weather_opinion>>
+        <<emote frostholm sad_2>>
+        King Ráðúlfr: Too hot.
+        <<emote frostholm angry>>
+        King Ráðúlfr: How do you wear so many layers without bursting into flame?
+        <<emote frostholm neutral>>
     -> What's your favourite season?
+        <<emote frostholm thinking>>
         King Ráðúlfr: Back home, we do not name them.
-        King Ráðúlfr: Either it is "cold and windy" or "cold and less windy."
         <<learn favourite_season>>
+        <<emote frostholm sad_1>>
+        King Ráðúlfr: Either it is "cold and windy" or "cold and less windy."
+        <<emote frostholm neutral>>
 ===
 
 title: frostholm__question_hobbies
 ---
 Princess Penelope: So about you...
     -> What are your hobbies?
-        King Ráðúlfr: I like to dig holes.
-        King Ráðúlfr: Sometimes, I sit in them for a while. It is relaxing.
-        King Ráðúlfr: And skunting, in the cold but less windy season.
         <<learn favourite_hobbies>>
+        <<emote frostholm silly>>
+        King Ráðúlfr: I like to dig holes.
+        <<emote frostholm kissy_face>>
+        King Ráðúlfr: Sometimes, I sit in them for a while. It is relaxing.
+        <<emote frostholm happy_2>>
+        King Ráðúlfr: And skunting, in the cold but less windy season.
+        <<emote frostholm neutral>>
     -> How much time do you set aside for your hobbies? <<if knows("favourite_hobbies")>>
+        <<emote frostholm holding_heart_3>>
         King Ráðúlfr: I always make sure to set aside at least a few hours a day for digging and sitting.
-        King Ráðúlfr: It is s important to have a routine.
         <<learn hobby_time>>
+        <<emote frostholm blank_stare>>
+        King Ráðúlfr: It is important to have a routine.
+        <<emote frostholm neutral>>
     -> Is there a hobby you would like to try?
-        King Ráðúlfr: Pottery. I would like to see if I can make a clay wolf as ugly as my brother.
         <<learn learn_pottery>>
+        <<emote frostholm happy_1>>
+        King Ráðúlfr: Pottery. I would like to see if I can make a clay wolf as ugly as my brother.
+        <<after 1.5>>
+        <<emote frostholm neutral>>
 ===
