@@ -121,12 +121,12 @@ Princess Penelope: I got this for you. It's a...
 title: frostholm__give_children
 ---
 Princess Penelope: You know what?...
-	-> I'll give you my child. *wink* #style=DialogueOptionButtonPositive;knows=heir_needed
+	-> I'll give you my child. *wink* #style=DialogueOptionButtonPositive;knows=heir_need
 		<<score 4>>
 		<<emote frostholm kissy_face>>
 		<<after 1.5>>
 		<<emote frostholm neutral>>
-	-> I could give you a child servant. He's an orphan so its okay. #style=DialogueOptionButtonNegative;knows=heir_needed
+	-> I could give you a child servant. He's an orphan so its okay. #style=DialogueOptionButtonNegative;knows=heir_need
 		<<score -3>>
 		<<emote frostholm concerned>>
 		<<after 1.5>>
