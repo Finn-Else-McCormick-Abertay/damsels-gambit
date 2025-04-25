@@ -77,17 +77,57 @@ Princess Penelope: I thought you might like this...
 		<<after 1.5>>
 		<<emote frostholm neutral>>
 	-> Health Potion! (Frog Potion) #style=DialogueOptionButtonNegative;knows=witch_opinion
-		<<score -6>>
-		<<emote frostholm frog>>
+		<<emote frostholm confused_2>>
 		<<prop animate frog_potion random>>
-		<<after 2>>
+		King Ráðúlfr: What's this? Looks rather dubious...
+		Princess Penelope: A health potion!
+		<<emote frostholm looking_right>>
+		King Ráðúlfr: Hmm... *takes a sip*
+		<<emote frostholm frog_shocked>>
+		King Ráðúlfr: ...
+		<<emote frostholm frog_angry>>
+		<<score -6>>
+		King Ráðúlfr: Wow.
+		Princess Penelope: Don't worry. It's the kind that conveniently wears off after a couple lines of dialogue.
+		<<emote frostholm frog_neutral>>
+		King Ráðúlfr: Ah. I see...
+		<<emote frostholm thumbs_up>>
+		<<score 3>>
+		King Ráðúlfr: There we go.
 		<<emote frostholm neutral>>
 	-> Health Potion! (Wolf Potion) #style=DialogueOptionButtonPositive;knows=witch_opinion
-		<<score 6>>
-		<<emote frostholm wolf>>
+		<<emote frostholm happy_2>>
 		<<prop animate wolf_potion random>>
-		<<after 2>>
-		<<emote frostholm neutral>>
+		King Ráðúlfr: Hehe... I know what this is. I recognise the smell!
+		Princess Penelope: You do!?
+		<<emote frostholm silly>>
+		King Ráðúlfr: Mhm! *chugs*
+		<<emote frostholm wolf_neutral>>
+		King Ráðúlfr: ...
+		<<emote frostholm wolf_excited>>
+		<<score 6>>
+		King Ráðúlfr: I knew it!
+		<<emote frostholm wolf_happy>>
+		King Ráðúlfr: ...
+		<<emote frostholm wolf_neutral>>
+		King Ráðúlfr: Wait.
+		<<emote frostholm wolf_sad>>
+		<<score -3>>
+		King Ráðúlfr: Were you trying to trick me?
+			-> No! Don't worry, it only lasts a couple moments... #style=DialogueOptionButtonNegative;knows=witch_opinion
+				<<emote frostholm wolf_neutral>>
+				<<score -3>>
+				King Ráðúlfr: Ah. I see...
+				<<emote frostholm sad_1>>
+				King Ráðúlfr: There we go.
+				<<emote frostholm neutral>>
+			-> I thought you would appriciate it! Just for a moment! <<if knows("wolf_parents") or knows("wolf_adoption")>> #style=DialogueOptionButtonPositive;knows=witch_opinion
+				<<emote frostholm wolf_excited>>
+				<<score 3>>
+				King Ráðúlfr: Thank you!
+				<<emote frostholm holding_heart_3>>
+				King Ráðúlfr: There. All back to normal!
+				<<emote frostholm neutral>>
 ===
 
 title: frostholm__give_religion
