@@ -11,20 +11,10 @@ Princess Penelope: So what about...
         <<emote frostholm neutral>>
     -> Your relationship with your siblings?
         <<emote frostholm looking_right>>
-        King Ráðúlfr: I have only one younger brother. Our relationship is rather tense, since he was the heir to the throne until I came back. 
+        King Ráðúlfr: I have only one brother. Our relationship is rather tense, since he was the heir to the throne until I came back. 
         <<emote frostholm thinking>>
         <<learn little_brother>>
         King Ráðúlfr: He was the one who gave me this scar across my eye.
-        <<emote frostholm neutral>>
-    -> How were you lost? <<if knows("lost_child")>> #score_color=positive #if=food_fact
-        <<emote frostholm arm_up_2>>
-        King Ráðúlfr: I was kidnapped by bounty hunters who had been told I was a bastard. 
-        <<emote frostholm arm_up>>
-        King Ráðúlfr: During their escape, they lost me in the woods.
-        <<emote frostholm holding_heart_2>>
-        <<learn wolf_adoption>>
-        <<score 1>>
-        King Ráðúlfr: I was found and adopted by wolfs.
         <<emote frostholm neutral>>
 ===
 
@@ -35,7 +25,9 @@ Princess Penelope: What is...
         <<emote frostholm silly>>
         <<learn national_dish>>
         <<score 1>>
-        King Ráðúlfr: Reindeer pie with dill pickles, but I find it is better when it is raw.
+        King Ráðúlfr: Reindeer pie with dill pickles.
+        <<emote frostholm kissy_face>>
+        King Ráðúlfr: But I find it is better when it is raw.
         <<emote frostholm neutral>>
     -> Your favourite food?
         <<emote frostholm happy_2>>
@@ -96,7 +88,7 @@ Princess Penelope: I have a question...
         <<learn howl_poetry>>
         King Ráðúlfr: Poetry. The howls of wolves at night are a form of poetry, you know.
         <<emote frostholm neutral>>
-    -> Do you ever make your own art? <<if knows("art_children")>>
+    -> Do you ever make your own art?
         <<emote frostholm happy_1>>
         <<learn abstract_sculptures>>
         <<score 2>>
@@ -187,7 +179,7 @@ title: frostholm__question_weather
 ---
 Princess Penelope: Um...
     -> What is the weather like in your kingdom?
-        <<emote frostholm upset_looking_down>>
+        <<emote frostholm thinking>>
         King Ráðúlfr: Cold. Freezing. Windy.
         <<emote frostholm worried>>
         King Ráðúlfr: Ice storms that can flay the flesh from your bones.
@@ -201,12 +193,16 @@ Princess Penelope: Um...
         King Ráðúlfr: Too hot.
         <<emote frostholm angry>>
         King Ráðúlfr: How do you wear so many layers without bursting into flame?
+        <<emote frostholm thinking>>
+        King Ráðúlfr: ...
+        <<emote frostholm kissy_face>>
+        King Ráðúlfr: Should I take my clothes off?
         <<emote frostholm neutral>>
     -> What's your favourite season?
-        <<emote frostholm thinking>>
+        <<emote frostholm arm_up_3>>
         King Ráðúlfr: Back home, we do not name them.
         <<learn favourite_season>>
-        <<emote frostholm sad_1>>
+        <<emote frostholm arm_up_2>>
         King Ráðúlfr: Either it is "cold and windy" or "cold and less windy."
         <<emote frostholm neutral>>
 ===
@@ -221,7 +217,10 @@ Princess Penelope: So about you...
         <<emote frostholm kissy_face>>
         King Ráðúlfr: Sometimes, I sit in them for a while. It is relaxing.
         <<emote frostholm happy_2>>
-        King Ráðúlfr: And skunting, in the cold but less windy season.
+        King Ráðúlfr: And skunting.
+        Princess Penelope: Oh?
+        <<emote frostholm arm_up_3>>
+        King Ráðúlfr: You know, ski-hunting. In the cold but less windy season.
         <<emote frostholm neutral>>
     -> How much time do you set aside for your hobbies? <<if knows("favourite_hobbies")>>
         <<emote frostholm holding_heart_3>>
