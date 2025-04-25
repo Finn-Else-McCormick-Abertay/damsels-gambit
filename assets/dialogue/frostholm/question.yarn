@@ -21,7 +21,7 @@ Princess Penelope: So what about...
 title: frostholm__question_food
 ---
 Princess Penelope: What is...
-    -> The nation dish of your kingdom?
+    -> The national dish of your kingdom?
         <<emote frostholm silly>>
         <<learn national_dish>>
         <<score 1>>
