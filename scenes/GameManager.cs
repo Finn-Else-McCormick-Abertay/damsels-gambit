@@ -125,6 +125,8 @@ public sealed partial class GameManager : Node
 	public static void SwitchToMainMenu() {
 		if (!Instance.IsValid()) return;
 
+
+
 		// Clearing other scenes is handled by the transition
 		// Crossfade when coming from credits or splash, otherwise fade to black
 		SceneTransition.Run(
@@ -134,6 +136,7 @@ public sealed partial class GameManager : Node
 				_ => SceneTransition.Type.FadeToBlack
 			}, "main_menu", () => {
 			MainMenu = _mainMenuScene.Instantiate<MainMenu>(); GetLayer("main_menu").AddChild(MainMenu);
+			AudioManager.PlayMusic("res://assets/audio/Menu.mp3");
 			SetNotebookActive(false);
 		});
 	}
@@ -162,6 +165,8 @@ public sealed partial class GameManager : Node
 	public static void SwitchToCredits() {
 		if (!Instance.IsValid()) return;
 
+		AudioManager.StopMusic();
+		AudioManager.PlayMusic("res://assets/audio/Credits.wav");
 		// Clearing other scenes is handled by the transition
 		SceneTransition.Run(SceneTransition.Type.CrossFade, "credits", () => {
 			Credits = _creditsScene.Instantiate<Control>(); GetLayer("credits").AddChild(Credits);
@@ -175,6 +180,9 @@ public sealed partial class GameManager : Node
 		if (!Instance.IsValid()) return;
 		if (!ResourceLoader.Exists(cardGameScenePath)) { Console.Error($"No such scene '{cardGameScenePath}'"); return; }
 		
+		AudioManager.StopMusic();
+		AudioManager.PlayMusic("res://assets/audio/Date.mp3");
+
 		// Clearing other scenes is handled by the transition
 		// Cut when coming from another card game scene, otherwise crossfade
 		SceneTransition.Run(CardGameController.IsValid() ? SceneTransition.Type.Cut : SceneTransition.Type.CrossFade, "game", () => {

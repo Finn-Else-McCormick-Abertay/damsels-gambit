@@ -6,27 +6,41 @@ Princess Penelope: I want...
 		King Ráðúlfr: Oh, you're familiar with the sport! What made you interested in it?
 			-> I'm not a runner so I figured it would make wolf hunting easier! #style=DialogueOptionButtonNegative;knows=learn_pottery
 				<<score -5>>
+				<<emote frostholm worried>>
+				<<after 1.5>>
 				<<emote frostholm neutral>>
 			-> I just thought I'd look cool. Ladies seem to like hunters. #style=DialogueOptionButtonNegative;knows=learn_pottery
 				<<score -3>>
+				<<emote frostholm thinking>>
+				<<after 1.5>>
+				<<emote frostholm confused>>
+				<<after 1.5>>
 				<<emote frostholm neutral>>
 			-> It is a highly respected sport in our kingdom. My father ventures with his men to the winter lands every year to practice it. #style=DialogueOptionButtonPositive;knows=learn_pottery
 				<<score 3>>
+				<<emote frostholm happy_1>>
+				<<after 1.5>>
 				<<emote frostholm neutral>>
 	-> To teach you how to make snail trinkets... #style=DialogueOptionButtonUnlocked;knows=learn_pottery
 		<<emote frostholm angry>>
 		King Ráðúlfr: This is blasphemy! What made you think I'd like to partake in such cruelty?
 			-> They have pretty shells, so why not use them after they are dead? #style=DialogueOptionButtonNegative;knows=learn_pottery
+				<<emote frostholm worried>>
 				<<score -4>>
-			-> They're just snails, be for real. #style=DialogueOptionButtonNegative;knows=learn_pottery
-				<<score -10>>
-			-> They're carved from wood to look like snails, I think it's very respectful. #style=DialogueOptionButtonNegative;knows=learn_pottery
-				<<score -2>>
-				<<emote frostholm concerned_2>>
-				<<after 1.0>>
-				<<emote frostholm sad_1>>
 				<<after 1.5>>
-				<<emote frostholm looking_right>>
+				<<emote frostholm neutral>>
+			-> They're just snails, be for real. #style=DialogueOptionButtonNegative;knows=learn_pottery
+				<<emote frostholm angry>>
+				<<score -10>>
+				<<after 1.5>>
+				<<emote frostholm neutral>>
+			-> They're carved from wood to look like snails, I think it's very respectful. #style=DialogueOptionButtonPositive;knows=learn_pottery
+				<<score 4>>
+				<<emote frostholm thinking>>
+				<<after 1.0>>
+				<<emote frostholm thumbs_up>>
+				<<after 1.5>>
+				<<emote frostholm neutral>>
 ===
 
 title: frostholm__want_food
@@ -139,7 +153,7 @@ title: frostholm__want_art
 Princess Penelope: I want...
 	-> To make abstract stick sculptures with you! #style=DialogueOptionButtonPositive;knows=kingdom_art
 		<<score 4>>
-		<<emote frostholm thinking>>	
+		<<emote frostholm happy_2>>	
 		King Ráðúlfr: I did not see you as the artistic type!
 			-> I think it'd be fun! We could make something weird and meaningful... #style=DialogueOptionButtonPositive;knows=kingdom_art
 				<<score 3>>
@@ -151,8 +165,8 @@ Princess Penelope: I want...
 				<<emote frostholm sad_1>>	
 				<<after 1.5>>
 				<<emote frostholm neutral>>			
-			-> It's less about art and more about spending time together. #style=DialogueOptionButtonNegative;knows=kingdom_art
-				<<score -3>>
+			-> It's less about art and more about spending time together. #style=DialogueOptionButtonPositive;knows=kingdom_art
+				<<score 3>>
 				<<emote frostholm happy_1>>	
 				<<after 1.5>>
 				<<emote frostholm neutral>>	
@@ -184,9 +198,9 @@ Princess Penelope: I want...
 		<<score -4>>
 		<<emote frostholm worried>>	
 		King Ráðúlfr: So that you can kill me without touching me?
-			-> No. It's so that I can be in a long-distance relationship with you, instead of there in person! #style=DialogueOptionButtonNegative;knows=witch_treatment
-				<<score -2>>
-				<<emote frostholm concerned>>	
+			-> No. It's so that I can be in a long-distance relationship with you, instead of there in person! #style=DialogueOptionButtonPositive;knows=witch_treatment
+				<<score 2>>
+				<<emote frostholm kissy_face>>	
 				<<after 1.5>>
 				<<emote frostholm neutral>>		
 			-> Yeah, I can't wait to stick a pin in your eyes! #style=DialogueOptionButtonNegative;knows=witch_treatment
@@ -196,7 +210,8 @@ Princess Penelope: I want...
 				<<emote frostholm neutral>>				
 			-> I would never want to kill you, I just it's cool to have a collection for all my friends and family! #style=DialogueOptionButtonPositive;knows=witch_treatment
 				<<score 3>>
-				<<emote frostholm >>	
+				<<emote frostholm confused_2>>
+				<<after 1.5>>	
 				<<emote frostholm neutral>>				
 	-> To put a curse on your family's bloodline... #style=DialogueOptionButtonNegative;knows=witch_treatment
 		<<score -3>>
@@ -225,9 +240,9 @@ Princess Penelope: I want...
 	-> To become a nun! #style=DialogueOptionButtonUnlocked;knows=afterlife_ring
 		<<emote frostholm confused>>	
 		King Ráðúlfr: That is such an honourable position. However, would you not have to leave the royal family?
-			-> That's the point, I'm sick of them controlling my future. #style=DialogueOptionButtonNegative;knows=afterlife_ring
-				<<score -4>>
-				<<emote frostholm upset_looking_down>>
+			-> That's the point, I'm sick of them controlling my future. #style=DialogueOptionButtonPositive;knows=afterlife_ring
+				<<score 2>>
+				<<emote frostholm thumbs_up>>
 				<<after 1.5>>
 				<<emote frostholm neutral>>		
 			-> It's still just a thought. I want to be able to follow our god in the best way possible... #style=DialogueOptionButtonPositive;knows=afterlife_ring
@@ -255,7 +270,7 @@ Princess Penelope: I want...
 				<<emote frostholm neutral>>	
 			-> It has caused so much war and pain; we should replace it with Snailientology! #style=DialogueOptionButtonPositive;knows=afterlife_ring
 				<<score 6>>
-				<<emote frostholm happy_2>>	
+				<<emote frostholm thumbs_up>>	
 				<<after 1.5>>
 				<<emote frostholm neutral>>	
 	-> To adopt your kingdom's religion! #style=DialogueOptionButtonUnlocked;knows=afterlife_ring
@@ -277,6 +292,7 @@ Princess Penelope: I want...
 				<<after 1.5>>
 				<<emote frostholm neutral>>	
 	-> You to convert to our kingdom's religion! #style=DialogueOptionButtonUnlocked;knows=afterlife_ring
+		<<emote frostholm concerned>>
 		King Ráðúlfr: I am not sure I feel comfortable with that. I love my Snail God too much to leave them...
 			-> You wouldn't have to. We'd be in Frostholm... #style=DialogueOptionButtonPositive;knows=afterlife_ring
 				<<score 5>>
@@ -285,7 +301,7 @@ Princess Penelope: I want...
 				<<emote frostholm neutral>>	
 			-> You could just stay here? #style=DialogueOptionButtonNegative;knows=afterlife_ring
 				<<score -3>>
-				<<emote frostholm concerned>>	
+				<<emote frostholm concerned_2>>	
 				<<after 1.5>>
 				<<emote frostholm neutral>>	
 			-> I guess that's an easy way to avoid getting married to you... #style=DialogueOptionButtonNegative;knows=afterlife_ring
@@ -344,7 +360,7 @@ Princess Penelope: I want...
 				<<emote frostholm neutral>>		
 			-> Don't suppose you have mandatory pastry breaks as well? #style=DialogueOptionButtonPositive;knows=art_children
 				<<score 5>>
-				<<emote frostholm happy_2>>	
+				<<emote frostholm thumbs_up>>	
 				<<after 1.5>>
 				<<emote frostholm neutral>>	
 			-> Yeah... We're lagging behind other kingdoms... #style=DialogueOptionButtonNegative;knows=art_children
@@ -361,19 +377,16 @@ Princess Penelope: I want...
 		<<score 5>>
 		<<emote frostholm happy_2>>	
 		King Ráðúlfr: I love the snow!
-		<<after 1.5>>
 		<<emote frostholm neutral>>	
 	-> To control the weather, I'd make it extremely hot all the time. #style=DialogueOptionButtonNegative;knows=weather_opinion
 		<<score -6>>
 		<<emote frostholm upset_looking_down>>	
 		King Ráðúlfr: I hate the heat, I get so sweaty in my furs...
-		<<after 1.5>>
 		<<emote frostholm neutral>>	
 	-> To see the northern lights! #style=DialogueOptionButtonPositive;knows=weather_opinion
 		<<score 4>>
 		<<emote frostholm holding_heart_3>>	
 		King Ráðúlfr: They truly are beautiful!
-		<<after 1.5>>	
 		<<emote frostholm neutral>>	
 ===
 
@@ -423,7 +436,7 @@ Princess Penelope: I want...
 				<<emote frostholm neutral>>		
 			-> Silver snail necklaces! Snails represent patience and endurance. Like our future marriage. *wink* #style=DialogueOptionButtonPositive;knows=wolf_adoption
 				<<score 3>>
-				<<emote frostholm holding_heart_2>>
+				<<emote frostholm kissy_face>>
 				<<after 1.5>>
 				<<emote frostholm neutral>>			
 			-> Because that's how I show my love! #style=DialogueOptionButtonNegative;knows=wolf_adoption
