@@ -13,11 +13,6 @@ Princess Penelope: I got you something to eat!...
 		<<prop animate raw_reindeer_meat random>>
 		<<after 1.5>>
 		<<emote frostholm neutral>>
-	-> Have this bug fondue! #style=DialogueOptionButtonNegative;knows=national_dish
-		<<score -4>>
-		<<emote frostholm worried>>
-		<<after 1.5>>
-		<<emote frostholm neutral>>
 ===
 
 title: frostholm__give_animals
