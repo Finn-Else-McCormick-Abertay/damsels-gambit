@@ -180,7 +180,7 @@ Princess Penelope: I've got a replica of a treasured family heirloom I can give 
 	-> A lighting bolt collar for your wolf brother! <<if knows("wolf_brother")>> #style=DialogueOptionButtonNegative;knows=lost_child
 		<<score -4>>
 		<<emote frostholm concerned_2>>
-		<<prop animate shock_collar>>
+		<<prop animate shock_collar random>>
 		<<after 1.5>>
 		<<emote frostholm neutral>>
 	-> Have this wolf pendant, it's a family heirloom. #style=DialogueOptionButtonPositive;knows=lost_child
