@@ -11,8 +11,8 @@
 [ext_resource type="StyleBox" uid="uid://ltnwechipltc" path="res://assets/ui/panels/name_tag.tres" id="3_fmvm6"]
 [ext_resource type="Texture2D" uid="uid://bdnxlpxjn5q3i" path="res://assets/ui/buttons/text_button_pressed.png" id="3_qyl7g"]
 [ext_resource type="Texture2D" uid="uid://c6imtmed6h3d1" path="res://assets/ui/buttons/text_button_used.png" id="8_n4x27"]
-[ext_resource type="Texture2D" uid="uid://d17wcusb8wldr" path="res://assets/ui/buttons/newdialoguebuttons/dialogue_normal_blue.png" id="9_n4x27"]
-[ext_resource type="Texture2D" uid="uid://ofohrmtpwqar" path="res://assets/ui/buttons/newdialoguebuttons/dialogue_normal_pink.png" id="10_gbjwl"]
+[ext_resource type="Texture2D" uid="uid://b5ulvfyodm5y6" path="res://assets/ui/buttons/newdialoguebuttons/dialogue_normal_matchingbar_blue.png" id="9_n4x27"]
+[ext_resource type="Texture2D" uid="uid://5qxrkxmo311v" path="res://assets/ui/buttons/newdialoguebuttons/dialogue_normal_matchingbar_pink.png" id="10_gbjwl"]
 [ext_resource type="Texture2D" uid="uid://c5l46315lp0xe" path="res://assets/ui/buttons/newdialoguebuttons/dialogue_normal_orange.png" id="11_3x1i2"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_56hcy"]
