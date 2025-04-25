@@ -31,8 +31,8 @@ public partial class AudioManager : Node
 		if (GameManager.CardGameController.IsValid()){
 		if (lastValue != (GameManager.CardGameController.Score)){
 			if(lastValue > GameManager.CardGameController.Score){
-				PlaySFX("res://assets/audio/AffMinus.mp3");
-			}else{PlaySFX("res://assets/audio/AffPlus.mp3");}
+				PlaySFX("res://assets/audio/AffPlus.mp3");
+			}else{PlaySFX("res://assets/audio/AffMinus.mp3");}
 			lastValue = GameManager.CardGameController.Score;
 		}}
 	}

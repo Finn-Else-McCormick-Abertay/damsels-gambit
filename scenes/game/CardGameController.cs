@@ -460,6 +460,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 					InDialogue = false;
 					VisibilityState = GameVisibilityState.AllHidden;
 
+					AudioManager.StopMusic();
 					AudioManager.PlayMusic(AffectionState switch { AffectionState.Love => "res://assets/audio/MarryEnd.mp3",AffectionState.Hate=> "res://assets/audio/WarEnd.mp3", AffectionState.Neutral => "res://assets/audio/GoodEnd.mp3"});
 
 					DialogueManager.TryRun($"{_suitorId}__ending__{AffectionState switch { AffectionState.Love => "love", AffectionState.Hate => "hate", AffectionState.Neutral => "neutral"}}")
