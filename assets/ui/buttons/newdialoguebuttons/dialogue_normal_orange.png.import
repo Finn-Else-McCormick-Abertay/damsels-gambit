@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b71luw1bqiigr"
-path="res://.godot/imported/children.png-9e6da64bdc2817fdd2e9826cb57178ec.ctex"
+uid="uid://c5l46315lp0xe"
+path="res://.godot/imported/dialogue_normal_orange.png-066c6790893e563457cde463f68eb65a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/cards/topic/children.png"
-dest_files=["res://.godot/imported/children.png-9e6da64bdc2817fdd2e9826cb57178ec.ctex"]
+source_file="res://assets/ui/buttons/newdialoguebuttons/dialogue_normal_orange.png"
+dest_files=["res://.godot/imported/dialogue_normal_orange.png-066c6790893e563457cde463f68eb65a.ctex"]
 
 [params]
 

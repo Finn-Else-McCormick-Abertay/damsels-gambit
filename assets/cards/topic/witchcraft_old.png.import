@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b71luw1bqiigr"
-path="res://.godot/imported/children.png-9e6da64bdc2817fdd2e9826cb57178ec.ctex"
+uid="uid://qh7n0pxbqnqv"
+path="res://.godot/imported/witchcraft_old.png-054456cd5ced4be4c46903ec7b98ee85.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/cards/topic/children.png"
-dest_files=["res://.godot/imported/children.png-9e6da64bdc2817fdd2e9826cb57178ec.ctex"]
+source_file="res://assets/cards/topic/witchcraft_old.png"
+dest_files=["res://.godot/imported/witchcraft_old.png-054456cd5ced4be4c46903ec7b98ee85.ctex"]
 
 [params]
 
