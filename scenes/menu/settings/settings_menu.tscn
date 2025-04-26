@@ -14,8 +14,8 @@
 [ext_resource type="Texture2D" uid="uid://dyd1i1scbccd7" path="res://assets/ui/panels/control icons/bar_button.png" id="10_or0y5"]
 [ext_resource type="Texture2D" uid="uid://s7nst8xse5d2" path="res://assets/ui/panels/control icons/left_click.png" id="11_lnrnt"]
 [ext_resource type="Texture2D" uid="uid://c6u7wfoulrb2o" path="res://assets/ui/panels/control icons/right_click.png" id="12_e2qcx"]
-[ext_resource type="Texture2D" path="res://assets/ui/panels/control icons/tab_button.png" id="15_lnrnt"]
-[ext_resource type="Texture2D" path="res://assets/ui/panels/control icons/controller.png" id="16_e2qcx"]
+[ext_resource type="Texture2D" uid="uid://clniri7xori3i" path="res://assets/ui/panels/control icons/tab_button.png" id="15_lnrnt"]
+[ext_resource type="Texture2D" uid="uid://d4n2eylsnvxs4" path="res://assets/ui/panels/control icons/controller.png" id="16_e2qcx"]
 
 [node name="SettingsMenu" type="Control" node_paths=PackedStringArray("TabContainer", "ExitButton")]
 layout_mode = 3
@@ -194,6 +194,16 @@ position = Vector2(400, 228)
 scale = Vector2(0.184418, 0.184418)
 texture = ExtResource("9_87of6")
 
+[node name="TabButton" type="Sprite2D" parent="TabContainer/Controls/VBoxContainer"]
+position = Vector2(501, 85)
+scale = Vector2(0.251212, 0.255682)
+texture = ExtResource("15_lnrnt")
+
+[node name="Controller" type="Sprite2D" parent="TabContainer/Controls/VBoxContainer"]
+position = Vector2(137, 111)
+scale = Vector2(0.177803, 0.177803)
+texture = ExtResource("16_e2qcx")
+
 [node name="BarButton" type="Sprite2D" parent="TabContainer/Controls/VBoxContainer"]
 position = Vector2(479, 1)
 scale = Vector2(0.164773, 0.164773)
@@ -299,13 +309,3 @@ focus_neighbor_right = NodePath("../ExitButton")
 mouse_default_cursor_shape = 2
 theme = ExtResource("2_k810m")
 text = "Save"
-
-[node name="TabButton" type="Sprite2D" parent="."]
-position = Vector2(746, 274)
-scale = Vector2(0.251212, 0.255682)
-texture = ExtResource("15_lnrnt")
-
-[node name="Controller" type="Sprite2D" parent="."]
-position = Vector2(382, 300)
-scale = Vector2(0.177803, 0.177803)
-texture = ExtResource("16_e2qcx")
