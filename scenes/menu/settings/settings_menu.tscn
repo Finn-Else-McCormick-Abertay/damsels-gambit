@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cl108jysyilp"]
+[gd_scene load_steps=15 format=3 uid="uid://cl108jysyilp"]
 
 [ext_resource type="Texture2D" uid="uid://2cbl24t405i5" path="res://assets/ui/panels/Paper texture.png" id="1_tfbc3"]
 [ext_resource type="Script" uid="uid://5mxdn2su8s3f" path="res://scenes/menu/settings/SettingsMenu.cs" id="2_0snvw"]
@@ -14,8 +14,6 @@
 [ext_resource type="Texture2D" uid="uid://dyd1i1scbccd7" path="res://assets/ui/panels/control icons/bar_button.png" id="10_or0y5"]
 [ext_resource type="Texture2D" uid="uid://s7nst8xse5d2" path="res://assets/ui/panels/control icons/left_click.png" id="11_lnrnt"]
 [ext_resource type="Texture2D" uid="uid://c6u7wfoulrb2o" path="res://assets/ui/panels/control icons/right_click.png" id="12_e2qcx"]
-[ext_resource type="Texture2D" path="res://assets/ui/panels/control icons/tab_button.png" id="15_lnrnt"]
-[ext_resource type="Texture2D" path="res://assets/ui/panels/control icons/controller.png" id="16_e2qcx"]
 
 [node name="SettingsMenu" type="Control" node_paths=PackedStringArray("TabContainer", "ExitButton")]
 layout_mode = 3
@@ -303,9 +301,7 @@ text = "Save"
 [node name="TabButton" type="Sprite2D" parent="."]
 position = Vector2(746, 274)
 scale = Vector2(0.251212, 0.255682)
-texture = ExtResource("15_lnrnt")
 
 [node name="Controller" type="Sprite2D" parent="."]
 position = Vector2(382, 300)
 scale = Vector2(0.177803, 0.177803)
-texture = ExtResource("16_e2qcx")
