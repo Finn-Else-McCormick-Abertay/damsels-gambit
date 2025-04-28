@@ -172,7 +172,7 @@ Princess Penelope: I want...
 				<<emote frostholm neutral>>	
 	-> To break into your family vault and put a curse on your portrait! #style=DialogueOptionButtonNegative;knows=kingdom_art
 		<<score -4>>
-    	<<emote frostholm arm_up_2>>	
+		<<emote frostholm angry>>	
 		King Ráðúlfr: Do you hear yourself?
 			-> Think about it, what if it makes the painting legendary? #style=DialogueOptionButtonNegative;knows=kingdom_art
 				<<score -3>>
@@ -188,7 +188,7 @@ Princess Penelope: I want...
 				<<score 3>>
 				<<emote frostholm holding_heart_3>>	
 				<<after 1.5>>
-				<<emote frostholm neutral>>	
+				<<emote frostholm neutral>>
 ===
 
 title: frostholm__want_witchcraft
