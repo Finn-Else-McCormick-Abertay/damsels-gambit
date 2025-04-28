@@ -80,7 +80,7 @@ Design
 
 Producer and Narrative Lead  -  Vera Silva 
 
-Game Play Designer   -  Pedro Fonseca
+Gameplay Designer   -  Pedro Fonseca
 
 Audio Lead  -  Jacob Griffin
 
@@ -98,7 +98,7 @@ Lead Programmer   -  Finn Else-McCormick
 
 Audio Programmer  -  Bea Parsons 
 
-QA Tester -  Noah Morrison 
+QA Testing Lead  -  Noah Morrison 
 
 
 Advice 
@@ -339,7 +339,7 @@ scale = Vector2(0.264765, 0.264765)
 texture = ExtResource("9_pq3tm")
 
 [node name="WolfClaw3" type="Sprite2D" parent="CreditsText/Marginalia"]
-position = Vector2(-410, 1887)
+position = Vector2(-429, 1793)
 rotation = -1.04738
 scale = Vector2(0.424324, 0.424324)
 texture = ExtResource("10_b15uh")
