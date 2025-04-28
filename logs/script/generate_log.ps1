@@ -1,7 +1,7 @@
 # generate_log.ps1
 
 # Generate log in csv format
-git log --pretty=format:"%h,%an,%ah,&!&%(decorate)&!&,%x22%s%x22" | Tee-Object -Variable log | Out-Null
+git log --pretty=format:"%h,%an,%ad,&!&%(decorate)&!&,%x22%s%x22" --date=format:'%b %d %H:%M' | Tee-Object -Variable log | Out-Null
 
 # Clean up usernames
 $log = $log -replace "beaparsons", "Bea Parsons"
