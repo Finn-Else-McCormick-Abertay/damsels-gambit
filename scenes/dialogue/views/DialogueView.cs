@@ -6,6 +6,7 @@ using YarnSpinnerGodot;
 using DamselsGambit.Util;
 using System.Collections.Generic;
 using System.IO;
+using Yarn;
 
 namespace DamselsGambit.Dialogue;
 
@@ -133,6 +134,8 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
 		foreach (var option in dialogueOptions) {
 			if (!option.IsAvailable) continue;
 
+			var tags = option.Line.Metadata ?? [];
+
 			var optionControl = OptionArchetype.Duplicate() as Control;
 			OptionRoot.AddChild(optionControl);
 			
@@ -140,9 +143,27 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
             var optionInstruction = currentNode.Instructions.Where(x => x.Opcode == Yarn.Instruction.Types.OpCode.AddOption && x.Operands.FirstOrDefault()?.StringValue == option.Line.TextID).FirstOrDefault();
             bool isDependent = optionInstruction?.Operands?.LastOrDefault()?.BoolValue ?? false;
 
+			string styleString = null;
+			foreach (var rawTag in tags.Where(x => x.StartsWith("style="))) {
+				string tag = rawTag;
+				bool shouldUse = true;
+				if (rawTag.Contains(';')) {
+					var tagSplit = rawTag.Split(';', 2); tag = tagSplit[0];
+					string validation = tagSplit[1];
+					if (validation.Contains('=')) {
+						var validationSplit = validation.Split('=', 2);
+						if (validationSplit[0] == "knows" && !validationSplit[1].Split(',').Any(DialogueManager.Knowledge.Knows)) shouldUse = false;
+					}
+				}
+				if (shouldUse) styleString = tag.StripFront("style=");
+			}
+
+			Console.Info($"{option.Line.Text.Text} : {tags.ToPrettyString()} : Style = {styleString.ToPrettyString()}");
+			
 			var button = optionControl as Button ?? optionControl.FindChildOfType<Button>();
 			button.Text = option.Line.Text.Text;
 			button.ThemeTypeVariation = 0 switch {
+				_ when styleString is not null => styleString,
 				_ when alreadyUsed => ThemeTypeVariations.OptionUsed,
 				_ when isDependent => ThemeTypeVariations.OptionNewlyUnlocked,
 				_ => ThemeTypeVariations.OptionNormal

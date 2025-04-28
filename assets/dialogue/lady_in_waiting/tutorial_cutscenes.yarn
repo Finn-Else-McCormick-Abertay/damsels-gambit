@@ -5,6 +5,7 @@ tags: skippable
 <<scene throne_room>>
 <<hide lady_in_waiting>>
 <<hide queen>>
+<<wait 2>>
 <<fade in queen 1>>
 <<wait 1>>
 Queen Helena: My daughter, the time is long overdue for you to be married.

@@ -1,122 +1,238 @@
 title: frostholm__give_food
 ---
 Princess Penelope: I got you something to eat!...
-	-> Escargot!
-		<<score -3>>
+	-> Escargot! #style=DialogueOptionButtonNegative;knows=national_dish
+		<<score -6>>
+		<<emote frostholm angry>>
 		<<prop animate escargot random>>
-	-> Fresh, raw, reindeer meat! <<if knows("native_animals")>>
-		<<score 6>>
+		<<after 1.5>>
+		<<emote frostholm neutral>>
+	-> Fresh, raw, reindeer meat! #style=DialogueOptionButtonPositive;knows=national_dish
+		<<score 4>>
+		<<emote frostholm happy_2>>
 		<<prop animate raw_reindeer_meat random>>
-	-> Have this bug fondue!
-		<<score -3>>
+		<<after 1.5>>
+		<<emote frostholm neutral>>
 ===
 
 title: frostholm__give_animals
 ---
 Princess Penelope: I wanted to give you this...
-	-> A feather I found outside from one of our imported birds!
-		<<score 3>>
+	-> A feather I found outside from one of our imported birds! #style=DialogueOptionButtonPositive;knows=animal_fears
+		<<score 4>>
+		<<emote frostholm happy_1>>
 		<<prop animate feather random>>
-	-> A claw I snapped of a wolf I fought with!
-		<<score -3>>
+		<<after 1.5>>
+		<<emote frostholm neutral>>
+	-> A claw I snapped of a wolf I fought with! #style=DialogueOptionButtonNegative;knows=animal_fears
+		<<score -6>>
+		<<emote frostholm upset_looking_down>>
 		<<prop animate wolf_claw random>>
-	-> A scarf I made from a fox tail!
-		<<score 3>>
+		<<after 1.5>>
+		<<emote frostholm neutral>>
+	-> A scarf I made from a fox tail! #style=DialogueOptionButtonPositive;knows=animal_fears
+		<<score 4>>
+		<<emote frostholm happy_2>>
 		<<prop animate fox_tail random>>
+		<<after 1.5>>
+		<<emote frostholm neutral>>
 ===
 
 title: frostholm__give_art
 ---
 Princess Penelope: I got this for you...
-	-> Have this wolf action figure made of sticks! <<if knows("abstract_sculptures")>>
+	-> Have this wolf action figure made of sticks! <<if knows("abstract_sculptures")>> #style=DialogueOptionButtonPositive;knows=abstract_sculptures
 		<<score 6>>
+		<<emote frostholm happy_2>>
 		<<prop animate wolf_action_figure>>
-	-> Have this painting of the holy snail!
+		<<after 1.5>>
+		<<emote frostholm neutral>>
+	-> Have this painting of the holy snail! #style=DialogueOptionButtonPositive;knows=abstract_sculptures
 		<<score 3>>
+		<<emote frostholm holding_heart_2>>
 		<<prop animate holy_snail_painting>>
-	-> Have this painting of last season's wolf hunting…
+		<<after 1.5>>
+		<<emote frostholm neutral>>
+	-> Have this painting of last season's wolf hunting… #style=DialogueOptionButtonNegative;knows=abstract_sculptures
 		<<score -3>>
+		<<emote frostholm angry>>
 		<<prop animate wolf_hunt_painting>>
+		<<after 1.5>>
+		<<emote frostholm neutral>>
 ===
 
 title: frostholm__give_witchcraft
 ---
 Princess Penelope: I thought you might like this...
-	-> Voodoo doll! <<if knows("witch_opinion")>>
-		<<score -6>>
+	-> Voodoo doll! <<if knows("witch_opinion")>> #style=DialogueOptionButtonNegative;knows=witch_opinion
+		<<score -5>>
+		<<emote frostholm worried>>
 		<<prop animate voodoo_doll random>>
-	-> Pitchfork. Crafted by yours truly. Perfect for witch hunting! <<if knows("witch_opinion")>>
+		<<after 1.5>>
+		<<emote frostholm neutral>>
+	-> Pitchfork. Crafted by yours truly. Perfect for witch hunting! <<if knows("witch_opinion")>> #style=DialogueOptionButtonPositive;knows=witch_opinion
 		<<score 6>>
+		<<emote frostholm happy_1>>
 		<<prop animate pitchfork random>>
-	-> Health Potion! (Frog Potion)
-		<<score 3>>
+		<<after 1.5>>
+		<<emote frostholm neutral>>
+	-> Health Potion! (Frog Potion) #style=DialogueOptionButtonNegative;knows=witch_opinion
+		<<emote frostholm confused_2>>
 		<<prop animate frog_potion random>>
-	-> Health Potion! (Wolf Potion)
+		King Ráðúlfr: What's this? Looks rather dubious...
+		Princess Penelope: A health potion!
+		<<emote frostholm looking_right>>
+		King Ráðúlfr: Hmm... *takes a sip*
+		<<emote frostholm frog_shocked>>
+		King Ráðúlfr: ...
+		<<emote frostholm frog_angry>>
+		<<score -6>>
+		King Ráðúlfr: Wow.
+		Princess Penelope: Don't worry. It's the kind that conveniently wears off after a couple lines of dialogue.
+		<<emote frostholm frog_neutral>>
+		King Ráðúlfr: Ah. I see...
+		<<emote frostholm thumbs_up>>
 		<<score 3>>
+		King Ráðúlfr: There we go.
+		<<emote frostholm neutral>>
+	-> Health Potion! (Wolf Potion) #style=DialogueOptionButtonPositive;knows=witch_opinion
+		<<emote frostholm happy_2>>
 		<<prop animate wolf_potion random>>
+		King Ráðúlfr: Hehe... I know what this is. I recognise the smell!
+		Princess Penelope: You do!?
+		<<emote frostholm silly>>
+		King Ráðúlfr: Mhm! *chugs*
+		<<emote frostholm wolf_neutral>>
+		King Ráðúlfr: ...
+		<<emote frostholm wolf_excited>>
+		<<score 6>>
+		King Ráðúlfr: I knew it!
+		<<emote frostholm wolf_happy>>
+		King Ráðúlfr: ...
+		<<emote frostholm wolf_neutral>>
+		King Ráðúlfr: Wait.
+		<<emote frostholm wolf_sad>>
+		<<score -3>>
+		King Ráðúlfr: Were you trying to trick me?
+			-> No! Don't worry, it only lasts a couple moments... #style=DialogueOptionButtonNegative;knows=witch_opinion
+				<<emote frostholm wolf_neutral>>
+				<<score -3>>
+				King Ráðúlfr: Ah. I see...
+				<<emote frostholm sad_1>>
+				King Ráðúlfr: There we go.
+				<<emote frostholm neutral>>
+			-> I thought you would appriciate it! Just for a moment! <<if knows("wolf_parents") or knows("wolf_adoption")>> #style=DialogueOptionButtonPositive;knows=witch_opinion
+				<<emote frostholm wolf_excited>>
+				<<score 3>>
+				King Ráðúlfr: Thank you!
+				<<emote frostholm holding_heart_3>>
+				King Ráðúlfr: There. All back to normal!
+				<<emote frostholm neutral>>
 ===
 
 title: frostholm__give_religion
 ---
 Princess Penelope: I got this for you. It's a...
-	-> Snail idol! It'll protect you from evil!
-		<<score 3>>
+	-> Snail idol! It'll portect you from evil! #style=DialogueOptionButtonPositive;knows=afterlife_ring
+		<<score 6>>
+		<<emote frostholm happy_2>>
 		<<prop animate snail_idol>>
-	-> Book disproving Snurch... <<if knows("afterlife_ring")>>
+		<<after 1.5>>
+		<<emote frostholm neutral>>
+	-> Book disproving Snurch... <<if knows("afterlife_ring")>> #style=DialogueOptionButtonNegative;knows=afterlife_ring
 		<<score -6>>
+		<<emote frostholm upset_looking_down>>
 		<<prop animate book_disproving_snurch random>>
-	-> Gospel of our kingdom's religion!
+		<<after 1.5>>
+		<<emote frostholm neutral>>
+	-> Gospel of our kingdom's religion! #style=DialogueOptionButtonNegative;knows=afterlife_ring
 		<<score -3>>
+		<<emote frostholm confused>>
 		<<prop animate gospel>>
+		<<after 1.5>>
+		<<emote frostholm neutral>>
 ===
 
 title: frostholm__give_children
 ---
 Princess Penelope: You know what?...
-	-> I'll give you my child. *wink*
-		<<score 3>>
-	-> I could give you a child servant. He's an orphan so its okay.
+	-> I'll give you my child. *wink* #style=DialogueOptionButtonPositive;knows=heir_need
+		<<score 4>>
+		<<emote frostholm kissy_face>>
+		<<after 1.5>>
+		<<emote frostholm neutral>>
+	-> I could give you a child servant. He's an orphan so its okay. #style=DialogueOptionButtonNegative;knows=heir_need
 		<<score -3>>
+		<<emote frostholm concerned>>
+		<<after 1.5>>
+		<<emote frostholm neutral>>
 ===
 
 title: frostholm__give_hobbies
 ---
 Princess Penelope: Here this...
-	-> Skunting gear!
+	-> Skunting gear! #style=DialogueOptionButtonPositive;knows=hobby_time
 		<<score 3>>
+		<<emote frostholm happy_2>>
 		<<prop animate skunting_gear>>
-	-> Snail bracelet! (Designer too!)
-		<<score -3>>
+		<<after 1.5>>
+		<<emote frostholm neutral>>
+	-> Snail bracelet! (Designer too!) #style=DialogueOptionButtonNegative;knows=hobby_time
+		<<score -4>>
+		<<emote frostholm worried>>
 		<<prop animate snail_bracelet random>>
+		<<after 1.5>>
+		<<emote frostholm neutral>>
 ===
 
 title: frostholm__give_weather
 ---
 Princess Penelope: Tada!...
-	-> An enchanted snowman that never melts!
-		<<score 3>>
+	-> An enchanted snowman that never melts! #style=DialogueOptionButtonPositive;knows=favourite_season
+		<<score 4>>
+		<<emote frostholm happy_2>>
 		<<prop animate snowman random>>
-	-> Sunglasses!
+		<<after 1.5>>
+		<<emote frostholm neutral>>
+	-> Sunglasses! #style=DialogueOptionButtonNegative;knows=favourite_season
 		<<score -3>>
+		<<emote frostholm confused_2>>
 		<<prop animate sunglasses random>>
-	-> An enchanted umbrella! It snows underneath it when you open it! <<if knows("weather_opinion")>>
+		<<after 1.5>>
+		<<emote frostholm neutral>>
+	-> An enchanted umbrella! It snows underneath it when you open it! <<if knows("weather_opinion")>> #style=DialogueOptionButtonPositive;knows=favourite_season
 		<<score 6>>
+		<<emote frostholm holding_heart_2>>
 		<<prop animate umbrella random>>
+		<<after 1.5>>
+		<<emote frostholm neutral>>
 ===
 
 title: frostholm__give_family
 ---
 Princess Penelope: I've got a replica of a treasured family heirloom I can give you! It's...
-	-> Please give your family this dress made of human teeth.
+	-> Please give your family this dress made of human teeth. #style=DialogueOptionButtonPositive;knows=lost_child
 		<<score -3>>
+		<<emote frostholm worried>>
 		<<prop animate human_teeth_dress random>>
-	-> A lighting bolt collar for your wolf brother! <<if knows("wolf_brother")>>
-		<<score -6>>
-		<<prop animate shock_collar>>
-	-> Have this wolf pendant, it's a family heirloom.
-		<<score 3>>
+		<<after 1.5>>
+		<<emote frostholm neutral>>
+	-> A lighting bolt collar for your wolf brother! <<if knows("wolf_brother")>> #style=DialogueOptionButtonNegative;knows=lost_child
+		<<score -4>>
+		<<emote frostholm concerned_2>>
+		<<prop animate shock_collar random>>
+		<<after 1.5>>
+		<<emote frostholm neutral>>
+	-> Have this wolf pendant, it's a family heirloom. #style=DialogueOptionButtonPositive;knows=lost_child
+		<<score 6>>
+		<<emote frostholm holding_heart_2>>
 		<<prop animate wolf_pendant random>>
-	-> Have this family's recipe on how to make a voodoo doll! <<if knows("witch_treatment")>>
-		<<score -6>>
+		<<after 1.5>>
+		<<emote frostholm neutral>>
+	-> Have this family's recipe on how to make a voodoo doll! #style=DialogueOptionButtonNegative;knows=lost_child
+		<<score -4>>
+		<<emote frostholm concerned>>
 		<<prop animate voodoo_book random>>
+		<<after 1.5>>
+		<<emote frostholm neutral>>
 ===

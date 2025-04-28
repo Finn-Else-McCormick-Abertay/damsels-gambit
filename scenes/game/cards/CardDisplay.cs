@@ -168,34 +168,23 @@ public partial class CardDisplay : Control, IReloadableToolScript
 			var fontColor = GetThemeColor(ThemeProperties.Color.NameFont, ThemeClassName);
 
 			if (font.IsValid()) {
-				var shapedText = textServer.CreateShapedText();
+				Rid shapedText = textServer.CreateShapedText();
 				textServer.ShapedTextAddString(shapedText, DisplayName, font.GetRids(), fontSize, font.GetOpentypeFeatures(), OS.GetLocale());
 
-				var origin = new Vector2(Size.X / 2f - _textureAspectRatio * Size.Y / 2f * typeParams.NamePosition.X - (float)textServer.ShapedTextGetWidth(shapedText) / 2f, Size.Y * typeParams.NamePosition.Y);
-				
-				Vector2 nextCharacterOrigin = origin;
+				Vector2 nextCharacterOrigin = new(Size.X / 2f - _textureAspectRatio * Size.Y / 2f * typeParams.NamePosition.X - (float)textServer.ShapedTextGetWidth(shapedText) / 2f, Size.Y * typeParams.NamePosition.Y);
 
-				var glyphs = textServer.ShapedTextGetGlyphs(shapedText);
-				var glyphCount = textServer.ShapedTextGetGlyphCount(shapedText);
+				var glyphs = textServer.ShapedTextGetGlyphs(shapedText).ToArray(); int glyphCount = (int)textServer.ShapedTextGetGlyphCount(shapedText);
+				foreach (int i in RangeOf<int>.UpTo(glyphCount)) {
+					Rid fontId = glyphs[i]["font_rid"].AsRid(); 		int index = glyphs[i]["index"].As<int>();
+					Vector2 offset = glyphs[i]["offset"].AsVector2(); 	float advance = glyphs[i]["advance"].As<float>();
 
-				for (int i = 0; i < glyphCount; ++i) {
-					var fontId = glyphs[i]["font_rid"].AsRid();
-					var index = glyphs[i]["index"].AsInt64();
-					var offset = glyphs[i]["offset"].AsVector2();
-					var advance = glyphs[i]["advance"].AsDouble();
-
-					var drawPosition = nextCharacterOrigin + offset;
-					
-					if (typeParams.NameCurve is not null) {
-						var glyphSize = textServer.FontGetGlyphSize(fontId, new Vector2I(fontSize, fontSize), index);
-						var curveOffset = typeParams.NameCurve.Sample((drawPosition.X + glyphSize.X / 2f) / (_textureAspectRatio * Size.Y));
-						drawPosition.Y -= curveOffset;
-					}
+					Vector2 drawPosition = nextCharacterOrigin + offset;
+					if (typeParams.NameCurve is not null) drawPosition.Y -= typeParams.NameCurve.Sample((drawPosition.X + textServer.FontGetGlyphSize(fontId, new Vector2I(fontSize, fontSize), index).X / 2f) / (_textureAspectRatio * Size.Y));
 
 					textServer.FontDrawGlyph(fontId, canvasItem, fontSize, drawPosition, index, fontColor);
 
-					if ((i + 1) < glyphCount) nextCharacterOrigin += textServer.FontGetKerning(fontId, fontSize, new Vector2I((int)index, (int)glyphs[i]["index"].AsInt64()));
-					nextCharacterOrigin.X += (float)advance;
+					//if ((i + 1) < glyphCount) nextCharacterOrigin += textServer.FontGetKerning(fontId, fontSize, new(index, glyphs[i + 1]["index"].As<int>()));;
+					nextCharacterOrigin.X += advance;
 				}
 				
 				textServer.FreeRid(shapedText);
