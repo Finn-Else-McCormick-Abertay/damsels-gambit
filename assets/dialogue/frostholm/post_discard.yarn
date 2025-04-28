@@ -1,26 +1,57 @@
 title: frostholm__post_discard_random_1
 ---
-King Ráðúlfr: Random post-discard dialogue. Option 1
+<<emote frostholm kissy_face>>
+King Ráðúlfr: I just wanted to say. I love your dress!
+Princess Penelope: ...thanks.
+<<score 1>>
+<<emote frostholm happy_1>>
+<<after 1.5>>
+<<emote frostholm neutral>>
 ===
 
 title: frostholm__post_discard_random_2
 ---
-King Ráðúlfr: Random post-discard dialogue. Option 2
+<<emote frostholm looking_right>>
+King Ráðúlfr: Lovely weather we are having, right?
+Princess Penelope: ...totes...
+<<emote frostholm confused>>
+<<after 1.5>>
+<<emote frostholm neutral>>
 ===
 
 title: frostholm__post_discard_random_3
 ---
-King Ráðúlfr: Random post-discard dialogue. Option 3
+<<emote frostholm blank_stare>>
+King Ráðúlfr: ...
+Princess Penelope: You there?
+<<emote frostholm worried>>
+King Ráðúlfr: ...Huh?
+<<emote frostholm concerned_2>>
+King Ráðúlfr: My apologies...
+<<after 1.5>>
+<<emote frostholm neutral>>
 ===
 
 title: frostholm__post_discard_topic_food
 tags: topic=food, high_priority
 ---
-King Ráðúlfr: Topic food post-discard dialogue.
+<<emote frostholm concerned_2>>
+King Ráðúlfr: Is it just me? I'm really hungry
+Princess Penelope: ...
+Princess Penelope: No.
+<<emote frostholm sad_1>>
+<<after 1.5>>
+<<emote frostholm neutral>>
 ===
 
 title: frostholm__post_discard_topic_not_food
 tags: topic=!food
 ---
-King Ráðúlfr: Topic not food post-discard dialogue.
+<<emote frostholm confused_2>>
+King Ráðúlfr: Sorry, am I not making good conversation?
+Princess Penelope: A wee bit.
+<<score -3>>
+<<emote frostholm angry>>
+<<after 1.5>>
+<<emote frostholm neutral>>
 ===
