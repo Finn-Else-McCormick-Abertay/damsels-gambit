@@ -1,0 +1,11 @@
+[gd_resource type="FontVariation" load_steps=2 format=3 uid="uid://c67xqmnjf4i4a"]
+
+[ext_resource type="FontFile" uid="uid://cx5t3xg5e7yq2" path="res://assets/fonts/open-dyslexic/OpenDyslexic3-Regular.ttf" id="1_1uwmj"]
+
+[resource]
+base_font = ExtResource("1_1uwmj")
+variation_transform = Transform2D(0.85, 0, 0, 0.85, 0, 0)
+spacing_glyph = -2
+spacing_space = -11
+spacing_top = -11
+spacing_bottom = -3
