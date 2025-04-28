@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://dqwwva7dc5h1r" path="res://assets/ui/buttons/text_button_hovered.png" id="1_xpd0t"]
 [ext_resource type="Texture2D" uid="uid://bu61jknsoq0oi" path="res://assets/ui/buttons/button_hovered_1.png" id="2_gbjwl"]
 [ext_resource type="Texture2D" uid="uid://bsncpqfieawic" path="res://assets/ui/buttons/text_button.png" id="2_npbt6"]
-[ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_ui_dynamic_font.tres" id="2_tin7u"]
+[ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_dynamic_font.tres" id="2_tin7u"]
 [ext_resource type="Texture2D" uid="uid://cnfv2cncgklwm" path="res://assets/ui/buttons/button_normal_1.png" id="3_3x1i2"]
 [ext_resource type="StyleBox" uid="uid://ltnwechipltc" path="res://assets/ui/panels/name_tag.tres" id="3_fmvm6"]
 [ext_resource type="Texture2D" uid="uid://bdnxlpxjn5q3i" path="res://assets/ui/buttons/text_button_pressed.png" id="3_qyl7g"]

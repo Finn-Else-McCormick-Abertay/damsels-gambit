@@ -1,6 +1,6 @@
 [gd_resource type="Theme" load_steps=3 format=3 uid="uid://jf72vigx3i2b"]
 
-[ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_ui_dynamic_font.tres" id="1_ptfd6"]
+[ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_dynamic_font.tres" id="1_ptfd6"]
 [ext_resource type="FontVariation" uid="uid://fkgex1kqpl0g" path="res://assets/fonts/card_type_dynamic_font.tres" id="2_0b7c6"]
 
 [resource]

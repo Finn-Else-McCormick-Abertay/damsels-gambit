@@ -11,7 +11,7 @@ public partial class FontSelection : HBoxContainer
 
 	public override void _Ready() {
 		foreach (var fontState in Enum.GetValues<FontManager.FontState>()) OptionButton.AddItem(Enum.GetName(fontState).Capitalize(), (int)fontState);
-		OptionButton.Select((int)FontManager.FontState.Default);
+		OptionButton.Select((int)FontManager.Font);
 		OptionButton.Connect(OptionButton.SignalName.ItemSelected, this, MethodName.OnItemSelected);
 	}
 

@@ -1,7 +1,7 @@
 [gd_resource type="FontVariation" load_steps=2 format=3 uid="uid://66hx5icc5cmq"]
 
-[ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_ui_dynamic_font.tres" id="1_5xf6w"]
+[ext_resource type="FontFile" uid="uid://c27txckdp7a4a" path="res://assets/fonts/vinque/Vinque Rg.otf" id="1_k4tls"]
 
 [resource]
-base_font = ExtResource("1_5xf6w")
+base_font = ExtResource("1_k4tls")
 variation_embolden = 0.3
