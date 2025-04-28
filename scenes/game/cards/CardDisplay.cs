@@ -173,8 +173,6 @@ public partial class CardDisplay : Control, IReloadableToolScript
 
 				Vector2 nextCharacterOrigin = new(Size.X / 2f - _textureAspectRatio * Size.Y / 2f * typeParams.NamePosition.X - (float)textServer.ShapedTextGetWidth(shapedText) / 2f, Size.Y * typeParams.NamePosition.Y);
 
-				Console.Info($" ---- Shaped Text: {DisplayName} ---- (Origin: {nextCharacterOrigin})");
-
 				var glyphs = textServer.ShapedTextGetGlyphs(shapedText).ToArray(); int glyphCount = (int)textServer.ShapedTextGetGlyphCount(shapedText);
 				foreach (int i in RangeOf<int>.UpTo(glyphCount)) {
 					Rid fontId = glyphs[i]["font_rid"].AsRid(); 		int index = glyphs[i]["index"].As<int>();

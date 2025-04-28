@@ -1,0 +1,6 @@
+[gd_resource type="FontVariation" load_steps=2 format=3 uid="uid://fkgex1kqpl0g"]
+
+[ext_resource type="FontFile" uid="uid://bhgm14ci7wv3k" path="res://assets/fonts/maturasc/MATURASC.TTF" id="1_pldsh"]
+
+[resource]
+base_font = ExtResource("1_pldsh")

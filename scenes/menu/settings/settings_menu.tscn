@@ -93,7 +93,7 @@ grow_vertical = 2
 size_flags_vertical = 3
 focus_neighbor_bottom = NodePath("../ExitButton")
 theme = ExtResource("5_ww2uk")
-current_tab = 2
+current_tab = 3
 
 [node name="Audio" type="Control" parent="TabContainer"]
 visible = false
@@ -175,6 +175,7 @@ mouse_default_cursor_shape = 2
 allow_reselect = true
 
 [node name="Controls" type="Control" parent="TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
@@ -208,7 +209,6 @@ scale = Vector2(0.1596, 0.1596)
 texture = ExtResource("12_e2qcx")
 
 [node name="Accessibility" type="Control" parent="TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 3
 
