@@ -115,7 +115,7 @@ offset_top = -0.110999
 offset_right = 0.137939
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 60
+theme_override_constants/separation = 15
 
 [node name="AudioSlider" parent="TabContainer/Audio/VBoxContainer" instance=ExtResource("6_j6sto")]
 layout_mode = 2

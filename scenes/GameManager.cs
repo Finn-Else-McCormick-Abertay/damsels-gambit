@@ -99,6 +99,7 @@ public sealed partial class GameManager : Node
 
 		if (MainMenu.IsValid() && !SplashScreen.IsValid() && !CardGameController.IsValid() && !SplashScreen.IsValid()) {
 			SplashScreen = _splashScene.Instantiate<SplashScreen>(); GetLayer("splash").AddChild(SplashScreen);
+			AudioManager.PlayMusic("res://assets/audio/Menu.mp3");
 		}
 	}
 
@@ -136,7 +137,7 @@ public sealed partial class GameManager : Node
 				MainMenu = _mainMenuScene.Instantiate<MainMenu>(); GetLayer("main_menu").AddChild(MainMenu);
 				AudioManager.PlayMusic("res://assets/audio/Menu.mp3");
 				SetNotebookActive(false);
-		});
+			});
 	}
 
 	public static void SwitchToSettings() {
