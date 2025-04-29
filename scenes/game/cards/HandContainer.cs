@@ -147,7 +147,7 @@ public partial class HandContainer : Container, IReloadableToolScript, IFocusabl
     private void OnSelectAt() {
         if (Engine.IsEditorHint()) return;
 
-        var position = InputManager.Actions.SelectAt.ValueAxis2d;
+        var position = GetGlobalMousePosition();//InputManager.Actions.SelectAt.ValueAxis2d; // Value I'm getting out of GUIDE is broken in some kind of way that I don't have time to figure out rn
 
         CardDisplay selectedCard = null;
         foreach (Control child in GetChildren().Cast<Control>()) {
