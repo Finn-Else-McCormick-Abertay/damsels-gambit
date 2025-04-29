@@ -13,7 +13,6 @@ Princess Penelope: So what about...
         <<emote frostholm looking_right>>
         King Ráðúlfr: I have only one brother. Our relationship is rather tense, since he was the heir to the throne until I came back. 
         <<emote frostholm thinking>>
-        <<learn little_brother>>
         King Ráðúlfr: He was the one who gave me this scar across my eye.
         <<emote frostholm neutral>>
 ===
