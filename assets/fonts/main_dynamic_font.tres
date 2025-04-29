@@ -1,0 +1,6 @@
+[gd_resource type="FontVariation" load_steps=2 format=3 uid="uid://byhsphyma07fy"]
+
+[ext_resource type="FontFile" uid="uid://c27txckdp7a4a" path="res://assets/fonts/vinque/Vinque Rg.otf" id="1_0ug6n"]
+
+[resource]
+base_font = ExtResource("1_0ug6n")

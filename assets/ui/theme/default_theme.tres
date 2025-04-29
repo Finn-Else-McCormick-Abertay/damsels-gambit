@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://cyto35hwnqmhb" path="res://assets/ui/buttons/focused_state_button.png" id="3_tb5ir"]
 [ext_resource type="Texture2D" uid="uid://d4epgui5btlvd" path="res://assets/ui/buttons/button_normal.png" id="4_xnbey"]
 [ext_resource type="Texture2D" uid="uid://cpu0tegqhpu8o" path="res://assets/ui/buttons/button_pressed.png" id="5_xefd2"]
-[ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_ui_dynamic_font.tres" id="6_gfc0t"]
+[ext_resource type="FontVariation" uid="uid://byhsphyma07fy" path="res://assets/fonts/main_dynamic_font.tres" id="6_gfc0t"]
 [ext_resource type="FontVariation" uid="uid://66hx5icc5cmq" path="res://assets/fonts/header_dynamic_font.tres" id="7_1vjrx"]
 [ext_resource type="FontFile" uid="uid://djp17o0bg677s" path="res://assets/fonts/monaspace/MonaspaceNeon-Regular.otf" id="9_tb5ir"]
 

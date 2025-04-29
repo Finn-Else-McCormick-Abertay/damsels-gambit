@@ -1,7 +1,7 @@
 title: frostholm__want_hobbies
 ---
 Princess Penelope: I want...
-	-> To try skunting! #style=DialogueOptionButtonUnlocked;knows=learn_pottery
+	-> To try skunting!
 		<<emote frostholm holding_heart_3>>
 		King Ráðúlfr: Oh, you're familiar with the sport! What made you interested in it?
 			-> I'm not a runner so I figured it would make wolf hunting easier! #style=DialogueOptionButtonNegative;knows=learn_pottery
@@ -21,7 +21,7 @@ Princess Penelope: I want...
 				<<emote frostholm happy_1>>
 				<<after 1.5>>
 				<<emote frostholm neutral>>
-	-> To teach you how to make snail trinkets... #style=DialogueOptionButtonUnlocked;knows=learn_pottery
+	-> To teach you how to make snail trinkets...
 		<<emote frostholm angry>>
 		King Ráðúlfr: This is blasphemy! What made you think I'd like to partake in such cruelty?
 			-> They have pretty shells, so why not use them after they are dead? #style=DialogueOptionButtonNegative;knows=learn_pottery
@@ -46,7 +46,7 @@ Princess Penelope: I want...
 title: frostholm__want_food
 ---
 Princess Penelope: I want...
-	-> To try your kingdom's national dish! #style=DialogueOptionButtonUnlocked;knows=caring_leader
+	-> To try your kingdom's national dish!
 		<<score 4>>
 		<<emote frostholm holding_heart>>
 		King Ráðúlfr: That's epic, I love it, I can make it for you some time!
@@ -65,7 +65,7 @@ Princess Penelope: I want...
 				<<emote frostholm silly>>
 				<<after 1.5>>
 				<<emote frostholm neutral>>
-	-> To bake you ginger bread! #style=DialogueOptionButtonUnlocked;knows=caring_leader
+	-> To bake you ginger bread!
 		<<score 3>>
 		<<emote frostholm happy_2>>
 		King Ráðúlfr: Oh! I didn't know you could bake!
@@ -89,7 +89,7 @@ Princess Penelope: I want...
 title: frostholm__want_animals
 ---
 Princess Penelope: I want...
-	-> Nine cats when I'm old. They can eat me when I die! #style=DialogueOptionButtonUnlocked;knows=favourite_animal
+	-> Nine cats when I'm old. They can eat me when I die!
 		<<score -3>>
 		<<emote frostholm upset_looking_down>>	
 		King Ráðúlfr: This is why I despise cats. My wolf family would never. Probably.
@@ -108,7 +108,7 @@ Princess Penelope: I want...
 				<<emote frostholm worried>>
 				<<after 1.5>>
 				<<emote frostholm neutral>>		
-	-> To rescue all the dogs in the kingdom! #style=DialogueOptionButtonUnlocked;knows=favourite_animal
+	-> To rescue all the dogs in the kingdom!
 		<<score 3>>
 		<<emote frostholm happy_2>>	
 		King Ráðúlfr: Wow, really? What's your reasoning? Do tell me.
@@ -127,7 +127,7 @@ Princess Penelope: I want...
 				<<emote frostholm happy_1>>	
 				<<after 1.5>> 
 				<<emote frostholm neutral>>	
-	-> To make wolf hunting our kingdom's national sport! #style=DialogueOptionButtonUnlocked;knows=favourite_animal
+	-> To make wolf hunting our kingdom's national sport!'P
 		<<score -3>>
 		<<emote frostholm upset_looking_down>>	
 		King Ráðúlfr: Why would you possibly want to do that?!
@@ -237,7 +237,7 @@ Princess Penelope: I want...
 title: frostholm__want_religion
 ---
 Princess Penelope: I want...
-	-> To become a nun! #style=DialogueOptionButtonUnlocked;knows=afterlife_ring
+	-> To become a nun!
 		<<emote frostholm confused>>	
 		King Ráðúlfr: That is such an honourable position. However, would you not have to leave the royal family?
 			-> That's the point, I'm sick of them controlling my future. #style=DialogueOptionButtonPositive;knows=afterlife_ring
@@ -255,7 +255,7 @@ Princess Penelope: I want...
 				<<emote frostholm confused_2>>
 				<<after 1.5>>	
 				<<emote frostholm neutral>>		
-	-> To do away with religion within this kingdom! #style=DialogueOptionButtonUnlocked;knows=afterlife_ring
+	-> To do away with religion within this kingdom!
 		<<emote frostholm holding_heart>>	
 		King Ráðúlfr: To replace it with a better one?
 			-> I want to destroy all organized religion and replace it with small cults! #style=DialogueOptionButtonNegative;knows=afterlife_ring
@@ -273,7 +273,7 @@ Princess Penelope: I want...
 				<<emote frostholm thumbs_up>>	
 				<<after 1.5>>
 				<<emote frostholm neutral>>	
-	-> To adopt your kingdom's religion! #style=DialogueOptionButtonUnlocked;knows=afterlife_ring
+	-> To adopt your kingdom's religion!
 		<<emote frostholm holding_heart_2>>	
 		King Ráðúlfr: The Snurch would be so glad to welcome you. We adore new members!
 			-> It's been a dream of mine to dip my hands in the sacred mucus bowl! #style=DialogueOptionButtonPositive;knows=afterlife_ring
@@ -291,7 +291,7 @@ Princess Penelope: I want...
 				<<emote frostholm happy_2>>	
 				<<after 1.5>>
 				<<emote frostholm neutral>>	
-	-> You to convert to our kingdom's religion! #style=DialogueOptionButtonUnlocked;knows=afterlife_ring
+	-> You to convert to our kingdom's religion!
 		<<emote frostholm concerned>>
 		King Ráðúlfr: I am not sure I feel comfortable with that. I love my Snail God too much to leave them...
 			-> You wouldn't have to. We'd be in Frostholm... #style=DialogueOptionButtonPositive;knows=afterlife_ring
@@ -314,7 +314,7 @@ Princess Penelope: I want...
 title: frostholm__want_children
 ---
 Princess Penelope: I want...
-	-> To have a litter amount of children! #style=DialogueOptionButtonUnlocked;knows=art_children
+	-> To have a litter amount of children!
 		<<emote frostholm thinking>>	
 		King Ráðúlfr: Which animal's litter?
 			-> Cats, I think 4 is a good amount. #style=DialogueOptionButtonPositive;knows=art_children
@@ -332,7 +332,7 @@ Princess Penelope: I want...
 				<<emote frostholm blank_stare>>	
 				<<after 1.5>>
 				<<emote frostholm neutral>>					
-	-> To not have children, they disgust me... #style=DialogueOptionButtonUnlocked;knows=art_children
+	-> To not have children, they disgust me...
 		<<emote frostholm upset_looking_down>>	
 		King Ráðúlfr: Even if we need an heir to continue our line?
 			-> I could never bring a child into this life of nobility... #style=DialogueOptionButtonNegative;knows=art_children
@@ -350,7 +350,7 @@ Princess Penelope: I want...
 				<<emote frostholm happy_1>>	
 				<<after 1.5>>
 				<<emote frostholm neutral>>				
-	-> To abolish child labour. #style=DialogueOptionButtonUnlocked;knows=art_children
+	-> To abolish child labour.
 		<<emote frostholm holding_heart>>	
 		King Ráðúlfr: We already abolished it in Frostholm!
 			-> That's incredible. Your family should be proud! #style=DialogueOptionButtonPositive;knows=art_children
