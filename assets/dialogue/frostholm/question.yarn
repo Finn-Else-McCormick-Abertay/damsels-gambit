@@ -50,6 +50,7 @@ Princess Penelope: Can I ask?...
         <<emote frostholm holding_heart_2>>
         <<score 1>>
         King Ráðúlfr: They taught me almost everything I know!
+        <<learn wolf_adoption>>
         <<emote frostholm neutral>>
     -> Do you have any pets?
         <<emote frostholm concerned>>
