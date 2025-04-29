@@ -125,8 +125,6 @@ public sealed partial class GameManager : Node
 	public static void SwitchToMainMenu() {
 		if (!Instance.IsValid()) return;
 
-
-
 		// Clearing other scenes is handled by the transition
 		// Crossfade when coming from credits or splash, otherwise fade to black
 		SceneTransition.Run(

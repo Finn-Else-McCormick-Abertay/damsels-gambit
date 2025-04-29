@@ -17,7 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://clniri7xori3i" path="res://assets/ui/panels/control icons/tab_button.png" id="15_lnrnt"]
 [ext_resource type="Texture2D" uid="uid://d4n2eylsnvxs4" path="res://assets/ui/panels/control icons/controller.png" id="16_e2qcx"]
 
-[node name="SettingsMenu" type="Control" node_paths=PackedStringArray("TabContainer", "ExitButton")]
+[node name="SettingsMenu" type="Control" node_paths=PackedStringArray("TabContainer", "ExitButton", "SaveButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -29,6 +29,7 @@ size_flags_vertical = 3
 script = ExtResource("2_0snvw")
 TabContainer = NodePath("TabContainer")
 ExitButton = NodePath("ExitButton")
+SaveButton = NodePath("SaveButton")
 metadata/_edit_horizontal_guides_ = [557.0]
 
 [node name="Background" type="TextureRect" parent="."]
