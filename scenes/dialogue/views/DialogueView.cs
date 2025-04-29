@@ -7,6 +7,7 @@ using DamselsGambit.Util;
 using System.Collections.Generic;
 using System.IO;
 using Yarn;
+using System.Reflection;
 
 namespace DamselsGambit.Dialogue;
 
@@ -46,13 +47,12 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
 	private readonly HashSet<string> _usedOptions = [];
 	public void ResetUsedOptions() => _usedOptions.Clear();
 
+	public static bool VerboseLogging { get; set; } = true;
+
 	public override void _EnterTree() {
 		ContinueButton?.TryConnect(BaseButton.SignalName.Pressed, OnContinue);
-		Root.Hide();
-		TitleRoot.Hide();
-		LineRoot.Hide();
-		ContinueButton.Hide();
-		OptionVisualRoot.Hide();
+		Root.Hide(); TitleRoot.Hide(); LineRoot.Hide();
+		ContinueButton.Hide(); OptionVisualRoot.Hide();
 		DialogueManager.Register(this);
 	}
 	public override void _ExitTree() {
@@ -63,9 +63,9 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
     public override void _Notification(int what) { if (what == NotificationPredelete) OptionArchetype?.QueueFree(); }
 
     public void DialogueStarted() {
+		if (VerboseLogging) Console.Info("DialogueStarted");
 		Root.Show();
-		ContinueButton.Hide();
-		foreach (var child in OptionRoot.GetChildren().Where(x => x != OptionArchetype)) child.QueueFree();
+		ContinueButton.Hide(); foreach (var child in OptionRoot.GetChildren().Where(x => x != OptionArchetype)) child.QueueFree();
 		State = DialogueState.Waiting;
 	}
 
@@ -97,26 +97,33 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
 			_ => ""
 		});
 		
+		if (VerboseLogging) Console.Info($"RunLine {line.TextID}{(withNext ? " (withnext)" : "")} : {line.Text.Text}");
+		
 		State = DialogueState.DisplayingLine;
 		if (withNext) _onLineFinishedAction?.Invoke();
 	}
 
 	public void HideBox() {
-		TitleRoot.Hide();
-		LineRoot.Hide();
-		OptionVisualRoot.Hide();
-		ContinueButton.Hide();
+		if (VerboseLogging) Console.Info($"HideBox called", true);
+		Console.Info();
+		TitleRoot.Hide(); LineRoot.Hide();
+		OptionVisualRoot.Hide(); ContinueButton.Hide();
 	}
 
-	private void OnContinue() => _onLineFinishedAction?.Invoke();
+	private void OnContinue() {
+		if (VerboseLogging) Console.Info($"OnContinue ({_onLineFinishedAction?.GetMethodInfo()})");
+		_onLineFinishedAction?.Invoke();
+	}
 
 	public void InterruptLine(LocalizedLine dialogueLine, Action onDialogueLineFinished) {
+		if (VerboseLogging) Console.Info($"InterruptLine {dialogueLine.TextID} ({onDialogueLineFinished?.GetMethodInfo()})");
 		ContinueButton.Hide();
 		onDialogueLineFinished?.Invoke();
 		State = DialogueState.Waiting;
 	}
 
 	public void DismissLine(Action onDismissalComplete) {
+		if (VerboseLogging) Console.Info($"DismissLine ({onDismissalComplete?.GetMethodInfo()})");
 		_onLineFinishedAction = null;
 		ContinueButton.Hide();
 		onDismissalComplete?.Invoke();
@@ -124,6 +131,8 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
 	}
 
 	public void RunOptions(DialogueOption[] dialogueOptions, Action<int> onOptionSelected) {
+		if (VerboseLogging) Console.Info($"RunOptions ({onOptionSelected?.GetMethodInfo()}) [{string.Join(", ", dialogueOptions.Select(x => x.TextID))}]");
+
 		_onLineFinishedAction = null;
 		CleanupOptions();
 
@@ -158,7 +167,7 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
 				if (shouldUse) styleString = tag.StripFront("style=");
 			}
 
-			Console.Info($"{option.Line.Text.Text} : {tags.ToPrettyString()} : Style = {styleString.ToPrettyString()}");
+			//Console.Info($"{option.Line.Text.Text} : {tags.ToPrettyString()} : Style = {styleString.ToPrettyString()}");
 			
 			var button = optionControl as Button ?? optionControl.FindChildOfType<Button>();
 			button.Text = option.Line.Text.Text;
@@ -187,12 +196,14 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
 	}
 
 	private void CleanupOptions() {
+		if (VerboseLogging) Console.Info("CleanupOptions");
 		foreach (var child in OptionRoot.GetChildren()) child.QueueFree();
 		OptionVisualRoot.Hide();
 		State = DialogueState.Waiting;
 	}
 
 	public void DialogueComplete() {
+		if (VerboseLogging) Console.Info("DialogueComplete");
 		State = DialogueState.Inactive;
 		TitleRoot.Hide();
 		LineRoot.Hide();

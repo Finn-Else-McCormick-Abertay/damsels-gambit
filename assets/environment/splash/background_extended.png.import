@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bdxg2oigdedvh"
-path="res://.godot/imported/landscape cutout high res.png-909016d2c40c2b068f833a23246dfa96.ctex"
+uid="uid://bcevorbm84nnp"
+path="res://.godot/imported/background_extended.png-e9cd1dd705416731e096de3c322304cb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/environment/splash/landscape cutout high res.png"
-dest_files=["res://.godot/imported/landscape cutout high res.png-909016d2c40c2b068f833a23246dfa96.ctex"]
+source_file="res://assets/environment/splash/background_extended.png"
+dest_files=["res://.godot/imported/background_extended.png-e9cd1dd705416731e096de3c322304cb.ctex"]
 
 [params]
 

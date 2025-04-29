@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://5mih1v3tagx0"
-path="res://.godot/imported/Plates.png-79402c93e1cada7bd7529ba553a68b92.ctex"
+uid="uid://lpt8yk2palqw"
+path="res://.godot/imported/just_castle.png-955b5ab42a6a07a7abe1fbac7cb2a88f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/environment/props/Plates.png"
-dest_files=["res://.godot/imported/Plates.png-79402c93e1cada7bd7529ba553a68b92.ctex"]
+source_file="res://assets/environment/splash/just_castle.png"
+dest_files=["res://.godot/imported/just_castle.png-955b5ab42a6a07a7abe1fbac7cb2a88f.ctex"]
 
 [params]
 

@@ -55,6 +55,10 @@ grow_vertical = 2
 mouse_filter = 1
 theme = ExtResource("1_eci5x")
 script = ExtResource("1_4k8rw")
+ScoreMin = -8
+ScoreMax = 8
+LoveThreshold = 1
+HateThreshold = -1
 FullLayoutTopicDeck = {
 "topic/animals": 1,
 "topic/art": 1,
@@ -104,8 +108,8 @@ grow_vertical = 2
 theme = ExtResource("2_ko4o6")
 script = ExtResource("4_dw2x6")
 MaxValue = 8.0
-LoveThreshold = 1.1
-HateThreshold = -1.1
+LoveThreshold = 1.0
+HateThreshold = -1.0
 ValueAnimationSpeed = 1.5
 ValueAnimationMaxDuration = 2.5
 ValueAnimationTransitionType = 1
