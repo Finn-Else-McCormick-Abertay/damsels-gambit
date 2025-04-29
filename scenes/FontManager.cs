@@ -1,17 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CsvHelper;
 using DamselsGambit.Util;
 using Godot;
 
 namespace DamselsGambit;
 
-public static class FontManager
+// This is an autoload singleton. Because of how Godot works, you can technically instantiate it yourself. Don't.
+public partial class FontManager : Node
 {
+	public static FontManager Instance { get; private set; }
+	public override void _EnterTree() { if (Instance is not null) throw AutoloadException.For(this); Instance = this; }
+
 	public enum FontState { Default, OpenDyslexic }
 
-	public static FontState Font { get; set { field = value; UpdateDynamicFonts(); } }
+	private static FontState _fontInternal;
+	public static FontState Font { get => _fontInternal; set { _fontInternal = value; UpdateDynamicFonts(); SettingsManager.SetConfig("accessibility", "font", Enum.GetName(Font)); } }
 	
 	private static readonly Dictionary<string, FontVariation> _dynamicFonts = [];
 	private static FontVariation GetDynamicFont(string id) {
@@ -42,5 +46,15 @@ public static class FontManager
 		SetDynamicFont("main", Font switch { FontState.OpenDyslexic => OpenDyslexic, _ => Vinque });
 		SetDynamicFont("header", Font switch { FontState.OpenDyslexic => OpenDyslexic, _ => Vinque });
 		SetDynamicFont("card_type", Font switch { FontState.OpenDyslexic => OpenDyslexic, _ => Matura });
+	}
+
+	static FontManager() {
+		SettingsManager.SetConfigHandler("accessibility", "font", (string fontName) => {
+            if (Enum.TryParse(fontName, out FontState result)) {
+                _fontInternal = result; UpdateDynamicFonts();
+                Console.Info($"accessibility/font set to {fontName}");
+            }
+            else Console.Warning($"accessibility/font is set to nonexistent font '{fontName}'");
+        });
 	}
 }

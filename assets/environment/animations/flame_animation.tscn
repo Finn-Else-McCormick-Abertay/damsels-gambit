@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://bj6dctqk2bi1y"]
+[gd_scene load_steps=6 format=3 uid="uid://bj6dctqk2bi1y"]
 
-[ext_resource type="Texture2D" uid="uid://d0ri5p27lbahu" path="res://assets/environment/animations/flame_animation_sprite_sheet.png" id="1_yundq"]
+[ext_resource type="Texture2D" uid="uid://d0ri5p27lbahu" path="res://assets/environment/animations/flame_animation_sprite_sheet.png" id="1_ogun4"]
+[ext_resource type="Script" uid="uid://b356pg540fq5b" path="res://assets/environment/animations/flame_animtion.gd" id="2_ttn8i"]
 
 [sub_resource type="Animation" id="Animation_2uts4"]
 length = 0.001
@@ -41,13 +42,15 @@ _data = {
 &"burn": SubResource("Animation_jvvtx")
 }
 
-[node name="Flame1" type="Sprite2D"]
-texture = ExtResource("1_yundq")
+[node name="Flame Sprite" type="Sprite2D"]
+texture = ExtResource("1_ogun4")
 hframes = 8
 vframes = 6
+script = ExtResource("2_ttn8i")
 
 [node name="FlameAnimate" type="AnimationPlayer" parent="."]
 libraries = {
 &"": SubResource("AnimationLibrary_y8iu7")
 }
+autoplay = "burn"
 speed_scale = 0.5

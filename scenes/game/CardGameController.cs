@@ -34,7 +34,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	public int Score { get; set { field = value; AffectionMeter?.OnReady(x => x.Value = value); AttemptGameEnd(); } }
 
 	// Current affection state based on score and thresholds
-	public AffectionState AffectionState => Score switch { _ when Score >= LoveThreshold => AffectionState.Love, _ when Score <= HateThreshold => AffectionState.Hate, _ => AffectionState.Neutral };
+	public AffectionState AffectionState => Score switch { _ when Score > LoveThreshold => AffectionState.Love, _ when Score < HateThreshold => AffectionState.Hate, _ => AffectionState.Neutral };
 
 	// Name of suitor. This converted to snake case will be used for generating dialogue node names, and for updating the profile
 	[Export] public string SuitorName { get; set { field = value; _suitorId = Case.ToSnake(SuitorName); GameManager.NotebookMenu?.OnReady(x => x.SuitorName = SuitorName); } }
@@ -258,7 +258,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		&& (DiscardLimitPerRound < 0 || UsedDiscardsThisRound < DiscardLimitPerRound);
 
 	// Are preconditions for game end met
-	private bool ShouldGameEnd => Started && !Ended && (Round > NumRounds || (AutoFailOnHitThreshold && !RangeOf<int>.Between(ScoreMin, ScoreMax).Contains(Score)));
+	private bool ShouldGameEnd => Started && !Ended && (Round > NumRounds || (AutoFailOnHitThreshold && !RangeOf<int>.Over(ScoreMin, ScoreMax).Contains(Score)));
 	
 	// If not yet started, force-run the skip_setup node, skipping to the start of gameplay even if currently in the intro
 	public void ForceSkipIntro() { if (!Started && !Ended) DialogueManager.Run($"{_suitorId}__skip_setup", true); }

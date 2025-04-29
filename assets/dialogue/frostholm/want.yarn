@@ -119,7 +119,7 @@ Princess Penelope: I want...
 				<<emote frostholm neutral>>		
 			-> I just want to save them, just for peace of mind I guess? #style=DialogueOptionButtonPositive;knows=favourite_animal
 				<<score 3>>
-				<<emote frostholm holding_hand_2>>	
+				<<emote frostholm holding_heart_2>>	
 				<<after 1.5>>
 				<<emote frostholm neutral>>	
 			-> I want to give all of my soldiers a pet dog. #style=DialogueOptionButtonPositive;knows=favourite_animal
@@ -397,7 +397,7 @@ Princess Penelope: I want...
 		<<score -3>>
 		<<emote frostholm worried>>	
 		King Ráðúlfr: ...Why?
-			-> You wouldn't question if it it were pearls... #style=DialogueOptionButtonNegative;knows=wolf_adoption
+			-> You wouldn't question if it were pearls... #style=DialogueOptionButtonNegative;knows=wolf_adoption
 				<<score -3>>
 				<<emote frostholm blank_stare>>	
 				<<after 1.5>>
@@ -425,9 +425,9 @@ Princess Penelope: I want...
 				<<score 3>>
 				<<emote frostholm holding_heart_2>>	
 				<<after 1.5>>
-				<<emote frostholm neutral>>	
-	-> To make your parent a set of snail necklaces
-   		<<emote frostholm upset_looking_down>>
+				<<emote frostholm neutral>>
+	-> To make your parent a set of snail necklaces.
+		<<emote frostholm upset_looking_down>>	
 		King Ráðúlfr: ...Why?
 			-> Silver snail necklaces! To honour the divine wisdom of the Snail Gods, of course. #style=DialogueOptionButtonPositive;knows=wolf_adoption
 				<<score 3>>
