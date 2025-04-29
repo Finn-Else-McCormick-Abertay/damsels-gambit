@@ -125,8 +125,6 @@ public sealed partial class GameManager : Node
 	public static void SwitchToMainMenu() {
 		if (!Instance.IsValid()) return;
 
-
-
 		// Clearing other scenes is handled by the transition
 		// Crossfade when coming from credits or splash, otherwise fade to black
 		SceneTransition.Run(
@@ -135,9 +133,9 @@ public sealed partial class GameManager : Node
 				_ when GetLayer("credits").GetChildCount() > 0 || GetLayer("splash").GetChildCount() > 0 => SceneTransition.Type.CrossFade,
 				_ => SceneTransition.Type.FadeToBlack
 			}, "main_menu", () => {
-			MainMenu = _mainMenuScene.Instantiate<MainMenu>(); GetLayer("main_menu").AddChild(MainMenu);
-			AudioManager.PlayMusic("res://assets/audio/Menu.mp3");
-			SetNotebookActive(false);
+				MainMenu = _mainMenuScene.Instantiate<MainMenu>(); GetLayer("main_menu").AddChild(MainMenu);
+				AudioManager.PlayMusic("res://assets/audio/Menu.mp3");
+				SetNotebookActive(false);
 		});
 	}
 

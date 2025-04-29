@@ -1,4 +1,5 @@
 using DamselsGambit;
+using DamselsGambit.Dialogue;
 using DamselsGambit.Util;
 using Godot;
 using System;
@@ -28,6 +29,7 @@ public partial class EndScreen : Control
 	}
 
 	private void OnRetry() {
+		DialogueManager.Knowledge.Reset();
 		GameManager.SwitchToCardGameScene("res://scenes/dates/frostholm_date.tscn");
 		QueueFree();
 	}
