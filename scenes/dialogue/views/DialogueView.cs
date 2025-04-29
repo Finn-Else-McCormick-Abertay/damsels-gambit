@@ -47,7 +47,7 @@ public partial class DialogueView : Control, DialogueViewBase, IFocusContext, IF
 	private readonly HashSet<string> _usedOptions = [];
 	public void ResetUsedOptions() => _usedOptions.Clear();
 
-	public static bool VerboseLogging { get; set; } = true;
+	public static bool VerboseLogging { get; set; } = false;
 
 	public override void _EnterTree() {
 		ContinueButton?.TryConnect(BaseButton.SignalName.Pressed, OnContinue);

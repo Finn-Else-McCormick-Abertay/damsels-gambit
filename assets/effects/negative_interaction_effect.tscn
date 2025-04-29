@@ -220,19 +220,19 @@ _data = {
 [node name="GPUParticles2D2" type="GPUParticles2D" parent="."]
 position = Vector2(553, 278)
 amount = 152
-process_material = SubResource("ParticleProcessMaterial_ko0xs")
 texture = ExtResource("1_5oa02")
+process_material = SubResource("ParticleProcessMaterial_ko0xs")
 
 [node name="Icon emitter" type="GPUParticles2D" parent="."]
 position = Vector2(106, 544)
-process_material = SubResource("ParticleProcessMaterial_7okid")
 texture = ExtResource("1_im13s")
 trail_lifetime = 0.01
 trail_sections = 128
 trail_section_subdivisions = 649
+process_material = SubResource("ParticleProcessMaterial_7okid")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Icon emitter"]
 root_node = NodePath("../..")
 libraries = {
-"": SubResource("AnimationLibrary_kxbjk")
+&"": SubResource("AnimationLibrary_kxbjk")
 }
