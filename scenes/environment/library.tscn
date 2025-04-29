@@ -5,8 +5,8 @@
 [ext_resource type="Texture2D" uid="uid://dggitk1waeglj" path="res://assets/environment/library_background.png" id="2_lrhu2"]
 [ext_resource type="Script" uid="uid://c5yvgj7xv643o" path="res://scenes/dialogue/environment/CharacterDisplay.cs" id="2_s5131"]
 [ext_resource type="Texture2D" uid="uid://bv2ngki8juk5k" path="res://assets/environment/props/Table.png" id="5_tcu6h"]
-[ext_resource type="Texture2D" uid="uid://cmepnlsnu6oqf" path="res://assets/environment/props/cloth.png" id="7_f4vx0"]
-[ext_resource type="Texture2D" uid="uid://duhbk7c10lnr6" path="res://assets/environment/props/cutlery.png" id="9_cmbj8"]
+[ext_resource type="Texture2D" uid="uid://cmepnlsnu6oqf" path="res://assets/environment/props/Cloth.png" id="7_f4vx0"]
+[ext_resource type="Texture2D" uid="uid://duhbk7c10lnr6" path="res://assets/environment/props/Cutlery.png" id="9_cmbj8"]
 [ext_resource type="Texture2D" uid="uid://5mih1v3tagx0" path="res://assets/environment/props/dinner_plate.png" id="10_qv071"]
 [ext_resource type="Texture2D" uid="uid://bbd555fimwvu" path="res://assets/environment/props/silver_candlestick.png" id="11_vf4ml"]
 [ext_resource type="Texture2D" uid="uid://s7ge87mqkk6r" path="res://assets/items/book_disproving_snurch_1.png" id="12_bwry6"]
@@ -38,7 +38,7 @@
 [ext_resource type="Texture2D" uid="uid://x0c0kgrd61k1" path="res://assets/items/snail_idol.png" id="34_sxisb"]
 [ext_resource type="Texture2D" uid="uid://uujitmbjqtnw" path="res://assets/items/wolf_action_figure.png" id="34_xoed5"]
 [ext_resource type="Texture2D" uid="uid://dvhorchlh1j4n" path="res://assets/items/gospel.png" id="38_2fs6e"]
-[ext_resource type="PackedScene" uid="uid://bj6dctqk2bi1y" path="res://assets/environment/animations/flame_animation.tscn" id="39_fcd0m"]
+[ext_resource type="PackedScene" path="res://assets/environment/animations/flame_animation.tscn" id="39_fcd0m"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_gw1xy"]
 blend_mode = 1

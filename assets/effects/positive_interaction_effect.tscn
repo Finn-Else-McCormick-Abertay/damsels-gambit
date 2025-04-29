@@ -173,29 +173,29 @@ _data = {
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]
 visible = false
 position = Vector2(567, 360)
-process_material = SubResource("ParticleProcessMaterial_7okid")
 texture = ExtResource("1_jnqxx")
 trail_lifetime = 0.01
 trail_sections = 128
 trail_section_subdivisions = 649
+process_material = SubResource("ParticleProcessMaterial_7okid")
 
 [node name="GPUParticles2D2" type="GPUParticles2D" parent="."]
 position = Vector2(553, 278)
 amount = 892
-process_material = SubResource("ParticleProcessMaterial_ko0xs")
 texture = ExtResource("2_dtpqa")
+process_material = SubResource("ParticleProcessMaterial_ko0xs")
 
 [node name="Icon emitter" type="GPUParticles2D" parent="."]
 position = Vector2(106, 544)
 amount = 9
-process_material = SubResource("ParticleProcessMaterial_7okid")
 texture = ExtResource("1_2yp8l")
 trail_lifetime = 0.01
 trail_sections = 128
 trail_section_subdivisions = 649
+process_material = SubResource("ParticleProcessMaterial_7okid")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Icon emitter"]
 root_node = NodePath("../..")
 libraries = {
-"": SubResource("AnimationLibrary_kxbjk")
+&"": SubResource("AnimationLibrary_kxbjk")
 }
