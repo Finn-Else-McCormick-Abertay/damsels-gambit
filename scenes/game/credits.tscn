@@ -78,18 +78,18 @@ text = "
 
 Design
 
-Producer   -  Vera Silva 
+Producer and Narrative Lead  -  Vera Silva 
 
-Game Play Designer   -  Pedro Fonseca
+Gameplay Designer   -  Pedro Fonseca
 
-Narrative and Audio Lead  -  Jacob Griffin
+Audio Lead  -  Jacob Griffin
 
 
 Art
 
 Character and Asset Artist   -   Caitlyn Johnstone 
 
-UI and Branding Designer  -  Thorn Stirling
+UI and Technical Artist  -  Thorn Stirling
 
 
 Programming
@@ -98,22 +98,28 @@ Lead Programmer   -  Finn Else-McCormick
 
 Audio Programmer  -  Bea Parsons 
 
-QA Tester -  Noah Morrison 
+QA Build Engineer  -  Noah Morrison 
 
+
+Advice 
+
+Mentor - Fraser Simpson
+
+External Mentor - Gary McCartan of Pocket Sized Hands
+
+Course Lead - Martin Lynagh
+
+Thanks to 
+Ada Grečner for Aiding with Technical Art Issues
+
+Deborah Cowan for Providing Promotional Voice-Overs
+
+Everyone who playtested the game and gave us feedback  
 
 An Abertay University Des315 Project 
 
-
 Created in GODOT 4.4
 Dialogue powered by Yarn Spinner — https://yarnspinner.dev 
-
-Thanks to 
-
-Fraser Simpson
-Martin Lynagh 
-Gary McCartan
-Pocket Sized Hands 
-Everyone who playtested the game and gave us feedback  
 
 
 
@@ -176,9 +182,9 @@ horizontal_alignment = 1
 [node name="Audio" type="RichTextLabel" parent="CreditsText"]
 layout_mode = 0
 offset_left = 1.0
-offset_top = 2120.0
+offset_top = 2368.0
 offset_right = 1149.0
-offset_bottom = 3837.0
+offset_bottom = 4085.0
 theme_override_colors/default_color = Color(0.34902, 0.0352941, 0.133333, 1)
 theme_override_colors/font_outline_color = Color(0.996078, 0.929412, 0.898039, 1)
 theme_override_constants/outline_size = 9
@@ -310,7 +316,7 @@ scale = Vector2(0.233461, 0.233461)
 texture = ExtResource("5_ox8i4")
 
 [node name="HumanTeethDress1" type="Sprite2D" parent="CreditsText/Marginalia"]
-position = Vector2(401, 2270)
+position = Vector2(439, 2175)
 rotation = 0.223011
 scale = Vector2(0.258849, 0.258849)
 texture = ExtResource("6_s70fa")
@@ -333,7 +339,7 @@ scale = Vector2(0.264765, 0.264765)
 texture = ExtResource("9_pq3tm")
 
 [node name="WolfClaw3" type="Sprite2D" parent="CreditsText/Marginalia"]
-position = Vector2(-410, 1887)
+position = Vector2(-429, 1793)
 rotation = -1.04738
 scale = Vector2(0.424324, 0.424324)
 texture = ExtResource("10_b15uh")
@@ -362,7 +368,7 @@ scale = Vector2(0.232685, 0.232685)
 texture = ExtResource("13_nje8h")
 
 [node name="Sunglasses2" type="Sprite2D" parent="CreditsText/Marginalia"]
-position = Vector2(329, 3882)
+position = Vector2(385, 3902)
 rotation = 0.517371
 scale = Vector2(0.176435, 0.176435)
 texture = ExtResource("14_rkwiw")
@@ -373,13 +379,13 @@ scale = Vector2(0.238609, 0.238609)
 texture = ExtResource("15_ocr8b")
 
 [node name="FrogPotion2" type="Sprite2D" parent="CreditsText/Marginalia"]
-position = Vector2(429, 3258)
+position = Vector2(413, 3210)
 rotation = 0.270672
 scale = Vector2(0.285347, 0.285347)
 texture = ExtResource("16_rlg0f")
 
 [node name="WolfPotion3" type="Sprite2D" parent="CreditsText/Marginalia"]
-position = Vector2(-393, 3904)
+position = Vector2(-449, 3868)
 rotation = -0.337483
 scale = Vector2(0.23516, 0.23516)
 texture = ExtResource("19_urne1")
