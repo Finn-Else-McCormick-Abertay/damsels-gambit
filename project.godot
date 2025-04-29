@@ -25,12 +25,14 @@ buses/default_bus_layout="res://assets/audio/default_bus_layout.tres"
 [autoload]
 
 GameManager="*res://scenes/GameManager.cs"
+Console="*res://scenes/console/Console.cs"
 DialogueManager="*res://scenes/dialogue/DialogueManager.cs"
 EnvironmentManager="*res://scenes/dialogue/EnvironmentManager.cs"
 GUIDE="*res://addons/guide/guide.gd"
-Console="*res://scenes/console/Console.cs"
 InputManager="*res://scenes/input/InputManager.cs"
 AudioManager="*res://scenes/AudioManager.cs"
+FontManager="*res://scenes/FontManager.cs"
+SettingsManager="*res://scenes/SettingsManager.cs"
 
 [display]
 
