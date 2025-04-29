@@ -2,6 +2,7 @@ using DamselsGambit.Util;
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DamselsGambit;
 
@@ -17,16 +18,7 @@ public partial class AudioManager : Node
 
 	public static bool IsMusicPlaying => Instance?._musicPlayer?.Playing ?? false;
 
-	public override void _Ready(){
-
-		PlayMusic("res://assets/audio/Menu.mp3");
-
-	}
-
 	public override void _Process(double delta) {
-		if(!IsMusicPlaying){
-				PlayMusic(Instance._activeMusic);
-		}
 
 		if (GameManager.CardGameController.IsValid()){
 		if (lastValue != (GameManager.CardGameController.Score)){
@@ -37,20 +29,22 @@ public partial class AudioManager : Node
 		}}
 	}
 
-	
+	public static class BusName {
+		public static readonly StringName Master = "Master";
+		public static readonly StringName Music = "Music";
+		public static readonly StringName SFX = "SFX";
+	}
 
 	public override void _EnterTree() {
-		if (Instance is not null) throw AutoloadException.For(this);
-		Instance = this;
+		if (Instance is not null) throw AutoloadException.For(this); Instance = this;
+		ProcessMode = ProcessModeEnum.Always;
 
-		_musicPlayer = new AudioStreamPlayer() { Bus = "Music" };
-		AddChild(_musicPlayer); _musicPlayer.Owner = this;
-		
-		
-		for (int i = 0; i < 8; ++i) {
-			var sfxPlayer = new AudioStreamPlayer() { Bus = "SFX" };
-			AddChild(sfxPlayer); sfxPlayer.Owner = this;
-			_sfxPlayers.Add(sfxPlayer);
+		_musicPlayer = new AudioStreamPlayer() { Bus = BusName.Music };
+		AddChild(_musicPlayer);
+
+		foreach (var _ in RangeOf<int>.UpTo(8)) {
+			var sfxPlayer = new AudioStreamPlayer() { Bus = BusName.SFX };
+			AddChild(sfxPlayer); _sfxPlayers.Add(sfxPlayer);
 		}
 	}
 
@@ -60,32 +54,30 @@ public partial class AudioManager : Node
 	}
 
 	public static void PlaySFX(string filePath) {
+		if (!Instance.IsValid() || filePath.IsNullOrEmpty()) return;
+
 		filePath = $"res://{filePath.Replace('\\', '/').StripFront("res://")}";
-		if (!ResourceLoader.Exists(filePath) || !Instance.IsValid()) return;
+		if (!ResourceLoader.Exists(filePath)) return;
 
-		foreach (var player in Instance._sfxPlayers) {
-			if (!player.IsValid() || player.Playing) continue;
-
-			player.Stream = ResourceLoader.Load<AudioStream>(filePath);
-			player.Play();
-			return;
+		if (Instance._sfxPlayers.FirstOrDefault(player => player.IsValid() && !player.Playing) is AudioStreamPlayer freePlayer) {
+			freePlayer.Stream = ResourceLoader.Load<AudioStream>(filePath); freePlayer.Play();
 		}
+		else Console.Warning($"Failed to play SFX '{filePath}'");
 	}
 
 	public static void PlayMusic(string filePath) {
-		Instance._activeMusic = filePath;
+		if (!Instance.IsValid() || filePath.IsNullOrEmpty()) return;
+
 		filePath = $"res://{filePath.Replace('\\', '/').StripFront("res://")}";
+		if (IsMusicPlaying && Instance._activeMusic == filePath || !ResourceLoader.Exists(filePath)) return;
 
-		if (!ResourceLoader.Exists(filePath) || !Instance.IsValid() || (IsMusicPlaying && Instance._activeMusic == filePath)) return;
-
-	
+		Instance._activeMusic = filePath;
 		Instance._musicPlayer.Stream = ResourceLoader.Load<AudioStream>(filePath);
 		Instance._musicPlayer.Play();
-
 	}
 
 	public static void StopMusic() {
 		Instance._musicPlayer.Stop();
-		Instance._activeMusic = "";
+		Instance._activeMusic = null;
 	}
 }
