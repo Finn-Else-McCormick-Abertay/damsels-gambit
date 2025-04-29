@@ -258,7 +258,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		&& (DiscardLimitPerRound < 0 || UsedDiscardsThisRound < DiscardLimitPerRound);
 
 	// Are preconditions for game end met
-	private bool ShouldGameEnd => Started && !Ended && (Round > NumRounds || (AutoFailOnHitThreshold && !RangeOf<int>.Between(ScoreMin, ScoreMax).Contains(Score)));
+	private bool ShouldGameEnd => Started && !Ended && (Round > NumRounds || (AutoFailOnHitThreshold && !RangeOf<int>.Over(ScoreMin, ScoreMax).Contains(Score)));
 	
 	// If not yet started, force-run the skip_setup node, skipping to the start of gameplay even if currently in the intro
 	public void ForceSkipIntro() { if (!Started && !Ended) DialogueManager.Run($"{_suitorId}__skip_setup", true); }
