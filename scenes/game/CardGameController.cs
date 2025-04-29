@@ -34,7 +34,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	public int Score { get; set { field = value; AffectionMeter?.OnReady(x => x.Value = value); AttemptGameEnd(); } }
 
 	// Current affection state based on score and thresholds
-	public AffectionState AffectionState => Score switch { _ when Score >= LoveThreshold => AffectionState.Love, _ when Score <= HateThreshold => AffectionState.Hate, _ => AffectionState.Neutral };
+	public AffectionState AffectionState => Score switch { _ when Score > LoveThreshold => AffectionState.Love, _ when Score < HateThreshold => AffectionState.Hate, _ => AffectionState.Neutral };
 
 	// Name of suitor. This converted to snake case will be used for generating dialogue node names, and for updating the profile
 	[Export] public string SuitorName { get; set { field = value; _suitorId = Case.ToSnake(SuitorName); GameManager.NotebookMenu?.OnReady(x => x.SuitorName = SuitorName); } }
