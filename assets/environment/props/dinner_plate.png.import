@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bbd555fimwvu"
-path="res://.godot/imported/Candle Holder Thing.png-b90e3339108cab92c572d7c9d3268322.ctex"
+uid="uid://5mih1v3tagx0"
+path="res://.godot/imported/dinner_plate.png-59dc3cd14d4a49ace7c11750f08b333d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/environment/props/Candle Holder Thing.png"
-dest_files=["res://.godot/imported/Candle Holder Thing.png-b90e3339108cab92c572d7c9d3268322.ctex"]
+source_file="res://assets/environment/props/dinner_plate.png"
+dest_files=["res://.godot/imported/dinner_plate.png-59dc3cd14d4a49ace7c11750f08b333d.ctex"]
 
 [params]
 

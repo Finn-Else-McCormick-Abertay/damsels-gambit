@@ -22,9 +22,10 @@ public partial class CardDisplay : Control, IReloadableToolScript
 
 			string textureRoot = $"res://assets/cards/{CardType}";
 
-			if (ResourceLoader.Exists($"{textureRoot}/{CardName}.tres") && ResourceLoader.Load<CardInfo>($"{textureRoot}/{CardName}.tres") is CardInfo cardInfo) {
-				if (!cardInfo.DisplayName.IsNullOrEmpty()) DisplayName = cardInfo.DisplayName;
-				Score = cardInfo.Score.IsNullOrEmpty() ? null : cardInfo.Score;
+			if (ResourceLoader.Exists($"{textureRoot}/{CardName}.tres")) {
+				var cardInfo = ResourceLoader.Load<CardInfo>($"{textureRoot}/{CardName}.tres");
+				if (!string.IsNullOrEmpty(cardInfo.DisplayName)) DisplayName = cardInfo.DisplayName;
+				Score = string.IsNullOrEmpty(cardInfo.Score) ? null : cardInfo.Score;
 			}
 
 			if (ResourceLoader.Exists($"{textureRoot}/{CardName}.png")) Texture = ResourceLoader.Load<Texture2D>($"{textureRoot}/{CardName}.png");

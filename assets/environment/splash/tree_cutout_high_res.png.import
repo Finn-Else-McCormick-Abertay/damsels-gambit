@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://120j1ta6afcx"
-path="res://.godot/imported/Seat.png-73ed7f1ece5a1b7ada747d1bc49e09df.ctex"
+uid="uid://bglnrcoeuk22k"
+path="res://.godot/imported/tree_cutout_high_res.png-12ffbcf3b7ab030c4283fb4e888f2a73.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/environment/props/Seat.png"
-dest_files=["res://.godot/imported/Seat.png-73ed7f1ece5a1b7ada747d1bc49e09df.ctex"]
+source_file="res://assets/environment/splash/tree_cutout_high_res.png"
+dest_files=["res://.godot/imported/tree_cutout_high_res.png-12ffbcf3b7ab030c4283fb4e888f2a73.ctex"]
 
 [params]
 

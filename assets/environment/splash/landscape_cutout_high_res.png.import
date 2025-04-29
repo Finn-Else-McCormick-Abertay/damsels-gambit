@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://lpt8yk2palqw"
-path="res://.godot/imported/Just Castle.png-64382a74652e8d1cdab85857b1933278.ctex"
+uid="uid://bdxg2oigdedvh"
+path="res://.godot/imported/landscape_cutout_high_res.png-541414e9135f29178d4066a53fdb6141.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/environment/splash/Just Castle.png"
-dest_files=["res://.godot/imported/Just Castle.png-64382a74652e8d1cdab85857b1933278.ctex"]
+source_file="res://assets/environment/splash/landscape_cutout_high_res.png"
+dest_files=["res://.godot/imported/landscape_cutout_high_res.png-541414e9135f29178d4066a53fdb6141.ctex"]
 
 [params]
 

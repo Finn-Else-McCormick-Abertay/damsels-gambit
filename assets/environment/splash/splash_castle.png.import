@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bw77hwea1nin3"
-path="res://.godot/imported/splash castle.png-3ba0cea7b221a513b089ce3092b0b0f9.ctex"
+path="res://.godot/imported/splash_castle.png-d9a0f7a5b0fb16a28a79c43dda56a9c6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/environment/splash/splash castle.png"
-dest_files=["res://.godot/imported/splash castle.png-3ba0cea7b221a513b089ce3092b0b0f9.ctex"]
+source_file="res://assets/environment/splash/splash_castle.png"
+dest_files=["res://.godot/imported/splash_castle.png-d9a0f7a5b0fb16a28a79c43dda56a9c6.ctex"]
 
 [params]
 

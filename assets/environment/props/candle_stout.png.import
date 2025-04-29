@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bcevorbm84nnp"
-path="res://.godot/imported/background extended.png-175b1103c6dc2a5f99eb9f67e808dba6.ctex"
+uid="uid://dqpr258weyxql"
+path="res://.godot/imported/candle_stout.png-503d11e7a1a8505605373aa7f4d680e1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/environment/splash/background extended.png"
-dest_files=["res://.godot/imported/background extended.png-175b1103c6dc2a5f99eb9f67e808dba6.ctex"]
+source_file="res://assets/environment/props/candle_stout.png"
+dest_files=["res://.godot/imported/candle_stout.png-503d11e7a1a8505605373aa7f4d680e1.ctex"]
 
 [params]
 
