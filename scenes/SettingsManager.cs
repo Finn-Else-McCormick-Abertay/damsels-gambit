@@ -41,18 +41,18 @@ public sealed partial class SettingsManager : Node
     private static void CreateDefaultConfig() {
         _config.Clear();
 
-        _config.Add("graphics", []);
-        _config["graphics"]["fullscreen"] = false;
-        _config["graphics"]["resolution"] = new();
+        SetConfig("graphics", "fullscreen", false);
+        SetConfig("graphics", "resolution", new());
 
-        _config.Add("audio", []);
-        _config["audio"]["master_volume"] = 100.0;
-        _config["audio"]["music_volume"] = 100.0;
-        _config["audio"]["sfx_volume"] = 100.0;
+        IEnumerable<string> audioBusNames = [ "Master", "Music", "SFX" ];
+        foreach (var busName in audioBusNames) SetConfig("audio", $"{Case.ToSnake(busName)}_volume", AudioServer.GetBusVolumeLinear(AudioServer.GetBusIndex(busName)));
+
+        SetConfig("accessibility", "font", Enum.GetName(FontManager.FontState.Default));
     }
 
-    public Variant GetConfig(string section, string key) => _config.TryGetValue(section, out var sectionDict) ? sectionDict.TryGetValue(key, out var val) ? val : new() : new();
-    public T GetConfig<[MustBeVariant]T>(string section, string key) => GetConfig(section, key).As<T>();
+    public static Variant GetConfig(string section, string key) => _config.TryGetValue(section, out var sectionDict) ? sectionDict.TryGetValue(key, out var val) ? val : new() : new();
+    public static T GetConfig<[MustBeVariant]T>(string section, string key) => GetConfig(section, key).As<T>();
 
-    public void SetConfig(string section, string key, Variant value) { _config.GetOrAdd(section, [])[key] = value; }
+    public static void SetConfig(string section, string key, Variant value) => _config.GetOrAdd(section, [])[key] = value;
+    public static void ClearConfig(string section, string key) { if (_config.TryGetValue(section, out var dict)) dict.Remove(key); }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CsvHelper;
 using DamselsGambit.Util;
 using Godot;
 
@@ -11,7 +10,7 @@ public static class FontManager
 {
 	public enum FontState { Default, OpenDyslexic }
 
-	public static FontState Font { get; set { field = value; UpdateDynamicFonts(); } }
+	public static FontState Font { get; set { field = value; UpdateDynamicFonts(); SettingsManager.SetConfig("accessibility", "font", Enum.GetName(Font)); } }
 	
 	private static readonly Dictionary<string, FontVariation> _dynamicFonts = [];
 	private static FontVariation GetDynamicFont(string id) {
