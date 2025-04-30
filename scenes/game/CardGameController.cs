@@ -294,6 +294,9 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		_scoreEffect = ((newScore - oldScore) switch { > 0 => PositiveEffectScene, _ => NegativeEffectScene })?.Instantiate<Node2D>();
 		AddChild(_scoreEffect);
 
+		// Play sound effect
+		if (!Engine.IsEditorHint() && _initialised) AudioManager.PlaySFX((newScore - oldScore) switch { > 0 => "res://assets/audio/AffPlus.mp3", _ => "res://assets/audio/AffMinus.mp3" });
+
 		if (AnimateEffectFromMouseToBar) {
 			var emitters = _scoreEffect.FindChildrenOfType<GpuParticles2D>(false);
 			foreach (var emitter in emitters) emitter.Position = new();

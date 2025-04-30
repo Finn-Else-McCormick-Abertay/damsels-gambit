@@ -14,20 +14,8 @@ public partial class AudioManager : Node
 	private readonly List<AudioStreamPlayer> _sfxPlayers = [];
 	private AudioStreamPlayer _musicPlayer;
 	public string _activeMusic;
-	public int lastValue;
 
 	public static bool IsMusicPlaying => Instance?._musicPlayer?.Playing ?? false;
-
-	public override void _Process(double delta) {
-
-		if (GameManager.CardGameController.IsValid()){
-		if (lastValue != (GameManager.CardGameController.Score)){
-			if(lastValue > GameManager.CardGameController.Score){
-				PlaySFX("res://assets/audio/AffPlus.mp3");
-			}else{PlaySFX("res://assets/audio/AffMinus.mp3");}
-			lastValue = GameManager.CardGameController.Score;
-		}}
-	}
 
 	public static class BusName {
 		public static readonly StringName Master = "Master";
