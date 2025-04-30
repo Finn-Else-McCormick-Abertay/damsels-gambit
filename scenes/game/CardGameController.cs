@@ -31,7 +31,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	
 	// Current round and score. Setters update relevant meters and (if conditions are met) trigger game end
 	public int Round { get; set { field = value; RoundMeter?.OnReady(x => x.CurrentRound = value); AttemptGameEnd(); } }
-	public int Score { get; set { field = value; AffectionMeter?.OnReady(x => x.Value = value); AttemptGameEnd(); } }
+	public int Score { get; set { AnimateScoreEffect(field, value); field = value; AffectionMeter?.OnReady(x => x.Value = value); AttemptGameEnd(); } }
 
 	// Current affection state based on score and thresholds
 	public AffectionState AffectionState => Score switch { _ when Score > LoveThreshold => AffectionState.Love, _ when Score < HateThreshold => AffectionState.Hate, _ => AffectionState.Neutral };
@@ -88,6 +88,9 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	[ExportGroup("Animation")]
 	[Export] public double MeterSlideInTime { get; set; } = 0.5;
 	[Export] public double CardFallTime { get; set; } = 0.5;
+
+	[Export] public PackedScene PositiveEffectScene { get; set; }
+	[Export] public PackedScene NegativeEffectScene { get; set; }
 
 	[ExportGroup("Nodes")]
 	[Export] public AffectionMeter AffectionMeter { get; set; } 												[Export] public RoundMeter RoundMeter { get; set; }
@@ -271,6 +274,19 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		tween.TweenProperty(card, "position", new Vector2(5, 350), CardFallTime).AsRelative();
 		tween.Parallel().TweenProperty(card, "rotation_degrees", 20, CardFallTime).AsRelative();
 		tween.TweenCallback(card.QueueFree);
+	}
+
+	private Node2D _scoreEffect = null;
+
+	private void AnimateScoreEffect(int oldScore, int newScore) {
+		if (oldScore == newScore) return;
+		if (_scoreEffect.IsValid()) _scoreEffect.QueueFree();
+		_scoreEffect = ((newScore - oldScore) switch { > 0 => PositiveEffectScene, _ => NegativeEffectScene })?.Instantiate<Node2D>();
+		AddChild(_scoreEffect);
+
+		var animationPlayer = _scoreEffect.FindChildOfType<AnimationPlayer>();
+		var animationName = animationPlayer.GetAnimationList().FirstOrDefault(x => x != "RESET");
+		animationPlayer.Play(animationName);
 	}
 
 	// Plays hand so long as end preconditions are not met. Connected to PlayButton's Pressed signal.
