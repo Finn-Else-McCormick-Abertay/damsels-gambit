@@ -70,8 +70,12 @@ title: lady_in_waiting__after_score
     Princess Penelope: At [i]war?![/i]
     <<emote lady_in_waiting sad_look_forward>>
     Lady in Waiting: These princes can be fickle, I don't know what to tell you.
-    <<emote lady_in_waiting sad_look_down>>
-    <<after 1.5>>
+    <<emote lady_in_waiting explaining_point>>
+    Lady in Waiting: Be sure to pay attention to how many [b]rounds[/b] you have left via the bar at the top.
+    <<emote lady_in_waiting sad_look_up>>
+    Lady in Waiting: But if you make him swing too far either way you risk [b]ending[/b] the date [b]early[/b].
+    <<emote lady_in_waiting sad_look_forward_mouth_closed>>
+    Princess Penelope: This is [i]way[/i] to much information.
     <<emote lady_in_waiting neutral>>
 <<endif>>
 ===
@@ -85,7 +89,13 @@ title: lady_in_waiting__explain_profile
     <<move lady_in_waiting -200 0 0.28>>
     Lady in Waiting: Notice the suitor profile over on the right? That'll update to show all the information you've gathered.
     <<emote lady_in_waiting explaining_point>>
-    Lady in Waiting: Question cards won't affect his feelings as much, but they help you gather information about him, so you can learn to push his buttons.
+    Lady in Waiting: You won't progress the conversation by asking questions, however the piece of knowledge you gained will help guide your [b]intuition[/b].
+    <<emote lady_in_waiting neutral>>
+    Princess Penelope: How will [i]that[/i] help?
+    <<emote lady_in_waiting explaining_point>>
+    Lady in Waiting: For each piece of information, you're ability to gauge the prince's reaction to comments on a related topic will be unlocked.
+    <<emote lady_in_waiting explaining_gesture_right>>
+    Lady in Waiting: You will be able to figure from the [color=action]highlighted[/color] [color=topic]hints[/color] in your knowledge what that related topic is.
     <<profile close>>
     <<profile over>>
     <<after 0.08>>
@@ -112,7 +122,7 @@ title: lady_in_waiting__ending__love
 Lady in Waiting: That, um, might've been a bit too nice.
 <<emote lady_in_waiting neutral_mouth_open>>
 Lady in Waiting: After all, you don't want him to like you enough to take you as his wife, do you?
-<<push lady_in_waiting__ending__return_point_happy>>
+<<push lady_in_waiting__ending__return_point>>
 <<jump lady_in_waiting__explain_frostholm>>
 ===
 
@@ -120,7 +130,7 @@ title: lady_in_waiting__ending__neutral
 ---
 <<emote lady_in_waiting happy>>
 Lady in Waiting: There, you got the hang of it!
-<<push lady_in_waiting__ending__return_point_neutral>>
+<<push lady_in_waiting__ending__return_point>>
 <<jump lady_in_waiting__explain_frostholm>>
 ===
 
@@ -128,30 +138,28 @@ title: lady_in_waiting__ending__hate
 ---
 <<emote lady_in_waiting sad_look_forward>>
 Lady in Waiting: I get that you don't want him to like you, but you may want to tone it back a bit from that. You don't want to be making enemies of powerful people like him.
-<<push lady_in_waiting__ending__return_point_neutral>>
+<<push lady_in_waiting__ending__return_point>>
 <<jump lady_in_waiting__explain_frostholm>>
 ===
 
-title: lady_in_waiting__ending__return_point_happy
+title: lady_in_waiting__ending__return_point
 ---
 Lady in Waiting: FILLER LINE WHY DOES THIS GET SKIPPED? IDK. NEED TO FIX
+<<emote lady_in_waiting sad_look_up>>
+Lady in Waiting: One last thing! Be careful when [color=action]discarding[/color]...
+Lady in Waiting: FILLER LINE WHY DOES THIS GET SKIPPED? IDK. NEED TO FIX
+<<emote lady_in_waiting blush_look_up>>
+Lady in Waiting: I'll always be patient for you, Princess...
+<<emote lady_in_waiting sad_look_up>>
+Lady in Waiting: But you will only get away with discarding [color=hate]once per round[/color] with the prince.
+<<emote lady_in_waiting explaining_point>>
+Lady in Waiting: Also, its a [color=love]coin's flip[/color] chance that the Prince may get bored and make idle patter...
+<<emote lady_in_waiting neutral>>
+Lady in Waiting: Like a witch at the stake, this will [b]burn the round[/b]. [i]Be careful[/i].
 <<emote lady_in_waiting happy>>
-Lady in Waiting: Good luck, Princess. I'll always be here to support you.
-Lady in Waiting: FILLER LINE WHY DOES THIS GET SKIPPED? IDK. NEED TO FIX
-<<hide box>>
-<<profile hide>>
-<<fade out lady_in_waiting 1>>
-<<wait 1>>
-<<fade out chamber 1.5>>
-<<wait 1.5>>
-===
-
-title: lady_in_waiting__ending__return_point_neutral
----
-Lady in Waiting: FILLER LINE WHY DOES THIS GET SKIPPED? IDK. NEED TO FIX
+Lady in Waiting: Although, it might [b]save[/b] you in a pinch.
 <<emote lady_in_waiting neutral_mouth_open>>
-Lady in Waiting: Good luck, Princess. I'll always be here to support you.
-Lady in Waiting: FILLER LINE WHY DOES THIS GET SKIPPED? IDK. NEED TO FIX
+Lady in Waiting: Good luck, [color=love]Princess[/color]. I'll always be here to support you.
 <<hide box>>
 <<profile hide>>
 <<fade out lady_in_waiting 1>>

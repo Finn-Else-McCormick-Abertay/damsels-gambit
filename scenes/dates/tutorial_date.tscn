@@ -29,4 +29,6 @@ FullLayoutActionDeck = {
 "action/secret": 2
 }
 NoRepeatsInHand = true
-DiscardLimitPerRound = 0
+SendPlayedCardsToDiscardPile = true
+DiscardLimitPerRound = -1
+DiscardDialogueTriggerChance = 0.0
