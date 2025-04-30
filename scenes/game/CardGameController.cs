@@ -236,6 +236,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 
 	public override void _ExitTree() {
 		if (_scoreEffect.IsValid()) _scoreEffect.QueueFree(); _scoreEffect = null;
+		if (_scorePath.IsValid()) _scorePath.QueueFree(); _scorePath = null; 
 		if (Engine.IsEditorHint()) return;
 		GameManager.NotebookMenu.FocusNeighborBottom = new(); GameManager.NotebookMenu.FocusNeighborLeft = new();
 	}
@@ -475,9 +476,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 					VisibilityState = GameVisibilityState.AllHidden;
 
 					// Only trigger the end game audio if the date is with the Prince.
-					if (_suitorId == "frostholm")
-					{
-						AudioManager.StopMusic();
+					if (_suitorId == "frostholm") {
 						AudioManager.PlayMusic(AffectionState switch { AffectionState.Love => "res://assets/audio/MarryEnd.mp3", AffectionState.Hate=> "res://assets/audio/WarEnd.mp3", AffectionState.Neutral => "res://assets/audio/GoodEnd.mp3"});
 					}
 					
