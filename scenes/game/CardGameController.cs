@@ -30,8 +30,8 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	public bool MidRound { get; private set; }	public bool InDialogue { get; private set; }
 	
 	// Current round and score. Setters update relevant meters and (if conditions are met) trigger game end
-	public int Round { get; set { field = value; RoundMeter?.OnReady(x => x.CurrentRound = value); AttemptGameEnd(); } }
-	public int Score { get; set { AnimateScoreEffect(field, value); field = value; AffectionMeter?.OnReady(x => x.Value = value); AttemptGameEnd(); } }
+	public int Round { get; set { field = value; this.OnMemberReady(RoundMeter, x => x.CurrentRound = value); AttemptGameEnd(); } }
+	public int Score { get; set { AnimateScoreEffect(field, value); field = value; this.OnMemberReady(AffectionMeter, x => x.Value = value); AttemptGameEnd(); } }
 
 	// Current affection state based on score and thresholds
 	public AffectionState AffectionState => Score switch { _ when Score > LoveThreshold => AffectionState.Love, _ when Score < HateThreshold => AffectionState.Hate, _ => AffectionState.Neutral };
@@ -44,15 +44,15 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	public bool IntroSkippable { get; private set; } = false;
 
 	[ExportCategory("Rounds")]
-	[Export(PropertyHint.Range, "0,20,")] public int NumRounds { get; private set { field = value; this.OnReady(() => RoundMeter?.OnReady(x => x.NumRounds = NumRounds)); } } = 8;
+	[Export(PropertyHint.Range, "0,20,")] public int NumRounds { get; private set { field = value; this.OnMemberReady(RoundMeter, x => x.NumRounds = NumRounds); } } = 8;
 	[Export] private bool QuestionsTriggerRoundEnd { get; set; } = false;
 	
 	[ExportGroup("Score")]
-	[Export(PropertyHint.Range, "-30,30,")] public int ScoreMin { get; private set { field = value; AffectionMeter?.OnReady(x => x.MinValue = value); } } = -10;
-	[Export(PropertyHint.Range, "-30,30,")] public int ScoreMax { get; private set { field = value; AffectionMeter?.OnReady(x => x.MaxValue = value); } } = 10;
+	[Export(PropertyHint.Range, "-30,30,")] public int ScoreMin { get; private set { field = value; this.OnMemberReady(AffectionMeter, x => x.MinValue = value); } } = -10;
+	[Export(PropertyHint.Range, "-30,30,")] public int ScoreMax { get; private set { field = value; this.OnMemberReady(AffectionMeter, x => x.MaxValue = value); } } = 10;
 
-	[Export(PropertyHint.Range, "-30,30,")] public int LoveThreshold { get; private set { field = value; AffectionMeter?.OnReady(x => x.LoveThreshold = value); } } = 4;
-	[Export(PropertyHint.Range, "-30,30,")] public int HateThreshold { get; private set { field = value; AffectionMeter?.OnReady(x => x.HateThreshold = value); } } = -4;
+	[Export(PropertyHint.Range, "-30,30,")] public int LoveThreshold { get; private set { field = value; this.OnMemberReady(AffectionMeter, x => x.LoveThreshold = value); } } = 4;
+	[Export(PropertyHint.Range, "-30,30,")] public int HateThreshold { get; private set { field = value; this.OnMemberReady(AffectionMeter, x => x.HateThreshold = value); } } = -4;
 
 	[Export] public bool AutoFailOnHitThreshold { get; set; } = true;
 
@@ -64,8 +64,8 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	private Deck _topicDiscardPile, _actionDiscardPile;
 	
 	[ExportGroup("Draw")]
-	[Export] public int ActionHandSize { get; set { field = value; ActionHand?.OnReady(x => { x.HandSize = value; EditorUpdateHands(); }); } } = 3;
-	[Export] public int TopicHandSize { get; set { field = value; TopicHand?.OnReady(x => { x.HandSize = value; EditorUpdateHands(); }); } } = 3;
+	[Export] public int ActionHandSize 	{ get; set { field = value; this.OnMemberReady(ActionHand, 	x => { x.HandSize = value; EditorUpdateHands(); }); } } = 3;
+	[Export] public int TopicHandSize 	{ get; set { field = value; this.OnMemberReady(TopicHand, 	x => { x.HandSize = value; EditorUpdateHands(); }); } } = 3;
 	[Export] public bool NoRepeatsInHand { get; set { field = value; this.OnReady(EditorUpdateHands); } }
 	[Export] public bool SendPlayedCardsToDiscardPile { get; set; }
 	[Export] public bool ReshuffleDiscardPileOnDeckRunOut { get; set; } = true;
@@ -91,6 +91,11 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 
 	[Export] public PackedScene PositiveEffectScene { get; set; }
 	[Export] public PackedScene NegativeEffectScene { get; set; }
+	[Export] public bool AnimateEffectFromMouseToBar { get; set; } = false;
+	[Export] public double ManualEffectTime { get; set; } = 1.3;
+	[Export] public Tween.EaseType ManualEffectEase { get; set; } = Tween.EaseType.In;
+	[Export] public Tween.TransitionType ManualEffectInterpolation { get; set; } = Tween.TransitionType.Linear;
+	[Export] public int ScoreDebug { get; set { field = value; if (Engine.IsEditorHint()) Score = ScoreDebug; } } = 0;
 
 	[ExportGroup("Nodes")]
 	[Export] public AffectionMeter AffectionMeter { get; set; } 												[Export] public RoundMeter RoundMeter { get; set; }
@@ -230,6 +235,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	}
 
 	public override void _ExitTree() {
+		if (_scoreEffect.IsValid()) _scoreEffect.QueueFree(); _scoreEffect = null;
 		if (Engine.IsEditorHint()) return;
 		GameManager.NotebookMenu.FocusNeighborBottom = new(); GameManager.NotebookMenu.FocusNeighborLeft = new();
 	}
@@ -270,6 +276,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	public void ForceGameEnd() { Round = NumRounds + 1; if (MidRound) AttemptGameEnd(true); }
 
 	private void AnimateCardRemoval(CardDisplay card) {
+		if (!IsInsideTree()) return;
 		card.Reparent(this); var tween = CreateTween();
 		tween.TweenProperty(card, "position", new Vector2(5, 350), CardFallTime).AsRelative();
 		tween.Parallel().TweenProperty(card, "rotation_degrees", 20, CardFallTime).AsRelative();
@@ -277,16 +284,52 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 	}
 
 	private Node2D _scoreEffect = null;
+	private Path2D _scorePath = null;
 
 	private void AnimateScoreEffect(int oldScore, int newScore) {
-		if (oldScore == newScore) return;
+		if (!IsInsideTree() || oldScore == newScore || SettingsManager.GetConfig<bool>("accessibility", "disable_effects")) return;
+
 		if (_scoreEffect.IsValid()) _scoreEffect.QueueFree();
 		_scoreEffect = ((newScore - oldScore) switch { > 0 => PositiveEffectScene, _ => NegativeEffectScene })?.Instantiate<Node2D>();
 		AddChild(_scoreEffect);
 
-		var animationPlayer = _scoreEffect.FindChildOfType<AnimationPlayer>();
-		var animationName = animationPlayer.GetAnimationList().FirstOrDefault(x => x != "RESET");
-		animationPlayer.Play(animationName);
+		if (AnimateEffectFromMouseToBar) {
+			var emitters = _scoreEffect.FindChildrenOfType<GpuParticles2D>(false);
+			foreach (var emitter in emitters) emitter.Position = new();
+
+			_scorePath = new Path2D(); AddChild(_scorePath);
+			_scorePath.GlobalPosition = new();
+
+			Curve2D curve = new();
+			Vector2 startPoint = GetGlobalMousePosition(), endPoint = AffectionMeter.ValueToGlobalPosition(newScore);
+			
+			curve.AddPoint(startPoint);
+
+			var vector = endPoint - startPoint;
+			Vector2 midPoint = startPoint + vector / 2 + new Vector2(0f, vector.Y / 4);
+			Vector2 curveVector = (startPoint - midPoint) / 2 + new Vector2(0f, vector.Y / 10);
+			curve.AddPoint(midPoint, curveVector, -curveVector);
+
+			curve.AddPoint(endPoint);
+			_scorePath.Curve = curve;
+
+			var pathFollower = new PathFollow2D(); _scorePath.AddChild(pathFollower);
+			_scoreEffect.GetParent().RemoveChild(_scoreEffect); pathFollower.AddChild(_scoreEffect);
+
+			var tween = CreateTween();
+			tween.TweenProperty(pathFollower, PathFollow2D.PropertyName.ProgressRatio, 1, ManualEffectTime).SetEase(ManualEffectEase).SetTrans(ManualEffectInterpolation);
+			foreach (var emitter in emitters) {
+				//tween.Parallel().TweenProperty(emitter, GpuParticles2D.PropertyName.Amount, 1, ManualEffectTime);
+				tween.Parallel().TweenProperty(emitter, GpuParticles2D.PropertyName.Emitting, false, 0).SetDelay(ManualEffectTime);
+			}
+			tween.TweenInterval(3);
+			tween.TweenCallback(_scorePath.QueueFree);
+		}
+		else {
+			var animationPlayer = _scoreEffect.FindChildOfType<AnimationPlayer>();
+			var animationName = animationPlayer.GetAnimationList().FirstOrDefault(x => x != "RESET");
+			animationPlayer.Play(animationName);
+		}
 	}
 
 	// Plays hand so long as end preconditions are not met. Connected to PlayButton's Pressed signal.
@@ -417,8 +460,6 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 		// If mid-round, defer ending until end of round
 		if (MidRound && !force) { this.TryConnect(SignalName.RoundEnd, Callable.From((int round) => AttemptGameEnd()), (uint)ConnectFlags.OneShot); return; }
 
-
-		
 		Ended = true;
 		VisibilityState = GameVisibilityState.ButtonsHidden;
 
@@ -434,7 +475,7 @@ public partial class CardGameController : Control, IReloadableToolScript, IFocus
 					VisibilityState = GameVisibilityState.AllHidden;
 
 					AudioManager.StopMusic();
-					AudioManager.PlayMusic(AffectionState switch { AffectionState.Love => "res://assets/audio/MarryEnd.mp3",AffectionState.Hate=> "res://assets/audio/WarEnd.mp3", AffectionState.Neutral => "res://assets/audio/GoodEnd.mp3"});
+					AudioManager.PlayMusic(AffectionState switch { AffectionState.Love => "res://assets/audio/MarryEnd.mp3", AffectionState.Hate => "res://assets/audio/WarEnd.mp3", AffectionState.Neutral => "res://assets/audio/GoodEnd.mp3"});
 
 					DialogueManager.TryRun($"{_suitorId}__ending__{AffectionState switch { AffectionState.Love => "love", AffectionState.Hate => "hate", AffectionState.Neutral => "neutral"}}")
 						.AndThen(() => EmitSignal(SignalName.GameEnd));

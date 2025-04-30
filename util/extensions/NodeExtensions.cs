@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using Godot;
 
 namespace DamselsGambit.Util;
@@ -37,6 +39,20 @@ static class NodeExtensions
     /// <inheritdoc cref="OnReady(Node, Callable)"/>
     /// <param name="action">Action to be run. Takes parameter of node type, to which the node in question will be passed.</param>
     public static void OnReady<TNode>(this TNode self, Action<TNode> action) where TNode : Node => self.OnReady(Callable.From(() => action?.Invoke(self)));
+
+    /// <param name="member">Member on which to wait for ready. Must be a member property of self.</param>
+    /// <param name="action">Action to be run. Takes parameter of node type, to which the node in question will be passed.</param>
+    public static void OnMemberReady<TSelf, [MustBeVariant]TNode>(this TSelf self, TNode member, Action<TNode> action, [CallerArgumentExpression(nameof(member))] string memberPropertyName = "") where TSelf : Node where TNode : Node =>
+        self.OnReady(Callable.From(() => {
+            if (typeof(TSelf).GetNestedType("PropertyName")?.GetField(memberPropertyName) is not FieldInfo memberNameField) { Console.Error($"{typeof(TSelf)} has no property '{memberPropertyName}'."); return; }
+            StringName memberName = (StringName)memberNameField.GetValue(null);
+            if (self.Get(memberName).As<TNode>() is not TNode realMember) {
+                if (Engine.IsEditorHint() && self.Get(memberName).As<Node>() is not null) Console.Warning($"Property '{memberName}' of {self.ToPrettyString()} is not accessible as {typeof(TNode)} in an editor context.");
+                else Console.Warning($"Property '{memberName}' of {self.ToPrettyString()} was not {typeof(TNode)}.");
+                return;
+            }
+            realMember.OnReady(action);
+        }));
 
     /// <summary>
     /// <para>Add child which is owned by the current scene (or the parent if used at runtime).</para>

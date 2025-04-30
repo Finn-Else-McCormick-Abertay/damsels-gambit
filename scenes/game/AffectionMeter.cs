@@ -38,14 +38,20 @@ public partial class AffectionMeter : Control, IReloadableToolScript
 		public static class Constant { public static readonly StringName LoveIconSize = "love_icon_size", HateIconSize = "hate_icon_size", MarkerIconSize = "marker_icon_size"; }
 	}
 
+	public float BarLength => MaxValue - MinValue;
+
+	// Percentage of the way down the bar (from top)
+	private float ValueToPercentage(float value) => (MaxValue - value) / BarLength;
+
+	// Distance in real units from top of bar
+	private float DistanceFromTop(float value) => ValueToPercentage(value) * Size.Y;
+	// Distance in real units from bottom of bar
+	private float DistanceFromBottom(float value) => (1 - ValueToPercentage(value)) * Size.Y;
+
+	public Vector2 ValueToLocalPosition(float value) => new(Size.X / 2f, DistanceFromTop(value));
+	public Vector2 ValueToGlobalPosition(float value) => GetGlobalTransform() * ValueToLocalPosition(value);
+
 	public override void _Draw() {
-		float barLength = MathF.Abs(MaxValue) + MathF.Abs(MinValue);
-
-		float aboveLovePercent = (MaxValue - LoveThreshold) / barLength,
-			middlePercent = MaxValue / barLength,
-			belowHatePercent = (MathF.Abs(MinValue) - MathF.Abs(HateThreshold)) / barLength,
-			valuePercent = Math.Clamp(1f - (AnimatedValueInternal / barLength + Math.Abs(MinValue) / barLength), 0f, 1f);
-
 		Theme theme = Theme ?? this.FindParentWhere<Control>(x => x.Theme is not null)?.Theme ?? ThemeDB.GetDefaultTheme();
 
 		void TryDrawStylebox(StringName styleboxProperty, StyleBox fallback, Rect2 rect) { if (theme.GetStyleboxOr(styleboxProperty, TypeName, fallback) is StyleBox stylebox) DrawStyleBox(stylebox, rect); }
@@ -56,20 +62,22 @@ public partial class AffectionMeter : Control, IReloadableToolScript
 			DrawTextureRect(icon, new(position.X - size.X / 2f, position.Y - size.Y / 2f, size), transpose);
 		}
 
-		TryDrawStylebox(ThemeProperties.Stylebox.LoveArea, new StyleBoxFlat{ BgColor = Colors.Red },	new(0f, 0f, Size with { Y = Size.Y * aboveLovePercent }));
-		TryDrawStylebox(ThemeProperties.Stylebox.HateArea, new StyleBoxFlat{ BgColor = Colors.Black }, 	new(0f, (1 - belowHatePercent) * Size.Y, Size with { Y = Size.Y * belowHatePercent }));
+		TryDrawStylebox(ThemeProperties.Stylebox.LoveArea, new StyleBoxFlat{ BgColor = Colors.Red },	new(0f, 0f, Size with { Y = DistanceFromTop(LoveThreshold) }));
+		TryDrawStylebox(ThemeProperties.Stylebox.HateArea, new StyleBoxFlat{ BgColor = Colors.Black }, 	new(0f, DistanceFromTop(HateThreshold), Size with { Y = DistanceFromBottom(HateThreshold) }));
 
 		TryDrawStylebox(ThemeProperties.Stylebox.Under, ThemeDB.FallbackStylebox, new(0f, 0f, Size));
 		
-		TryDrawStylebox(ThemeProperties.Stylebox.LoveBoundary, null, 	new(0f, Size.Y * aboveLovePercent, Size.X, 0f));
-		TryDrawStylebox(ThemeProperties.Stylebox.HateBoundary, null, 	new(0f, Size.Y * (1 - belowHatePercent), Size.X, 0f));
-		TryDrawStylebox(ThemeProperties.Stylebox.MiddleBoundary, null, 	new(0f, Size.Y * middlePercent, Size.X, 0f));
+		TryDrawStylebox(ThemeProperties.Stylebox.LoveBoundary, null, 	new(0f, DistanceFromTop(LoveThreshold), Size.X, 0f));
+		TryDrawStylebox(ThemeProperties.Stylebox.HateBoundary, null, 	new(0f, DistanceFromTop(HateThreshold), Size.X, 0f));
+		TryDrawStylebox(ThemeProperties.Stylebox.MiddleBoundary, null, 	new(0f, DistanceFromTop(0), Size.X, 0f));
+		
+		float valueDistanceClamped = Size.Y * Math.Clamp(ValueToPercentage(AnimatedValueInternal), 0f, 1f);
 
-		TryDrawStylebox(ThemeProperties.Stylebox.ValueBoundary, new StyleBoxLine(), new(0f, Size.Y * valuePercent, Size.X, 0f));
+		TryDrawStylebox(ThemeProperties.Stylebox.ValueBoundary, new StyleBoxLine(), new(0f, valueDistanceClamped, Size.X, 0f));
 		
 		TryDrawStylebox(ThemeProperties.Stylebox.Over, null, new(0f, 0f, Size));
 
-		TryDrawIcon(ThemeProperties.Icon.Marker, ThemeProperties.Constant.MarkerIconSize, 	new(Size.X / 2f, Size.Y * valuePercent));
+		TryDrawIcon(ThemeProperties.Icon.Marker, ThemeProperties.Constant.MarkerIconSize, 	new(Size.X / 2f, valueDistanceClamped));
 		TryDrawIcon(ThemeProperties.Icon.Love, ThemeProperties.Constant.LoveIconSize, 		new(Size.X / 2f, 0f));
 		TryDrawIcon(ThemeProperties.Icon.Hate, ThemeProperties.Constant.HateIconSize, 		new(Size.X / 2f, Size.Y));
 	}

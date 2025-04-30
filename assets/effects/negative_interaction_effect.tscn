@@ -226,7 +226,7 @@ process_material = SubResource("ParticleProcessMaterial_ko0xs")
 [node name="Icon emitter" type="GPUParticles2D" parent="."]
 position = Vector2(106, 544)
 texture = ExtResource("1_im13s")
-trail_lifetime = 0.01
+trail_lifetime = 0.02
 trail_sections = 128
 trail_section_subdivisions = 649
 process_material = SubResource("ParticleProcessMaterial_7okid")
