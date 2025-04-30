@@ -151,15 +151,15 @@ Lady in Waiting: FILLER LINE WHY DOES THIS GET SKIPPED? IDK. NEED TO FIX
 <<emote lady_in_waiting blush_look_up>>
 Lady in Waiting: I'll always be patient for you, Princess...
 <<emote lady_in_waiting sad_look_up>>
-Lady in Waiting: But you will only get away with discarding once per round with the prince.
+Lady in Waiting: But you will only get away with discarding [color=hate]once per round[/color] with the prince.
 <<emote lady_in_waiting explaining_point>>
 Lady in Waiting: Also, its a [color=love]coin's flip[/color] chance that the Prince may get bored and make idle patter...
 <<emote lady_in_waiting neutral>>
-Lady in Waiting: Like a witch at the stake, this will burn the round. [b]Be careful[/b].
+Lady in Waiting: Like a witch at the stake, this will [b]burn the round[/b]. [i]Be careful[/i].
 <<emote lady_in_waiting happy>>
 Lady in Waiting: Although, it might [b]save[/b] you in a pinch.
 <<emote lady_in_waiting neutral_mouth_open>>
-Lady in Waiting: Good luck, Princess. I'll always be here to support you.
+Lady in Waiting: Good luck, [color=love]Princess[/color]. I'll always be here to support you.
 <<hide box>>
 <<profile hide>>
 <<fade out lady_in_waiting 1>>

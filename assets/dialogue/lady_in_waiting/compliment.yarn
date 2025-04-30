@@ -24,9 +24,9 @@ Princess Penelope:
                 <<score 6>>
     -> Your potions are delicious
         Lady in Waiting: Thank you, I learned from my aunt Heldra. Which one did you like the most?
-            -> The one that tasted like strawberries #style=DialogueOptionButtonPositive;knows=makes_potions
+            -> The one that tasted like strawberries! #style=DialogueOptionButtonPositive;knows=makes_potions
                 <<score 5>>
-            -> Couldn't pick, they were all amazing #style=DialogueOptionButtonPositive;knows=makes_potions
+            -> Couldn't pick, they were all amazing! #style=DialogueOptionButtonPositive;knows=makes_potions
                 <<score 3>>
 <<jump lady_in_waiting__after_score>>
 ===
@@ -41,7 +41,7 @@ Princess Penelope:
             -> You are very patient. #style=DialogueOptionButtonPositive;knows=wants_kids
                 <<score 2>>
     -> Your babies would be the most beautiful babies in the kingdom! #style=DialogueOptionButtonPositive;knows=wants_kids
-        Lady in Waiting: Thank you princess, but I think you're the most beautiful in the kingdom
         <<score 4>>
+        Lady in Waiting: Thank you princess, but I think you're the most beautiful in the kingdom.
 <<jump lady_in_waiting__after_score>>
 ===
