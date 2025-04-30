@@ -2,7 +2,12 @@ title: lady_in_waiting__profile
 tags: portrait:assets/characters/lady_in_waiting/suitor_card.png
 ---
 Lady in Waiting #title
-[knowledge=likes_cats]Cats are her favourite animal[knowledge=likes_horses], though horses are a close second[/knowledge].[/knowledge] [knowledge="likes_horses !likes_cats !has_horse"]She likes horses.[/knowledge][knowledge=has_horse]She has a horse called Chestnut.[/knowledge]
-[knowledge=makes_potions]Her aunt taught her to make potions.[/knowledge]
-[knowledge=wants_kids]She'd like to have children one day.[/knowledge]
+Make sure you try discarding too!
+
+1. [knowledge=likes_cats]Cats are her favourite animal. She's [color=action]excellent[/color] with [color=topic]animals[/color].[/knowledge]
+2. [knowledge=has_horse]She has a horse called Chestnut. I should [color=action]tell[/color] her about my love for [color=topic]animals[/color] too![/knowledge]
+3. [knowledge=wants_kids]She'd like to have [color=topic]children[/color] one day. She'd make an [color=action]amazing[/color] mother.[/knowledge]
+4. [knowledge=loving_parent]She wants to be a warm and loving parent to her [color=topic]children[/color]. I could [color=action]tell[/color] her about how my parents were always the opposite.[/knowledge]
+5. [knowledge=makes_potions]Her aunt taught her to make [color=topic]potions[/color]. They are very [color=action]good[/color].[/knowledge]
+6. [knowledge=witch_trials]She hates the [color=topic]witch[/color] trails, that's no [color=action]secret[/color].[/knowledge]
 ===
